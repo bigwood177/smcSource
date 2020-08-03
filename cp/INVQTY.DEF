@@ -1,0 +1,10 @@
+;invqty.def
+;
+	in_item	,a15
+	in_mat	,a1
+	in_f1	,a3
+	in_f2	,a3
+	in_f3	,a5
+	in_com	,d6	;qty committed from orders
+
+

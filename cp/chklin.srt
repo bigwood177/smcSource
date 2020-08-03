@@ -1,0 +1,939 @@
+???C2             0   0    16 8X24 24GA 10' OVAL PIPE       
+???C2             0   0    16 8X36 1/2 22GA 10' OVAL PIPE   
+???D             65   0     0 PIPE 28"4'22GA ACME LCK S.S.  
+???F              0   0     4 30"RD OFFSET 20GA GALV        
+???F              0   0    16 26"RD OFFSET 2" 24"LONG 22GA  
+???H              0   0     4 20.5/18 24GA REDUCER          
+???H              0   0     6 12/8 24GA REDUCER             
+???H              0  31     0 11" 24GA STORM COLLAR GALV    
+???H              0  31     0 13" STORM COLLAR 24GA GALV    
+???J              0   0    45 2"X2"X3/16" ANGLE             
+???K              0   0     6 10"X5' WELDED PIPE 18GA B.I.  
+???K              0   0     6 8"RD 18GA X 4'LONG WLD PIPE   
+???K              0   0    16 8X24 20GA 20 EZ BEND ELL      
+???K              0   0    16 8X24 20GA END CAP             
+???K              0   0    16 8X36 1/2 18GA 20 EZ BEND ELL  
+???K              0   0    16 8X36 1/2 18GA END CAP         
+???K              0   0    16 8X36 1/2 TO 8X24 18GA REDUCER 
+???K              0  31     0 15" ROOF SHOE 20GA WELDED     
+???K             64   0     0 18" GOOSENECK ELL 16GA ST ST  
+???K             80   0     6 10"-45 ANGLE 14GA WLD S.S.    
+???K             80   0     6 10"-45 ANGLE 14GA WLD S.S.    
+???K             80   0     6 10"X 5' PIPE 14GA WLD S.S     
+???K             80   0     6 10"X 5' PIPE 14GA WLD S.S.    
+???L             64   0     0 18"X20" BLANK 18GA S.S.       
+16BI             67   0     0 16GA BLACK IRON WELDED FTGS   
+16BI             67   0     0 16GA BLACK IRON WELDED FTGS   
+16BI             67   0     0 16GA BLACK IRON WELDED FTGS   
+22GF             61   0    16 22GA PGRP FITTINGS FULL ASMBL 
+22SK             64   0     0 22GA ST STL FITTINGS K/D      
+24PVF            59   0     0 24GA PVS FITTINGS FULL ASMBL  
+2SSA             64   0     0 2" TURNING VANE INSTALLED STLS
+3SSA             64   0     0 2" VANE RAIL INSTALLED STLS   
+4000A            83   0     0 4"SINGLEWALL VANE INSTALLED   
+4000A            83   0     0 4"SINGLEWALL VANE INSTALLED   
+424A             82   0     0 4"TURNING VANE INSTALLED      
+424A             83   0     0 4"TURNING VANE INSTALLED      
+5000A            83   0     0 4"SINGLEWALL RAIL INSTALLED   
+5000A            83   0     0 4"SINGLEWALL RAIL INSTALLED   
+522A             82   0     0 4"VANE RAIL INSTALLED         
+522A             83   0     0 4"VANE RAIL INSTALLED         
+614241           61   0     0 1" FLT DRIVE 24GA CTL 14" GALV
+A084522S          0   0    15 8" 45 22GA ANGLE W/SP END GALV
+A104524S         61   0     0 10" 45 24GA ANGLE W/SP PGRP   
+A104524S         61   0     0 10" 45 24GA ANGLE W/SP PGRP   
+A124522           0   0    44 12" 45 22GA ANGLE LE/SE GALV  
+A124522S          0   0    15 12" 45 22GA ANGLE W/SP GALV   
+A164524S         61   0     0 16" 45 24GA ANGLE W/SP PGRP   
+A184524S         61   0     0 18" 45 24GA ANGLE W/SP PGRP   
+A224522S          0  88     0 22" 45 22GA ANGLE W/SP GALV   
+A244522S         61   0     0 24" 45 22GA ANGLE W/SP PGRP   
+ADLBI            67   0     0 16X12 FLT ACCESS DOOR BLK IRON
+AS034518         64   0     0 3" 45 .018 ANGLE LE/SE S.S.   
+ASP              66   0     0 NET COST FOR SPIRAL PIPE ALUM 
+ASP              66   0     0 NET COST FOR SPIRAL PIPE ALUM 
+ASP              66   0     0 NET COST FOR SPIRAL PIPE ALUM 
+ASP              66   0     0 NET COST FOR SPIRAL PIPE ALUM 
+ASP              66   0     0 NET COST FOR SPIRAL PIPE ALUM 
+AV104522S         0   0     1 10"45 22GA ANGLE W/SP ENDS PVS
+AV104524S        62   0    15 10"45 24GA ANGLE W/SP ENDS PVS
+AV304520S         0  31     1 30"10 20GA ANGLE W/SP ENDS PVS
+BDD               0   0     0 16X20 B-DRAFT                 
+BDD               0   0     0 18X12 B-DRAFT                 
+BN9               0   0     0 14/8/16 90 24GA BULLNOSE PGRP 
+BN9              80   0    16 10/10/16 90 24GA BULLNOSE PGRP
+BN9              80   0    16 12/12/16 90 24GA BULLNOSE PGRP
+BN9              80   0    16 14/14/16 90 24GA BULLNOSE PGRP
+BN922222230       0   0    15 22/22/30 90 22GA BULLNOSE     
+BN926060608      60   0    10 6/6/8 90 26GA BULLNOSE        
+BSEC14           66   0     1 14" BIRD SCREEN END CAP GALV  
+BSEC18            0   0     2 18" BIRD SCREEN END CAP GALV  
+C.               83   0     0 ROOF CURB COVER               
+C0424            66   0     0 4" CONN SPIRAL PIPE 24GA ALUM 
+C0624             0  88     0 6" CONN SPIRAL PIPE 24GA GALV 
+C0624            60   0     0 6" CONN SPIRAL PIPE 24GA GALV 
+C0624            68   0     0 6" CONN SPIRAL PIPE 24GA GALV 
+C0824             0  88     0 8" CONN SPIRAL PIPE 24GA GALV 
+C0824            60   0     0 8" CONN SPIRAL PIPE 24GA GALV 
+C0824            64   0     0 8" CONN SPIRAL PIPE 24GA SST  
+C0824            65   0     0 8" CONN SPIRAL PIPE 24GA SST  
+C0824            68   0     0 8" CONN SPIRAL PIPE 24GA GALV 
+C0824            68   0     0 8" CONN SPIRAL PIPE 24GA GALV 
+C0924             0  88     0 9" CONN SPIRAL PIPE 24GA GALV 
+C1024             0  88     0 10" CONN SPIRAL PIPE 24GA GALV
+C1024            60   0     0 10" CONN SPIRAL PIPE 24GA GALV
+C1024            61   0     0 10" CONN SPIRAL PIPE 24GA PGRP
+C1024            61   0     0 10" CONN SPIRAL PIPE 24GA PGRP
+C1024            61   0     0 10" CONN SPIRAL PIPE 24GA PGRP
+C1024            68   0     0 10" CONN SPIRAL PIPE 24GA GALV
+C1224             0  88     0 12" CONN SPIRAL PIPE 24GA GALV
+C1224            60   0     0 12" CONN SPIRAL PIPE 24GA GALV
+C1224            64   0     0 12" CONN SPIRAL PIPE 24GA SST 
+C1224            66   0     0 12" CONN SPIRAL PIPE 24GA ALUM
+C1224            68   0     0 12" CONN SPIRAL PIPE 24GA GALV
+C1422             0  88     0 14" CONN SPIRAL PIPE 22GA GALV
+C1422            66   0     0 14" CONN SPIRAL PIPE 22GA ALUM
+C1422            68   0     0 14" CONN SPIRAL PIPE 22GA GALV
+C1622             0  88     0 16" CONN SPIRAL PIPE 22GA GALV
+C1622            64   0     0 16" CONN SPIRAL PIPE 22GA SST 
+C1622            66   0     0 16" CONN SPIRAL PIPE 22GA ALUM
+C1622            68   0     0 16" CONN SPIRAL PIPE 22GA GALV
+C2022            61   0     0 20" CONN SPIRAL PIPE 22GA PGRP
+C2222             0  88     0 22" CONN SPIRAL PIPE 22GA GALV
+C2422            61   0     0 24" CONN SPIRAL PIPE 22GA PGRP
+C2820            64   0     0 28" CONN SPIRAL PIPE 20GA SST 
+C3620             0   0     2 36" CONN SPIRAL PIPE 20GA GALV
+C4                0   0     1 12/8/8/8 45 26GA CROSS        
+C9                0   0    15 36/30/16/16 90 22GA CROSS     
+CC.              66   0     0 CANVAS CONNECTORS             
+CC9               0   0     0 12/12/10/10 90 24GA CONICL CRO
+CC9               0   0     0 14/14/10/10 90 24GA CONICL CRO
+CC9               0   0     0 14/14/12/8 90 24GA CONICL CROS
+CC9               0   0     0 16/16/8/8 90 24GA CONICL CROSS
+CC9               0   0     1 12/12/10/8 90 24GA CONICL CROS
+CC9               0   0     1 12/12/10/8 90 26GA CONICL CROS
+CR12SF            0   0    44 12" COMP.RING SWDG.ON FITTING 
+CR12SF            0   0    44 12" COMP.RING SWDG.ON FITTING 
+CR16             74   0     0 16" COMPANION RINGS           
+CR16SF            0   0    44 16" COMP. RING SWDG.ON FITTING
+CR16SF            0   0    44 16" COMP. RING SWDG.ON FITTING
+CR16SF            0   0    44 16" COMP. RING SWDG.ON FITTING
+CR18SF           64   0     0 18" COMP.RING SWDG ON FITTING 
+CR20SF            0   0    44 20" COMP. RING SWDG.ON FITTING
+CR22SF            0   0    44 22" COMP. RING SWDG.ON FITTING
+CR30SF            0   0    44 30" COMP. RING SWDG.ON FITTING
+CR36SF            0   0    44 36" COMP. RING SWDG.ON FITTING
+CR40SF            0   0    44 40" COMP. RING SWDG.ON FITTING
+CR40SP            0   0    44 40" COMP. RING SWDG ON PIPE   
+CR42SP            0   0    44 42" COMP. RING SWDG ON PIPE   
+CRS10            80   0     0 10" COMPANION RING S.S.       
+CT9               0   0     0 14/14/12 90 24GA CONICAL TEE  
+CT9               0   0     1 12/8/8 90 24GA CONICAL TEE    
+CT9               0   0     1 14/10/8 90 22GA CONICAL TEE   
+CT9               0   0     1 14/14/8 90 22GA CONICAL TEE   
+CT9               0   0     1 24/18/18 90 22GA CONICAL TEE  
+CT924080606       0   0     1 8/6/6 90 24GA CONICAL TEE     
+CT924121010       0   0     1 12/10/10 90 24GA CONICAL TEE  
+CV1224           63   0     0 12" 24GA CONNECTOR PVS        
+CV4               0   0     0 18/12/12/12 45 20GA CROSS  PVS
+DD0724            0   0     1 7" VOL DAMPER DOUBLE 24GA GALV
+DD1424            0  88     0 14" VOL DAMPER DOUBLE 24G GALV
+DD1824           61   0     0 18" VOL DAMPER DOUBLE 24G GALV
+DSC               0   0     1 LESS QUANTITY DISCOUNT/SPIRAL 
+DSC               0   0    15 LESS QUANTITY DISCOUNT/SPIRAL 
+E.               67   0     0 90 DEGREE ELBOWS              
+E049026           0  88     0 4" 90 26GA ELBOW LE/SE GALV   
+E069024S         68   0     0 6" 90 24GA ELBOW W/SP END GALV
+E069026           0  34     0 6" 90 26GA ELBOW LE/SE GALV   
+E069026          60   0     0 6" 90 26GA ELBOW LE/SE GALV   
+E069026          60   0     0 6" 90 26GA ELBOW LE/SE GALV   
+E069026S          0  88     0 6" 90 26GA ELBOW W/SP END GALV
+E089024          61   0     0 8" 90 24GA ELBOW LE/SE PGRP   
+E089024          68   0     0 8" 90 24GA ELBOW LE/SE GALV   
+E089024S         61   0     0 8" 90 24GA ELBOW W/SP END PGRP
+E089024S         61   0     0 8" 90 24GA ELBOW W/SP END PGRP
+E089024S         61   0     0 8" 90 24GA ELBOW W/SP END PGRP
+E089024S         61   0    16 8" 90 24GA ELBOW PGRP         
+E089024S         68   0     0 8" 90 24GA ELBOW W/SP END GALV
+E089024S         68   0     0 8" 90 24GA ELBOW W/SP END GALV
+E089026           0  88     0 8" 90 26GA ELBOW LE/SE GALV   
+E089026           0  88     0 8" 90 26GA ELBOW LE/SE GALV   
+E099026S          0  88     0 9" 90 26GA ELBOW W/SP END GALV
+E10               0  88     0 10" E-Z TAP COLLAR 26GA       
+E109024S          0  32     0 10" 90 24GA ELBOW W/SP GALV   
+E109024S         61   0     0 10" 90 24GA ELBOW W/SP PGRP   
+E109024S         61   0     0 10" 90 24GA ELBOW W/SP PGRP   
+E109024S         61   0     0 10" 90 24GA ELBOW W/SP PGRP   
+E109024S         61   0     0 10" 90 24GA ELBOW W/SP PGRP   
+E109024S         61   0     0 10" 90 24GA ELBOW W/SP PGRP   
+E109024S         61   0    16 10" 90 24GA ELBOW PGRP        
+E109026          60   0     0 10" 90 26GA ELBOW LE/SE GALV  
+E109026          60   0     0 10" 90 26GA ELBOW LE/SE GALV  
+E129024S         68   0     0 12" 90 24GA ELBOW W/SP GALV   
+E129026           0  88     0 12" 90 26GA ELBOW LE/SE GALV  
+E129026          61   0     0 12" 90 26GA ELBOW LE/SE GALV  
+E129026S          0  88     0 12" 90 26GA ELBOW W/SP GALV   
+E149024           0  88     0 14" 90 24GA ELBOW LE/SE GALV  
+E169024          61   0     0 16" 90 24GA ELBOW LE/SE PGRP  
+E169024S          0  88     0 16" 90 24GA ELBOW W/SP GALV   
+E169024S         61   0    16 16" 90 24GA ELBOW PGRP        
+E169024S         68   0     0 16" 90 24GA ELBOW W/SP GALV   
+E1824            61   0    16 18" E-Z TAP COLLAR 24GA       
+E189024S         61   0     0 18" 90 24GA ELBOW W/SP PGRP   
+E189024S         61   0     0 18" 90 24GA ELBOW W/SP PGRP   
+E189024S         61   0     0 18" 90 24GA ELBOW W/SP PGRP   
+E2024            61   0     0 20" E-Z TAP COLLAR 24GA       
+E209024S         61   0     0 20" 90 24GA ELBOW W/SP PGRP   
+EA069032          0   0     4 6" 90 .032 ADJ ELBOW ALUM     
+EA109032          0   0     4 10" 90 .032 ADJ ELBOW ALUM    
+EA109032          0   0     4 10" 90 .032 ADJ ELBOW ALUM    
+EA149032S        66   0    16 14"90 .032 ADJ ELBOW W/SP ALUM
+EB10              0   0    16 10"-16GA BARREL CLAMP W/HDWR  
+EB36              0   0    16 36"-16GA BARREL CLAMP W/HDWR  
+EC.              66   0     0 END CAPS                      
+EC.              66   0     0 END CAPS                      
+EC0424L          64   0     0 4" END CAP 24GA LE SST        
+EC06              0  88     0 06" CONICAL E-Z TAP 26GA      
+EC0624L          64   0     0 6" END CAP 24GA LE SST        
+EC0624S          61   0    16 6" END CAP 24GA PGRP          
+EC0624S          64   0     0 6" END CAP 24GA SE SST        
+EC0624S          65   0     0 6" END CAP 24GA SE SST        
+EC0624S          66   0     0 6" END CAP 24GA LE ALUM       
+EC0624S          66   0     0 6" END CAP 24GA SE ALUM       
+EC0824L          64   0     0 8" END CAP 24GA LE SST        
+EC0824L          66   0     0 8" END CAP 24GA LE ALUM       
+EC0926L           0   0    16 9" END CAP 26GA LE GALV       
+EC10              0  88     0 10" CONICAL E-Z TAP 26GA      
+EC1024S          61   0     0 10" END CAP 24GA SE PGRP      
+EC1024S          61   0     0 10" END CAP 24GA SE PGRP      
+EC1024S          61   0     0 10" END CAP 24GA SE PGRP      
+EC1024S          64   0     0 10" END CAP 24GA SE SST       
+EC1024S          66   0     0 10" END CAP 24GA SE ALUM      
+EC1026L           0   0     2 10" END CAP 26GA LE GALV      
+EC1224            0  88     0 12" CONICAL E-Z TAP 24GA      
+EC1224L          66   0     0 12" END CAP 24GA LE ALUM      
+EC1224S          61   0     0 12" END CAP 24GA SE PGRP      
+EC1224S          61   0     0 12" END CAP 24GA SE PGRP      
+EC1224S          61   0     0 12" END CAP 24GA SE PGRP      
+EC1224S          61   0     0 12" END CAP 24GA SE PGRP      
+EC1224S          61   0     0 12" END CAP 24GA SE PGRP      
+EC1224S          64   0     0 12" END CAP 24GA SE SST       
+EC1224S          66   0     0 12" END CAP 24GA SE ALUM      
+EC1424L           0   0     1 14" END CAP 24GA LE GALV      
+EC1424L          66   0     0 14" END CAP 24GA LE ALUM      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1424S          61   0     0 14" END CAP 24GA SE PGRP      
+EC1624L          64   0     0 16" END CAP 24GA LE SST       
+EC1624S          64   0     0 16" END CAP 24GA SE SST       
+EC1824L          64   0     0 18" END CAP 24GA LE SST       
+EC2422S          61   0     0 24" END CAP 22GA SE PGRP      
+EC2424S          61   0     0 24" END CAP 24GA SE PGRP      
+EC2424S          61   0     0 24" END CAP 24GA SE PGRP      
+EC2822L          65   0     0 28" END CAP 22GA LE GALV      
+EC2822S          65   0     0 28" END CAP 22GA SE GALV      
+EC3622S           0   0     2 36"-22GA END CAP SE GALV      
+ECD08             0  88     0 08" CONICAL E-Z TAP W/DAMP 26G
+ECD10             0  88     0 10" CONICAL E-Z TAP W/DAMP 26G
+ECS08             0   0     1 08" 304SS CONICAL EZ TAP 24GA 
+ECS10             0   0     1 10" 304SS CONICAL EZ TAP 24GA 
+ECS12             0   0     1 12" 304SS CONICAL EZ TAP 24GA 
+ECV1424S         61   0    16 14"-24GA END CAP SE PVS       
+ECV1424S         62   0    15 14"-24GA END CAP SE PVS       
+ECV1424S         62   0    16 14"-24GA END CAP SE PVS       
+ECV3022S          0  31     1 30"-20GA END CAP SE PVS       
+ED06              0  34     0 6" E-Z TAP COLLAR W/DAMP 26GA 
+ED06              0  88     0 6" E-Z TAP COLLAR W/DAMP 26GA 
+ED0645            0   0     2  6"-45 SOLID WELDED DIEFORM   
+ED0645            0  88     0  6"-45 SOLID WELDED DIEFORM   
+ED0690            0  88     0  6"-90 SOLID WELDED DIEFORM   
+ED08              0  88     0 8" E-Z TAP COLLAR W/DAMP 26GA 
+ED0845            0  88     0  8"-45 SOLID WELDED DIEFORM   
+ED10              0  88     0 10" E-Z TAP COLLAR W/DAMP 26GA
+ED1045            0  88     0 10"-45 SOLID WELDED DIEFORM   
+ED1090            0  88     0 10"-90 SOLID WELDED DIEFORM   
+ED1490            0   0     1 14"-90 20GA DIFRM WLD ELL GALV
+ED149020         74   0     1 14"-90 20GA DIFRM WLD ELL GALV
+EDS04             0   0     2 04" 304 EZ TAP W/DAMP 24GA S.S
+EDS044520         0   0     1 4"-45 20GA 304 DIEFORM S.S.   
+EDS049020         0   0     1 4"-90 20GA 304 DIEFORM S.S.   
+EDS049020         0   0     1 4"-90 20GA 304 DIEFORM S.S.   
+EDS064520         0   0     1 6"-45 20GA 304 DIEFORM S.S.   
+EDS069020         0   0     1 6"-90 20GA 304 DIEFORM S.S.   
+EDS084520         0   0     1 8"-45 20GA 304 DIEFORM S.S.   
+EDS089020         0   0     1 8"-90 20GA 304 DIEFORM S.S.   
+EDS089020         0   0     1 8"-90 20GA 304 DIEFORM S.S.   
+EDS104520         0   0     1 10"-45 20GA 304 DIEFORM S.S.  
+EDS104520         0   0     1 10"-45 20GA 304 DIEFORM S.S.  
+EDS104520         0   0     1 10"-45 20GA 304 DIEFORM S.S.  
+EDS109020         0   0     1 10"-90 20GA 304 DIEFORM S.S.  
+EDS109020         0   0     1 10"-90 20GA 304 DIEFORM S.S.  
+EDS109020         0   0     1 10"-90 20GA 304 DIEFORM S.S.  
+EDS124520         0   0     1 12"-45 20GA 304 DIEFORM S.S.  
+EDS124520         0   0     1 12"-45 20GA 304 DIEFORM S.S.  
+EDS129020         0   0     1 12"-90 20GA 304 DIEFORM S.S.  
+EDS129020         0   0     1 12"-90 20GA 304 DIEFORM S.S.  
+EDS129020         0   0     1 12"-90 20GA 304 DIEFORM S.S.  
+EF14             62   0     0 14"RD 22GA E-Z FLANGE PVS     
+EF14             64   0     0 14"RD 22GA E-Z FLANGE SST     
+EFI08            82   0    16 08" EZ FLANGE INSTALLED       
+EFI12            82   0    16 12" EZ FLANGE INSTALLED       
+EFI18             0   0    16 8X24 EZ FLANGE INSTALLED      
+EFI28             0   0    16 28" EZ FLANGE INSTALLED       
+EFI36             0   0    16 36" EZ FLANGE INSTALLED       
+EFS20            64   0     0 20" EZ FLANGE FULL SET SST    
+EFSV10           62   0     0 10" EZ FLANGE FULL SET PVS    
+EG109020         67   0     0 10"-90 16GA GOR WLD ELL B.I.  
+EG109020         67   0     4 10"-90 16GA GOR WLD ELL B.I.  
+EG209020         64  32    16 20"-90 20GA GOR WLD ELL SST   
+EG224520          0   0    44 22"-30 16GA GOR WLD ELL GALV  
+EG324520         76   0    15 32"-45 20GA GOR WLD ELL GALV  
+EG404520          0   0    44 40"-45 16GA GOR WLD ELL GALV  
+EG409020          0  32    44 40"-90 16GA GOR WLD ELL GALV  
+ER.              64   0     0 RADIUS ELBOWS                 
+ER16              0   0     0 68/54 16GA ECCENTRIC          
+ER22              0   0     1 30/26 22GA ECCENTRIC          
+ER24             61   0     1 12/8 24GA ECCENTRIC PGRP      
+ER24             61   0     1 14/10 24GA ECCENTRIC PGRP     
+ER24             61   0     1 16/14 24GA ECCENTRIC PGRP     
+ER24             61   0     1 18/14 24GA ECCENTRIC PGRP     
+ER24             61   0     1 18/16 24GA ECCENTRIC PGRP     
+ER24             61   0     1 20/16 24GA ECCENTRIC PGRP     
+ER241410          0   0     6 14/10 24GA ECCENTRIC          
+ER241814          0   0     6 18/14 24GA ECCENTRIC          
+ER242414          0   0    15 24/14 24GA ECCENTRIC          
+ERV20             0   0     0 18/12 20GA ECCENTRIC       PVS
+ERV20             0   0     0 28/20 20GA ECCENTRIC       PVS
+ERV20             0   0     0 32/28 20GA ECCENTRIC       PVS
+ERV24             0   0     0 18/14 24GA ECCENTRIC       PVS
+ES039018          0   0     4 3" 90 .018 ELBOW LE/SE S.S.   
+ES039018S        65   0     0 3"90 .018 ELBOW W/SP S.S.     
+ES039024         64   0     0 3"90 .024 ELBOW STLS LE/SE    
+ES049018S        65   0     0 4"90 .018 ELBOW W/SP S.S.     
+ES069024S        65   0     0 6"90 .024 ELBOW W/SP S.S.     
+ES089024S        65   0     0 8"90 .024 ELBOW W/SP S.S.     
+ES109024         64   0    16 10" 90 .024 ELBOW LE/SE S.S.  
+ES129024          0   0    44 12" 90 .024 ELBOW LE/SE S.S.  
+ES1424           64   0     0 14" EZ TAP COLLAR STLS        
+ES16              0   0     1 16" 304 EZ TAP 24GA S.S.      
+EV089024S        59   0     4 8" 90 24GA ELBOW LE/SE PVS    
+EV109022S         0   0     0 10"90 22GA ELBOW W/SP ENDS PVS
+EV109022S         0   0     0 10"90 22GA ELBOW W/SP ENDS PVS
+EV109022S         0   0     1 10"90 22GA ELBOW W/SP ENDS PVS
+EV109024S        62   0    15 10"90 24GA ELBOW W/SP ENDS PVS
+EV109024S        68   0     1 10"90 24GA ELBOW W/SP ENDS PVS
+EV129022S         0   0     0 12"90 22GA ELBOW W/SP ENDS PVS
+EV129022S         0   0     0 12"90 22GA ELBOW W/SP ENDS PVS
+EV129022S         0   0     1 12"90 22GA ELBOW W/SP ENDS PVS
+EV129022S        62   0     0 12"90 22GA ELBOW W/SP ENDS PVS
+EV149024S        59   0    16 14"90 24GA ELBOW PVS          
+EV149024S        62   0    15 14"90 24GA ELBOW W/SP ENDS PVS
+EV169022S         0   0     1 16"90 22GA ELBOW W/SP ENDS PVS
+FC08              0   0   923 8"RD FLEX SLEEVE W/BEAD       
+FC14              0   0   923 14"RD FLEX SLEEVE W/BEAD      
+GA164524         64   0     1 16" 45 24GA GORELOCK ANG SST  
+GA204522          0   0    44 20" 45 22GA GORELOCK ANG GALV 
+GA244522         61   0    16 24" 45 22GA GORELOCK ANG PGRP 
+GA244522         61   0    16 24" 45 22GA GORELOCK ANG PGRP 
+GA264522          0  32    15 26" 15 22GA GORELOCK ANG GALV 
+GA264522          0  32    15 26" 45 22GA GORELOCK ANG GALV 
+GA284522         61   0    16 28" 45 22GA GORELOCK ANG PGRP 
+GA284522         64   0     1 28" 45 22GA GORELOCK ANG SST  
+GA364520          0  32    15 36" 45 20GA GORELOCK ANG GALV 
+GA364520          0  32    15 36" 45 20GA GORELOCK ANG GALV 
+GA424520         61   0    16 42" 45 20GA GORELOCK ANG PGRP 
+GE089024         61   0    15 8" 90 24GA GORELOCK ELL PGRP  
+GE089024         82   0    16 8" 90 24GA GORELOCK ELL GALV  
+GE109024         80   0    16 10" 90 24GA GORELOCK ELL PGRP 
+GE129024         80   0    16 12" 90 24GA GORELOCK ELL PGRP 
+GE129024         82   0    16 12" 90 24GA GORELOCK ELL GALV 
+GE149024         61   0    15 14" 90 24GA GORELOCK ELL PGRP 
+GE169024         64   0     1 16" 90 24GA GORELOCK ELL SST  
+GE189022          0  32    15 18" 60 22GA GORELOCK ELL GALV 
+GE209018         59   0     1 20" 90 18GA GORELOCK ELL GALV 
+GE209022          0   0    44 20" 90 22GA GORELOCK ELL GALV 
+GE249022         61   0    16 24" 90 22GA GORELOCK ELL PGRP 
+GE289022         61   0    16 28" 90 22GA GORELOCK ELL PGRP 
+GE289022         64   0     1 28" 90 22GA GORELOCK ELL SST  
+GE309020          0   0    44 30" 90 20GA GORELOCK ELL GALV 
+GE369020          0  32    15 36" 90 20GA GORELOCK ELL GALV 
+GS524            61   0     0 60/120 24GA SHEETS PAINT GRIP 
+GWF               0   0    16 STANDARD WIRE FEED WELDING    
+GWF               0   0    44 STANDARD WIRE FEED WELDING    
+GWF              67   0     0 STANDARD WIRE FEED WELDING    
+GWF              67   0     0 STANDARD WIRE FEED WELDING    
+GWF              67   0     0 STANDARD WIRE FEED WELDING    
+H0624            68   0     0 6"  24GA HI-EFFICIENCY TAKEOFF
+H0824            68   0     0 8"  24GA HI-EFFICIENCY TAKEOFF
+H1024            68   0     0 10" 24GA HI-EFFICIENCY TAKEOFF
+H1224            68   0     0 12" 24GA HI-EFFICIENCY TAKEOFF
+H1224            68   0     0 12" 24GA HI-EFFICIENCY TAKEOFF
+HBA18            66   0     0 .050 ALUMINUM HANGER BAND  10'
+HO14              0   0     1 14" HI-EFFICIENCY 1.5"STANDOFF
+HO18              0   0     1 18" HI-EFFICIENCY 1.5"STANDOFF
+IC               61   0     0 INTERNET DISCOUNT             
+IC               66   0     0 INTERNET DISCOUNT             
+IE               61   0     0 INTERNET DISCOUNT             
+IE               66   0     0 INTERNET DISCOUNT             
+IH1              66   0     0 INTERNET DISCOUNT             
+JG               59   0     0 EZ FLANGE JR. GASKET     25'RL
+N1424S            0  88     0 14"-24G NOTCHED COLLAR SE GALV
+N2422S           61   0     0 24"-22GA NOTCHED COLLAR SE    
+NA0624S           0   0     1 6"-.024 NOTCH COLLAR SE ALUM  
+NA0624S           0   0     1 6"-.024 NOTCH COLLAR SE ALUM  
+ND1624S          66   0     0 16"- 24GA NOTCHED COLLARW/DAMP
+NV1224S          63   0     0 12"-24GA NOTCH COLLAR SE PVS  
+NV1424S          63   0     0 14"-24GA NOTCH COLLAR SE PVS  
+NV2024S           0   0     1 20"-24GA NOTCH COLLAR SE PVS  
+OBN               0   0     0 26X12    OPPOSED BLADE        
+OBN               0   0     0 26X15    OPPOSED BLADE        
+OBN               0   0     0 28X20    OPPOSED BLADE        
+OBN               0   0     0 28X22    OPPOSED BLADE        
+OBN               0   0     0 42X14    OPPOSED BLADE        
+OBN               0   0     0 60X14    OPPOSED BLADE        
+OBN               0   0     0 74X15    OPPOSED BLADE        
+OBS               0   0     0 10X10    OPPOSED BLADE  SEALED
+P060526           0   0     4 6" 5' 26GA PIPE SNP LCK GALV  
+P060526           0  34     0 6" 5' 26GA PIPE SNP LCK GALV  
+P140224           0  88     0 14" 2' 24GA PIPE SNP LCK GALV 
+P140524           0   0     1 14" 5' 24GA PIPE SNP LCK GALV 
+P4                0   0     0 32/20/20 45 22GA PAIR/PANTS   
+P4                0   0     0 6/4/4 45 26GA PAIR/PANTS      
+PEC08S            0  88     0 8" 24GA PRESSED END CAP W/SP  
+PEC10L            0  88     0 10" 24GA PRESSED END CAP LE   
+PEC10S            0   0     4 10" 24GA PRESSED END CAP W/SP 
+PEC10S            0  88     0 10" 24GA PRESSED END CAP W/SP 
+PEC12S            0   0    15 12" 22GA PRESSED END CAP W/SP 
+PEC12S            0   0    15 12" 22GA PRESSED END CAP W/SP 
+PEC14S            0   0    15 14" 22GA PRESSED END CAP W/SP 
+PEC14S            0   0    15 14" 22GA PRESSED END CAP W/SP 
+PEC14S            0   0    15 14" 22GA PRESSED END CAP W/SP 
+PEC14S            0   0    15 14" 22GA PRESSED END CAP W/SP 
+PEC14S           80   0    16 14" 22GA PRESSED END CAP W/SP 
+PEC16S            0   0    15 16" 22GA PRESSED END CAP W/SP 
+PEC16S            0   0    15 16" 22GA PRESSED END CAP W/SP 
+PEC16S            0   0    16 16" 22GA PRESSED END CAP W/SP 
+PH160524          0   0     1 16"5' 24GA PIPE SEAM CLSD GALV
+PSA030424         0   0     4 PIPE 3"4' .018 ACME LCK S.S.  
+PSA050424         0   0     4 PIPE 5"4' .018 ACME LCK S.S.  
+PSA060424         0   0     4 PIPE 6"4' .024 ACME LCK S.S.  
+PSA060424        64  50     0 PIPE 6"4' .024 ACME LCK S.S.  
+PSA080424         0   0     4 PIPE 8"4' .024 ACME LCK S.S.  
+PSA120224         0   0    44 PIPE 12"2'.024 ACME LCK S.S.  
+PSA120424         0   0     4 PIPE 12"4'.024 ACME LCK S.S.  
+PSA160224         0   0     4 PIPE 16"2'.024 ACME LCK S.S.  
+PSA160224         0   0     4 PIPE 16"2'.024 ACME LCK S.S.  
+PSA200224         0   0     4 PIPE 20"2'.024 ACME LCK S.S.  
+R0806             0   0     0 8/6 24GA PRESSED REDUCER      
+R0806             0   0     0 8/6 24GA PRESSED REDUCER      
+R0806             0   0     5 8/6 24GA PRESSED REDUCER      
+R0806             0   0     5 8/6 24GA PRESSED REDUCER      
+R0806             0   0     6 8/6 24GA PRESSED REDUCER      
+R0806             0   0     6 8/6 24GA PRESSED REDUCER      
+R0806             0  88     0 8/6 24GA PRESSED REDUCER      
+R0806            60   0     1 8/6 24GA PRESSED REDUCER      
+R1008             0   0     5 10/8 24GA PRESSED REDUCER     
+R1008             0   0     6 10/8 24GA PRESSED REDUCER     
+R1008             0   0     6 10/8 24GA PRESSED REDUCER     
+R1008             0   0     6 10/8 24GA PRESSED REDUCER     
+R1008             0  88     0 10/8 24GA PRESSED REDUCER     
+R1008            60   0     1 10/8 24GA PRESSED REDUCER     
+R1208             0   0     6 12/8 22GA PRESSED REDUCER     
+R1208             0  88     0 12/8 22GA PRESSED REDUCER     
+R1210             0   0     5 12/10 22GA PRESSED REDUCER    
+R1210             0  88     0 12/10 22GA PRESSED REDUCER    
+R1210            60   0     1 12/10 22GA PRESSED REDUCER    
+R1412             0   0     6 14/12 22GA PRESSED REDUCER    
+R16               0   0     0 68/54 16GA REDUCER            
+R16               0   0     0 68/60 16GA REDUCER            
+R16              80   0     6 10/8 16GA REDUCER SST         
+R1612             0   0     0 16/12 22GA PRESSED REDUCER    
+R1816             0   0     0 18/16 22GA PRESSED REDUCER    
+R181612           0   0    44 16/12 18GA REDUCER            
+R181814           0   0     1 18/14 18GA REDUCER            
+R20               0   0   924 10/7 20GA REDUCER             
+R20               0   0   924 7/6 20GA REDUCER              
+R20              61   0     0 24/18 20GA REDUCER PGRP       
+R20              64   0     0 12.5/12 20GA REDUCER SST      
+R20              74   0     1 16/9 20GA REDUCER             
+R20              80   0     0 12.5/12 20GA REDUCER SST      
+R200804           0   0     1 8/4 20GA REDUCER              
+R200908          74   0     1 9/8 20GA REDUCER              
+R201009           0   0     4 10/9 20GA REDUCER             
+R201009          74   0     1 10/9 20GA REDUCER             
+R201408          74   0     1 14/8 20GA REDUCER             
+R201412          74   0     1 14/12 20GA REDUCER            
+R202014          74   0     1 20/14 20GA REDUCER            
+R22               0   0     0 26.25"/24" 22GA REDUCER       
+R22               0   0     0 30.5/28 22GA REDUCER          
+R22              61   0    16 22/18 22GA REDUCER PGRP       
+R220804           0   0   923 8/4 22GA REDUCER              
+R221209           0   0     4 12/9 22GA REDUCER             
+R221808           0   0    15 18/8 22GA REDUCER             
+R24               0   0     0 16/4 24GA REDUCER             
+R24               0   0     6 5/2 24GA REDUCER              
+R24              61   0     1 20/14 24GA REDUCER PGRP       
+R24              61   0    15 14/10 24GA REDUCER PGRP       
+R24              61   0    15 14/8 24GA REDUCER PGRP        
+R24              64   0     0 11/10 24GA REDUCER SST        
+R24              64   0     0 14/12 24GA REDUCER SST        
+R24              64   0     1 12/8 24GA REDUCER SST         
+R24              64   0     1 14/8 24GA REDUCER SST         
+R24              64   0     1 16/12 24GA REDUCER SST        
+R24              64   0     1 16/8 24GA REDUCER SST         
+R24              64   0     4 12/10 24GA REDUCER SST        
+R24              64   0     4 4/3 24GA REDUCER SST          
+R24              64   0     4 8/6 24GA REDUCER SST          
+R24              64   0     4 8/7 24GA REDUCER SST          
+R24              64   0     6 16/14 24GA REDUCER SST        
+R24              64   0     6 8/6 24GA REDUCER SST          
+R24              66   0     0 6/4 24GA REDUCER ALUM         
+R24              66   0     1 14/12 24GA REDUCER ALUM       
+R24              66   0     1 16/14 24GA REDUCER ALUM       
+R24              66   0     4 12/10 24GA REDUCER ALUM       
+R24              66   0     4 12/10 24GA REDUCER ALUM       
+R24              66   0     4 12/8 24GA REDUCER ALUM        
+R24              66   0     6 8/6 24GA REDUCER ALUM         
+R242012           0   1     1 20/12 24GA REDUCER            
+R26               0   0     0 11/9 26GA REDUCER             
+R260604           0  88     0 6/4 26GA REDUCER              
+RC10             64   0     0 10" RAIN CAP 22GA SST         
+RC14             64   0     0 14" RAIN CAP 22GA SST         
+RE20120           0  34     0 1.5"X 1.5" 16GA RANGLE 20'    
+RE20121           0  34     0 1.5"X 1.5" 16GA RANGLE 20'    
+RF                0   0    16 1 1/2"-10GA RANGLE FRAME MATR.
+RF10120           0  34     0 1.5"X 1.5" 14GA RANGLE 10'    
+RG20121           0  34     0 1.5"X 1.5" 10GA RANGLE 20'    
+RH10120           0  34     0 2"X 1.5" 10GA RANGLE 10'      
+RH10120           0  34     0 2"X 1.5" 10GA RANGLE 10'      
+RH10121           0  34     0 2"X 1.5" 10GA RANGLE 10'      
+RH20120           0  34     0 2"X 1.5" 10GA RANGLE 20'      
+RJ10121           0  34     0 2 1/2"X 1 1/2" 10GA RANGLE 10'
+RJ14              0  31     0 13" ROOF JACK 24GA GALV       
+RJ20120           0  34     0 2 1/2"X 1 1/2" 10GA RANGLE 20'
+RJ20121           0  34     0 2 1/2"X 1 1/2" 10GA RANGLE 20'
+RS                0  32     1 LESS RESTOCK CHARGE           
+RT22              0   0     0 32/08 ON 14"RD 22GA REG. T.O. 
+RT22              0   0     0 44/18 ON 40"RD 22GA REG. T.O. 
+RT22              0   0     0 48/24 ON 26"RD 22GA REG. T.O. 
+RT24              0   0     0 14/06 ON 28"RD 24GA REG. T.O. 
+RT24              0   0     0 21/12 ON 18"RD 24GA REG. T.O. 
+RT24              0   0     0 21/12 ON 22"RD 24GA REG. T.O. 
+RT24              0   0     0 26/08 ON 14"RD 24GA REG. T.O. 
+RT24             61   0     0 30/18 ON 20"RD 24GA REG. T.O. 
+RT24             61   0     0 30/18 ON 30"RD 24GA REG. T.O. 
+RT24             61   0     0 30/18 ON 32"RD 24GA REG. T.O. 
+RT24             61   0     0 30/18 ON 42"RD 24GA REG. T.O. 
+RT26              0   0     0 06/04 ON 10"RD 26GA REG. T.O. 
+RT26              0   0     0 06/04 ON 12"RD 26GA REG. T.O. 
+RT301840         61   0     0 30/18 ON 40"RD 24GA REG. T.O. 
+RT301844         61   0     0 30/18 ON 44"RD 24GA REG. T.O. 
+RV22              0   0     1 20/12 22GA REDUCER         PVS
+RV24             59   0     1 12/8 24GA REDUCER          PVS
+RV24             59   0     1 14/12 24GA REDUCER         PVS
+RV240806         59   0     1 8/6 24GA REDUCER           PVS
+RV241006         59   0     1 10/6 24GA REDUCER          PVS
+RV241008         59   0     1 10/8 24GA REDUCER          PVS
+S0826S            0   0    19 8" SPIN IN COLLAR 26GA SE     
+S0826S            0   0    19 8" SPIN IN COLLAR 26GA SE     
+S1424S           61   0     0 14" SPIN IN COLLAR 24GA SE    
+S2024S           61   0     0 20" SPIN IN COLLAR 24GA SE    
+S4                0   0     0 04 ON 08 45 22GA SADDLE       
+S4                0   0     0 05 ON 16 45 20GA SADDLE       
+S4                0   0     0 05 ON 20 45 20GA SADDLE       
+S4                0   0     0 06 ON 20 45 20GA SADDLE       
+S4                0   0     1 03 ON 99 45 24GA SADDLE       
+S4                0   0     1 07 ON 15 45 26GA SADDLE       
+S4                0   0     1 08 ON 28 45 24GA SADDLE       
+S4               64   0     2 4.375 ON 10 45 .018 SADDLE SST
+S4               64   0     2 4.375 ON 10 45 .018 SADDLE SST
+S4               74   0     1 08 ON 08 45 20GA SADDLE       
+S4               74   0     1 09 ON 20 45 20GA SADDLE       
+S4               74   0     1 14 ON 16 45 20GA SADDLE       
+S4               74   0     1 16 ON 20 45 20GA SADDLE       
+S4200614         74   0     1 06 ON 14 45 20GA SADDLE       
+S4200812         74   0     1 08 ON 12 45 20GA SADDLE       
+S9                0   0     0 08 ON 20 90 26GA SADDLE       
+S9                0   0     0 08 ON 24 90 26GA SADDLE       
+S9                0   0     0 10 ON 24 90 26GA SADDLE       
+S9                0   0     0 10 ON 28 90 26GA SADDLE       
+S9                0   0     0 12 ON 22 90 26GA SADDLE       
+S9                0   0     0 14 ON 16 90 24GA SADDLE       
+S9                0   0     0 14 ON 28 90 24GA SADDLE       
+S9                0   0     1 12 ON 30 90 26GA SADDLE       
+S9                0   0     1 12 ON 36 90 22GA SADDLE       
+S9                0   0     1 12 ON 40 90 26GA SADDLE       
+S9                0   0     1 14 ON 16 90 24GA SADDLE       
+S9                0   0     1 14 ON 36 90 22GA SADDLE       
+S9                0   0     1 18 ON 32 90 24GA SADDLE       
+S9               61   0     1 08 ON 14 90 24GA SADDLE PGRP  
+S9               61   0     1 10 ON 24 90 24GA SADDLE PGRP  
+S9               61   0     1 12 ON 20 90 24GA SADDLE PGRP  
+S9               61   0     1 14 ON 24 90 24GA SADDLE PGRP  
+S9               64   0     0 11"ON FLAT 24GA STLS STL      
+S9               66   0     1 06 ON 14 90 24GA SADDLE ALUM  
+S9               66   0     1 08 ON 10 90 24GA SADDLE ALUM  
+S9               66   0     1 08 ON 14 90 24GA SADDLE ALUM  
+S9*0608           0  88     0 6 ON 8 24GA PRESSED SADDLE    
+S9*0608          88   0     3 6 ON 8 24GA PRESSED SADDLE    
+S9*0610           0   0     3 6 ON 10 24GA PRESSED SADDLE   
+S9*0610           0  88     0 6 ON 10 24GA PRESSED SADDLE   
+S9*0612           0   0     3 6 ON 12 24GA PRESSED SADDLE   
+S9*0614          88   0     3 6 ON 14 24GA PRESSED SADDLE   
+S9*0810           0   0     3 8 ON 10 24GA PRESSED SADDLE   
+S9*0810           0  88     0 8 ON 10 24GA PRESSED SADDLE   
+S9*0812           0   0     3 8 ON 12 24GA PRESSED SADDLE   
+S9*0812           0  88     0 8 ON 12 24GA PRESSED SADDLE   
+S91214            0  88     0 12 ON 14 22GA PRESSED SADDLE  
+S9241630          0   0     1 16 ON 30 90 24GA SADDLE       
+SBD               0   0     0 16X4  SINGLE BLADE            
+SC14             66   0     0 14" STORM COLLAR 24GA GALV    
+SC9               0   0     0 06 ON 30 90 26GA CONICAL SADDL
+SC9               0   0     0 07 ON 09 90 26GA CONICAL SADDL
+SC9               0   0     0 07 ON 11 90 26GA CONICAL SADDL
+SC9               0   0     0 08 ON 30 90 26GA CONICAL SADDL
+SC9               0   0     0 09 ON 11 90 26GA CONICAL SADDL
+SC9               0   0     0 09 ON 12 90 26GA CONICAL SADDL
+SC9               0   0     0 10 ON 13 90 26GA CONICAL SADDL
+SC9               0   0     0 24 ON 26 90 22GA CONICAL SADDL
+SC9               0   0     1 03 ON 99 90 26GA CONICAL SADDL
+SC9               0   0     1 08 ON 34 90 26GA CONICAL SADDL
+SC9               0   0     2 10 ON 12 90 26GA CONICAL SADDL
+SC9              61   0    16 08 ON 16 90 24GA CON/SADDL PGR
+SC9              61   0    16 10 ON 18 90 24GA CON/SADDL PGR
+SC9              61   0    16 14 ON 18 90 24GA CON/SADDL PGR
+SC9240616         0   0     1 06 ON 16 90 24GA CONICAL SADDL
+SC9260310         0   0     0 03 ON 10 90 26GA CONICAL SADDL
+SD.              66   0     0 MISC. SHORT DUCTS             
+SD.              67   0     0 MISC. SHORT DUCTS             
+SD.              83   0     0 MISC. SHORT DUCTS             
+SD0826S           0  39     0 8" SPIN IN COLL W/DAMP 26GA SE
+SD1024S          66   0     0 10" SPIN IN COLL W/DAMP 24G SE
+SD1026S           0  39     0 10" SPIN IN COLL W/DAMP 26G SE
+SD1824S           0  39     0 18" SPIN IN COLL W/DAMP 24G SE
+SG0624           61   0    15 06"-24GA X 10'SPIRAL PIPE PGRP
+SG0624           65   0     0 06"-24GA X 10'SPIRAL PIPE SST 
+SG062410         68   0     0 06"-24GA X 10'SPIRAL PIPE GALV
+SG0626            0   0     0 06"-26GA X  72"LONG SPIRL GALV
+SG0626            0   0     0 06"-26GA X 108"LONG SPIRL GALV
+SG0626           60   0     0 06"-26GA X 10'SPIRAL PIPE GALV
+SG062610          0  55     0 06"-26GA X 10'SPIRAL PIPE GALV
+SG062610         60   0     0 06"-26GA X 10'SPIRAL PIPE GALV
+SG062610         81   0    16 06"-26GA X 10'SPIRAL PIPE GALV
+SG072610          0  55     0 07"-26GA X 10'SPIRAL PIPE GALV
+SG0824           61   0    15 08"-24GA X 10'SPIRAL PIPE PGRP
+SG0824           65   0     0 08"-24GA X 10'SPIRAL PIPE SST 
+SG0824           66   0     0 08"-.032 X 12'SPIRAL PIPE ALUM
+SG0824           68   0     0 08"-24GA X 10'SPIRAL PIPE GALV
+SG0824           80   0    16 08"-24GA X  5'SPIRAL PIPE PGRP
+SG082410         68   0     0 08"-24GA X 10'SPIRAL PIPE GALV
+SG082410         68   0     0 08"-24GA X 10'SPIRAL PIPE GALV
+SG0826           60   0     0 08"-26GA X 10'SPIRAL PIPE GALV
+SG082610          0  55     0 08"-26GA X 10'SPIRAL PIPE GALV
+SG082610         80   0     0 08"-26GA X 10'SPIRAL PIPE GALV
+SG082610         82   0    16 08"-26GA X 10'SPIRAL PIPE GALV
+SG092210          0   0     1 09"-22GA X 10'SPIRAL PIPE GALV
+SG1024            0   0     0 10"-24GA X 10'SPIRAL PIPE GALV
+SG1024           61   0    16 10"-24GA X  31"LONG SPIRL PGRP
+SG1024           64   0    16 10"-24GA X 10'SPIRAL PIPE SST 
+SG1024           66   0     0 10"-.032 X 10'SPIRAL PIPE ALUM
+SG1024           80   0    16 10"-24GA X  5'SPIRAL PIPE PGRP
+SG102410         68   0     0 10"-24GA X 10'SPIRAL PIPE GALV
+SG1026           60   0     0 10"-26GA X 10'SPIRAL PIPE GALV
+SG102610          0  55     0 10"-26GA X 10'SPIRAL PIPE GALV
+SG102610         60   0     0 10"-26GA X 10'SPIRAL PIPE GALV
+SG1224           66   0     0 12"-.032 X  5'SPIRAL PIPE ALUM
+SG1224           66   0     0 12"-.032 X 11'SPIRAL PIPE ALUM
+SG1224           80   0    16 12"-24GA X  5'SPIRAL PIPE PGRP
+SG122410         68   0     0 12"-24GA X 10'SPIRAL PIPE GALV
+SG122410         82   0    16 12"-24GA X 10'SPIRAL PIPE GALV
+SG1226            0   0     0 12"-26GA X  37"LONG SPIRL GALV
+SG1226            0   0     0 12"-26GA X  58"LONG SPIRL GALV
+SG1226           60   0     0 12"-26GA X 10'SPIRAL PIPE GALV
+SG122610          0  55     0 12"-26GA X 10'SPIRAL PIPE GALV
+SG142010         74   0     1 14"-20GA X 10'SPIRAL PIPE GALV
+SG1424           61   0    15 14"-24GA X 10'SPIRAL PIPE PGRP
+SG1424           66   0     0 14"-.032 X  5'SPIRAL PIPE ALUM
+SG1424           66   0     0 14"-.032 X 10'SPIRAL PIPE ALUM
+SG1424           66   0     0 14"-.032 X 10'SPIRAL PIPE ALUM
+SG1424           66   0    16 14"-.032 X 10'SPIRAL PIPE ALUM
+SG1424           80   0    16 14"-24GA X  5'SPIRAL PIPE PGRP
+SG142410          0  55     0 14"-24GA X 10'SPIRAL PIPE GALV
+SG142410         68   0     0 14"-24GA X 10'SPIRAL PIPE GALV
+SG162010         74   0     1 16"-20GA X 10'SPIRAL PIPE GALV
+SG1622            0   0     0 16"-.040 X 12'SPIRAL PIPE ALUM
+SG1624           60   0     0 16"-24GA X  5'SPIRAL PIPE GALV
+SG1624           64   0     0 16"-24GA X 10'SPIRAL PIPE SST 
+SG1624           66   0     0 16"-.032 X  5'SPIRAL PIPE ALUM
+SG1624           80   0    16 16"-24GA X  5'SPIRAL PIPE PGRP
+SG162410          0  55     0 16"-24GA X 10'SPIRAL PIPE GALV
+SG162410         68   0     0 16"-24GA X 10'SPIRAL PIPE GALV
+SG1822            0   0     0 18"-22GA X  22"LONG SPIRL GALV
+SG1824            0   0     0 18"-24GA X 188"LONG SPIRL GALV
+SG1824            0   0     0 18"-24GA X 219"LONG SPIRL GALV
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0     0 18"-24GA X 10'SPIRAL PIPE PGRP
+SG1824           61   0    16 18"-24GA X 10'SPIRAL PIPE PGRP
+SG182410          0  55     0 18"-24GA X 10'SPIRAL PIPE GALV
+SG2022            0   0    44 20"-22GA X 10'SPIRAL PIPE GALV
+SG2024            0   0    16 20"-24GA X  83"LONG SPIRL PGRP
+SG2024            0   0    16 20"-24GA X  91"LONG SPIRL PGRP
+SG2024           61   0     0 20"-24GA X 10'SPIRAL PIPE PGRP
+SG2024           61   0     0 20"-24GA X 10'SPIRAL PIPE PGRP
+SG2024           64   0     0 20"-24GA X 10'SPIRAL PIPE SST 
+SG2420            0   0     0 24"-20GA X  27"LONG SPIRL GALV
+SG2420            0   0     0 24"-20GA X 105"LONG SPIRL GALV
+SG2424            0   0     0 24"-24GA X 140"LONG SPIRL GALV
+SG2424           61   0     0 24"-24GA X 10'SPIRAL PIPE PGRP
+SG2424           61   0     0 24"-24GA X 10'SPIRAL PIPE PGRP
+SG2424           61   0     0 24"-24GA X 10'SPIRAL PIPE PGRP
+SG2424           61   0     0 24"-24GA X 10'SPIRAL PIPE PGRP
+SG2424           61   0    16 24"-24GA X  37"LONG SPIRL PGRP
+SG2424           64   0     0 24"-24GA X 10'SPIRAL PIPE SST 
+SG2622            0   0     0 26"-22GA X   8"LONG SPIRL GALV
+SG2622            0   0     0 26"-22GA X  12"LONG SPIRL GALV
+SG2622            0   0     0 26"-22GA X  16"LONG SPIRL GALV
+SG2622            0   0     0 26"-22GA X  29"LONG SPIRL GALV
+SG2622            0   0     0 26"-22GA X  57"LONG SPIRL GALV
+SG2622            0   0     0 26"-22GA X  58"LONG SPIRL GALV
+SG2622            0   0     0 26"-22GA X  61"LONG SPIRL GALV
+SG2622            0   0    16 26"-22GA X  26"LONG SPIRL PGRP
+SG2822           64   0     0 28"-22GA X 10'SPIRAL PIPE SST 
+SG3022            0   0     0 30"-22GA X  84"LONG SPIRL GALV
+SG3422            0   0     0 34"-22GA X 139"LONG SPIRL GALV
+SG3618           64   0    16 36"-18GA X  58"LONG SPIRL SST 
+SG361810          0   0    44 36"-18GA X 10'SPIRAL PIPE GALV
+SG3620            0   0     0 36"-20GA X  19"LONG SPIRL GALV
+SG3620            0   0     0 36"-20GA X  3'SPIRAL PIPE GALV
+SG3620            0   0     0 36"-20GA X  35"LONG SPIRL GALV
+SG3620            0   0     0 36"-20GA X  49"LONG SPIRL GALV
+SG3620            0   0     0 36"-20GA X  58"LONG SPIRL GALV
+SG3620            0   0     0 36"-20GA X  6'SPIRAL PIPE GALV
+SG3620            0   0    15 36"-20GA X  5'SPIRAL PIPE GALV
+SG3620            0   0    15 36"-20GA X  60"LONG SPIRL GALV
+SG3620            0   0    15 36"-20GA X  64"LONG SPIRL GALV
+SG3620            0   0    15 36"-20GA X  91"LONG SPIRL GALV
+SG362005          0   0    15 36"-20GA X  5'SPIRAL PIPE GALV
+SG3622            0   0     0 36"-22GA X  66"LONG SPIRL GALV
+SG3622            0   0     0 36"-22GA X  78"LONG SPIRL GALV
+SG3622            0   0     0 36"-22GA X  96"LONG SPIRL GALV
+SG3622            0   0     2 36"-22GA X 10'SPIRAL PIPE GALV
+SG3820            0   0    15 38"-20GA X  5'SPIRAL PIPE GALV
+SG401610          0   0    44 40"-16GA X 10'SPIRAL PIPE GALV
+SG4220            0   0     0 42"-20GA X   7"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  17"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  23"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  38"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  42"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  46"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  51"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X  84"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X 108"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X 116"LONG SPIRL GALV
+SG4220            0   0     0 42"-20GA X 126"LONG SPIRL GALV
+SG4220            0   0    44 42"-20GA X 120"LONG SPIRL GALV
+SG5418            0   0     0 54"-18GA X  12"LONG SPIRL GALV
+SG5418            0   0     0 54"-18GA X  28"LONG SPIRL GALV
+SG5418            0   0     0 54"-18GA X  35"LONG SPIRL GALV
+SG5418            0   0     0 54"-18GA X  84"LONG SPIRL GALV
+SG5618            0   0     0 56"-18GA X  60"LONG SPIRL GALV
+SG6816            0   0     0 68"-16GA X  60"LONG SPIRL GALV
+SG6816            0   0     0 68"-16GA X  96"LONG SPIRL GALV
+SPCC1            61   0     0 SET-UP & CUT CHARGE 3"-12"    
+SPH16            61   0     0 16"-14GA SP. PIPE HANGER SNGLE
+SR               61   0    16 SQUARE TO ROUND ASSEMBLY      
+SR               61   0    16 SQUARE TO ROUND ASSEMBLY      
+SR.               0   0    16 SQUARE TO ROUNDS              
+SR.               0   0    16 SQUARE TO ROUNDS              
+SR.              61   0    16 SQUARE TO ROUNDS              
+SR.              61   0    16 SQUARE TO ROUNDS              
+SR.              64   0    16 SQUARE TO ROUNDS              
+SRK              61   0    16 *** WELDED SQUARE TO ROUND ***
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0     0 NET COST ON SPIRAL SST        
+SSSP             64   0    16 NET COST ON SPIRAL SST        
+SSSP             64   0    16 NET COST ON SPIRAL SST        
+SSSP             65   0     0 NET COST ON SPIRAL SST        
+SSSP             65   0     0 NET COST ON SPIRAL SST        
+ST9               0   0     0 10 ON 10 90 24GA SHOE TAP SST 
+ST9               0   0     1 04 ON 12 90 26GA SHOE TAP     
+ST9              61   0    15 08 ON 12 90 24GA SHOE TAP PGRP
+ST9              61   0    15 08 ON 14 90 24GA SHOE TAP PGRP
+STT               0   0     1 10/10/6 24GA SHOE TAP TEE     
+STT               0   0     1 6/6/4 24GA SHOE TAP TEE       
+STT               0   0     1 8/8/6 24GA SHOE TAP TEE       
+SV9               0   0     0 04 ON 04 90 24GA SADDLE    PVS
+SV9               0   0     0 06 ON 08 90 24GA SADDLE    PVS
+SV9              59   0     1 06 ON 14 90 24GA SADDLE    PVS
+SV9240610        59   0     1 06 ON 10 90 24GA SADDLE    PVS
+SV9240612        59   0     1 06 ON 12 90 24GA SADDLE    PVS
+SW4               0   0     0 08 ON 18 45 24GA SWDG SADD SST
+SW4               0   0     1 10 ON 10 45 26GA SWEDGE SADDLE
+SW4               0   0     3 04 ON 14 45 26GA SWEDGE SADDLE
+SW4               0   0    44 12 ON 20 45 22GA SWEDGE SADDLE
+SW4               0   0    44 20 ON 24 45 22GA SWEDGE SADDLE
+SW4              64   0     1 08 ON 20 45 24GA SWDG SADD SST
+SW4220616         0   0    15 06 ON 16 45 22GA SWEDGE SADDLE
+SW4220818         0   0    15 08 ON 18 45 22GA SWEDGE SADDLE
+SW4220820         0   0    15 08 ON 20 45 22GA SWEDGE SADDLE
+SW4221016         0   0    15 10 ON 16 45 22GA SWEDGE SADDLE
+SW4221218         0   0    15 12 ON 18 45 22GA SWEDGE SADDLE
+SW9               0   0     0 08 ON 12 90 18GA SWDG SADD SST
+SW9               0   0     0 08 ON 40 90 24GA SWDG SADD PGR
+SW9               0   0     0 10 ON 10 90 26GA SWEDGE SADDLE
+SW9               0   0     0 14 ON 54 90 24GA SWEDGE SADDLE
+SW9               0   0     0 14 ON 68 90 24GA SWEDGE SADDLE
+SW9               0   0     0 18 ON 30 90 24GA SWEDGE SADDLE
+SW9               0   0     0 18 ON 30 90 24GA SWEDGE SADDLE
+SW9               0   0     0 18 ON 36 90 20GA SWEDGE SADDLE
+SW9               0   0     0 18 ON 54 90 24GA SWEDGE SADDLE
+SW9               0   0     0 18 ON 54 90 24GA SWEDGE SADDLE
+SW9               0   0     0 26 ON 36 90 20GA SWEDGE SADDLE
+SW9               0   0     0 28 ON 28 90 22GA SWEDGE SADDLE
+SW9               0   0     0 42 ON 54 90 20GA SWEDGE SADDLE
+SW9               0   0     1 30 ON 46 90 22GA SWEDGE SADDLE
+SW9               0   0     3 12 ON 14 90 26GA SWEDGE SADDLE
+SW9               0   0     3 12 ON 24 90 26GA SWEDGE SADDLE
+SW9               0   0    15 16 ON 16 90 24GA SWEDGE SADDLE
+SW9               0   1     1 16 ON 18 90 24GA SWEDGE SADDLE
+SW9              61   0     0 10 ON 18 90 24GA SWDG SADD PGR
+SW9              61   0     0 14 ON 18 90 24GA SWDG SADD PGR
+SW9              61   0     0 14 ON 20 90 24GA SWDG SADD PGR
+SW9              61   0     0 14 ON 24 90 24GA SWDG SADD PGR
+SW9              61   0     0 16 ON 18 90 24GA SWDG SADD PGR
+SW9              61   0     0 16 ON 24 90 24GA SWDG SADD PGR
+SW9              61   0     0 18 ON 24 90 24GA SWDG SADD PGR
+SW9              61   0     0 18 ON 24 90 24GA SWDG SADD PGR
+SW9              61   0     1 08 ON 10 90 24GA SWDG SADD PGR
+SW9              61   0     1 08 ON 10 90 24GA SWDG SADD PGR
+SW9              61   0     1 08 ON 12 90 24GA SWDG SADD PGR
+SW9              61   0     1 10 ON 14 90 24GA SWDG SADD PGR
+SW9              61   0     1 10 ON 14 90 24GA SWDG SADD PGR
+SW9              61   0     1 10 ON 14 90 24GA SWDG SADD PGR
+SW9              61   0     1 10 ON 14 90 24GA SWDG SADD PGR
+SW9              61   0     1 10 ON 18 90 24GA SWDG SADD PGR
+SW9              61   0     1 10 ON 20 90 24GA SWDG SADD PGR
+SW9              61   0     1 12 ON 14 90 24GA SWDG SADD PGR
+SW9              61   0     1 12 ON 14 90 24GA SWDG SADD PGR
+SW9              61   0     1 14 ON 20 90 24GA SWDG SADD PGR
+SW9              61   0     1 14 ON 20 90 24GA SWDG SADD PGR
+SW9              64   0     0 12 ON 16 90 24GA SWDG SADD SST
+SW9              64   0     1 04 ON 06 90 24GA SWDG SADD SST
+SW9              66   0     0 10 ON 12 90 24GA SWDG SADD ALU
+SW9              66   0     1 04 ON 06 90 24GA SWDG SADD ALU
+SW9              66   0     1 06 ON 08 90 24GA SWDG SADD ALU
+SW9              66   0     1 06 ON 12 90 24GA SWDG SADD ALU
+SW9              66   0     1 08 ON 14 90 24GA SWDG SADD ALU
+SW9              66   0     1 10 ON 12 90 24GA SWDG SADD ALU
+SW9              66   0     1 10 ON 14 90 24GA SWDG SADD ALU
+SW9              66   0     1 10 ON 16 90 24GA SWDG SADD ALU
+SW9              66   0     1 12 ON 12 90 24GA SWDG SADD ALU
+SW9              66   0     1 12 ON 14 90 24GA SWDG SADD ALU
+SW9              66   0    16 06 ON 14 90 24GA SWDG SADD ALU
+SW9              80   0     3 12 ON 16 90 26GA SWEDGE SADDLE
+SWV4             62   0    15 10 ON 14 45 24GA SWDG SADD PVS
+SWV4241014       62   0    16 10 ON 14 45 24GA SWDG SADD PVS
+SWV9              0   0     0 28 ON 36 90 22GA SWDG SADD PVS
+SX1024           62   0    16 10"-24GA X  38"LONG SPIRL PVS 
+SX1024+27        62   0    16 10"-24GA X  27"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  18"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  20"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  23"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  29"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  45"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  52"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X  73"LONG SPIRL PVS 
+SX1424           62   0    15 14"-24GA X 10'SPIRAL PIPE PVS 
+SX142410         59   0    16 14"-24GA X 10'SPIRAL PIPE PVS 
+T.               64   0     0 RADIUS TEE                    
+T4                0   0     0 10/10/7 45 20GA LATERAL       
+T4                0   0     0 14/10/12 45 22GA LATERAL      
+T4                0   0     0 14/14/3 45 24GA LATERAL       
+T4                0   0     0 32/32/32 45 16GA LATERAL      
+T4                0   0     0 36"RD MAIN W/36/24 TAP 20GA   
+T4                0   0     1 16/12/8 45 24GA LATERAL       
+T4                0   0     1 16/14/6 45 20GA LATERAL       
+T4                0   0     9 12/12/9 45 22GA LATERAL       
+T4                0   0    15 20/18/12 45 22GA LATERAL      
+T4                0   0    15 20/18/8 45 22GA LATERAL       
+T4                0   0    15 24/24/16 45 22GA LATERAL      
+T4                0   0    44 16/12/12 45 18GA LATERAL      
+T4                0   0  9223 16/14/10 45 24GA LATERAL      
+T4                0   0  9223 18/16/10 45 24GA LATERAL      
+T4                0   0  9233 14/10/9 45 24GA LATERAL       
+T420100606        0   0    15 10/6/6 45 20GA LATERAL        
+T422120808        0   0    15 12/8/8 45 22GA LATERAL        
+T422120808        0   0    15 12/8/8 45 22GA LATERAL        
+T422222012        0   0    15 22/20/12 45 22GA LATERAL      
+T424060606        0   0    10 6/6/6 45 24GA LATERAL         
+T9                0   0     1 12/12/8 90 26GA TEE           
+T9                0   0     7 6/6/6 90 26GA TEE             
+T9                0   0     9 18/18/18 90 24GA TEE          
+T9               61   0     1 16/12/12 90 24GA TEE PGRP     
+T9               61   0     1 24/18/18 90 24GA TEE PGRP     
+T9               64   0     1 6/6/6 90 24GA TEE SST         
+T9               64   0     7 6/6/6 90 24GA TEE SST         
+T9               65   0    16 36/36/36 90 18GA TEE SST      
+T9               66   0     7 12/12/12 90 24GA TEE ALUM     
+T9               66   0     7 8/8/8 90 24GA TEE ALUM        
+T922282828        0   0    15 28/28/28 90 22GA TEE          
+T922282828       65   0    10 28/28/28 90 22GA TEE          
+T922363624        0   0    15 36/36/24 90 22GA TEE          
+T92608*06*06      0   0     7 8/6/6 90 26GA TEE             
+T9261212*10       0   0     1 12/12/10 90 26GA TEE          
+TP.              66   0     0 TAP TAKE-OFFS                 
+TR.              64   0     0 TRANSITIONS                   
+TR.              66   0     0 TRANSITIONS                   
+TR.              83   0     0 TRANSITIONS                   
+TV4               0   0     0 10/10/8 45 24GA LATERAL    PVS
+TV4               0   0     0 10/6/4 45 24GA LATERAL     PVS
+TV9               0   0     0 12/12/12 90 20GA TEE       PVS
+TV9               0   0     0 14/12/12 90 20GA TEE       PVS
+TV9               0   0     0 14/14/12 90 20GA TEE       PVS
+TV9               0   0     0 18/12/18 90 20GA TEE       PVS
+TV9               0   0     0 18/14/12 90 20GA TEE       PVS
+TV9               0   0     0 18/18/12 90 20GA TEE       PVS
+TV9               0   0     0 20/18/12 90 20GA TEE       PVS
+TV9               0   0     0 20/20/12 90 20GA TEE       PVS
+TV9               0   0     1 18/12/18 90 22GA TEE       PVS
+TV9               0   0     1 24/18/18 90 22GA TEE       PVS
+WRE               0   0     0 46/16   1.5/1.5 16GA RANGLE   
+WRE               0   0     0 47/30   1.5/1.5 16GA RANGLE   
+WRF               0   0     0 30/30   1.5/1.5 14GA RANGLE   
+WRF               0   0     0 50/18   1.5/1.5 14GA RANGLE   
+WRG               0   0     0 18/12   1.5/1.5 10GA RANGLE   
+WRG               0   0     0 20/20   1.5/1.5 10GA RANGLE   
+WRG               0   0     0 32/24   1.5/1.5 10GA RANGLE   
+WRG               0   0     0 35"     1.5/1.5 10GA RANGLE   
+WRG               0   0     0 36"     1.5/1.5 10GA RANGLE   
+WRG               0   0     0 50"     1.5/1.5 10GA RANGLE   
+WRH               0   0     0 46/16   2/1.5 10GA RANGLE     
+WRI               0   0     0 100/40  2.25/1.5 10GA RANGLE  
+WRI               0   0     0 102/22  2.25/1.5 10GA RANGLE  
+WRI               0   0     0 102/24  2.25/1.5 10GA RANGLE  
+WRI               0   0     0 118/26  2.25/1.5 10GA RANGLE  
+WRI               0   0     0 118/40  2.25/1.5 10GA RANGLE  
+WRI               0   0     0 91"     2.25/1.5 10GA RANGLE  
+WRI               0   0     0 98"     2.25/1.5 10GA RANGLE  
+WRJ               0   0     0 102/30  2.5/1.5 10GA RANGLE   
+WRJ               0   0     0 116/36  2.5/1.5 10GA RANGLE   
+WRJ               0   0     0 120/36  2.5/1.5 10GA RANGLE   
+WRJ               0   0     0 122"    2.5/1.5 10GA RANGLE   
+WRJ               0   0     0 125.5"  2.5/1.5 10GA RANGLE   
+WRJ               0   0     0 130"    2.5/1.5 10GA RANGLE   
+WRJ               0   0     0 152"    2.5/1.5 10GA RANGLE   

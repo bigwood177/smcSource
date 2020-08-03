@@ -1,0 +1,67 @@
+ Volume in drive O is SMCD
+ Volume Serial Number is 986F-A52E
+
+ Directory of O:\SOURCE\cp
+
+07/25/2001  09:37 AM                74 BILEDT.CMD
+02/24/2010  09:57 AM               176 BILLS.CMD
+09/20/2010  10:07 AM                81 BLADIN.CMD
+08/18/2009  12:02 PM                69 bladq1.CMD
+10/14/2008  02:10 PM                69 BLADQQ.CMD
+01/12/2007  08:18 AM               147 BNQUIR.CMD
+04/25/1997  07:28 AM               825 BUILD.CMD
+06/03/1993  03:36 PM               160 CANCEL.CMD
+02/07/1997  11:34 AM               512 CHANGE.CMD
+10/20/2007  10:00 AM               304 CPLIB.CMD
+10/12/2009  01:09 PM                74 CPYROC.CMD
+03/04/2003  11:19 AM                72 CRDMNT.CMD
+04/18/1997  01:17 PM               160 CRMCNC.CMD
+04/18/1997  01:22 PM               313 CRMENT.CMD
+04/18/1997  11:46 AM                99 C_SUBS.CMD
+12/28/2011  11:38 AM               175 DPTBAR.CMD
+08/01/2011  02:09 PM               169 DPTSTS.CMD
+09/27/2010  12:27 PM               185 FABCNV.CMD
+11/21/2003  12:12 PM               124 FAXQUE.CMD
+12/22/2010  11:44 AM               120 FF.CMD
+09/26/1997  10:48 AM                70 FNDPRO.CMD
+05/17/2007  03:26 PM               129 IC.CMD
+07/19/1993  05:16 PM                64 IMFMNT.CMD
+07/19/2010  02:42 PM               207 INQ.CMD
+09/14/2009  09:48 AM               210 INQUIR.CMD
+04/18/1997  11:45 AM               198 I_SUBS.CMD
+02/07/2008  09:38 AM               139 JAMINQ.CMD
+08/02/2010  02:03 PM               133 JAUTO.CMD
+04/01/2008  01:55 PM                61 JOBMNT.CMD
+06/08/2009  08:38 AM               124 JTEST.CMD
+10/18/2007  10:09 AM             1,181 LLX.CMD
+05/09/2011  08:49 AM                96 MAILIN.CMD
+12/19/2011  11:13 AM                96 MAILXX.CMD
+03/02/2005  08:08 AM               133 METINQ.CMD
+03/01/2005  02:36 PM               390 METRO.CMD
+12/08/1999  11:23 AM                72 NEWLIB.CMD
+05/02/1997  07:14 AM               423 ORDADD.CMD
+04/18/1997  01:26 PM               106 ORDEDT.CMD
+02/18/2010  02:55 PM               225 ORDHL1.CMD
+03/29/2012  09:03 AM               501 ORDMNT.CMD
+07/11/1996  05:17 PM                77 RBLISM.CMD
+01/18/2012  03:27 PM                74 REROCK.CMD
+09/24/2004  02:17 PM                76 RINENT.CMD
+06/22/2006  09:39 AM               147 RNQUIR.CMD
+11/03/2010  01:50 PM               135 ROCAUTO.CMD
+09/28/2006  07:40 AM               133 RQUIRE.CMD
+06/10/2008  09:59 AM               115 RTEST.CMD
+03/05/2012  11:19 AM                84 SHPCNG.CMD
+06/19/2008  09:12 AM               115 SMCA2.CMD
+08/02/2010  02:03 PM               135 SMCAUTO.CMD
+11/03/2010  07:16 AM               484 SSQ.CMD
+09/10/2009  09:25 AM                51 TM.CMD
+04/18/1997  01:24 PM               171 UNBILL.CMD
+06/03/2008  02:49 PM               111 V.CMD
+08/02/2010  08:23 AM               133 VTEST.CMD
+08/09/2007  09:06 AM               116 VTESTV.CMD
+12/06/2007  02:36 PM               116 V_ITEM.CMD
+07/18/1997  09:55 AM                19 WRKRES.CMD
+03/08/2005  03:02 PM               160 XBILL.CMD
+04/06/2011  01:16 PM               206 XI.CMD
+              60 File(s)         11,124 bytes
+               0 Dir(s)  20,706,238,464 bytes free

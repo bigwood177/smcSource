@@ -1,0 +1,31 @@
+Memory 
+[01] 0001  ______
+
+[02] 0010  ______		Instruction: op_code:operand1:operand2
+
+[03] 0011  ______		op_code
+				0001	mov	;move data(op1) to mem(op2)
+[04] 0100  ______		0011	add	;add contents of 
+						 mem(op1) to mem(op2) and 
+[05] 0101  ______				 store in reg1
+
+[06] 0110  ______		program to add 2 + 2
+				0001:0010:1010	(mov 2 to mem loc 10)
+[07] 0111  ______		0001:0010:1011	(mov 2 to mem loc 11)
+				0011:1010:1011	(add contents of mem(10)
+[08] 1000  ______			to mem(11) and store result in reg1
+
+[09] 1001  ______
+
+[10] 1010  ______
+
+[11] 1011  ______
+
+[12] 1100  ______
+
+[13] 1101  ______
+
+[14] 1110  ______
+
+[15] 1111  ______	reg1	reg2	reg3	reg4
+			----	----	----	----

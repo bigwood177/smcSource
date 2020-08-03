@@ -1,0 +1,54 @@
+;--------------------------------------------------------------------------------
+;BILL OF LADING ENTRY AND EDITING
+;HEADER SCREEN
+;
+;6. SHIP TO                                      1. SHIPPERS NO.  XXXXXX.X.XX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX               2. B/L DATE      XX/XX/XX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX               3. SHIP VIA      XXXXXXXXXXXXXXX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX               4. CARRIERS NO.  XXXXXXXXXX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX               5. DATE SHIPPED  XX/XX/XX
+;
+;
+;7. CUST PO NO    8. SPECIAL INSTRUCTIONS
+;   XXXXXXXXXX       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+;                    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+;
+;
+; 9. PPD/COL/THIRD   X      FREIGHT CHARGES  XXXXXXX
+;
+;10. TRACER ID #     XXXXXXXXXX
+;
+;
+;
+;
+;FIELD # TO CHANGE ...
+;--------------------------------------------------------------------------------
+;
+;--------------------------------------------------------------------------------
+;BILL OF LADING ENTRY AND EDITING
+;LINE ITEM SCREEN
+;
+;   SHIP TO                                         SHIPPERS NO.  XXXXXX.X.XX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                  B/L DATE      XX/XX/XX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                  SHIP VIA      XXXXXXXXXXXXXXX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                  CARRIERS NO.  XXXXXXXXXX
+;   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                  DATE SHIPPED  XX/XX/XX
+;
+;LN  CLASS   QTY     UOM       DESCRIPTION                          WEIGHT#
+;--  -----  ------   -------   -----------------------------------  -------
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;    -----  ------   -------   ------------- DELETED -------------   ------
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;XX    XXX   XXXXX   XXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXX
+;           ------                                                  -------
+;            XXXXX                                                   XXXXXX
+;
+;FIELD # TO CHANGE ...
+;--------------------------------------------------------------------------------
+
+

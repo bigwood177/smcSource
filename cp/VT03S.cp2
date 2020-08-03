@@ -1,0 +1,540 @@
+SUBROUTINE VT03S	; Saddles
+	PNUM	,D
+	LINE	,A	;ORDER L/I
+	CHN182	,D	;CHANNEL FOR COPTBL
+	MEMDAT	,A	;CPMEMO
+	ERR	,D	;1 => ERROR DURING CONVERSION
+
+; Routine for Saddles
+; S 4 26 10 12
+; A |  |  |  |_ sz-b
+;   |  |  |____ sz-t
+;   |  |_______ gauge
+;   |________ angle
+;
+;
+common	vulcan
+	dampr	,d1
+	is_2	,d1	;1 = w2file has data
+	is_3	,d1	;1 = w3file has data
+	chnw2	,d2	;-2
+	chnw3	,d2	;-3
+	vdkey	,d4	; VD coptbl key
+	m1_note	,a12
+	m2_note	,a12
+	m3_note	,a12
+
+RECORD	ORDLIN
+	.INCLUDE 'DEF:RD045A.def'
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD	CPMEMO
+	.INCLUDE 'DEF:CPMEMO.DEF'
+
+RECORD	PARAM
+	QTY	,D6
+	GAUGE	,D2
+	LT	,D6
+	SB	,D2
+	WL	,D6
+	DL	,D6
+	WR	,D6
+	R	,D2
+	WB	,D6
+	WT	,D6
+	OW	,D6
+	OD	,D6
+	PRCT	,A80
+	GSEAM	,A30
+	LSEAM	,A30
+	SSEAM	,A30
+	SEG	,A30
+
+RECORD	V_LINE1
+	VLINE	,A80
+
+RECORD	ARAY
+	WD4	,4D4
+
+RECORD	VARS
+	xga	,d2
+	matl	,d1	;f1 matl
+	vmat	,a5	;f1 mm_vmat
+	vinyl	,d1
+	ezjr	,d1
+	diff	,d6
+	chnwrk	,d2
+	SDL_KEY	,D1	;5=Saddle, 6=Conical Saddle, 7=Shoe Tap
+	SDL_TYP	,A2	;
+	KITMNO	,A15
+	CNT	,D3
+	J	,D6
+	LF3x	,D5		;THIS IS A FIELD IN RD045A.NEW...
+	CODE	,A2
+	SZB	,D2
+	SZT	,D2
+	AN	,D2
+	GA	,D2
+	BF	,D1
+	ERROR	,D1
+	LN	,D6
+	D4	,D4
+	READ	,D1,0
+	LOKCTL	,D1
+;
+PROC
+
+	ERR = 1			;ASSUME ERROR
+
+	ORDLIN = LINE
+
+	CPMEMO = MEMDAT
+
+	if (%trim(lcfgim) .le. 4) return	;too short  8-21-07
+
+; S 4 26 10 12
+; A |  |  |  |_ sz-b
+;   |  |  |____ sz-t
+;   |  |_______ gauge
+;   |________ angle
+;
+
+
+;-
+	SDL_TYP = LCFGIM(1,2)
+
+	clear vinyl
+
+	USING LCFGIM SELECT
+	('SWV','SCV'),		begin
+				KITMNO = LCFGIM(4,15)
+				vinyl = 1
+				end
+	('SV'),			BEGIN
+				KITMNO = LCFGIM(3,15)
+				VINYL = 1
+				END
+	('SC','ST','SW'),	KITMNO = LCFGIM(3,15)
+	('S4','S9'),		KITMNO = LCFGIM(2,15)
+	(),		BEGIN		;error
+			END
+	ENDUSING
+
+
+; kitmno now has everything prior to degree stripped off...
+
+	XCALL ALPDC(KITMNO(1,1), AN, BF)
+	IF (BF) XRETURN
+
+	XCALL ALPDC (KITMNO(2,3), GA, BF)
+	IF (BF) XRETURN
+
+	using ga select
+	(16 thru 20),	begin
+			chnwrk = chnw2
+			is_2 = 1
+			end
+	(22 thru 26),	begin
+			chnwrk = chnw3
+			is_3 = 1
+			end
+	endusing
+
+	XCALL ALPDC (KITMNO(4,5), SZT, BF)	;TAP
+	IF (BF) XRETURN
+
+	XCALL ALPDC (KITMNO(6,7), SZB, BF)	;BODY
+	IF (BF) XRETURN
+
+	if (ga .eq. 26) ga = 24		;6-19-08
+
+	vmat = 'GALV'
+	if (vinyl) vmat = 'PVS'
+
+;;;	clear matl
+	MATL = 1		;GALV	4-2-09 SSQ
+
+     	CLEAR COPTBL
+	TBLCOD = 'M1'
+	MM_KEY = LF1
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO SKIP_F1_MATL
+	IF (MM_VULC .EQ. 2) XRETURN	;6-24-08
+	MATL = MM_MATL
+	VMAT = MM_VMAT
+
+SKIP_F1_MATL,
+
+	CLEAR COPTBL
+	TBLCOD = 'V3'
+	V3_KEY = vdkey
+	V3_GA = GA
+	using matl select	;for now default to galv unless alum...
+	(2),	V3_MAT = MATL
+	(),	V3_MAT = 1
+	endusing
+
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0) 
+	THEN	BEGIN
+		GSEAM = 'GSEAM= ' + '"' + V3_GSEAM(1,%trim(V3_GSEAM)) + '";'
+		LSEAM = 'LSEAM= ' + '"' + V3_LSEAM(1,%trim(V3_LSEAM)) + '";'
+		SSEAM = 'SSEAM= ' + '"' + V3_SSEAM(1,%trim(V3_SSEAM)) + '";'
+		END
+
+	ELSE	CLEAR GSEAM, LSEAM, SSEAM
+
+	if (szt.le.24 .or. szb.le.24)	;if ez flange, change to jr ez flange
+	then	ezjr = 1
+	else	clear ezjr
+
+;;;	CLEAR LF3
+;;;	IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+
+; end treatment...
+	CLEAR COPTBL
+	TBLCOD = 'MM'
+	MM_KEY = LF3
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0) GOTO GOT_TBL
+
+; if no/bad end treatment, check for default keys...
+	CLEAR COPTBL
+	TBLCOD = 'IK'
+	IK_ITEM = KITMNO
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) CLEAR COPTBL
+
+GOT_TBL,
+;
+; Create the output file...
+;
+	USING SDL_TYP SELECT
+	('SW','S4','S9','SV'),	SDL_KEY = 5	;ORIG. SADDLE TABLE
+	('SC'),			SDL_KEY = 6	;CONICAL SADDLE
+	('ST'),			SDL_KEY = 8	;SHOE TAPS
+	(),			SDL_KEY = 5	;DEFAULT
+	ENDUSING
+
+	CLEAR TBLKEY
+	TBLCOD = 'V1'
+;;;	V1_KEY = 5		; saddles
+	V1_KEY = SDL_KEY	; saddles
+	V1_F3 = LF3
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) CLEAR COPTBL
+
+	FOR J FROM 1 THRU 4
+		USING GA SELECT
+		(16),		WD4(J) = V1_16(J)
+		(18 THRU 20),	WD4(J) = V1_1820(J)
+		(22 THRU 26),	WD4(J) = V1_2226(J)
+		(),		WD4(J) =
+		ENDUSING
+
+
+	VLINE = '// ' + 'vt03s: ' + LCFGIM
+	if (dampr) vline = vline(1,%trim(vline)) + ' damper'
+	WRITES (chnwrk, VLINE)
+	CLEAR VLINE
+
+	if (m1_note .ne. '   ')
+		begin
+		vline = '// ' + 'F1: ' + m1_note
+		writes (chnwrk, vline)
+		end
+
+	if (m2_note .ne. '   ')
+		begin
+		vline = '// ' + 'F2: ' + m2_note
+		writes (chnwrk, vline)
+		end
+
+	if (m3_note .ne. '   ')
+		begin
+		vline = '// ' + 'F3: ' + m3_note
+		writes (chnwrk, vline)
+		end
+
+	WRITES (chnwrk, '//Saddle Body')
+
+	USING SDL_TYP SELECT
+	('S4','S9'),	WRITES (chnwrk, 'FN = 1300-i;')
+	('SV','SV'),	WRITES (chnwrk, 'FN = 1300-i;')
+	('SW'),		WRITES (chnwrk, 'FN = 1200-i;')
+	('SC'),		WRITES (chnwrk, 'FN = 1200-i;')
+	('ST'),		WRITES (chnwrk, 'FN = 1200-i;')
+	ENDUSING
+	
+	PNUM = PNUM + 1
+	VLINE = PNUM,	'PNUM = ZZX;' [LEFT]
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'QTY= '
+	VLINE (6,11) = LQTYOR,	'ZZZZZZ;' [LEFT]
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'ADINFO='
+	VLINE (9,38) = LDESCR
+	LN = %TRIM(VLINE)
+	INCR LN
+	VLINE(LN,LN) = ';'
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'METALN= "'
+	VLINE (10,13) = VMAT
+	LN = %TRIM(VLINE) + 1
+	VLINE (LN,80) = ' SPIRAL FITT";'
+	WRITES (chnwrk, VLINE)
+
+	XGA = GA
+	IF (MATL .NE. 2) GOTO NOT_ALUM	
+	USING GA SELECT
+	(16),	XGA = 63
+	(18),	XGA = 50
+	(20),	XGA = 40
+	(22),	XGA = 32
+	(24),	XGA = 24
+	(26),	XGA =
+	ENDUSING
+
+NOT_ALUM,
+	VLINE = 'GAUGE= '
+	VLINE(8,10) = XGA,	'XX;' 
+	WRITES (chnwrk, VLINE)
+
+
+	VLINE = LSEAM
+	WRITES (CHNWRK, VLINE)
+
+
+	
+	VLINE = GSEAM
+	WRITES (chnwrk, vline)
+
+	VLINE = SSEAM
+	WRITES (chnwrk, vline)
+
+	VLINE = SZB,	'W= ZX;' [left]
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'L= 80;'
+	WRITES (chnwrk, VLINE)
+
+	PRCT = 'PRCT= '
+	PRCT (7,11) = VMAT
+	LN = %TRIM(PRCT) + 1
+	VLINE (LN,80) = ';'
+
+;;;	USING SDL_TYP SELECT
+;;;	('S4','S9'),	PRCT = 'PRCT= Galvanized;'
+;;;	('SC'),		PRCT = 'PRCT= Galvanized;'
+;;;	('SW'),		PRCT = 'PRCT= Galvanized;'
+;;;	('ST'),		PRCT = 'PRCT= Galvanized;'
+;;;	ENDUSING
+
+	WRITES (chnwrk, PRCT)
+
+	USING SDL_TYP SELECT
+	('SC','ST'),	WRITES (chnwrk, 'FLOOR= "";')
+	ENDUSING
+
+	WRITES (chnwrk, 'END;')
+
+;--- Tap:
+
+	CLEAR VLINE
+	WRITES (chnwrk, VLINE)
+
+	USING AN SELECT
+	(4),	VLINE = '//Round Lateral Tap'
+	(9),	VLINE = '//Round Straight Tap'
+	ENDUSING
+
+	USING SDL_TYP SELECT
+	('SC'),	VLINE = '//Round Conical Tap'
+	('ST'),	VLINE = '//Round Boot Tap'
+	ENDUSING
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'FN = 51-i;'
+
+	USING SDL_TYP SELECT
+	('SC'),	VLINE = 'FN = 53-i;'
+	('ST'),	VLINE = 'FN = 54-i;'
+	ENDUSING
+	WRITES (chnwrk, VLINE)
+	
+	VLINE = PNUM,	'PNUM = ZZX;' [LEFT]
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'QTY= '
+	VLINE (6,11) = LQTYOR,	'ZZZZZZ;' [LEFT]
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'ADINFO='
+	VLINE (9,38) = LDESCR
+	LN = %TRIM(VLINE)
+	INCR LN
+	VLINE(LN,LN) = ';'
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'METALN= "'
+	VLINE (10,13) = VMAT
+	LN = %TRIM(VLINE) + 1
+	VLINE (LN,80) = ' SPIRAL FITT";'
+	WRITES (chnwrk, VLINE)
+
+
+	VLINE = 'GAUGE= '
+	VLINE(8,10) = GA,	'XX;' 
+	WRITES (chnwrk, VLINE)
+
+
+	VLINE = LSEAM
+	WRITES (CHNWRK, VLINE)
+
+	VLINE = GSEAM
+	WRITES (chnwrk, vline)
+
+	VLINE = SSEAM
+	WRITES (chnwrk, vline)
+
+; Table look-up move to top of routine...
+
+	WR = ((SZT * 1000) + WD4(1))		;.XXX
+
+	CLEAR DL
+	USING SDL_TYP SELECT
+	('SC'),	BEGIN
+		WL = WR + 1000			;1.000
+		END
+	('ST'),	BEGIN
+		DL = WR ;>>>+ 3000		;8-7-07 added 3000
+		WL = WR + 3000			;3.000
+		END
+	ENDUSING
+
+	DIFF = (SZb - SZt)
+
+	USING SDL_TYP SELECT
+	('SC'),	IF (DIFF .LT. 4) WL = WR + 500	;Round Conical Tap'
+	ENDUSING
+
+
+	VLINE = WL,	'WL=ZZ.XXX;' [left]
+	WRITES (chnwrk, VLINE)		
+
+
+	IF (DL .GT. 0)
+		BEGIN
+		VLINE = DL, 	'DL= ZZ.XXX;' [left]
+		WRITES (chnwrk, VLINE)
+		END
+
+	VLINE = WR,	'WR= ZZ.XXX;' [left]		;.XXX
+	WRITES (chnwrk, VLINE)
+
+
+
+	USING SDL_TYP SELECT
+	('SC','ST'),	WRITES (chnwrk, 'SR= 0;')
+	ENDUSING
+
+
+
+	USING SDL_TYP SELECT
+	('SC'),	LT = 3250
+;;;	('ST'),	LT = 4750	;> 12-7-09 4188
+;;;	('SW'),	LT = 4750	;> 12-7-09 4188
+	('ST'),	LT = 4188	;> back to 4188
+	('SW'),	LT = 4188	;> 12-21-09 back to 4188 per RB
+	(),	LT = 3000
+	ENDUSING
+	IF (dampr .and. SDL_KEY.EQ.5) LT = WR#3 * 1000	;integer if damper
+
+	VLINE = LT,	'LT= ZX.XXX;'	[left]
+	WRITES (chnwrk, VLINE)
+
+
+	USING SDL_TYP SELECT
+	('SC'),	VLINE = 'LB= 0;'
+	('ST'),	VLINE = 'LB= 0;'
+	('SW'),	VLINE = 'LB= 0;'
+	(),	VLINE = 'LB= 2.5;'	
+	ENDUSING
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'OW= 0;'		;always 0
+	WRITES (chnwrk, VLINE)
+
+	VLINE = 'OD= 0;'		;always 0
+	WRITES (chnwrk, VLINE)
+
+	USING AN SELECT
+	(4),	WRITES (chnwrk, 'AT= 45;')
+	(9),	WRITES (chnwrk, 'AT= 90;')
+	ENDUSING
+
+	USING SDL_TYP SELECT
+	('ST'),	IF (AN .EQ. 9) WRITES (chnwrk, 'AR= 90;')
+	ENDUSING
+
+	WRITES (chnwrk, PRCT)
+
+	CLEAR TBLKEY
+	TBLCOD = 'V2'		;vulcan descriptions
+	V2_KEY = LF3
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) CLEAR COPTBL
+
+	USING SDL_TYP SELECT
+	('SC'),	VLINE = 'CONN= L;CN= "'
+	('SW'),	VLINE = 'CONN= L;CN= "'
+	('ST'),	VLINE = 'CONN= L;CN= "'
+	('S'),	VLINE = 'CONN= L;CN= "'
+	(),	VLINE = 'CONN= B;CN= "'
+	ENDUSING
+
+	LN = %TRIM (VLINE)
+	INCR LN
+	USING SDL_TYP SELECT
+	('S4','S9'),	VLINE(LN,60) = 'elbowlock'
+	(),	VLINE(LN,60) = '5/8 swedge'
+	ENDUSING
+
+	LN = %TRIM(VLINE)
+	INCR LN
+	VLINE(LN,80) = '"; END;'
+	WRITES (chnwrk, VLINE)
+
+	USING SDL_TYP SELECT
+	('SC'),	VLINE = 'CONN= R;CN= "'
+	('SW'),	VLINE = 'CONN= R;CN= "'
+	('ST'),	VLINE = 'CONN= R;CN= "'
+	('S'),	VLINE = 'CONN= R;CN= "'
+	(),	VLINE = 'CONN= T;CN= "'
+	ENDUSING
+	LN = %TRIM (VLINE)
+
+	if (ezjr .and. v2_cn2.eq.'EZ FLANGE') V2_CN2 = 'JR EZ FLANGE'
+	INCR LN
+	VLINE(LN,60) = V2_CN2
+	LN = %TRIM(VLINE)
+	INCR LN
+	VLINE(LN,80) = '"; END;'
+	WRITES (chnwrk, VLINE)
+
+
+	WRITES (chnwrk, 'END;')
+
+	CLEAR VLINE
+	WRITES (chnwrk, VLINE)
+
+	clear err
+	XRETURN
+	END
+
+		

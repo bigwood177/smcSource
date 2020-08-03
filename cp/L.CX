@@ -1,0 +1,76 @@
+LOAD_WORK,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Move non-memo line items
+		;;; into work file
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SET HAS_H, HAS_HV, HAS_K, HAS_KV, HAS_F, HAS_FV = 0
+
+	FIND (CHN045, ORDLIN, ORDNO) [ERR=LOOP]
+LOOP,
+	READS (CHN045, ORDLIN, EOF)
+	IF (LORDNO .NE. ORDNO) GOTO EOF
+	IF (LTYPE .EQ. 'M') GOTO LOOP
+	IF (LROCPO .EQ. 9) GOTO LOOP		;SSQ 4/27/04
+	IF (LPRDCD .EQ. 'Z ') GOTO LOOP		;SSQ 3/22/05 skip priceduct.com
+;;;	IF (LQTYOR .EQ. 0) GOTO LOOP		;SSQ 3/24/00
+	
+	CLEAR TBL_KEY
+	TBLCOD = 'EX'
+	TBLKEY = EX_ITEM = LITMNO
+	FIND (CHN182,COPTBL,TBL_KEY) [ERR=LCONT]	;continue if NOT in table
+	GOTO LOOP
+LCONT,
+	WTYPE = 'L'
+
+	WDEPT = LDEPT(1,1)
+
+	CALL CHECK_VULCAN		;7-29-08: go to vulcan?
+	IF (IS_VULCAN)	WDEPT(2,2) = 'V'
+
+; note the order of testing below: 'FV' catches FV only, the subsequent 'F'
+; will catch any other LDEPT starting w/ F
+	USING WDEPT SELECT		;7-29-08
+	('FV'),	HAS_FV = 1
+	('F'),	HAS_F = 1
+	('HV'), HAS_HV = 1
+	('H'),	HAS_H = 1
+	('KV'),	HAS_KV = 1
+	('K'),	HAS_K = 1
+	ENDUSING
+
+
+	WDDD2 = LDEPT
+	IF(WDEPT(1,1).EQ.'I') WDDD2 = LPRDCD(1,1)	;SSQ 5-10-00
+
+; ssq 6-4-01 force duct work to end
+	USING WDEPT(1,1) SELECT
+	('O'),	WDEPT(1,1) = 'Y'
+	('P'),	WDEPT(1,1) = 'Z'
+	ENDUSING
+
+	A2 = LMSQ1, 'XX'
+	WSEQ1 = A2
+	A2 = LMSQ2, 'XX'
+	WSEQ2 = A2
+	A2 = LMSQ3, 'XX'
+	WSEQ3 = A2
+
+	A2 = LMSQ4, 'XX'
+	WTAG = A2
+
+	WPG = LPIPEG		;1-21-09
+	WSQNO = LSRTSQ
+	WITEM = LITMNO
+	using witem select
+	('JEB','JEF','JJG','JTG'), WITEM = LITMNO(2,15)	;SKIP THE "J"
+	endusing
+
+	WDESC = LDESCR
+	IF (LDAMPR) WITEM(10,15) = 'Damper'
+	WQTY = LQTYOR
+	WUM = LUOFM
+	STORE (CHNWRK, LINE, W_KEY)
+	GOTO LOOP
+
+EOF,
+	RETURN
+;----------------------------------------------

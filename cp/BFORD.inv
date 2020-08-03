@@ -1,0 +1,1669 @@
+SUBROUTINE BFORD 	;(B_ORDER, B_ERR, O_CHAN)
+	B_ORDER	,D		;ORDER #
+	B_ERR	,D		;0=FAX FILE CREATED
+				;1=ERROR, NO FAX FILE CREATED
+	O_CHAN	,A		;RECORD OF OPEN CHANNELS
+
+;  INVOIC / COP 
+;
+;		INVOICES PRINT 
+;
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+EXTERNAL FUNCTION
+	TRN3	,D
+
+.DEFINE MID_LINES,	51
+.DEFINE END_LINES,	44
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	.INCLUDE 'DEF:HPSUB.DEF'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+RECORD	ORDNOT
+	.INCLUDE 'DEF:RD075A.DEF'
+
+RECORD CUSMAS
+		.INCLUDE 'DEF:RD001A.DEF'
+RECORD DUMCUS  ,X	
+		.INCLUDE 'DEF:RD001B.DEF'
+RECORD CUSIDX   	
+		.INCLUDE 'DEF:RD002A.DEF'
+
+RECORD	SALMAN
+		.INCLUDE 'DEF:RD054A.DEF'
+
+RECORD ORDHDR   	
+		.INCLUDE 'DEF:RD044A.DEF'
+RECORD ORDLIN
+		.INCLUDE 'DEF:RD045A.DEF'
+RECORD		,X
+		.INCLUDE 'DEF:RD045M.DEF'
+RECORD		,X		
+		.INCLUDE 'DEF:RD045D.DEF'
+
+RECORD	ORDLIN1
+	.INCLUDE 'DEF:RD045X.DEF'
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD ARTERM
+		.INCLUDE 'DEF:RD170A.DEF'
+RECORD ARTCTL	,X
+		.INCLUDE 'DEF:RD170B.DEF'
+
+RECORD PBUF
+	PLINE	,A150
+
+RECORD PARAM
+		.INCLUDE 'DEF:PARAM2.DEF'
+
+GLOBAL DUCK,INIT
+		.INCLUDE 'DEF:RD175D.DEF'
+ENDGLOBAL
+
+RECORD	EJECT
+	E_CHAR	,A1		;<ESC>
+		,A4,	"&l0H"	;page eject
+
+;-
+record	values
+	r_bold	,a*,	'\b '
+	r_plain	,a*,	'\plain\f3\fs20\cf0 '
+
+record	t_bold
+	besc	,a1
+		,a*,	'(s3B'
+record	t_plain
+	pesc	,a1
+		,a*,	'(s0B'
+
+RECORD	SPLFIL
+		,A*,	'SPL:'
+		,A1,	'S'
+	SORD	,D6
+		,A4,	'.SPL'
+
+RECORD	FAXFIL
+		,A*,	'SPL:'
+		,A1,	'S'
+	SFAX	,D6
+		,A4,	'.FAX'
+
+
+record	buf
+		,a500
+;-
+
+RECORD	WRKFIL
+		,A4,	'SPL:'
+		,A1,	'W'
+	WFORD	,A6
+		,A4,	'.ISM'
+RECORD	OUTFIL
+		,A4,	'SPL:'
+		,A1,	'X'
+	OFORD	,A6
+		,A4,	'.ISM'
+
+	
+RECORD	F_MEMOS
+	.INCLUDE 'CPMEMO.DEF'
+
+RECORD
+	MAXDUC	,D3,150
+	QTY	,D5
+	ITM	,A15
+	DES	,A30
+	PRC	,D7
+	COMPA	,A15
+	COMPB	,A15
+
+RECORD	ARRAYS
+	SDUCRC	,150A28	;SUMMARIZED DUCT CONFIGURATIONS   (SEE DUCREC BELOW)
+	LINSQF	,8D6	;SUMMARIZE LINER SQUARE FEET
+
+RECORD DUCREC
+	DUCCFG	,D7	;CONFIGURATION CODE
+	DUCSQF	,D7	;SQ FEET OF MATERIAL
+	DUCPND	,D7	;POUNDS OF MATERIAL
+	DUCGPR	,D7	;GAUGE PRICE
+
+RECORD ACCREC
+	.INCLUDE 'DEF:ACCREC.DEF'
+
+RECORD	LINE			
+	WSEQ1	,D2		;reversed
+	WSEQ2	,D2
+	WSEQ3	,D2	
+	WDEPT	,A2
+	WSQNO	,A2
+	WITEM	,A15
+	WCPFLG	,D1
+	WDESC	,A90
+	WTYPE	,A1		;L=LINE, M=MEMO
+	WQTY	,D5
+	WQTYSH	,D5
+	WUM	,A2
+	WPRICE	,D8
+RECORD	MEMO,X
+	MSEQ	,D6
+	MDEPT	,A2
+	MSQNO	,A2
+	MITEM	,A15
+		,D1
+	MMEMO	,3A30
+		,A1
+		,D5
+		,D5
+		,A2
+		,D8
+RECORD	,X
+		,D6
+		,A2
+		,A2
+		,A15
+		,D1
+	M_LONG	,A63
+		,A27
+		,A1
+		,D5
+		,D5
+		,A2
+		,D8
+RECORD,X
+	W_KEY	,A56
+
+RECORD,X
+		,D2		;not reversed
+	COMSEQ	,A4
+		,A2
+;---------------------------
+RECORD	LINE2			
+	WSEQ12	,D2		;not reversed
+	WSEQ22	,D2
+	WSEQ32	,D2	;REVERSE
+	WDEPT2	,A2
+	WSQNO2	,A2
+	WITEM2	,A15
+	WCPFLGW	,D1
+	WDESC2	,A30
+	WADD2	,A60	;FILLER
+	WTYPE2	,A1		;L=LINE, M=MEMO
+	WQTY2	,D5
+	WQTYSH2	,D5
+	WUM2	,A2
+	WPRICE2	,D8
+RECORD,X
+	W_KEY2	,A56
+
+RECORD,X
+		,D2
+	COMSEQ2	,A4
+		,A2		;not reversed
+;---------------------------
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RECORD	TOP_MARGIN
+	TM_ESC	,A1
+		,A4,	'&l0E'
+
+RECORD	LEFT_MARGIN
+	LM_ESC	,A1
+		,A4,	'&a0L'
+
+RECORD	PAGE_OF
+		,A*,	' PAGE '
+	A_PAGOF	,A3
+		,A4,	' OF '
+	A_TPAGE	,A3
+
+RECORD	WRK_DATE
+	CC	,D2
+	YY	,D2
+	MM	,D2
+	DD	,D2
+
+RECORD
+	MDAYS,	12D2,	31,28,31,30,31,30,31,31,30,31,30,31
+
+RECORD	OPNCHN
+	XHN001	,D2
+	XHN002	,D2
+	XHN044	,D2
+	XHN171	,D2
+	XHN147	,D2
+	XAXCHN	,D2
+	XRRCHN	,D2
+
+RECORD	CHANNEL
+	CHN001	,D2
+	CHN002	,D2
+	CHN044	,D2
+	CHN045	,D2
+	CHN054	,D2
+	CHN068	,D2
+	CHN075	,D2
+	CHN170	,D2
+	CHN175	,D2
+	CHN182	,D2
+	CHNWRK	,D2
+	CHNOUT	,D2
+
+RECORD	VARSX
+	D_DAYS	,D2
+	D_TRY	,D1
+	D_DATE	,D6
+	D_30_DATE	,D6
+	D_AMT	,D6
+	D_LIN1	,A50
+	D_LIN2	,A50
+	D_LIN3	,A50
+	DI	,D2
+
+RECORD	
+	TM2	,A90
+	TM3	,A90
+RECORD,X
+	TM2A	,3A30
+	TM3A	,3A30
+
+RECORD	NEWVARS
+	P1_CNT	,D6	;# OF LINES ON PAGE 1 IF MULTI-PAGE
+	P2_CNT	,D6	;# OF LINES ON REMAINING PAGES
+	PX_CNT	,D6	;# OF LINES ON PAGE 1 IF ONLY 1 PAGE
+	REM	,D6
+	D_REM	,D6
+	X_REM	,D6	; WORKING VAR
+	T_LINES	,D6
+
+	L_CNT	,D6		;# LINES
+	D_CNT	,D6		;# DUCT RECORDS
+	S_CNT	,D6		;SUMMARY LINES TO PRINT
+	LNAM	,A25
+	SNAM	,A12
+	SINT	,A3
+	HDR_LINES	,D2
+	IS_NOTE	,D1
+	LP_ON	,D1
+	SZ1	,D3
+	SZ2	,D3
+	J	,D5
+	MULTLINE	,D4
+	MEMO_ON	,D1
+	BLANKS	,A30
+	BLANK90	,A90
+	SAVLIN	,A150
+	TMPDSC	,A62
+	DASHES	,A30,	'------------------------------'
+	LL	,D2
+	TL	,D2
+	SEQNO	,D2
+	SAV_MSEQ	,D6
+	SAVSEQ	,D2
+	SAVSQ1	,D2
+	SAVSQ2	,D2
+	SAVSQ3	,D2
+	SAVDPT	,A2
+	SAVCOM	,A4
+	SAVKEY	,A56
+	SAVQTY	,D5
+	SAVSHP	,D5
+
+RECORD	VARS
+	BL	,D4
+	RL	,D4
+	STS	,D1
+	XPOL1	,A12
+	XPOL2	,A12
+	OPNOK	,D1
+	PAGOF	,D3
+	TPAGE	,D3
+	DL_AMT	,D6
+	DL_DATE	,D6
+	DL1	,A62
+	DL2	,A62
+	IS_CMEMO	,D1
+
+RECORD
+	STRTNA	,A6
+	ENDNA	,A6
+RECORD	,X
+	STRTNO	,D6
+	ENDNO	,D6
+
+RECORD	VARS2
+	VL	,D3
+	LROW	,D3
+	FIRST_MAX	,D2
+	PRINTED_LINES	,D4
+	SUM_ACC		,D4
+	SUM_DUC		,D4
+	NUM_LNR		,D4
+	NUM_MID	,D3
+	SAVORD	,D6
+	CONFIG	,D7	
+	LFEED	,D2	
+	ACCUOM	,A2	
+	ORGSHV	,D5	
+	ORGART	,D5	
+	MAXLIN	,D2	
+	N	,D2
+	ADCNT2	,D4
+	DECMAL	,D10
+	LINCNT	,D2,	00
+	X	,D2
+	PGCNT	,D3,	000
+	SWITCH	,D1
+	ERRRET	,D1
+	MASK	,A12,'ZZZZ,ZZZ.XX-'
+	MASK1	,A6,'ZZZZX-'
+	MASK2	,A6,'ZXXXXX'
+	MASK3	,A8,'XX/XX/XX'
+	MASK4	,A9,'ZZZZZ.XXX'
+	SAV001	,D5
+	KEY   	,D6
+	BSEND	,D5
+	BSND2	,D5
+	BSMID	,D5
+	SRCCTL	,D1
+	ENTRY	,A8	;ENTRY MUST BE DEFINED AS A MINIMUM OF 8 CHARACTERS
+	INXCTL  ,D1
+	CNGCTL	,D1
+	WHATNO	,D1
+	RPTNUM	,D3
+	PRTTYP	,A1
+	TAX	,D6
+	CTR	,D2
+	TRMS	,D4
+	EXEPRC	,D8
+	SAVINV	,D6
+	INVDAT	,D8	;DATE8
+	INVDAA	,A10
+	TDATE	,D6
+	TODAY	,D8
+	TOTSAL	,D8
+	STXCTL	,D1
+	V	,D1
+	READ	,D1	,0
+	WRITE	,D1	,1
+	LOKCTL	,D1
+	LPSW	,D1
+	RESTRT	,D1,	0
+	REDFIL	,A14
+	CLCTL	,D1
+
+PROC
+;;;	XCALL TERID (V)
+	XCALL RDATE (TDATE)
+	XCALL DATE8(TDATE, D_OUT, TODAY, INVDAA, D_SW)
+
+	OPNCHN = O_CHAN
+
+	CHN001 = XHN001
+	CHN002 = XHN002
+
+	B_ERR = 1	;ASSUME ERROR, CLEAR IF EVERYTHING WORKS.
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	READ (CHN044, ORDHDR, B_ORDER) [ERR=ENDOFF]
+
+	INVDAT = TODAY
+
+	SORD = OORDNO
+	SFAX = OORDNO
+
+	OPEN (14,O,SPLFIL)
+
+	XCALL HP (14,hpDOTS, 0)
+	XCALL HP (14,hpTHICK,3)
+	XCALL ASCII (27,TM_ESC)
+	LM_ESC = TM_ESC
+	E_CHAR = TM_ESC
+
+	MEMO_ON = 1
+	CALL LOAD_MEMOS
+	CALL LOAD_WORK
+	CALL CONSOLIDATE
+
+;;; Add memos to output file...
+	CLEAR SAVCOM, SAVSQ1, SAVDPT
+
+	FIND (CHNWRK, LINE, ^FIRST) [ERR=EOF_BM]
+
+BM_LOOP,
+	READS (CHNWRK, LINE, EOF_BM)
+	IF (WDEPT .NE. SAVDPT) CALL NEWDPT
+	IF (WSEQ1 .NE. SAVSQ1) CALL NEWSQ1
+	IF (COMSEQ .NE. SAVCOM) CALL NEWCOM
+
+	GOTO BM_LOOP
+EOF_BM,
+	FIND (CHNWRK, LINE, ^FIRST) [ERR=EOF_FIN]
+FIN_LOOP,
+	READS (CHNWRK, LINE, EOF_FIN)
+	STORE (CHNOUT, LINE, W_KEY)
+	GOTO FIN_LOOP
+EOF_FIN,
+
+; beginning of print stuff, make two passes thru the logic,
+; one to count pages, two to do the actual printing...
+
+	lp_on = 1	;new method, not making 2 passes..
+	PAGOF = 0
+	CLEAR PRINTED_LINES
+START_PRINT,
+	CALL COUNT_LINES
+
+	CLEAR PRINTED_LINES
+	PAGOF = 0
+
+	CALL PRTHDR
+
+	CALL WRTMEM		;INTERNAL ROUTINE TO WRITE WORKSHEETS
+	CALL GETDUC		;PROCESS DUCTWORK
+	CALL ORDTOT		;ORDER TOTALS
+	INCR LP_ON
+	IF(LP_ON .LE. 1) GOTO START_PRINT
+
+	CLOSE CHNOUT
+	CLOSE CHNWRK
+	XCALL DELET (WRKFIL)
+	XCALL DELET (OUTFIL)
+
+	CLOSE 14		;CLOSE OFF SPOOL FILE
+	;CONVERT TO RTF FILE
+CON_FAX,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Convert spool file to fax file...
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL ASCII(27,BESC)
+	PESC = BESC
+
+	OPEN(14,I,SPLFIL)
+	OPEN(16,O,FAXFIL)
+
+CF_LOOP,
+	READS(14,BUF,CF_EOF)
+	XCALL REPLC(BUF, T_BOLD, R_BOLD, STS)
+	XCALL REPLC(BUF, T_PLAIN, R_PLAIN, STS)
+	BL = %TRIM(BUF)
+	IF (BL .EQ. 1) GOTO PAR
+	WRITES(16, BUF(1,%TRIM(BUF)) )
+PAR,
+	WRITES(16,'\par')
+	GOTO CF_LOOP
+CF_EOF,
+	CLOSE 14
+	CLOSE 16
+	RETURN
+;------------------------------------------
+
+	;CONVERT TO RTF FILE
+
+	CLEAR B_ERR		;SUCCESS!
+	XRETURN
+;=====================================================
+;-----------------------------------------------------
+LOAD_MEMOS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Read thru ordlin file, and
+		;;; load memo arrays
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR F1_NUM, F2_NUM, F3_NUM
+	FOR J FROM 1 THRU F_MAX
+		BEGIN
+		CLEAR F1_MEMOS(J)
+		CLEAR F2_MEMOS(J)
+		CLEAR F3_MEMOS(J)
+
+		CLEAR F1_MEMOL(J)
+		CLEAR F2_MEMOL(J)
+		CLEAR F3_MEMOL(J)
+		END
+
+	FIND (CHN045, ORDLIN, OORDNO) [ERR=MLOOP]
+MLOOP,
+	READS (CHN045, ORDLIN, EOF_M)
+	IF (LINSEQ .NE. 0) GOTO EOF_M
+	IF (LMSQ1 .GT. 0) 
+		BEGIN
+		F1_MEMOS(LMSQ1) = M_SHORTD
+		F1_MEMOL(LMSQ1) = M_LDESCR
+		END
+	IF (LMSQ2 .GT. 0) 
+		BEGIN
+		F2_MEMOS(LMSQ2) = M_SHORTD
+		F2_MEMOL(LMSQ2) = M_LDESCR
+		END
+	IF (LMSQ3 .GT. 0) 
+		BEGIN
+		F3_MEMOS(LMSQ3) = M_SHORTD
+		F3_MEMOL(LMSQ3) = M_LDESCR
+		END
+	GOTO MLOOP
+EOF_M,
+	RETURN
+;-------------------------------------------------
+
+LOAD_WORK,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Move non-memo line items
+		;;; into work file
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;---------------------------------------------------------------
+;Create work file...
+	WFORD = OORDNO,'XXXXXX'
+	XCALL ISAMC (WRKFIL, 137, 1, 'START=1, LENGTH=56, DUPS, ASCEND')
+	OPEN (33, SU, WRKFIL)
+	CHNWRK = 33
+
+;Create output file...
+	OFORD = OORDNO,'XXXXXX'
+	XCALL ISAMC (OUTFIL, 137, 1, 'START=1, LENGTH=56, DUPS, ASCEND')
+	OPEN (34, SU, OUTFIL)
+	CHNOUT = 34
+;---------------------------------------------------------------
+
+	FIND (CHN045, ORDLIN, OORDNO) [ERR=LOOP]
+LOOP,
+	READS (CHN045, ORDLIN, EOF)
+	IF (LORDNO .NE. OORDNO) GOTO EOF
+	IF (LTYPE .EQ. 'M') GOTO LOOP
+	IF (LDESCR.EQ.']]]CANCEL') GOTO LOOP
+	IF (LFLAG.EQ.0) GOTO LOOP
+	IF (LQTYOR .EQ. 0) GOTO LOOP		;SSQ 3/24/00
+
+	WTYPE = 'L'
+	WDEPT = LPRDCD(1,1)		;SSQ 6-21-00
+	WSEQ1 = LMSQ1
+	WSEQ2 = LMSQ2
+	WSEQ3 = LMSQ3
+	WSQNO = LSRTSQ
+	WITEM = LITMNO
+	WDESC = LDESCR
+	IF (LDAMPR) WITEM(10,15) = 'Damper'
+	WQTY = LQTYOR
+	WQTYSH = LQTYSH
+	WUM = LUOFM
+	WPRICE = LPRICE
+	WCPFLG = LCPFLG
+	STORE (CHNWRK, LINE, W_KEY)
+
+; mark as if line item was printed on invoic...
+	LFLAG = 2
+	LOKCTL = 1
+	XCALL ISIO (CHN045,ORDLIN,ORDKEY,WRITE,LOKCTL)
+	GOTO LOOP
+
+EOF,
+	RETURN
+;----------------------------------------------
+
+CONSOLIDATE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Consolidate line items for the
+		;;; same part #
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	FIND (CHNWRK, LINE, ^FIRST) [ERR=EOF_CON]
+	SAVKEY = '***'
+CONLOOP,
+	READS(CHNWRK, LINE, EOF_CON)
+	IF (W_KEY.NE.SAVKEY .OR. WCPFLG)
+	THEN	CALL NEWKEY
+	ELSE	BEGIN
+		INCR MULTLINE
+		SAVQTY = SAVQTY + WQTY
+		SAVSHP = SAVSHP + WQTYSH
+		DELETE (CHNWRK)
+		END
+	GOTO CONLOOP
+
+NEWKEY,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (SAVKEY .EQ. '***') GOTO OUTKEY
+	IF (MULTLINE .EQ. 0) GOTO OUTKEY
+
+	READ (CHNWRK, LINE, SAVKEY)
+	WQTY = SAVQTY
+	WQTYSH = SAVSHP
+	WRITE (CHNWRK, LINE, SAVKEY)
+OUTKEY,
+	SAVKEY = W_KEY
+	SAVQTY = WQTY
+	SAVSHP = WQTYSH
+	CLEAR MULTLINE
+	RETURN
+;-----------------------------------------------
+
+EOF_CON,
+	CALL NEWKEY
+	RETURN
+;-----------------------------------------------
+WRTMEM,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; ROUTINE TO FORMAT AND PRINT WO'S
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; print top notes...
+	CLEAR IS_NOTE
+	OC_ORD = OORDNO
+	OC_SEQ = 0
+	FIND(CHN075,ORDNOT,COMKEY) [ERR=NXTNOT]
+NXTNOT,
+	XCALL IOS (CHN075, ORDNOT, READ, LOKCTL)
+	IF(LOKCTL .NE. 0) GOTO EOF_NNT
+	IF(OC_ORD .NE. OORDNO) GOTO EOF_NNT
+	IF(OC_SEQ .GE. 900) GOTO EOF_NNT
+	PLINE(35,64) = OC_COM
+	CALL PRINT
+	IS_NOTE = 1
+	GOTO NXTNOT
+EOF_NNT,
+	IF(IS_NOTE)
+		BEGIN
+		CLEAR PLINE
+		CALL PRINT
+		END
+
+
+	CLOSE CHNOUT
+	OPEN (CHNOUT, SI, OUTFIL)
+	SAVDPT = -1
+
+W_LOOP,
+	READS (CHNOUT, LINE, W_EOF)
+	IF (WTYPE.EQ.'L' .AND. WQTY.EQ.0) GOTO W_LOOP		;SKIP OF QTY=0
+	IF (WDEPT .NE. SAVDPT) CALL W_NEWDPT
+	IF (WTYPE .EQ. 'M')
+	THEN	BEGIN
+		IF(LP_ON)XCALL HP (14,hpFONT,hpBOLD)
+		IF (MEMO_ON .EQ. 0)
+			BEGIN
+			CLEAR PLINE
+			CALL MEMO_PRINT
+			MEMO_ON = 1
+			END
+		IF (MITEM.EQ.'   F1') 
+		THEN	FOR J FROM 1 THRU 3
+			BEGIN
+			TMPDSC = MMEMO(J)
+			CALL MAIN_MEMO
+			PLINE (8,70) = TMPDSC
+			IF (MMEMO(J) .NE. BLANKS) CALL MEMO_PRINT
+			END
+		ELSE	BEGIN
+			PLINE(8,70) = M_LONG
+			CALL MEMO_PRINT
+			GOTO W_LOOP
+			END
+
+		END
+	ELSE	BEGIN
+		IF(LP_ON)XCALL HP (14, hpFONT,hpMEDIUM)
+		CALL PRTLIN
+		END
+
+	GOTO W_LOOP
+;====================================================
+
+PRTLIN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR PLINE
+	IF (LINCNT.GE.MAXLIN) CALL NXTPAG
+	PLINE (18,32) = WITEM
+
+	IF (WITEM.EQ.'???') PLINE (18,32) = '***'
+	IF (WITEM.EQ.'M              ') PLINE (18,32) =
+	PLINE (35,64) = WDESC
+	IF ( WITEM.NE.'M              ' )
+	BEGIN
+	  PLINE (1,7) = WQTY, 'ZZ,ZZX-'
+	  PLINE (9,17) = WQTYSH, 'ZZZ,ZZX-'
+	  PLINE (69,77) = WPRICE,	'Z,ZZZ.XXX'
+	  PLINE (80,81) = WUM
+	  EXEPRC = (WQTYSH*WPRICE)#1
+	  PLINE (85,94) = EXEPRC, MASK
+	  TOTSAL = TOTSAL + EXEPRC
+	END
+	CALL PRINT
+	RETURN
+;-----------------------------------------------------------
+
+
+MAIN_MEMO,	;;;;;;;;;;;;;;;;;;;;;;;;;;
+	TL = %TRIM(TMPDSC)
+	REM = 59 - TL
+	REM = REM/2
+	IF (REM.GT.0)
+		BEGIN
+		CLEAR TMPDSC
+		TMPDSC(1,REM) = DASHES
+		TMPDSC(REM+1,REM+TL) = MMEMO(J)
+		TMPDSC(REM+1+TL,59) = DASHES
+		END
+	RETURN
+;-----------------------------------------
+
+W_NEWDPT,
+	SAVDPT = WDEPT
+	RETURN
+;------------------------------------
+W_EOF,
+	RETURN
+;===============================================
+
+PRTHDR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	ODSCAL =
+	KEY = OCUSNO
+	BSEND = SAV001
+	XCALL SERCH (2,CUSIDX,KEY,1,6,BSEND,BSMID,SRCCTL,4,7,11,0,0,0,0)
+	IF (SRCCTL.EQ.1 .OR. IRC001.LE.0) 
+	THEN	CUSMAS =
+	ELSE	XCALL IO (1,CUSMAS,IRC001,READ,LOKCTL)
+
+	WRITES (14, TOP_MARGIN)
+	WRITES (14, LEFT_MARGIN)
+
+	LINCNT =
+	TOTSAL =
+
+;try the logo...
+;;;	IF(LP_ON)XCALL HP (14,hpGRAPHIC,'SMC.HP', 100)
+
+;company name & address...
+	IF(LP_ON)XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	IF (OSALE+OMISC+OTAX(1)+OTAX(2)+OTAX(3)+OFRGHT.LT.0)
+	THEN	BEGIN
+		IS_CMEMO = 1
+	;;;	IF(LP_ON)XCALL HP (14,hpPOS,2,24,0, "C R E D I T   M E M O")
+		IF(LP_ON)XCALL HP (14,hpPOS,2,24,0, "CONFIRMING ONLY")
+		END
+	ELSE	BEGIN
+		IS_CMEMO = 0
+	;;;	IF(LP_ON)XCALL HP (14,hpPOS,2,24,0, "I N V O I C E")
+		IF(LP_ON)XCALL HP (14,hpPOS,2,24,0, "CONFIRMING ONLY")
+		END
+
+	IF(LP_ON)XCALL HP (14, hpPOS,2,1,0, "SHEET METAL")
+	IF(LP_ON)XCALL HP (14, hpPOS,3,1,0, "CONNECTORS, INC.")
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpMEDIUM)	
+
+	IF(LP_ON)XCALL HP (14, hpPOS,4,1,0, "5850 MAIN STREET N. E.")
+	IF(LP_ON)XCALL HP (14, hpPOS,5,1,0, "MINNEAPOLIS,   MN 55432")
+	IF(LP_ON)XCALL HP (14,hpFONT,hpBOLD)
+	IF(LP_ON)XCALL HP (14, hpPOS,6,1,0, "763-572-0000  800-328-1966")
+	IF(LP_ON)XCALL HP (14, hpFONT,hpMEDIUM)
+	IF(LP_ON)XCALL HP (14,hpFONT,hpBOLD)
+	IF(LP_ON)XCALL HP (14, hpPOS,7,1,0, "FAX:763-572-1100")
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpBOLD)
+
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,2,78,0,' INVOICE NO   ')
+	IF(LP_ON)XCALL HP (14, hpPOS,2,78,0,' ORDER NO   ')
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,5,78,0,' INVOICE DATE ')
+
+	INCR PAGOF
+
+	A_PAGOF = PAGOF,'ZZX'
+	A_TPAGE = TPAGE,'ZZX' [LEFT]
+	IF(LP_ON)XCALL HP (14,hpPOS,8,78,0,PAGE_OF)
+
+	ENTRY(1,6) = OCUSNO,	'ZZZZZX' [LEFT]
+	IF(LP_ON)XCALL HP (14,hpPOS,13,8,0,'Acct #')
+	IF(LP_ON)XCALL HP (14,hpPOS,13,15,0,ENTRY(1,6))
+
+	IF(LP_ON)XCALL HP (14,hpPOS,14,1,0,'SOLD')
+	IF(LP_ON)XCALL HP (14,hpPOS,14,51,0,'SHIP')
+	IF(LP_ON)XCALL HP (14,hpPOS,15,2,0,'TO')
+	IF(LP_ON)XCALL HP (14,hpPOS,15,52,0,'TO')
+		
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,6,66,0,INVDAA)	;invoice date
+
+	ENTRY(1,6) = OORDNO,	'ZZZZZX'
+	IF(LP_ON)XCALL HP (14, hpPOS,3,67,0,ENTRY(1,6))	;invoic #
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpMEDIUM)
+
+	IF(LP_ON)XCALL HP (14,hpPOS,14,8,0,OCUSNM)
+	IF(LP_ON)XCALL HP (14,hpPOS,15,8,0,ADD1)
+	IF(LP_ON)XCALL HP (14,hpPOS,16,8,0,ADD2)
+	CLEAR PLINE
+	PLINE(1,15) = CITY
+	PLINE(17,18) = STATE
+	PLINE(20,29) = ZIP
+	IF(LP_ON)XCALL HP (14,hpPOS,17,8,0,PLINE(1,30))
+
+	IF(LP_ON)XCALL HP (14,hpPOS,14,58,0,OSHPNM)
+	IF(LP_ON)XCALL HP (14,hpPOS,15,58,0,OSHAD1)
+	IF(LP_ON)XCALL HP (14,hpPOS,16,58,0,OSHAD2)
+	IF(LP_ON)XCALL HP (14,hpPOS,17,58,0,OSHAD3)
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	IF(LP_ON)XCALL HP (14, hpPOS,18,0, hpHLINE,164)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,20,0, hpHLINE,164)	;
+
+	
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpBOLD)
+;first header...
+	PLINE = 'Salesperson     P.O. Number     Job Number        Ship Via
+&         Date Shipped    Terms'
+	IF(LP_ON)XCALL HP (14,hpPOS,19,0,0,PLINE(1,%TRIM(PLINE)) )
+
+	IF(LP_ON)XCALL HP (14, hpPOS,20,13, hpVLINE,4)	
+	IF(LP_ON)XCALL HP (14, hpPOS,20,31, hpVLINE,4)	
+	IF(LP_ON)XCALL HP (14, hpPOS,20,43, hpVLINE,4)	
+	IF(LP_ON)XCALL HP (14, hpPOS,20,67, hpVLINE,4)	
+	IF(LP_ON)XCALL HP (14, hpPOS,20,79, hpVLINE,4)	
+
+	
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpMEDIUM)
+	CLEAR PLINE
+
+	XCALL SREP(OSLMAN,LNAM,SNAM,SINT)
+	PLINE(1,12) = SNAM
+
+	XPOL1 = OPONO
+	XPOL2 =
+	IF (OMETRO.NE.BLANKS)
+		BEGIN
+		XPOL1 = OMETRO
+		XPOL2 = OPONO
+		END
+;;;	PLINE (17,26) = OPONO
+	PLINE (17,28) = XPOL1
+	PLINE (33,42) = OJOBNO
+
+	CALL GET_SCAC
+	PLINE (46,60) = SC_NAME
+
+;;; for orders in system prior to SCAC switch...
+	IF (OSCAC.EQ.BLANKS .AND. OSHVIA.EQ.'1') OSCAC = 'WC'
+	IF (OSCAC.NE.'WC')
+	BEGIN
+	  IF (OCLPPD.EQ.'C') PLINE (62,66) = '(COL)'
+	  IF (OCLPPD.EQ.'D') PLINE (62,66) = '(COD)'
+	  IF (OCLPPD.EQ.'P') PLINE (62,66) = '(PPD)'
+	END
+
+	XCALL DATE8(OSHDAT, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE (69,78) = D_FMT
+
+	SRCCTL = 2
+	BSEND = ORGART
+	XCALL SERCH (8,ARTERM,OTERMS,1,1,BSEND,BSMID,SRCCTL,4,2,7,0,0,0,0)
+	IF (SRCCTL.EQ.1) ARTRDS = '*NF*'
+
+	PLINE (81,95) = ARTRDS
+
+	IF(LP_ON)XCALL HP (14,hpPOS,21,0,0,PLINE)
+
+	CLEAR PLINE
+	PLINE (17,28) = XPOL2
+	IF(LP_ON)XCALL HP (14,hpPOS,22,0,0,PLINE)
+
+	CLEAR PLINE
+
+	VL = 56
+	LROW = 22
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; bottom of 1st page...
+	IF (TPAGE .GT. 1)
+		BEGIN
+		VL = 70
+		IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpBOLD)
+		IF(LP_ON)XCALL HP (14, hpPOS,59,1, hpHLINE,168)	;
+		IF(LP_ON)XCALL HP (14, hpPOS,60,63, hpHLINE,24)	;
+		PLINE(1,12) = "Continued"
+		IF(LP_ON)XCALL HP (14,hpPOS,61,64,0,PLINE(1,12))
+		IF(LP_ON)XCALL HP (14, hpPOS,62,63, hpHLINE,24)	;
+		IF(LP_ON)XCALL HP (14, hpPOS,60,63, hpVLINE,4)	;
+		IF(LP_ON)XCALL HP (14, hpPOS,60,75, hpVLINE,4)	;
+		END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CALL BODY_HEADER		;1ST PAGE
+	LINCNT = 25			;starting line for 1st page
+	CLEAR PRINTED_LINES		;CLEAR FOR EACH NEW INVOICE
+;;;	MAXLIN = 34 + 25 
+	MAXLIN = 25 + FIRST_MAX		;computed at "count_line"
+	RETURN
+;-------------------------------------------------------------
+
+FNDITM,
+	LORDNO = OORDNO
+	LINSEQ =
+	LOKCTL = 1
+	XCALL ISIO (5,ORDLIN,LORDNO,READ,LOKCTL)
+	IF (LOKCTL.EQ.3) GO TO GETDUC
+	IF (LORDNO.NE.OORDNO) GO TO GETDUC
+ITEMS,
+	IF (LORDNO.EQ.OORDNO) CALL PRTLIN
+	IF (LORDNO.GT.OORDNO) GO TO GETDUC
+	LOKCTL = 1
+	XCALL IOS (5,ORDLIN,READ,LOKCTL)
+	IF (LOKCTL.EQ.2) GO TO GETDUC
+	GO TO ITEMS
+
+GETDUC,
+	CALL CLEAR_SUM_ARRAYS
+
+	FIND (6, DUCACC, OORDNO) [ERR=NXTDUC]
+NXTDUC,
+	LOKCTL = 1
+	XCALL IOS (6,DUCACC,READ,LOKCTL)
+	IF (LOKCTL.NE.0 .OR. DUCTOR.NE.OORDNO) RETURN
+	SZ1=%TRN3(SIZE1)
+	SZ2=%TRN3(SIZE2)
+
+	CALL PRTDUC
+	CALL SUMDUC
+	GOTO NXTDUC
+;----------------------------------------------------
+
+SUMDUC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CONFIG(1,3) = GAUGE
+	IF (DUTYPE.EQ.2.OR.DUTYPE.EQ.3) CONFIG(1,3) = THICK
+	CONFIG(4,4) = DUTYPE
+	CONFIG(5,5) = CAT
+	CONFIG(6,6) = STY
+	CONFIG(7,7) = SEAM
+
+		; Check to see if the configuration has all ready 
+		; been on this order
+	I =
+	DO BEGIN
+	  INCR I
+	  DUCREC = SDUCRC(I)
+	END
+	UNTIL (DUCCFG.EQ.CONFIG.OR.DUCCFG.EQ.0.OR.I.GE.MAXDUC)
+	IF (I.GE.MAXDUC) GOTO BADCON
+
+	DUCCFG = CONFIG
+	DUCSQF = DUCSQF + SQFEET
+	DUCPND = DUCPND + POUNDS
+	DUCGPR = GPRICE
+	SDUCRC(I) = DUCREC
+	SUM_DUC = I		;# OF ARRAY ELEMENTS
+	SUM_DUC = SUM_DUC + 1	;4-30-99 FOR LINFEED
+
+	IF (LINER.GE.1.AND.LINER.LE.8.AND.LINER.NE.4)
+&		LINSQF(LINER) = LINSQF(LINER) + SQFLIN
+
+		;Summarize accessories
+
+	IF (ACC.EQ.2) RETURN
+
+	IF (SLIPS)
+	BEGIN
+	  QTY = SLIPS
+	  ITM = SLPITM
+	  PRC = SLPPRC
+	  DES = SLPDES
+	  CALL SUMACC
+	END
+	IF (DRIVES)
+	BEGIN
+	  QTY = DRIVES
+	  ITM = DRVITM
+	  PRC = DRVPRC
+	  DES = DRVDES
+	  CALL SUMACC
+	END
+	IF (TCORN)
+	BEGIN
+	  QTY = TCORN
+	  ITM = CORITM
+	  PRC = CORPRC
+	  DES = CORDES
+	  CALL SUMACC
+	END
+	IF (TNBQTY)
+	BEGIN
+	  QTY = TNBQTY
+	  ITM = TNBITM
+	  PRC = TNBPRC
+	  DES = TNBDES
+	  CALL SUMACC
+	END
+	IF (TGAQTY)
+	BEGIN
+	  QTY = TGAQTY
+	  ITM = TGAITM
+	  PRC = TGAPRC
+	  DES = TGADES
+	  CALL SUMACC
+	END
+	IF (TCLQTY)
+	BEGIN
+	  QTY = TCLQTY
+	  ITM = TCLITM
+	  PRC = TCLPRC
+	  DES = TCLDES
+	  CALL SUMACC
+	END
+	IF (TBAQTY)
+	BEGIN
+	  QTY = (JOINT * 4)
+	  ITM = TBAITM
+	  ITM (10,13) = SIZE1,'ZZX"'
+	  PRC = TBAPRC
+	  DES = TBADES
+	  CALL SUMACC
+	  QTY = (JOINT * 4)
+	  ITM = TBAITM
+	  ITM (10,13) = SIZE2,'ZZX"'
+	  PRC = TBAPRC
+	  DES = TBADES
+	  CALL SUMACC
+	END
+	IF (TBNQTY)
+	BEGIN
+	  QTY = TBNQTY
+	  ITM = TBNITM
+	  PRC = TBNPRC
+	  DES = TBNDES
+	  CALL SUMACC
+	END
+
+	RETURN
+;----------------------------------
+
+SUMACC,
+		; Check to see if the accessories have all ready 
+		; been on this order
+	I =
+	DO BEGIN
+	  INCR I
+	  ACCREC = SACCRC(I)
+	END
+	UNTIL (ACCITM.EQ.ITM.OR.ACCITM.EQ.BLANKS.OR.I.GE.MAXACC)
+	IF (I.GE.MAXACC) GOTO BADACC
+
+	ACCQTY = ACCQTY + QTY
+	ACCITM = ITM
+	ACCPRC = PRC
+	ACCDES = DES
+	SACCRC(I) = ACCREC
+	SUM_ACC = I		;# OF ARRAY ELEMENTS
+	RETURN
+;----------------------------------------------
+
+BADCON,
+	XCALL LINFD (1)
+	INCR LINCNT
+	PLINE (32,60) = 'DUCT INFORMATION IS '	
+	CALL PRINT
+	GOTO ERRMSG
+BADACC,
+	XCALL LINFD (1)
+	INCR LINCNT
+	PLINE (32,60) = 'ACCESSORY INFORMATION IS'	
+	CALL PRINT
+ERRMSG,
+	PLINE (32,60) = 'PRESENTLY OVERFLOWING THE'
+	CALL PRINT
+	PLINE (32,60) = 'ARRAY BOUNDARIES.  PLEASE CALL'
+	CALL PRINT
+	PLINE (32,60) = 'SOFTWARE SUPPORT TO CORRECT THE'
+	CALL PRINT
+	PLINE (32,60) = 'PROBLEM'
+	CALL PRINT
+	RETURN
+
+
+PRTDUC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; Print duct record
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF ((LINCNT+2).GT.MAXLIN) CALL NXTPAG
+	IF ((LINCNT+3).GT.MAXLIN) CALL NXTPAG
+	INCR LINCNT
+	INCR PRINTED_LINES
+
+	PLINE (1,6) = JOINT,MASK1
+	PLINE (8,9) = 'JT'
+	IF (DUTYPE.NE.2.AND.DUTYPE.NE.3)
+	BEGIN
+	  PLINE (35,36) = GAUGE,'XX'
+	  PLINE (37,38) = 'GA'
+	END
+	IF (DUTYPE.EQ.2.OR.DUTYPE.EQ.3)
+	BEGIN
+	  PLINE (35,38) = THICK,'.XXX'
+	END
+	PLINE (18,20) = SZ1,'ZZX'
+	PLINE (21,21) = 'X'
+	PLINE (22,24) = SZ2,'ZZX'
+	PLINE (25,25) = 'X'
+	PLINE (26,27) = SIZE3,'ZX'
+	IF(SIZE1/1000.NE.SZ1 .OR. SIZE2/1000.NE.SZ2) PLINE(28,28)='*'
+	PLINE (40,43) = DTYPE(DUTYPE)
+	PLINE (45,50) = DCAT(CAT)
+	PLINE (52,54) = DSTY(STY)
+	PLINE (56,58) = DSEAM(SEAM)
+	IF (SEAL.EQ.1) PLINE (60,63) = 'SEAL'
+	PLINE (69,77) = GPRICE,MASK4
+	DECMAL = ( POUNDS * GPRICE ) # 1
+	PLINE (80,81) = 'LB'
+	PLINE (85,94) = DECMAL,MASK
+	TOTSAL = TOTSAL + DECMAL		;DUCT
+	CALL PRINT
+
+	PLINE (  1,6  ) = POUNDS,MASK1
+	PLINE (  8,8  ) = '#'
+	PLINE ( 40,46 ) = DLINER( LINER )
+	IF (SQFLIN.NE.0) 
+	BEGIN
+	  PLINE ( 16,21 ) = SQFLIN,MASK1
+	  PLINE ( 24,28 ) = 'SQ FT'
+	  PLINE ( 47,51 ) = 'LINR '
+ 	END
+	PLINE ( 52,64 ) = LOCAT
+	PLINE ( 69,77 ) = LINPRC,MASK4
+	PLINE ( 80,81 ) = 'SF'
+	DECMAL = ( LINPRC * SQFLIN ) # 1
+	PLINE (85,94) = DECMAL,MASK
+	TOTSAL = TOTSAL + DECMAL		;LINER
+	CALL PRINT
+
+	FLG175 = 2
+	LOKCTL = 1
+	XCALL ISIO (6,DUCACC,KEY175,WRITE,LOKCTL)
+
+	RETURN
+;-------------------------------------------------------
+
+;--------------------------------------------------------------
+
+PRTSDU,
+		;Print summarized duct from this order
+	IF ((LINCNT).GT.MAXLIN) CALL NXTPAG
+	INCR LINCNT
+	FOR I FROM 1 THRU MAXDUC
+	  BEGIN
+	  DUCREC = SDUCRC(I)
+	  IF (DUCCFG.EQ.0) GOTO PRTSD2
+;;;	  IF ((LINCNT).GT.MAXLIN) CALL NXTPAG
+	  IF ((LINCNT).GE.MAXLIN) CALL NXTPAG
+	  PLINE (1,6) = DUCPND,MASK1
+	  PLINE (7,7) = '#'
+	  PLINE (18,19) = DUCCFG(1,3),'XX'
+	  PLINE (21,22) = 'GA'
+	  IF (DUCCFG(4,4).EQ.2.OR.DUCCFG(4,4).EQ.3)
+	  BEGIN
+	    PLINE (18,22) = DUCCFG(1,3),'.XXX'
+	  END
+	  PLINE (35,38) = DTYPE(DUCCFG(4,4))
+	  PLINE (40,45) = DCAT(DUCCFG(5,5))
+	  PLINE (47,49) = DSTY(DUCCFG(6,6))
+	  PLINE (51,53) = DSEAM(DUCCFG(7,7))
+	  CALL PRINT
+	  SDUCRC(I) =
+	END
+PRTSD2,
+	FOR I FROM 1 THRU 8		;ssq 1-10-01
+	  BEGIN
+	  IF (LINSQF(I).NE.0)
+	  BEGIN
+	    IF ((LINCNT).GE.MAXLIN) CALL NXTPAG
+	    PLINE (1,6) = LINSQF(I),MASK1
+	    PLINE (18,22) = 'SQ FT'
+	    PLINE (40,46) = DLINER(I)
+	    PLINE (47,51) = ' LINER'
+	    CALL PRINT
+	    LINSQF(I) =
+	  END
+	END
+	RETURN	
+;-----------------------------------------------
+MEMO_PRINT,
+
+PRINT,
+	IF(LP_ON)XCALL HP(14, hpPOS, LINCNT, 0, 0, PLINE(1,%TRIM(PLINE)) )
+	CLEAR PLINE
+	INCR PRINTED_LINES	
+	INCR LINCNT
+
+	RETURN
+;--------------------------------------------------
+
+ORDTOT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; ORDER TOTALS
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CALL PRTSDU
+
+; print bottom notes...
+	CLEAR PLINE
+;;;	CALL PRINT
+
+	OC_ORD = OORDNO
+	OC_SEQ = 900
+	FIND(CHN075,ORDNOT,COMKEY) [ERR=BXTNOT]
+BXTNOT,
+	XCALL IOS (CHN075, ORDNOT, READ, LOKCTL)
+	IF(LOKCTL .NE. 0) GOTO EOF_BNT
+	IF(OC_ORD .NE. OORDNO) GOTO EOF_BNT
+	PLINE(35,64) = OC_COM
+	CALL PRINT
+	GOTO BXTNOT
+EOF_BNT,
+	IF(PAGOF.LT.TPAGE) CALL NXTPAG
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpBOLD)
+	IF(LP_ON)XCALL HP (14, hpPOS,52,1, hpHLINE,168)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,60,1, hpHLINE,168)	;
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpMEDIUM)
+	IF(LP_ON)XCALL HP (14, hpPOS,54,52, hpHLINE,88)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,58,52, hpHLINE,88)	;
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hpBOLD)
+
+;;;	CALL DISPLA_DISC
+
+	IF(LP_ON)XCALL HP (14, hpPOS,55,3,0,D_LIN1(1,%TRIM(D_LIN1)))
+	IF(LP_ON)XCALL HP (14, hpPOS,56,3,0,D_LIN2(1,%TRIM(D_LIN2)))
+	IF(LP_ON)XCALL HP (14, hpPOS,57,3,0,D_LIN3(1,%TRIM(D_LIN3)))
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hpMEDIUM)
+
+	IF(LP_ON)XCALL HP (14, hpPOS,53,58,0,'SALE AMOUNT')	;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,55,53,0, OTAXFL)
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,55,58,0,'STATE SALES TAX')	;
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,56,58,0,'CITY SALES TAX')	;
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,57,58,0,'SHIPPING CHARGES')	;
+;;;	IF(LP_ON)XCALL HP (14,hpFONT,hpBOLD)
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,59,53,0,'TOTAL DUE BY ')	;
+;;;	PLINE(1,8) = D_30_DATE,	'ZX/XX/XX'
+;;;	IF(LP_ON)XCALL HP (14, hpPOS,59,66,0,PLINE(1,8))	;
+;;;	CLEAR PLINE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	IF(LP_ON)XCALL HP (14, hpPOS,52,52, hpVLINE,16)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,52,75, hpVLINE,16)	;
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+
+	PLINE(1,12) = TOTSAL,MASK
+	IF(LP_ON)XCALL HP (14,hpPOS,53,64,0,PLINE(1,12))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 	PLINE(1,12) = OTAX(1),MASK
+;;;	IF(LP_ON)XCALL HP (14,hpPOS,55,64,0,PLINE(1,12))
+;;;
+;;;	PLINE(1,12) = (OTAX(2)+OTAX(3)) ,MASK
+;;;	IF(LP_ON)XCALL HP (14,hpPOS,56,64,0,PLINE(1,12))
+;;;
+;;;	PLINE(1,12) = OFRGHT ,MASK
+;;;	IF(LP_ON)XCALL HP (14,hpPOS,57,64,0,PLINE(1,12))
+;;;
+;;;	TAX = OTAX(1) + OTAX(2) + OTAX(3)
+;;;	DECMAL = TOTSAL + OMISC + TAX + OFRGHT
+;;;	PLINE(1,12) = DECMAL ,MASK
+;;;	IF(LP_ON)XCALL HP (14,hpFONT,hpBOLD)
+;;;	IF(LP_ON)XCALL HP (14,hpPOS,59,64,0,PLINE(1,12))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if(lp_on.eq.0)return
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	OINVNO = oordno
+;;;	OINVDT = INVDAT
+;;;	OFLAG = 2		;OFLAG = 2 / INVOICE PRINTED
+;;;	OSALE = TOTSAL
+;;;	LOKCTL = 1
+;;;	XCALL ISIO (4,ORDHDR,OORDNO,WRITE,LOKCTL)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CALL PAGE_FEED
+	RETURN
+;---------------------------------------------------------
+
+PAGE_FEED,
+	if(lp_on)DISPLAY (14, EJECT)
+	RETURN
+;---------------------------------------------------------
+NEWDPT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SAVDPT = WDEPT
+	RETURN
+;------------------------------------------
+
+NEWSQ1,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SAVSQ1 = WSEQ1
+	IF (WSEQ1 .LE. 0) RETURN
+	CLEAR LINE2
+	WSEQ12 = SAVSQ1
+	CLEAR WSEQ22, WSEQ32
+	WITEM2 = '   F1'
+	WTYPE2 = 'M'
+	WDESC2 = F1_MEMOL(WSEQ12)
+	WDEPT2 = SAVDPT
+	STORE (CHNOUT, LINE2, W_KEY)
+
+	RETURN
+;------------------------------------------
+NEWCOM,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; COMBINATION OF SEQ2 & SEQ3
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SAVCOM = COMSEQ
+	CLEAR TM2, TM3
+	IF (WSEQ2 .NE. 0) TM2 = F2_MEMOL(WSEQ2)
+	IF (WSEQ3 .NE. 0) TM3 = F3_MEMOL(WSEQ3)
+
+	FOR J FROM 1 THRU 3
+		BEGIN
+		CLEAR LINE
+
+		WSEQ1 = SAVSQ1
+		COMSEQ = SAVCOM
+		WITEM = 
+		WTYPE = 'M'
+		WDEPT = SAVDPT
+		WDESC(1,30) = TM2A(J)
+		WDESC(34,63) = TM3A(J)
+		IF (WDESC .EQ. BLANK90) NEXTLOOP
+		IF (TM2A(J).NE.BLANKS) WITEM(4,5) = 'F2'
+		IF (TM3A(J).NE.BLANKS) 
+			BEGIN
+			WITEM(4,5) = 'F3'
+			WDESC(32,32) = '*'
+			END
+		IF (TM2A(J).NE.BLANKS .AND. TM3A(J).NE.BLANKS) 
+			BEGIN
+			WITEM(4,8) = 'F2&F3'
+			END
+		WITEM (10,10) = J,'X'
+		STORE (CHNOUT, LINE, W_KEY)
+		END
+		
+
+	RETURN
+;------------------------------------------
+
+ENDOFF,			
+	CALL CLOSE 
+	XRETURN
+
+;======================================================
+
+GET_SCAC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; COP TABLE SCAC LOOK-UP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR TBL_KEY
+	TBLCOD = 'SC'
+	TBLKEY = OSCAC
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	IF (LOKCTL .NE. 0)
+		BEGIN
+		CLEAR COPTBL
+		SC_NAME = "* NOT ON FILE *"
+		END
+	RETURN
+;-----------------------------------------------------
+
+CLEAR_SUM_ARRAYS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+			;;; CLEAR SACCRC ARRAY & SDUCRC ARRAY
+			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	ACCREC =
+	ACCQTY =
+	FOR I FROM 1 THRU MAXACC SACCRC(I) = ACCREC
+	DUCREC =
+	DUCCFG =
+	FOR I FROM 1 THRU MAXDUC	SDUCRC(I) = DUCREC
+
+	RETURN
+;-----------------------------------------------------
+NXTPAG,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	INCR PAGOF
+	CALL PAGE_FEED
+
+	IF(PAGOF.LT.TPAGE)		;NOT LAST PAGE
+	THEN	BEGIN
+		VL = 102
+		IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpBOLD)
+		IF(LP_ON)XCALL HP (14, hpPOS,59,1, hpHLINE,168)	;
+		IF(LP_ON)XCALL HP (14, hpPOS,60,63, hpHLINE,24)	;
+		PLINE(1,12) = "Continued"
+		IF(LP_ON)XCALL HP (14,hpPOS,61,64,0,PLINE(1,12))
+		IF(LP_ON)XCALL HP (14, hpPOS,62,63, hpHLINE,24)	;
+		IF(LP_ON)XCALL HP (14, hpPOS,60,63, hpVLINE,4)	;
+		IF(LP_ON)XCALL HP (14, hpPOS,60,75, hpVLINE,4)	;
+		END
+	ELSE	BEGIN
+		VL = 88
+		END
+
+	LINCNT = 09		
+	MAXLIN = 44 + 9 
+
+	LROW = 6
+	CALL INV_HEADER
+	CALL BODY_HEADER
+	RETURN
+;-------------------------------------------------------
+
+INV_HEADER,
+	IF(LP_ON)XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	IF(LP_ON)XCALL HP (14,hpPOS,2,24,0, "CONFIRMING ONLY")
+
+	IF(LP_ON)XCALL HP (14, hpPOS,2,1,0, "SHEET METAL")
+	IF(LP_ON)XCALL HP (14, hpPOS,3,1,0, "CONNECTORS, INC.")
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpBOLD)
+	ENTRY(1,6) = OORDNO,'ZZZZZX'
+	IF(LP_ON)XCALL HP (14, hpPOS,1,65,0,ENTRY(1,6))
+	A_PAGOF = PAGOF,'ZZX'
+	A_TPAGE = TPAGE,'ZZX' [LEFT]
+	IF(LP_ON)XCALL HP (14,hpPOS,2,64,0,PAGE_OF)
+	RETURN
+;------------------------------------------------------------------------
+
+BODY_HEADER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,0, hpHLINE,168)	;
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpBOLD)
+	PLINE = '  QTY     QTY'
+	INCR LROW
+	IF(LP_ON)XCALL HP (14,hpPOS,LROW,0,0,PLINE(1,%TRIM(PLINE)) )
+
+	PLINE = 'ORDERED SHIPPED    ITEM NUMBER             DESCRIPTION
+&             UNIT PRICE  UM    EXT PRICE'
+	INCR LROW
+	IF(LP_ON)XCALL HP (14,hpPOS,LROW,0,0,PLINE(1,%TRIM(PLINE)) )
+	CLEAR PLINE
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,0, hpHLINE,168)	;
+
+	IF(LP_ON)XCALL HP (14,hpFONT,hp12CPI+hpMEDIUM)
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,7, hpVLINE,VL)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,17, hpVLINE,VL)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,33, hpVLINE,VL)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,66, hpVLINE,VL)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,79, hpVLINE,VL)	;
+	IF(LP_ON)XCALL HP (14, hpPOS,LROW,82, hpVLINE,VL)	;
+	RETURN
+;-----------------------------------------------------
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+COUNT_LINES,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; DETERMIN # OF PAGES ON INVOICE
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR L_CNT, D_CNT, S_CNT
+
+	SAVORD = OORDNO		;CURRENT ORDER #
+	CLEAR SUM_ACC, SUM_DUC, NUM_LNR
+	CALL CLEAR_SUM_ARRAYS
+
+	FIND (CHNWRK, LINE, ^FIRST) [ERR=CL_EOF]
+CL_LOOP,
+	READS (CHNWRK, LINE, CL_EOF)
+	INCR L_CNT
+	IF(SAV_MSEQ .NE. MSEQ) INCR L_CNT	;SSQ 4-14-00
+	SAV_MSEQ = MSEQ
+	GOTO CL_LOOP
+CL_EOF,
+	LOKCTL = 1
+	XCALL ISIO (6, DUCACC, OORDNO, READ, LOKCTL)
+	WHILE	(DUCTOR.EQ.OORDNO .AND. LOKCTL.EQ.0)
+		BEGIN
+		INCR D_CNT
+		CALL SUMDUC		;summarize duct and acc
+		LOKCTL = 1
+		XCALL IOS (6, DUCACC, READ, LOKCTL)
+		END
+
+	FOR I FROM 1 THRU 8  
+		BEGIN
+		IF (LINSQF(I) .NE. 0) INCR NUM_LNR
+		CLEAR LINSQF(I)
+		END
+	S_CNT = SUM_DUC + NUM_LNR
+	CALL PG_CNT
+	RETURN
+;----------------------------------------------------
+
+PG_CNT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;compute number of pages:
+	P1_CNT = 34	;# of lines on 1st page of multi-page invoice.
+	PX_CNT = 28	;# of lines on 1st page of 1 page invoice.
+	P2_CNT = 44
+	TPAGE = 1				;ALWAYS AT LEAST 1 PAGE
+
+	T_LINES = L_CNT + (3*D_CNT) + S_CNT + 1
+;;;	IF (T_LINES .LE. P1_CNT) RETURN		;1 PAGE
+	FIRST_MAX = PX_CNT
+	IF (T_LINES .LE. PX_CNT) RETURN
+	IF(T_LINES.GT.PX_CNT .AND. T_LINES.LE.P1_CNT)
+		BEGIN
+		FIRST_MAX = T_LINES - 1		;FORCE 1 LINE ON 2ND PAGE.
+		IF(D_CNT.EQ.0 .AND. S_CNT.EQ.0) FIRST_MAX = T_LINES -2
+		TPAGE = 2
+		RETURN
+		END
+
+	FIRST_MAX = P1_CNT
+
+	REM = L_CNT - P1_CNT
+NL_LOOP,				;COUNT PAGES OF JUST L/I'S
+	IF (REM .LE. 0) GOTO CALC_DUCT
+	INCR TPAGE
+	REM = REM - P2_CNT
+	GOTO NL_LOOP
+
+CALC_DUCT,		;DUCTWORK MIXED W/ L/I'S
+	REM = -REM
+	D_REM = REM/3	;# OF DUCTWORK RECORDS WHICH CAN BE PRINTED ON
+			;REMAINDER OF PAGE.
+
+	X_REM = D_REM*3 - REM	;UNUSABLE (EXTRA) LINES
+	D_REM = D_CNT -D_REM
+ND_LOOP,
+	IF(D_REM .LE. 0) GOTO CALC_SUM
+	INCR TPAGE
+	D_REM = D_REM - 14	;14*3 = 42 (closest to 44/3)
+	X_REM = 2
+	GOTO ND_LOOP
+
+CALC_SUM,
+	REM = -D_REM	;# OF 3 LINE SEGMENTS LEFT
+	REM = REM * 3	;# OF LINES REMAINING
+	REM = REM + X_REM - 1	;LEAVE BLANK LINE BEFORE SUMMARY LINES
+
+	REM = S_CNT - REM
+NS_LOOP,
+	IF(REM .LE. 0) RETURN	;WILL FIT ON LAST PAGE
+	INCR TPAGE
+	REM = REM - P2_CNT
+	GOTO NS_LOOP
+	RETURN
+;----------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 5
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	XCALL FILES (1,'I',001,SWITCH)
+;;;	IF (SWITCH .EQ. 9) RETURN
+;;;	CHN001 = 1
+;;;
+;;;	XCALL FILES (2,'I', 002, SWITCH)
+;;;	IF (SWITCH .EQ. 9) RETURN
+;;;	CHN002 = 2
+;;;
+	XCALL FILES (44,'SU',44,SWITCH)		;FILE # 44 -- ORDHDR FILE
+	IF (SWITCH .EQ. 9) RETURN
+	CHN044 = 44
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL FILES (45,'SU',45,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN045 = 45
+
+	XCALL FILES (75,'SI',075,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN075 = 75
+
+	XCALL FILES (46,'SU',175,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN175 = 46
+
+	XCALL FFILE (44, REDFIL, CLCTL)
+	REDFIL(5,14) = 'INVOIC.WRK'
+	OPEN (47, I, REDFIL)
+	CHN068 = 47
+
+	XCALL FILES (48,'I',170, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN170 = 48
+
+	XCALL FILES (49,'SI',182,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN182 = 49
+
+	XCALL FILES (54, 'I', 54, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN054 = 54
+
+	LOKCTL = 1
+	XCALL IO (CHN001,CUSMAS,1,READ,LOKCTL)
+	SAV001 = ORG001
+
+	LOKCTL = 1
+	XCALL IO (CHN170,ARTCTL,1,READ,LOKCTL)
+	ORGART = ORG170
+
+	OPNOK = 1
+	RETURN
+;-----------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN001) CLOSE CHN001
+	IF (CHN002) CLOSE CHN002
+	IF (CHN044) CLOSE CHN044
+	IF (CHN045) CLOSE CHN045
+	IF (CHN068) CLOSE CHN068
+	IF (CHN075) CLOSE CHN075
+	IF (CHN175) CLOSE CHN175
+	IF (CHN054) CLOSE CHN054
+	IF (CHN170) CLOSE CHN170
+	IF (CHN182) CLOSE CHN182
+
+	RETURN
+;-----------------------------------------------
+
+END
+

@@ -1,0 +1,16 @@
+q.rec - for new quotes to orders report.
+
+	q_ord	,d6
+		- oorddt
+		- ocusnm
+		- opono
+		- osale
+
+	q_cust	,d6	;look up mtd & ytd sales $
+
+
+customer statistics:
+
+cs_cust	,d6
+cs_ord	,d4	;number of orders in range
+cs_qot	,d4	;number of quotes in range

@@ -1,0 +1,1327 @@
+
+O:\SOURCE\cp>call bld advic2 cp 
+
+O:\SOURCE\cp>dbl advic2.cp 
+
+O:\SOURCE\cp>dblink -o cp:advic2 advic2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld advic3 cp 
+
+O:\SOURCE\cp>dbl advic3.cp 
+
+O:\SOURCE\cp>dblink -o cp:advic3 advic3 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld advice cp 
+
+O:\SOURCE\cp>dbl advice.cp 
+
+O:\SOURCE\cp>dblink -o cp:advice advice cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld alninv cp 
+
+O:\SOURCE\cp>dbl alninv.cp 
+
+O:\SOURCE\cp>dblink -o cp:alninv alninv cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld analys cp 
+
+O:\SOURCE\cp>dbl analys.cp 
+
+O:\SOURCE\cp>dblink -o cp:analys analys cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld aud cp 
+
+O:\SOURCE\cp>dbl aud.cp 
+%DBL-F-OPENIN, Cannot open:  aud.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:aud aud cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  aud.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld aud2 cp 
+
+O:\SOURCE\cp>dbl aud2.cp 
+%DBL-F-OPENIN, Cannot open:  aud2.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:aud2 aud2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  aud2.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld bddmnt cp 
+
+O:\SOURCE\cp>dbl bddmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:bddmnt bddmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld biled2 cp 
+
+O:\SOURCE\cp>dbl biled2.cp 
+
+O:\SOURCE\cp>dblink -o cp:biled2 biled2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld bilidx cp 
+
+O:\SOURCE\cp>dbl bilidx.cp 
+
+O:\SOURCE\cp>dblink -o cp:bilidx bilidx cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld bldslh cp 
+
+O:\SOURCE\cp>dbl bldslh.cp 
+
+O:\SOURCE\cp>dblink -o cp:bldslh bldslh cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld bocust cp 
+
+O:\SOURCE\cp>dbl bocust.cp 
+
+O:\SOURCE\cp>dblink -o cp:bocust bocust cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld boitem cp 
+
+O:\SOURCE\cp>dbl boitem.cp 
+
+O:\SOURCE\cp>dblink -o cp:boitem boitem cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cancel cp 
+
+O:\SOURCE\cp>dbl cancel.cp 
+
+O:\SOURCE\cp>dblink -o cp:cancel cancel cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld canest cp 
+
+O:\SOURCE\cp>dbl canest.cp 
+
+O:\SOURCE\cp>dblink -o cp:canest canest cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld caninq cp 
+
+O:\SOURCE\cp>dbl caninq.cp 
+
+O:\SOURCE\cp>dblink -o cp:caninq caninq cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld canlog cp 
+
+O:\SOURCE\cp>dbl canlog.cp 
+
+O:\SOURCE\cp>dblink -o cp:canlog canlog cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld canroc cp 
+
+O:\SOURCE\cp>dbl canroc.cp 
+
+O:\SOURCE\cp>dblink -o cp:canroc canroc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld catent cp 
+
+O:\SOURCE\cp>dbl catent.cp 
+    89                 XCALL IO (CHN041, ITMMAS, IRC041, WRITE, LOKCTL)
+%DBL-E-PARSE, syntax error at or near {IRC041, WRITE, LOKCTL)}
+    93                 READS (CHN042, ITMIDX, EOF)
+%DBL-E-PARSE, syntax error at or near {ITMIDX, EOF)}
+    94                 IF (ITMIDX .EQ. ']]]]]]') GOTO EOF
+%DBL-E-PARSE, syntax error at or near {ITMIDX .EQ. "]]]]]]") GOTO}
+    95                 IF (IRC041 .EQ. 0) GOTO GET_NEXT
+%DBL-E-PARSE, syntax error at or near {IRC041 .EQ. 0) GOTO}
+    96                 XCALL IO (CHN041, ITMMAS, IRC041, READ, LOKCTL)
+%DBL-E-PARSE, syntax error at or near {IRC041, READ, LOKCTL)}
+    106                XCALL SERCH (CHN042,ITMIDX,ITEM,1,15,BSEND,BSMID,SRCCTL,4,16,20,0,0,0,0)
+%DBL-E-PARSE, syntax error at or near {ITMIDX,ITEM,1,15,BSEND,}
+    107                IF (SRCCTL.OR.IRC041.LE.0)
+%DBL-E-PARSE, syntax error at or near {IRC041.LE.0)}
+    108                THEN    ITEM_FOUND = 0
+%DBL-E-PARSE, syntax error at or near {THEN ITEM_FOUND = 0}
+    109                ELSE    BEGIN
+%DBL-E-PARSE, syntax error at or near {ELSE BEGIN}
+    111                        XCALL ISIO (CHN041, ITMMAS, IRC041, READ, LOKCTL)
+%DBL-E-PARSE, syntax error at or near {IRC041, READ, LOKCTL)}
+    112      1                 END
+%DBL-E-UNDEFLBL, Undefined label:  ENDOFF
+%DBL-E-UNDEFLBL, Undefined label:  OPENS
+    114                RETURN
+%DBL-E-PARSE, syntax error at or near {RETURN}
+    116        ENDOFF,
+%DBL-E-PARSE, syntax error at or near {ENDOFF,}
+    117                CALL CLOSE
+%DBL-E-PARSE, syntax error at or near {CALL CLOSE}
+    118                XCALL PGCHN ('CP:IMMENU',1)
+%DBL-E-PARSE, syntax error at or near {XCALL PGCHN ("CP:IMMENU",1)}
+    119                STOP 'IM:CATMNU'
+%DBL-E-PARSE, syntax error at or near {STOP "IM:CATMNU"}
+    121        OPENS,  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%DBL-E-PARSE, syntax error at or near {OPENS,}
+    122                CLEAR OPNOK
+%DBL-E-PARSE, syntax error at or near {CLEAR OPNOK}
+    124                SWITCH = 1
+%DBL-E-PARSE, syntax error at or near {SWITCH = 1}
+%DBL-F-ERRCNT, Too many errors
+%DBL-E-NOOBJ, No object file created
+
+Errors:        20, in file O:\SOURCE\cp\catent.cp
+
+O:\SOURCE\cp>dblink -o cp:catent catent cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  catent.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld catmnu cp 
+
+O:\SOURCE\cp>dbl catmnu.cp 
+
+O:\SOURCE\cp>dblink -o cp:catmnu catmnu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld catprt cp 
+
+O:\SOURCE\cp>dbl catprt.cp 
+
+O:\SOURCE\cp>dblink -o cp:catprt catprt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ccmain cp 
+
+O:\SOURCE\cp>dbl ccmain.cp 
+
+O:\SOURCE\cp>dblink -o cp:ccmain ccmain cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cctmnt cp 
+
+O:\SOURCE\cp>dbl cctmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:cctmnt cctmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cfgmnt cp 
+
+O:\SOURCE\cp>dbl cfgmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:cfgmnt cfgmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld chkcom cp 
+
+O:\SOURCE\cp>dbl chkcom.cp 
+    79                 if (lmsq1.gt.0) lf1 = f1_key(lmsq1)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF1})
+    80                 if (lmsq2.gt.0) lf2 = f2_key(lmsq2)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF2})
+    81                 if (lmsq3.gt.0) lf3 = f3_key(lmsq3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    86                 O_F1 = LF1,     'ZZZ'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF1})
+    87                 O_F2 = LF2,     'ZZZ'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF2})
+    88                 O_F3 = LF3,     'ZZZZZ'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:         6, in file O:\SOURCE\cp\chkcom.cp
+
+O:\SOURCE\cp>dblink -o cp:chkcom chkcom cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  chkcom.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld clrcrh cp 
+
+O:\SOURCE\cp>dbl clrcrh.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrcrh clrcrh cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clrcrl cp 
+
+O:\SOURCE\cp>dbl clrcrl.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrcrl clrcrl cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clrduc cp 
+
+O:\SOURCE\cp>dbl clrduc.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrduc clrduc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clrhdr cp 
+
+O:\SOURCE\cp>dbl clrhdr.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrhdr clrhdr cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clrlin cp 
+
+O:\SOURCE\cp>dbl clrlin.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrlin clrlin cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clrmo2 cp 
+
+O:\SOURCE\cp>dbl clrmo2.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrmo2 clrmo2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clrord cp 
+
+O:\SOURCE\cp>dbl clrord.cp 
+
+O:\SOURCE\cp>dblink -o cp:clrord clrord cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld clryoe cp 
+
+O:\SOURCE\cp>dbl clryoe.cp 
+
+O:\SOURCE\cp>dblink -o cp:clryoe clryoe cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld coomnt cp 
+
+O:\SOURCE\cp>dbl coomnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:coomnt coomnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld COPRPT cp 
+
+O:\SOURCE\cp>dbl COPRPT.cp 
+
+O:\SOURCE\cp>dblink -o cp:COPRPT COPRPT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cpfils cp 
+
+O:\SOURCE\cp>dbl cpfils.cp 
+
+O:\SOURCE\cp>dblink -o cp:cpfils cpfils cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cpmenu cp 
+
+O:\SOURCE\cp>dbl cpmenu.cp 
+
+O:\SOURCE\cp>dblink -o cp:cpmenu cpmenu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld CPSPOL cp 
+
+O:\SOURCE\cp>dbl CPSPOL.cp 
+
+O:\SOURCE\cp>dblink -o cp:CPSPOL CPSPOL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cpyord cp 
+
+O:\SOURCE\cp>dbl cpyord.cp 
+
+O:\SOURCE\cp>dblink -o cp:cpyord cpyord cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld cpyroc cp 
+
+O:\SOURCE\cp>dbl cpyroc.cp 
+
+O:\SOURCE\cp>dblink -o cp:cpyroc cpyroc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld CRHCNT cp 
+
+O:\SOURCE\cp>dbl CRHCNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:CRHCNT CRHCNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld CRMAR cp 
+
+O:\SOURCE\cp>dbl CRMAR.cp 
+
+O:\SOURCE\cp>dblink -o cp:CRMAR CRMAR cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld CRMCNC cp 
+
+O:\SOURCE\cp>dbl CRMCNC.cp 
+
+O:\SOURCE\cp>dblink -o cp:CRMCNC CRMCNC cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld CSLHJL cp 
+
+O:\SOURCE\cp>dbl CSLHJL.cp 
+
+O:\SOURCE\cp>dblink -o cp:CSLHJL CSLHJL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld dayroc cp 
+
+O:\SOURCE\cp>dbl dayroc.cp 
+
+O:\SOURCE\cp>dblink -o cp:dayroc dayroc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld daysmc cp 
+
+O:\SOURCE\cp>dbl daysmc.cp 
+
+O:\SOURCE\cp>dblink -o cp:daysmc daysmc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld desnew cp 
+
+O:\SOURCE\cp>dbl desnew.cp 
+
+O:\SOURCE\cp>dblink -o cp:desnew desnew cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DESQTY cp 
+
+O:\SOURCE\cp>dbl DESQTY.cp 
+
+O:\SOURCE\cp>dblink -o cp:DESQTY DESQTY cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld dethis cp 
+
+O:\SOURCE\cp>dbl dethis.cp 
+
+O:\SOURCE\cp>dblink -o cp:dethis dethis cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DIKMNT cp 
+
+O:\SOURCE\cp>dbl DIKMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:DIKMNT DIKMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DMPMNT cp 
+
+O:\SOURCE\cp>dbl DMPMNT.cp 
+%DBL-F-OPENIN, Cannot open:  DMPMNT.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:DMPMNT DMPMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  DMPMNT.DBO
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld dmpric cp 
+
+O:\SOURCE\cp>dbl dmpric.cp 
+
+O:\SOURCE\cp>dblink -o cp:dmpric dmpric cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DPRICE cp 
+
+O:\SOURCE\cp>dbl DPRICE.cp 
+
+O:\SOURCE\cp>dblink -o cp:DPRICE DPRICE cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld dptmnt cp 
+
+O:\SOURCE\cp>dbl dptmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:dptmnt dptmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld dszmnt cp 
+
+O:\SOURCE\cp>dbl dszmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:dszmnt dszmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DUCMNT cp 
+
+O:\SOURCE\cp>dbl DUCMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:DUCMNT DUCMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ducprc cp 
+
+O:\SOURCE\cp>dbl ducprc.cp 
+
+O:\SOURCE\cp>dblink -o cp:ducprc ducprc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ducprt cp 
+
+O:\SOURCE\cp>dbl ducprt.cp 
+
+O:\SOURCE\cp>dblink -o cp:ducprt ducprt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DY cp 
+
+O:\SOURCE\cp>dbl DY.cp 
+
+O:\SOURCE\cp>dblink -o cp:DY DY cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld DYROCK cp 
+
+O:\SOURCE\cp>dbl DYROCK.cp 
+
+O:\SOURCE\cp>dblink -o cp:DYROCK DYROCK cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld EXLMNT cp 
+
+O:\SOURCE\cp>dbl EXLMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:EXLMNT EXLMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld FNDPRO cp 
+
+O:\SOURCE\cp>dbl FNDPRO.cp 
+
+O:\SOURCE\cp>dblink -o cp:FNDPRO FNDPRO cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld FRTCLM cp 
+
+O:\SOURCE\cp>dbl FRTCLM.cp 
+
+O:\SOURCE\cp>dblink -o cp:FRTCLM FRTCLM cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld getrnv cp 
+
+O:\SOURCE\cp>dbl getrnv.cp 
+
+O:\SOURCE\cp>dblink -o cp:getrnv getrnv cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld imdept cp 
+
+O:\SOURCE\cp>dbl imdept.cp 
+%DBL-F-OPENIN, Cannot open:  imdept.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:imdept imdept cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld imfmnt cp 
+
+O:\SOURCE\cp>dbl imfmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:imfmnt imfmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld IMFPRT cp 
+
+O:\SOURCE\cp>dbl IMFPRT.cp 
+
+O:\SOURCE\cp>dblink -o cp:IMFPRT IMFPRT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld immenu cp 
+
+O:\SOURCE\cp>dbl immenu.cp 
+
+O:\SOURCE\cp>dblink -o cp:immenu immenu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld inetor cp 
+
+O:\SOURCE\cp>dbl inetor.cp 
+
+O:\SOURCE\cp>dblink -o cp:inetor inetor cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld initcp cp 
+
+O:\SOURCE\cp>dbl initcp.cp 
+
+O:\SOURCE\cp>dblink -o cp:initcp initcp cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld LINPRC cp 
+
+O:\SOURCE\cp>dbl LINPRC.cp 
+
+O:\SOURCE\cp>dblink -o cp:LINPRC LINPRC cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld LINPRT cp 
+
+O:\SOURCE\cp>dbl LINPRT.cp 
+
+O:\SOURCE\cp>dblink -o cp:LINPRT LINPRT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld LVRMNT cp 
+
+O:\SOURCE\cp>dbl LVRMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:LVRMNT LVRMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld MAKSTS cp 
+
+O:\SOURCE\cp>dbl MAKSTS.cp 
+
+O:\SOURCE\cp>dblink -o cp:MAKSTS MAKSTS cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld mbxmnt cp 
+
+O:\SOURCE\cp>dbl mbxmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:mbxmnt mbxmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld MLBMNT cp 
+
+O:\SOURCE\cp>dbl MLBMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:MLBMNT MLBMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld mm2mnt cp 
+
+O:\SOURCE\cp>dbl mm2mnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:mm2mnt mm2mnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld mmcmnu cp 
+
+O:\SOURCE\cp>dbl mmcmnu.cp 
+
+O:\SOURCE\cp>dblink -o cp:mmcmnu mmcmnu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld MMMEMO cp 
+
+O:\SOURCE\cp>dbl MMMEMO.cp 
+
+O:\SOURCE\cp>dblink -o cp:MMMEMO MMMEMO cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld MMXMNT cp 
+
+O:\SOURCE\cp>dbl MMXMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:MMXMNT MMXMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld netds2 cp 
+
+O:\SOURCE\cp>dbl netds2.cp 
+
+O:\SOURCE\cp>dblink -o cp:netds2 netds2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld NETDSC cp 
+
+O:\SOURCE\cp>dbl NETDSC.cp 
+
+O:\SOURCE\cp>dblink -o cp:NETDSC NETDSC cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld nprice cp 
+
+O:\SOURCE\cp>dbl nprice.cp 
+%DBL-F-OPENIN, Cannot open:  nprice.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:nprice nprice cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  nprice.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld oemnu cp 
+
+O:\SOURCE\cp>dbl oemnu.cp 
+
+O:\SOURCE\cp>dblink -o cp:oemnu oemnu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ofbrpt cp 
+
+O:\SOURCE\cp>dbl ofbrpt.cp 
+
+O:\SOURCE\cp>dblink -o cp:ofbrpt ofbrpt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld oosprt cp 
+
+O:\SOURCE\cp>dbl oosprt.cp 
+
+O:\SOURCE\cp>dblink -o cp:oosprt oosprt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld opnord cp 
+
+O:\SOURCE\cp>dbl opnord.cp 
+
+O:\SOURCE\cp>dblink -o cp:opnord opnord cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ORDEDT cp 
+
+O:\SOURCE\cp>dbl ORDEDT.cp 
+
+O:\SOURCE\cp>dblink -o cp:ORDEDT ORDEDT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ORDHL1 cp 
+
+O:\SOURCE\cp>dbl ORDHL1.cp 
+
+O:\SOURCE\cp>dblink -o cp:ORDHL1 ORDHL1 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ordhld cp 
+
+O:\SOURCE\cp>dbl ordhld.cp 
+
+O:\SOURCE\cp>dblink -o cp:ordhld ordhld cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ORDINQ cp 
+
+O:\SOURCE\cp>dbl ORDINQ.cp 
+
+O:\SOURCE\cp>dblink -o cp:ORDINQ ORDINQ cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ORDNUM cp 
+
+O:\SOURCE\cp>dbl ORDNUM.cp 
+
+O:\SOURCE\cp>dblink -o cp:ORDNUM ORDNUM cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ORGPDA cp 
+
+O:\SOURCE\cp>dbl ORGPDA.cp 
+
+O:\SOURCE\cp>dblink -o cp:ORGPDA ORGPDA cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld OSTATS cp 
+
+O:\SOURCE\cp>dbl OSTATS.cp 
+%DBL-F-OPENIN, Cannot open:  OSTATS.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:OSTATS OSTATS cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld PCHMNT cp 
+
+O:\SOURCE\cp>dbl PCHMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:PCHMNT PCHMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pctmnt cp 
+
+O:\SOURCE\cp>dbl pctmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:pctmnt pctmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld PDACNT cp 
+
+O:\SOURCE\cp>dbl PDACNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:PDACNT PDACNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pdalst cp 
+
+O:\SOURCE\cp>dbl pdalst.cp 
+
+O:\SOURCE\cp>dblink -o cp:pdalst pdalst cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pdamnt cp 
+
+O:\SOURCE\cp>dbl pdamnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:pdamnt pdamnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pdtmnt cp 
+
+O:\SOURCE\cp>dbl pdtmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:pdtmnt pdtmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld phydep cp 
+
+O:\SOURCE\cp>dbl phydep.cp 
+
+O:\SOURCE\cp>dblink -o cp:phydep phydep cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld PHYMNU cp 
+
+O:\SOURCE\cp>dbl PHYMNU.cp 
+
+O:\SOURCE\cp>dblink -o cp:PHYMNU PHYMNU cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld PLARPT cp 
+
+O:\SOURCE\cp>dbl PLARPT.cp 
+
+O:\SOURCE\cp>dblink -o cp:PLARPT PLARPT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld postar cp 
+
+O:\SOURCE\cp>dbl postar.cp 
+
+O:\SOURCE\cp>dblink -o cp:postar postar cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ppxmnt cp 
+
+O:\SOURCE\cp>dbl ppxmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:ppxmnt ppxmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld prcgag cp 
+
+O:\SOURCE\cp>dbl prcgag.cp 
+
+O:\SOURCE\cp>dblink -o cp:prcgag prcgag cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld prclst cp 
+
+O:\SOURCE\cp>dbl prclst.cp 
+
+O:\SOURCE\cp>dblink -o cp:prclst prclst cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld PRDSEL cp 
+
+O:\SOURCE\cp>dbl PRDSEL.cp 
+%DBL-F-OPENIN, Cannot open:  PRDSEL.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:PRDSEL PRDSEL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pstinv cp 
+
+O:\SOURCE\cp>dbl pstinv.cp 
+
+O:\SOURCE\cp>dblink -o cp:pstinv pstinv cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pstism cp 
+
+O:\SOURCE\cp>dbl pstism.cp 
+%DBL-F-OPENIN, Cannot open:  pstism.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:pstism pstism cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  pstism.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld pstrin cp 
+
+O:\SOURCE\cp>dbl pstrin.cp 
+
+O:\SOURCE\cp>dblink -o cp:pstrin pstrin cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld pstslh cp 
+
+O:\SOURCE\cp>dbl pstslh.cp 
+
+O:\SOURCE\cp>dblink -o cp:pstslh pstslh cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld PURMSG cp 
+
+O:\SOURCE\cp>dbl PURMSG.cp 
+
+O:\SOURCE\cp>dblink -o cp:PURMSG PURMSG cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld recent cp 
+
+O:\SOURCE\cp>dbl recent.cp 
+%DBL-E-OLYBG, Overlay record too big
+    24         RECORD  ITMIDX
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\recent.cp
+
+O:\SOURCE\cp>dblink -o cp:recent recent cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  recent.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call bld REROCK cp 
+
+O:\SOURCE\cp>dbl REROCK.cp 
+
+O:\SOURCE\cp>dblink -o cp:REROCK REROCK cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld rocbat cp 
+
+O:\SOURCE\cp>dbl rocbat.cp 
+
+O:\SOURCE\cp>dblink -o cp:rocbat rocbat cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld rocmnu cp 
+
+O:\SOURCE\cp>dbl rocmnu.cp 
+
+O:\SOURCE\cp>dblink -o cp:rocmnu rocmnu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld rocsls cp 
+
+O:\SOURCE\cp>dbl rocsls.cp 
+
+O:\SOURCE\cp>dblink -o cp:rocsls rocsls cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld rstcom cp 
+
+O:\SOURCE\cp>dbl rstcom.cp 
+
+O:\SOURCE\cp>dblink -o cp:rstcom rstcom cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-XUNDEF, Undefined XCALL references:
+	CPM in module MAIN$RSTCOM
+
+O:\SOURCE\cp>call bld sbdmnt cp 
+
+O:\SOURCE\cp>dbl sbdmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:sbdmnt sbdmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld scac cp 
+
+O:\SOURCE\cp>dbl scac.cp 
+
+O:\SOURCE\cp>dblink -o cp:scac scac cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SHPMNU cp 
+
+O:\SOURCE\cp>dbl SHPMNU.cp 
+
+O:\SOURCE\cp>dblink -o cp:SHPMNU SHPMNU cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld shpwgt cp 
+
+O:\SOURCE\cp>dbl shpwgt.cp 
+
+O:\SOURCE\cp>dblink -o cp:shpwgt shpwgt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld shtcnt cp 
+
+O:\SOURCE\cp>dbl shtcnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:shtcnt shtcnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld shtmnt cp 
+
+O:\SOURCE\cp>dbl shtmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:shtmnt shtmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld shtprt cp 
+
+O:\SOURCE\cp>dbl shtprt.cp 
+
+O:\SOURCE\cp>dblink -o cp:shtprt shtprt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SHVCNT cp 
+
+O:\SOURCE\cp>dbl SHVCNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SHVCNT SHVCNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SHVMNT cp 
+
+O:\SOURCE\cp>dbl SHVMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SHVMNT SHVMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SHVPRT cp 
+
+O:\SOURCE\cp>dbl SHVPRT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SHVPRT SHVPRT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld sitmnt cp 
+
+O:\SOURCE\cp>dbl sitmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:sitmnt sitmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHCA2 cp 
+
+O:\SOURCE\cp>dbl SLHCA2.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLHCA2 SLHCA2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld slhcat cp 
+
+O:\SOURCE\cp>dbl slhcat.cp 
+
+O:\SOURCE\cp>dblink -o cp:slhcat slhcat cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHCNT cp 
+
+O:\SOURCE\cp>dbl SLHCNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLHCNT SLHCNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHENT cp 
+
+O:\SOURCE\cp>dbl SLHENT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLHENT SLHENT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHINQ cp 
+
+O:\SOURCE\cp>dbl SLHINQ.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLHINQ SLHINQ cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld slhpr1 cp 
+
+O:\SOURCE\cp>dbl slhpr1.cp 
+
+O:\SOURCE\cp>dblink -o cp:slhpr1 slhpr1 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHPR2 cp 
+
+O:\SOURCE\cp>dbl SLHPR2.cp 
+%DBL-F-OPENIN, Cannot open:  SLHPR2.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:SLHPR2 SLHPR2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld slhpr3 cp 
+
+O:\SOURCE\cp>dbl slhpr3.cp 
+
+O:\SOURCE\cp>dblink -o cp:slhpr3 slhpr3 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHPR4 cp 
+
+O:\SOURCE\cp>dbl SLHPR4.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLHPR4 SLHPR4 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHSSQ cp 
+
+O:\SOURCE\cp>dbl SLHSSQ.cp 
+%DBL-F-OPENIN, Cannot open:  SLHSSQ.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:SLHSSQ SLHSSQ cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLHYEN cp 
+
+O:\SOURCE\cp>dbl SLHYEN.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLHYEN SLHYEN cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLMORD cp 
+
+O:\SOURCE\cp>dbl SLMORD.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLMORD SLMORD cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld slsr06 cp 
+
+O:\SOURCE\cp>dbl slsr06.cp 
+%DBL-F-OPENIN, Cannot open:  slsr06.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:slsr06 slsr06 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SLSRPT cp 
+
+O:\SOURCE\cp>dbl SLSRPT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SLSRPT SLSRPT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld smcroc cp 
+
+O:\SOURCE\cp>dbl smcroc.cp 
+%DBL-F-OPENIN, Cannot open:  smcroc.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:smcroc smcroc cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SPCFUN cp 
+
+O:\SOURCE\cp>dbl SPCFUN.cp 
+
+O:\SOURCE\cp>dblink -o cp:SPCFUN SPCFUN cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTBCU cp 
+
+O:\SOURCE\cp>dbl SRTBCU.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTBCU SRTBCU cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTBIT cp 
+
+O:\SOURCE\cp>dbl SRTBIT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTBIT SRTBIT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTBIX cp 
+
+O:\SOURCE\cp>dbl SRTBIX.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTBIX SRTBIX cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTBLD cp 
+
+O:\SOURCE\cp>dbl SRTBLD.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTBLD SRTBLD cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTCRH cp 
+
+O:\SOURCE\cp>dbl SRTCRH.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTCRH SRTCRH cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTCRL cp 
+
+O:\SOURCE\cp>dbl SRTCRL.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTCRL SRTCRL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTIID cp 
+
+O:\SOURCE\cp>dbl SRTIID.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTIID SRTIID cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTLIX cp 
+
+O:\SOURCE\cp>dbl SRTLIX.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTLIX SRTLIX cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTPDA cp 
+
+O:\SOURCE\cp>dbl SRTPDA.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTPDA SRTPDA cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTPIX cp 
+
+O:\SOURCE\cp>dbl SRTPIX.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTPIX SRTPIX cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTPRC cp 
+
+O:\SOURCE\cp>dbl SRTPRC.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTPRC SRTPRC cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld srtsht cp 
+
+O:\SOURCE\cp>dbl srtsht.cp 
+
+O:\SOURCE\cp>dblink -o cp:srtsht srtsht cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTSHV cp 
+
+O:\SOURCE\cp>dbl SRTSHV.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTSHV SRTSHV cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTSIX cp 
+
+O:\SOURCE\cp>dbl SRTSIX.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTSIX SRTSIX cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTSLH cp 
+
+O:\SOURCE\cp>dbl SRTSLH.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTSLH SRTSLH cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SRTSSM cp 
+
+O:\SOURCE\cp>dbl SRTSSM.cp 
+
+O:\SOURCE\cp>dblink -o cp:SRTSSM SRTSSM cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SSCNT cp 
+
+O:\SOURCE\cp>dbl SSCNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SSCNT SSCNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SSMCNT cp 
+
+O:\SOURCE\cp>dbl SSMCNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:SSMCNT SSMCNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SSMENU cp 
+
+O:\SOURCE\cp>dbl SSMENU.cp 
+%DBL-F-OPENIN, Cannot open:  SSMENU.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dblink -o cp:SSMENU SSMENU cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld SSSFMN cp 
+
+O:\SOURCE\cp>dbl SSSFMN.cp 
+
+O:\SOURCE\cp>dblink -o cp:SSSFMN SSSFMN cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld STPWKO cp 
+
+O:\SOURCE\cp>dbl STPWKO.cp 
+
+O:\SOURCE\cp>dblink -o cp:STPWKO STPWKO cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld STSAPC cp 
+
+O:\SOURCE\cp>dbl STSAPC.cp 
+
+O:\SOURCE\cp>dblink -o cp:STSAPC STSAPC cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld syncim cp 
+
+O:\SOURCE\cp>dbl syncim.cp 
+
+O:\SOURCE\cp>dblink -o cp:syncim syncim cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld synctb cp 
+
+O:\SOURCE\cp>dbl synctb.cp 
+
+O:\SOURCE\cp>dblink -o cp:synctb synctb cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TAGBOL cp 
+
+O:\SOURCE\cp>dbl TAGBOL.cp 
+
+O:\SOURCE\cp>dblink -o cp:TAGBOL TAGBOL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld tbcmnt cp 
+
+O:\SOURCE\cp>dbl tbcmnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:tbcmnt tbcmnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld tblmnu cp 
+
+O:\SOURCE\cp>dbl tblmnu.cp 
+
+O:\SOURCE\cp>dblink -o cp:tblmnu tblmnu cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld teimnt cp 
+
+O:\SOURCE\cp>dbl teimnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:teimnt teimnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TERMSD cp 
+
+O:\SOURCE\cp>dbl TERMSD.cp 
+
+O:\SOURCE\cp>dblink -o cp:TERMSD TERMSD cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TFCMNT cp 
+
+O:\SOURCE\cp>dbl TFCMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:TFCMNT TFCMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld ti1mnt cp 
+
+O:\SOURCE\cp>dbl ti1mnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:ti1mnt ti1mnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld tprice cp 
+
+O:\SOURCE\cp>dbl tprice.cp 
+
+O:\SOURCE\cp>dblink -o cp:tprice tprice cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TRKMNT cp 
+
+O:\SOURCE\cp>dbl TRKMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:TRKMNT TRKMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TRSMNT cp 
+
+O:\SOURCE\cp>dbl TRSMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:TRSMNT TRSMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TRTMNT cp 
+
+O:\SOURCE\cp>dbl TRTMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:TRTMNT TRTMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld TSCMNT cp 
+
+O:\SOURCE\cp>dbl TSCMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:TSCMNT TSCMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UNBILL cp 
+
+O:\SOURCE\cp>dbl UNBILL.cp 
+
+O:\SOURCE\cp>dblink -o cp:UNBILL UNBILL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UNPRBL cp 
+
+O:\SOURCE\cp>dbl UNPRBL.cp 
+
+O:\SOURCE\cp>dblink -o cp:UNPRBL UNPRBL cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UNPRBO cp 
+
+O:\SOURCE\cp>dbl UNPRBO.cp 
+
+O:\SOURCE\cp>dblink -o cp:UNPRBO UNPRBO cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UNPRCM cp 
+
+O:\SOURCE\cp>dbl UNPRCM.cp 
+
+O:\SOURCE\cp>dblink -o cp:UNPRCM UNPRCM cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UNPRSA cp 
+
+O:\SOURCE\cp>dbl UNPRSA.cp 
+
+O:\SOURCE\cp>dblink -o cp:UNPRSA UNPRSA cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UNPSLH cp 
+
+O:\SOURCE\cp>dbl UNPSLH.cp 
+
+O:\SOURCE\cp>dblink -o cp:UNPSLH UNPSLH cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld updmis cp 
+
+O:\SOURCE\cp>dbl updmis.cp 
+
+O:\SOURCE\cp>dblink -o cp:updmis updmis cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld upsedt cp 
+
+O:\SOURCE\cp>dbl upsedt.cp 
+
+O:\SOURCE\cp>dblink -o cp:upsedt upsedt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UPSMNT cp 
+
+O:\SOURCE\cp>dbl UPSMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:UPSMNT UPSMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UPSMNU cp 
+
+O:\SOURCE\cp>dbl UPSMNU.cp 
+
+O:\SOURCE\cp>dblink -o cp:UPSMNU UPSMNU cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld UPSPST cp 
+
+O:\SOURCE\cp>dbl UPSPST.cp 
+
+O:\SOURCE\cp>dblink -o cp:UPSPST UPSPST cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld usrclr cp 
+
+O:\SOURCE\cp>dbl usrclr.cp 
+
+O:\SOURCE\cp>dblink -o cp:usrclr usrclr cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld vv1mnt cp 
+
+O:\SOURCE\cp>dbl vv1mnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:vv1mnt vv1mnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld vv2mnt cp 
+
+O:\SOURCE\cp>dbl vv2mnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:vv2mnt vv2mnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld vv3mnt cp 
+
+O:\SOURCE\cp>dbl vv3mnt.cp 
+
+O:\SOURCE\cp>dblink -o cp:vv3mnt vv3mnt cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld VVDMNT cp 
+
+O:\SOURCE\cp>dbl VVDMNT.cp 
+
+O:\SOURCE\cp>dblink -o cp:VVDMNT VVDMNT cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld XPRICE cp 
+
+O:\SOURCE\cp>dbl XPRICE.cp 
+
+O:\SOURCE\cp>dblink -o cp:XPRICE XPRICE cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 

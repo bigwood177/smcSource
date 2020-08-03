@@ -1,0 +1,2001 @@
+;DPTBAR.CP
+;DPTSTS.CP
+;
+;	DEPARTMENT STATUS UPDATE
+;
+;DPTSTS.CP
+;
+;	DEPARTMENT STATUS UPDATE
+;	roc: print when last dept completed 
+;
+;DDEPT 6-02-14
+;11-26-18: skip excluded parts
+;12-10-18: now Fab Tickets have completion status.
+;-2=20-19: add debug...
+;7-29-19: keep packing transactions for dept I in dptlbs.ism (rd128a.def')
+
+
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+EXTERNAL FUNCTION
+	IsLastDept,	D
+EXTERNAL FUNCTION
+	IS_IC	,D		;SPLIT DEPT C INTO C AND IC
+
+EXTERNAL FUNCTION		;1-28-20
+	IS_IC2	,D
+
+record	key3
+	k3_ord	,d6
+	k3_dept	,a2
+	k3_item	,a15
+	k3_desc	,a30
+
+record	icitem			;1-28-20
+	ic_item	,a15
+	ic_qty	,d6
+	
+RECORD	ICFIL
+		,A4,	'SPL:'
+;;;		,A1,	'C'
+		,A1,	'Q'
+		OCORD	,A6
+				,a1,	'_'
+		xtime	,d6
+		,A4,	'.ISM'
+
+	.include 'wnd:windows.def'
+	.INCLUDE 'WND:TOOLS.DEF'
+
+	.include 'def:hpsub.def'
+
+
+.DEFINE	OPN,	0
+.DEFINE	BURN,	1
+.DEFINE	FORM,	2
+.DEFINE	CMPLT,	3
+
+record	funkey
+	.include 'def:funkey.def'
+RECORD	DPTLBS
+	.INCLUDE 'DEF:RD128A.DEF'
+
+RECORD	LASDPT
+	.INCLUDE 'DEF:RD161A.DEF'
+
+RECORD	JOBHDR
+	.INCLUDE 'DEF:RD071A.DEF'
+
+RECORD	JOBLIN
+	.INCLUDE 'DEF:RD072A.DEF'
+
+RECORD	DPTLOC
+	.INCLUDE 'DEF:RD194A.DEF'
+
+RECORD	ORDHDR
+	.INCLUDE 'DEF:RD044A.DEF'
+
+RECORD	ORDLIN
+	.INCLUDE 'DEF:RD045A.DEF'
+
+RECORD	SALMAN
+	.INCLUDE 'DEF:RD054A.DEF'
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD	DPTSTS
+	.INCLUDE 'DEF:RD193A.DEF'
+
+RECORD	DPTDET
+	.INCLUDE 'DEF:RD198A.DEF'
+
+RECORD	DUCACC
+	.INCLUDE 'DEF:RD175A.DEF'
+
+RECORD	HLINE
+	,A*,'DATE ENTERED  SALESMAN   EXT  PO NUMBER  JOB NUMBER  SHIP VIA'
+
+RECORD	HLINE2
+	,A*,	'  DEPARTMENT           STATUS   QTY UM   LOC                   WGHT    SIZE'
+;;;	,A*,'  DEPARTMENT           STATUS   COMMENT'
+
+RECORD	DPT_DATA
+	DPTARA	,20A2
+	DPTROW	,20D2	;ROW FOR DEPT LINE
+	NUMDPT	,D2
+
+record	pop
+	.include 'def:pop1.def'
+
+RECORD	POP1A
+	.INCLUDE 'DEF:POP1A.DEF'
+
+RECORD	WN_NAME
+		,A5,	'dpsts'
+	WN_TNMBR,D4
+
+RECORD	WARS
+	W_ID	,D4
+	WND_1	,D4
+	WND_2	,D4
+	WLEN	,D4
+
+RECORD	CHANNEL
+	CHN135	,D2
+	CHN044	,D2
+	CHN045	,D2
+	CHN054	,D2
+	CHN175	,D2
+	CHN182	,D2
+	CHN193	,D2
+	CHN198	,D2
+	CHN194	,D2
+	CHN071	,D2
+	CHN072	,D2
+	CHN193I	,D3
+	CHN161	,D3
+	CHN128	,D3
+
+RECORD	ICOFIL
+		,A3,	'UT:'
+	ICONAM	,A3
+		,A4,	'.ICO'
+RECORD	CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+RECORD	DATIME
+	DATE	,A10
+		,A2
+	TIME	,A8
+
+RECORD	DAT_LIN
+			,A*,	'Printed By: '
+	DL_PB		,A20
+			,A2
+	DL_DATIM	,A20
+		,A20
+
+RECORD	DAT_LN2
+			,A*,	'Last Status Change: '
+	d2_datim	,a20
+
+
+record	d88			;2-20-19 debug
+	d88_key	,a10
+		,a1
+	d88_val	,a30
+
+record	was			;2-20-19 degug
+	was_entry	,d1
+	was_entry_v	,a20
+	was_op_desc	,d1
+	was_op_desc_v	,a20
+	was_dfl		,d1
+	was_dfl_v	,a20
+
+RECORD
+	DT	,A20
+RECORD,X
+	CC	,D2
+	YY	,D2
+	MM	,D2
+	DD	,D2
+	HHMM	,D4
+		,A8
+
+		
+RECORD	VARS
+	is_ic_item	,d1		;1-28-20
+	totqty		,d6		;1-28-20
+	savitm		,a15	;1-28-20
+	chnic		,d2		;1-28-20
+	I_CNGD	,D1		;1= DEPT I JUST CHANGED
+	DEPT_CHANGED	,D1	;1= dept changed check last dept closed
+	XEMP	,D3
+	XINIT	,A3	;INITIALS (not used now)
+	I_LBS	,D8	;POUNDS IN DEPT I (ZZZ,ZZX.XX)
+	C_LBS	,D8	;POUNDS IN DEPT C (ZZZ,ZZX.XX)
+	L_LBS	,D8	;POUNDS IN DEPT L (ZZZ,ZZX.XX)
+	O_LBS	,D8	;POUNDS IN DEPT O (ZZZ,ZZX.XX)
+	P_LBS	,D8	;POUNDS IN DEPT P (ZZZ,ZZX.XX)
+	O_TYP	,A1	;Order type: "S"= Order, "J" = Job
+	path	,a100
+	LOCAL	,D1
+	DEPT_PLUS	,D1	;user entered dept+, ie:don't change status 
+	GOT_STAGING	,D1
+	ALL_COMPLT	,D1
+	T_KEY	,A2
+	T_DEPT	,A2
+	XROW	,D2
+	DEC	,D18
+	STAT	,D1
+	TBLDAT2	,10A147		;ARRAY OF COPTBL RECORDS
+	SAVROW	,D2
+	NUMDAT	,D2
+	LL	,D3		;last line
+	PGNAME	,A63
+	STATUS	,D1
+	TL	,D6
+	EL	,D6
+	select	,d1		;1=add, 2=change, 3=delete
+	aSAVRFA	,a6
+
+	DSTAT	,5A5
+	dcomm,	a20
+	stsfil	,a14		;smc:dptsts.smm
+	dfl_burn	,a20	;default burn comment
+	dfl_form	,a20	;defautl form comment
+	dfl_cmplt	,a20	;default compl comment
+	fkey	,d3
+	man	,d1	;1=allow manual comment
+	OPS	,D1
+	SAVDPT	,A2
+	X_BURN	,D1
+	X_FORM	,D1
+	NEXT	,D1
+	b_seq	,d3
+	A2	,A2
+	A3	,A3
+	A6	,a6
+	A20	,A20
+	savrfa	,a6
+	tstat	,d1
+	LINARA	,20A2		;DEPTS IN ORDLIN 
+	is_vulcan	,d1
+	CMPCOD	,A3
+	D	,D8
+	T	,D6
+	pline	,a80
+	GOTP	,D1
+	GOTO	,D1
+	UNAME	,A25
+	I	,D5
+	J	,D5
+	BLANKS	,A30
+	XDATE	,D8
+	D_LINE	,A81
+	DCHAR	,D3
+	TCHAR	,D3
+	OPNOK	,D1
+	XORD	,D6
+	yord	,d6
+;;;	ROW	,D2
+;;;	COL	,D2
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	WDEPT	,A2
+	WD_DEPT	,A2		;6-2-14
+	LOKCTL	,D1
+
+	READ	,D1,0
+	WRITE	,D1,1
+	STORE	,D1,2
+	DELETE	,D1,3
+	SWITCH	,D1
+	V	,D1
+
+.PROC
+;;;	XCALL TERID (V)
+	open (15,i,'tt:')
+
+	UNAME = %GU_NAME
+	UPCASE UNAME
+
+	XCALL WHO(CMPCOD)
+	
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	call init_window
+	clear xord, dept_changed, I_CNGD
+
+DISPLA,
+	CLEAR CNGCTL
+	if (dept_changed)
+		begin	
+		if (%IsLastDept(xord, chn193i))
+		then	call lastdept			;write lasdpt record
+		else	call chk_lastdept		;may have changed from closed to open
+		end
+
+	onerror f193_not_open
+	close chn193
+f193_not_open,
+	offerror
+
+	CLEAR CNGCTL
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	XCALL w_disp (wnd_1, wd_pos, 1,1,'ORDER COMPLETION STATUS')
+	XCALL w_disp (wnd_1, wd_pos, 2,4,'ORDER #                   "J" + for Fab Tickets')
+	xcall w_updt
+	XCALL wINpT (wnd_1,2, 14, 11, 00 , 'AE', ENTRY, INXCTL)
+
+	IF (INXCTL .EQ. 9) GOTO ENDOFF
+	GOTO (DISPLA, ENDOFF), INXCTL
+
+	USING ENTRY(1,2) SELECT
+	('S~', 'J~'),	BEGIN
+			O_TYP = ENTRY(1,1)		;O/J
+			A6 = ENTRY(3,8)
+			IF (ENTRY(9,9) .EQ. '~')
+			THEN	WDEPT = ENTRY(10,11)
+			ELSE	CLEAR WDEPT
+			END
+
+	(),		IF (ENTRY(1,1) .EQ. 'J')	;12-19-18 allow for manual entry
+			THEN	BEGIN
+				O_TYP = 'J'
+				A6 = ENTRY(2,6)
+				END
+			ELSE	BEGIN
+				O_TYP = 'S'
+				A6 = ENTRY(1,6)
+				END
+
+
+	ENDUSING
+
+
+;;;	IF (ENTRY(1,2) .EQ. 'S~')
+;;;	THEN	BEGIN
+;;;		A6 = ENTRY(3,8)
+;;;		IF (ENTRY(9,9) .EQ. '~')
+;;;		THEN	WDEPT = ENTRY(10,11)
+;;;		ELSE	CLEAR WDEPT
+;;;		END
+;;;
+;;;	ELSE	A6 = ENTRY(1,6)
+
+	onerror not_num
+	xord = a6
+	offerror
+	goto is_num
+not_num,
+	offerror
+	goto displa
+is_num,
+	xcall w_disp(wnd_1, wd_pos, 2, 14, wd_clr, wdc_eol, a6)
+	xcall w_updt
+
+	USING O_TYP SELECT
+	('S'),	CALL GETORD
+	('J'),	CALL GETJOB
+	ENDUSING
+
+	IF (LOKCTL) GOTO DISPLA
+
+	open (chn193, su, stsfil)	;12-27-2011 try to keep records unlocked
+
+	CALL DSPDPT
+	clear savdpt
+	IF (WDEPT .NE. A6) GOTO NEXT_DEPT
+
+ANYCN,
+	offerror
+	man = 0
+	clear b_seq, wdept, ops
+	clear dfl_burn, dfl_form, dfl_cmplt
+	XCALL TTSTS(TSTAT)
+	IF (TSTAT) 
+		begin
+		xcall w_disp(wnd_1,wd_pos,1,1)
+		XCALL W_DISP(WND_1,WD_READS,ENTRY)
+		end
+
+
+	XCALL w_disp (wnd_1, wd_pos, LL-1,1,wd_clr,wdc_eol,
+&		'DEPT TO CHANGE:                  <tab>ops <F1>Staging <PC>print cover <PM>print Main <VM>view Main')
+	xcall w_disp (wnd_1, wd_pos, LL,1,wd_clr,wdc_eol,
+&		'                                 <F2>manual comment "Z"= print screen DPT+=change staging')
+
+	XCALL winTN (wnd_1, LL-1, 19, 11, 00, 'AX' ,ENTRY, INXCTL,fkey)
+	
+	tl = %instr(1,entry,'+')
+	if (tl)
+	then	begin
+		dept_plus = 1
+		entry(tl,tl) = ' '
+		end
+		
+	else	dept_plus = 0
+
+
+	using fkey select
+	(f_01),	begin
+		wdept = savdpt
+		call dept_stage
+		goto anycn
+		end
+	(f_08),	call debug			;2-20-19
+	endusing
+
+
+	IF (INXCTL .EQ. 9) GOTO ENDOFF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	using fkey select
+	(f_02),	begin
+		man = 1			;manual comment
+		wdept = savdpt
+		goto next_dept
+		end
+	(),	man = 0
+	endusing
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	GOTO (DISPLA, PROCES, OPS), INXCTL
+
+
+;;;	if (entry(1,2) .eq. 'S~')
+	if (entry(1,2).eq.'S~' .or. entry(1,2).eq.'J~')
+	then	begin
+		A6 = ENTRY(3,8)
+		onerror anycn
+		yord = a6
+		offerror
+		if (xord .ne. yord) goto anycn
+
+		wdept = entry(10,11)
+		goto next_dept
+	;;;	b_seq = entry(6,8)
+		end
+	else	WDEPT = ENTRY(1,2)
+
+
+	IF (WDEPT .EQ. '  ') GOTO DISPLA
+	if (wdept .eq. 'Z') call print_sheet
+	if (wdept .eq. 'VM') 
+		begin
+		XCALL CP_MAKP (xord, path)
+		xcall ado (path)
+	;;;	xcall dpwo2(xord,0)	;view
+		goto anycn
+		end
+	if (wdept .eq. 'PM') 
+		begin
+		xcall dpwo2(xord,1)	;print local
+		goto anycn
+		end
+	if (wdept .eq. 'PC')		;print cover sheet
+		begin
+		CALL CHK_COMPLETE	;
+		goto anycn
+		end
+
+	IF (WDEPT .EQ. 'I')		;12-18-19
+	THEN I_CNGD = 1
+	ELSE I_CNGD = 0
+
+
+	GOTO NEXT_DEPT
+OPS,
+	OPS = 1
+	WDEPT = SAVDPT
+
+
+NEXT_DEPT,		
+	FOR I FROM 1 THRU NUMDPT
+		BEGIN
+		IF (WDEPT .EQ. DPTARA(I))
+		  BEGIN
+		  SAVROW = DPTROW(I)		;START ROW FOR SELECTED DEPT
+		  CALL CNGDPT
+
+		  USING CMPCOD SELECT
+		  ('ROC'),  BEGIN
+			    IF (S_STAT .NE. 1) EXITLOOP	;NOT COMPLETE
+
+			    IF (I .EQ. NUMDPT) 
+			    THEN  CALL PRINT_SHEET
+			    ELSE  BEGIN
+				  J = I + 1
+				  IF (J.LE.NUMDPT)
+				    BEGIN
+				    IF (DPTARA(J) .EQ. '  ') CALL PRINT_SHEET
+				    END
+				  END
+
+			    END	
+		  ENDUSING
+
+		  EXITLOOP
+		  END
+
+		END
+
+	GOTO ANYCN
+
+print_sheet,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	open (14,o,'spl:dptsts.spl')
+	pline = 'Order Completion Status'
+	call print
+	forms (14,2)
+	pline (3,80) = 'Order:'
+	pline (14,19) = oordno,	'ZZZZZX'
+	pline (23,80) = ocusnm
+	call print
+	forms(14,2)
+
+	writes (14,hline)
+	pline (3,12) = xdate,	'ZX/XX/XXXX'
+	pline (15,80) = slsnm(1,10)
+	pline (26,28) = slstno,	'XXX'
+	pline (31,80) = ojobno
+	pline (42,80) = opono
+	pline (54,80) = sc_name
+	call print
+	forms (14,2)
+
+	writes (14,hline2)
+	call prtdpt
+
+
+	close 14
+	lpque ('spl:dptsts.spl', delete)
+
+	return
+print,
+	writes (14,pline)
+	clear pline
+	return
+;---------------------------------------------------------
+
+CNGDPT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	DEPT_CHANGED = 1	;dept status changed (8-28-19)
+;;;	S_ORDN = OORDNO
+	S_ORDN = XORD		;12-12-18 SSQ: might be a job not an order
+	S_DEPT = WDEPT(1,1)
+;;;	if (wdept(2,2) .eq. 'V') s_dept(2,2) = 'V'	;8-5-19 no more vulcan in dptsts
+	if (wdept .eq. 'IC') s_dept = wdept
+
+	XCALL CP_ISIO (CHN193, DPTSTS, S_KEY, READ, LOKCTL, w_id)
+	IF (LOKCTL) RETURN
+	ROW = I + 8
+	row = savrow + 1		;3-13-17
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 3-7-17: using staging loc instead
+	clear was_entry, was_entry_v			;2-20-19
+	IF (MAN .EQ. 1)
+		BEGIN
+		COL = 53
+		XCALL winpT (wnd_1, ROW, 33, 20, 00, 'A ', ENTRY, INXCTL)
+		IF (INXCTL .EQ. 0)
+			begin
+		 	S_COMM = ENTRY(1,20)
+			was_entry = 1
+			was_entry_v = s_comm
+			end
+
+		GOTO UPDSTS
+		END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if (dept_plus)
+	then	begin
+		call dept_stage		;4-17-17: "+" means user wants to change staging info
+		goto updsts
+		end
+	else	call get_stage		;4-10-17 is there any staging info?
+
+	CALL GET_OPS		;12-21-11 need this for default op
+	IF (OPS .NE. 1) GOTO NO_DOP
+
+	XCALL TTSTS(TSTAT)
+	IF (TSTAT) 
+		begin
+		xcall w_disp(wnd_1,wd_pos,1,1)
+		XCALL W_DISP(WND_1,WD_READS,ENTRY)
+		end
+	IF (NUMARA .LE. 0) return
+
+	DLINE = 
+	if (b_seq .gt. 0)
+	then	begin
+		p_action = 1
+		pi = b_seq
+		end
+	else	xcall pop1 (pop)	
+
+
+	clear was_op_desc, was_op_desc_v			;2-20-19
+	using p_action select
+	(1,4),	begin	;select, cr
+		if (pi.gt.0) savrfa = parrfa(pi)
+		read (chn182, coptbl, rfa:savrfa) [err=cngdpt]
+		s_comm = op_desc				
+		was_op_desc = 1					;2-20-19
+		was_op_desc_v = s_comm				;2-20-19
+		if (.not. got_staging) 
+			begin
+			xcall w_disp(wnd_1, wd_pos, row, 33, s_comm)
+			xcall w_updt
+			end		
+		end
+	endusing
+
+	goto updsts	;1-16-12
+;;;	return		;don't update status for operations.
+
+
+no_dop,
+
+	call get_table
+
+	next = s_stat
+	for i from 1 thru 4
+		begin
+		incr next
+		if (next.eq.BURN .and. x_burn.eq.1) exitloop
+		if (next.eq.FORM .and. x_form.eq.1) exitloop
+		if (next.eq.CMPLT) exitloop
+		if (next.gt.CMPLT)
+			begin
+			next = 0
+			exitloop
+			end
+		end
+
+	if (.not. dept_plus) s_stat = next
+
+	USING WDEPT SELECT
+	('I','J'),	BEGIN
+		DSTAT(1) = 'OPEN '
+		DSTAT(2) = 'PROCS'
+		DSTAT(3) = 'WAIT '
+		DSTAT(4) = 'COMPL'
+		IF (S_STAT .EQ. BURN) CALL GET_EMP
+		END
+
+	(),	BEGIN
+		DSTAT(1) = 'OPEN '
+		DSTAT(2) = 'BURN '
+		DSTAT(3) = 'FORM '
+		DSTAT(4) = 'COMPL'
+		END
+	ENDUSING
+
+	clear was_dfl, was_dfl_v		;2-20-19
+	using s_stat select
+	(OPN),	begin
+		D_LINE(24,28) = DSTAT(1)
+		end
+	(BURN),	begin
+		D_LINE(24,28) = DSTAT(2)
+		if (s_comm.eq.a20) 
+			begin
+			s_comm = dfl_burn	;removed 3-7-17
+			was_dfl = 1
+			was_dfl_v = s_comm
+			end
+		end
+	(FORM),	begin
+		D_LINE(24,28) = DSTAT(3)
+		if (s_comm.eq.a20) 
+			begin
+			s_comm = dfl_form	;removed 3-7-17
+			was_dfl = 1
+			was_dfl_v = s_comm
+			end
+		end
+	(CMPLT),begin
+		D_LINE(24,28) = 'COMPL'
+		if (s_comm.eq.a20) 
+			begin
+			s_comm = dfl_cmplt	;removed 3-7-17
+			was_dfl = 1
+			was_dfl_v = s_comm
+			end
+		end
+	endusing
+	if (.not. got_staging) xcall w_disp (wnd_1, wd_pos, row, 33, s_comm)	;removed 3-7-17
+	xcall w_disp (wnd_1, wd_pos, row, 24,d_line(24,28))
+
+	if (wdept.eq.'I') 
+		begin
+		if (s_stat .eq. BURN)
+		then	entry(1,3) = XEMP, 'ZZX'
+		else	entry(1,3) = 
+
+		xcall w_disp (wnd_1, wd_pos, row, 33, wd_clr, wdc_eol, wd_pos, row, 42,  entry(1,3))
+		end
+
+	xcall w_updt
+
+
+UPDSTS,
+	SAVDPT = WDEPT
+	if (dept_plus)	return		;4-17-17
+
+	CLEAR DPTDET
+	CALL TIME_STAMP			;SSQ 10-26-06
+
+	XCALL CP_ISIO (CHN193, DPTSTS, S_KEY, WRITE, LOKCTL, w_id)
+	if (lokctl .ne. 0)		;2-20-19 debug
+		begin
+		open (88, a, 'smc:dptbar_dbg.dat')
+		d88_key = 'updsts err'
+		d88_val = 'error writing back record at "updsts"'
+		writes (88, d88)
+		close 88		
+		end
+
+	DE_ORD = S_ORDN
+	DE_DPT = S_DEPT
+	DE_STAT = S_STAT
+	XCALL CP_ISIO (CHN198, DPTDET, DE_KEY, STORE, LOKCTL, w_id)
+
+	RETURN
+;---------------------------------------------------------
+
+GET_EMP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; GET PACKING EMPLOYEE NUMBER
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR DPTLBS, XEMP, XINIT
+	DK2_ORD = S_ORDN
+	DK2_DPT = 'I'			;only for dept I
+	READ (CHN128, DPTLBS, DI_KEY2, KRF=1) [ERR=NO_EMP]
+	XEMP = di_nbr
+
+	CLEAR COPTBL
+	TBLCOD = 'EI'
+	EI_TNBR = XEMP
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0)
+	THEN	XINIT = EI_INIT			;8-14-19
+	ELSE	XINIT =
+
+	ENTRY(1,3) = XEMP, 'ZZZ'
+	RETURN				;employee has already taken credit for packing
+
+NO_EMP,
+	if (.not. i_cngd) return	;12-18-19
+
+	xcall w_disp (wnd_1, wd_pos, LL-2,1,'EMPLOYEE NUMBER:')
+	XCALL WINPT (WND_1, LL-2,20, 03, 01, '#E', ENTRY, INXCTL)
+	GOTO (NO_EMP, EMP_DONE), INXCTL
+	XEMP = ENTRY(1,3)
+
+	CLEAR COPTBL
+	TBLCOD = 'EI'
+	EI_TNBR = XEMP
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0)
+	THEN	BEGIN
+		ENTRY(1,3) = XEMP, 'ZZZ'
+		XCALL W_DISP (WND_1, WD_POS, LL-2, 25, ENTRY(1,3))
+		XINIT = EI_INIT			;8-14-19
+		END
+	ELSE	BEGIN
+		XCALL WNMSG (WND_1, LL, 'EMPLOYEE NOT ON FILE',1)
+		GOTO NO_EMP
+		END
+
+
+	XCALL W_DISP (WND_1, WD_POS, LL-2, 30, 'UPDATE (Y/N)?')
+	XCALL WINPT (WND_1, LL-2, 45, 01, 01, 'YN', ENTRY, INXCTL)
+	GOTO (NO_EMP), INXCTL-1
+	
+	CLEAR DPTLBS
+	DI_NBR = XEMP
+	DI_ORD = S_ORDN
+	DI_DPT = 'I'
+	DI_LBS = I_LBS#2		;ROUND UP TO WHOLE LBS
+	IF (DI_LBS*100 .LT. I_LBS) DI_LBS = DI_LBS + 1	;ROUND UP
+	DT = %DATETIME
+	DI_DAT = DT(1,8)
+
+	XCALL ISIO (CHN128, DPTLBS, DI_KEY, STORE, LOKCTL)
+	IF (LOKCTL .NE. 0) 	
+	THEN	XCALL WNMSG (W_ID, LL, 'DPTLBS NO UPDATED!', 1)
+	ELSE	XCALL W_DISP (WND_1, WD_POS, LL-2, 1, WD_CLR, WDC_LIN)
+
+EMP_DONE,
+	RETURN
+;--------------------------------------------------
+
+
+GET_OPS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SCAC ALPHA LOOK-UP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR NUMARA, I
+	CLEAR TBL_KEY
+	TBLCOD = 'CS'
+	TBLKEY = S_DEPT
+	FIND (CHN182,COPTBL,TBL_KEY)[ERR=NXTDOP]
+NXTDOP,
+	READS (CHN182,COPTBL,GETRFA:SAVRFA) [ERR=ENDDOP]
+	IF (TBLCOD .NE. 'CS') GOTO ENDDOP
+	IF (OP_DEPT .NE. S_DEPT) GOTO ENDDOP
+	INCR I
+	DLINE = OP_DESC
+	PARRY(I) = DLINE
+	PARRFA(I) = SAVRFA
+
+	USING OP_DFL SELECT
+	(BURN),	DFL_BURN = OP_DESC
+	(FORM),	DFL_FORM = OP_DESC
+	(CMPLT),DFL_CMPLT= OP_DESC
+	ENDUSING
+
+	GOTO NXTDOP
+
+ENDDOP,
+	NUMARA = I
+	RETURN
+
+	RETURN
+;--------------------------------------------------
+DEPT_STAGE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; STAGING INFO FOR EACH DEPT
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (WDEPT .EQ. '  ') RETURN		;NO DEPT SELECTED
+
+	CALL GET_STAGE
+
+	XCALL TTSTS(TSTAT)
+	IF (TSTAT) 
+		begin
+		xcall w_disp(wnd_1,wd_pos,1,1)
+		XCALL W_DISP(WND_1,WD_READS,ENTRY)
+		end
+	IF (aNUMARA .LE. 0)
+		begin
+		select = 1				;add mode
+ 		call stage_mnt				;let user add new info
+		goto no_stage				;4-17-17
+	;;;	if (aNUMARA .EQ. 0) GOTO NO_STAGE	;nothing added
+	;;;	goto dept_stage
+		end
+
+	
+;;;	aDLINE = '    QTY  UM   LOC                   WGHT    SIZE'
+	awx = savrow + 1
+	awy = 30
+	xcall popx (pop1a)	
+	using ap_action select
+	(1),	begin
+		aSAVRFA = aparrfa(api)
+		read (chn194, dptloc, rfa:aSAVRFA) [err=no_stage]
+		select = 2				;change mode
+		call stage_mnt
+		end
+	(2),	begin					;add new
+		clear dptloc
+		select = 1
+		call stage_mnt
+		end
+	(3),	begin					;delete
+		aSAVRFA = aparrfa(api)
+		read (chn194, dptloc, rfa:aSAVRFA) [err=no_stage]
+		select = 3				;delete mode
+		call stage_mnt
+		end
+	endusing
+
+NO_STAGE,
+
+	RETURN
+;QTY  UM   LOC                   WGHT    SIZE
+;ZZZX AAAA AAAAAAAAAAAAAAAAAAAA  ZZZX ZZZ ZZZ ZZZ
+;1234567890123456789012345678901234567890123456789012345
+;         1         2         3         4         5
+;--------------------------------------------------------------
+
+STAGE_MNT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; STAGE MAINTENANCE
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+S_DISPLA,
+
+	CALL CREATE_WND2
+	clear cngctl
+	xcall w_disp(wnd_2, wd_clear)
+	xcall w_disp(wnd_2, wd_pos, 1,1, '1. QTY')
+	xcall w_disp(wnd_2, wd_pos, 2,1, '2. UM')
+	xcall w_disp(wnd_2, wd_pos, 3,1, '3. WGHT')
+	xcall w_disp(wnd_2, wd_pos, 4,1, '4. LOC')
+	xcall w_disp(wnd_2, wd_pos, 5,1, '5. SIZE')
+
+	using select select
+	(2),	begin
+		call stage_dsp
+		goto stage_any
+		end
+	(3),	begin
+		call stage_dsp
+		goto stage_del
+		end
+	endusing
+
+l_qty,
+	ctl = '01,11,04,00,#E'
+	call s_inp
+	goto (s_displa, s_done),inxctl
+	l_qty = entry(1,4)
+	goto (stage_any),cngctl
+l_um,
+	xcall w_disp (wnd_2, wd_pos, 2,11, wd_clr, wdc_eol)
+	t_key = 'D3'
+	t_dept =
+	call dsp_tbldat
+
+	ctl = '02,11,01,00,# '
+	call s_inp
+	goto (s_displa, s_done),inxctl
+	dec = entry(1,1)
+	if (dec.lt.1 .or. dec.gt.numdat) 		;;;>goto l_um
+	then	l_um =
+	else	begin					;4-17-17 allow custom values
+		coptbl = tbldat2(dec)
+		l_um = d3_desc
+		end
+	xcall w_disp (wnd_2, wd_pos, 2,11, l_um)
+	goto (stage_any),cngctl
+
+	L_WT =
+	using s_dept select
+	('C'),	L_WT = C_LBS #2	;ROUND UP TO WHOLE LBS
+	('L'),	L_WT = L_LBS #2	;ROUND UP TO WHOLE LBS
+	('O'),	L_WT = O_LBS #2	;duct lbs were mult by 100 in case also line item lbs
+	('P'),	L_WT = P_LBS #2	;duct lbs were mult by 100 in case also line item lbs
+	(),	goto l_wt
+	endusing
+	ENTRY(1,4) = L_WT,	'ZZZZ' [LEFT]
+	XCALL W_DISP (WND_2, WD_POS, 3,11, ENTRY(1,6))
+	goto l_loc
+l_wt,
+	ctl = '03,11,04,00,# '
+	call s_inp
+	goto (s_displa, s_done),inxctl
+	l_wt = entry(1,4)
+	goto (stage_any),cngctl
+l_loc,
+	t_key = 'D2'
+	t_dept = s_dept
+	call dsp_tbldat
+	ctl = '04,11,20,00,A '
+	call s_inp
+	goto (s_displa, s_done),inxctl
+	l_loc = entry(1,20)
+	l_prt = 'N'
+	if (%trim(l_loc) .le. 2)
+		begin
+		xcall alpdc (l_loc, dec, stat)
+		if (stat.eq.0 .and. dec.gt.0 .and. dec.le.numdat)
+			begin
+			coptbl = tbldat2(dec)
+			l_loc = d2_desc
+			l_prt = d2_prt
+			xcall w_disp(wnd_2, wd_pos, 4,11, l_loc)
+
+			if (d2_more.eq.'Y')
+				begin
+				tl = %trim(l_loc) + 2
+				col = col + tl 
+				max = max - tl
+				call s_inp
+				goto (s_displa, s_done),inxctl
+				l_loc(tl+1, 20) = entry
+				end
+			end
+		end
+	call clr_tbldat
+	goto (stage_any),cngctl
+l_siz,
+	ctl = '05,11,03,00,# '
+	for i from 1 thru 3
+		begin
+		call s_inp
+		l_siz(i) = entry(1,3)
+		col = col + 4
+		end
+
+	goto stage_any
+
+stage_del,
+	xcall w_disp (wnd_2, wd_pos, 10,1, 'DELETE, ARE YOU SURE?')
+	xcall winpt (wnd_2, 10, 27, 01, 01, 'YN', entry, inxctl)
+	goto (stage_proces, s_done), inxctl
+stage_any,
+	xcall wancn (wnd_2, 12, cngctl, whatno)
+	goto (stage_proces, stage_cngbr), cngctl+1
+stage_cngbr,
+	goto (l_qty, l_um, l_wt, l_loc, l_siz), whatno
+	goto stage_any
+
+stage_proces,
+	lokctl = 1
+	using select select
+	(1),	begin
+		l_ordn = oordno
+		l_dept = s_dept
+		xcall CP_isio (chn194, dptloc, l_key, store, lokctl, w_id)
+		end
+	(2),	begin
+		xcall CP_isio (chn194, dptloc, l_key, write, lokctl, w_id)
+		end
+	(3),	begin
+		xcall CP_isio (chn194, dptloc, l_key, delete, lokctl, w_id)
+		end
+	endusing
+
+s_done,
+	xcall w_proc (WP_REMOVE, WND_2)
+	XCALL W_UPDT
+
+	clear inxctl			;don't let <end> abort calling routine
+	savdpt = s_dept
+	xrow = savrow
+
+	call dspdpt			;staging data change, re-display screen...
+	s_dept = savdpt
+	savrow = xrow
+
+	RETURN	;from routine stage_mnt
+;==============================================================
+
+STAGE_DSP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	ENTRY(1,4) = L_QTY,	'ZZZX' [LEFT]
+	XCALL W_DISP (WND_2, WD_POS, 1,11, ENTRY(1,6))
+
+	XCALL W_DISP (WND_2, WD_POS, 2,11, L_UM)
+
+	ENTRY(1,4) = L_WT,	'ZZZX' [LEFT]
+	XCALL W_DISP (WND_2, WD_POS, 3,11, ENTRY(1,6))
+
+	XCALL W_DISP (WND_2, WD_POS, 4,11, L_LOC)
+
+	ENTRY (1,3) = L_SIZ(1), 'ZZX'
+	ENTRY (5,7) = L_SIZ(2), 'ZZX'
+	ENTRY(9,11) = L_SIZ(3), 'ZZX'
+	XCALL W_DISP (WND_2, WD_POS,5,11, ENTRY(1,11))
+
+	XCALL W_UPDT
+
+	RETURN
+
+s_inp,		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	xcall winpt (wnd_2, row, col, max, min, type, entry, inxctl)
+	return
+
+GET_STAGE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR aNUMARA, I
+
+	CLEAR L_KEY
+	L_ORDN = OORDNO
+	L_DEPT = S_DEPT
+	FIND (CHN194, DPTLOC, L_KEY) [ERR= GS_LOOP]
+GS_LOOP,
+	READS (CHN194, DPTLOC, GETRFA:aSAVRFA) [LOCK=GS_LOCKED, ERR=GS_EOF]
+	IF (L_ORDN.NE.OORDNO .OR. L_DEPT.NE.S_DEPT) GOTO GS_EOF
+	INCR I
+
+	CLEAR aDLINE
+	aDLINE (1,4) = L_QTY,	'ZZZX'
+	aDLINE (6,9) = L_UM
+	aDLINE (11,30) = L_LOC
+	aDLINE (33,36) = L_WT,	'ZZZZ'
+	aDLINE (38,40) = L_SIZ(1),	'ZZZ'
+	aDLINE (42,42) = 'X'
+	aDLINE (43,45) = L_SIZ(2),	'ZZZ'
+	aDLINE (47,47) = 'X'
+	aDLINE (48,50) = L_SIZ(3),	'ZZZ'
+
+	aPARRY(I) = aDLINE
+	aPARRFA(I) = aSAVRFA
+	GOTO GS_LOOP
+
+GS_LOCKED,
+	XCALL WNMSG (W_ID, LL, 'RECORD LOCKED', 1)
+GS_EOF,
+	aNUMARA = I
+	GOT_STAGING = ANUMARA		;4-10-17
+	unlock chn194			;4-10-17
+
+	RETURN
+
+
+get_tbldat,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear numdat
+	clear tbl_key
+	tblcod = t_key
+	d2_dept = t_dept
+	find (chn182, coptbl, tbl_key) [err=gt_loop]
+gt_loop,
+	xcall ios (chn182, coptbl, read, lokctl)
+	if (lokctl .ne. 0) goto gt_eof
+	if (d2_dept .ne. t_dept) goto gt_eof
+	
+	incr numdat
+	tbldat2(numdat) = coptbl		;save
+	goto gt_loop
+gt_eof,
+	return
+;--------------------------------
+
+dsp_tbldat,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	call get_tbldat					;get D2 (staging) table data
+
+	for i from 1 thru numdat
+		begin
+		a3 = i, 'ZX.'
+		coptbl = tbldat2(i)
+		xcall w_disp (wnd_2, wd_pos, i, 34, a3)
+		xcall w_disp (wnd_2, wd_pos, i, 38, d2_desc)
+		end
+
+	return
+;--------------------------------
+
+clr_tbldat,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	for i from 1 thru numdat
+		begin
+		xcall w_disp (wnd_2, wd_pos, i, 34, wd_clr, wdc_eol)
+		end
+	return
+;--------------------------------------------------------------
+
+PROCES,
+	GOTO DISPLA
+
+ENDOFF,
+	CALL CLOSE
+	IF (UNAME(1,5) .EQ. 'PLANT')
+		BEGIN
+		XCALL PGCHN('CP:SHPMNU',1)
+		END
+	XCALL PGCHN ('CP:CPLMNU',1)
+	
+DSPDPT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	for i from 1 thru 20 clear linara(i)
+	CLEAR I
+	XCALL w_disp (wnd_1, wd_pos, 8,1,wd_clr,wdc_eol,HLINE2)
+	CLEAR GOTP, GOTO
+
+	using o_typ select
+	('S'),	call d_order
+	('J'),	call d_job
+	(),	return
+	endusing
+
+
+prtdpt,
+
+	CLEAR DPT_DATA
+	ROW = 8
+	xcall w_disp (wnd_1, wd_pos, 8,1, wd_clr, wdc_eow)
+	XCALL w_disp (wnd_1, wd_pos, 8,1, HLINE2)
+
+	CLEAR dl_pb, dl_datim
+	NUMDPT = 0
+;;;	FIND (CHN193, DPTSTS, OORDNO) [ERR=NXTDPT]
+	FIND (CHN193, DPTSTS, XORD) [ERR=NXTDPT]	;12-10-18
+NXTDPT,
+	savrow = row
+	XCALL CP_IOS (CHN193, DPTSTS, READ, LOKCTL, W_ID)	;W_ID added 6-14-17
+	if (lokctl .eq. 1) goto endoff		;6-14-17 record locked
+
+	IF (LOKCTL .NE. 0) GOTO EOF_DPT
+;;;	IF (S_ORDN .NE. OORDNO) GOTO EOF_DPT
+	IF (S_ORDN .NE. xord) GOTO EOF_DPT
+	IF (S_DEPT .EQ. '**')
+	then	BEGIN
+		dl_pb = s_comm
+		DATE = S_DATE,	'XXXX-XX-XX'
+		TIME = S_TIME,	'ZX:XX'
+		dl_datim = DATIME
+		XCALL XYB(3,1,dat_lin, wnd_1)
+		xcall w_updt
+		GOTO NXTDPT		;6-21-17 HEADER
+		END
+	else	if (o_typ.eq.'J')
+			begin
+			DATE = S_DATE,	'XXXX-XX-XX'
+			TIME = S_TIME,	'ZX:XX'
+			d2_datim = DATIME
+			xcall w_disp (wnd_1, wd_pos, 4,1,dat_ln2)
+			end
+
+	for i from 1 thru 20
+		using linara(i) select
+		(s_dept),	exitloop	;ok
+		('  '),		begin		;dept no longer on order
+				if (s_stat.le.0) 
+					begin
+					delete(chn193)	;delete the record
+					goto nxtdpt
+					end
+				end
+		endusing
+
+	CALL GET_TABLE
+
+	CLEAR D_LINE				;4-19-17 SSQ
+	D_LINE(3,4) = DD_DEPT
+	D_LINE(6,20) = DD_DESC
+
+	USING S_STAT SELECT
+	(0),	D_LINE(24,28) = 'OPEN '
+	(.gt.1),	D_LINE(24,28) = 'COMPL'
+	ENDUSING
+
+	using s_stat select
+	(OPN),	D_LINE(24,28) = 'OPEN '
+	(BURN),	if (s_dept .eq. 'I' .or. s_dept.eq.'J')
+		then	D_LINE(24,28) = 'PROC '
+		else	D_LINE(24,28) = 'BURN '
+	(FORM),	IF (S_DEPT.EQ.'I'.or. s_dept.eq.'J')
+		THEN	D_LINE(24,28) = 'WAIT '
+		ELSE	D_LINE(24,28) = 'FORM '
+	(CMPLT),D_LINE(24,28) = 'COMPL'
+	endusing
+
+; 5-15-19 moved call to get_stage here from below...
+	call get_stage		;is there any staging info?
+
+	if (.not. got_staging) D_LINE(33,52) = S_COMM
+	
+	if (s_dept.eq.'I') 
+		begin
+		if (s_stat .eq. BURN)
+		then	begin
+			call get_emp
+			entry(1,3) = xemp, 'ZZX'
+			end
+		else	entry(1,3) = 
+		
+		d_line(33,52) = 
+		d_line(42,44) = entry(1,3)
+		end
+
+	INCR ROW
+	XCALL w_disp (wnd_1, wd_pos, ROW, 1, D_LINE)
+	IF (S_STAT) XCALL XYB(ROW,24,d_line(24,28), wnd_1)
+
+	pline = d_line
+	if (%chopen(14) .and. pline(33,52).ne.blanks) call print	;ssq 5-31-17
+
+xcall w_updt
+
+;5-15-19>>>	call get_stage		;is there any staging info?
+	if (aNUmara .gt. 0)
+		for i from 1 thru aNumara
+			begin
+			aDLINE = aPARRY(I)
+			XCALL w_disp (wnd_1, wd_pos, ROW, 32, aDLINE(1,50) )
+			pline(30,80) = aDLINE
+			IF (%CHOPEN(14)) CALL PRINT				;5-17-17
+	
+			incr row
+			end
+
+	if (%chopen(14)) call print						;5-17-17
+
+	INCR NUMDPT
+	DPTARA(NUMDPT) = s_dept	;;;>S_DEPT(1,1)
+	DPTROW(NUMDPT) = SAVROW
+	GOTO NXTDPT
+
+EOF_DPT,
+xcall w_updt
+	RETURN
+;  DEPARTMENT           STATUS   QTY UM   LOC                   WGHT    SIZE'
+;  AA AAAAAAAAAAAAAAA   AAAAA   ZZZX AAAA AAAAAAAAAAAAAAAAAAAA  ZZZX ZZX ZZX ZZX
+;123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6         7         8         9
+;---------------------------------------------------------
+
+SET_LIN_DPT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	FOR I FROM 1 THRU 20
+		USING LINARA(I) SELECT
+		('  '),	BEGIN
+			LINARA(I) = s_dept
+			EXITLOOP
+			END
+		(LDEPT), EXITLOOP		
+		ENDUSING
+
+	RETURN
+;--------------------------------------------------
+
+D_JOB,		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; JOBS...
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; create a DPTSTS record for every dept in order.  If there are
+; already records in DPTSTS file, they will not be over-written.
+	CLEAR DPTSTS
+	S_ORDN = JHNUM
+	S_DEPT = JHDEPT(1,1)
+
+	XCALL CP_ISIO (CHN193, DPTSTS, S_KEY, STORE, LOKCTL, w_id)
+	LDEPT = JHDEPT
+	CALL SET_LIN_DPT
+
+	RETURN
+;----------------------------------------------------------------
+
+
+D_ORDER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; ORDERS...
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; create a DPTSTS record for every dept in order.  If there are
+; already records in DPTSTS file, they will not be over-written.
+
+	CLEAR O_LBS, P_LBS					;7-29-19
+
+	READ (CHN175, DUCACC, OORDNO) [ERR=FNDDUC]
+FNDDUC,
+	WHILE (DUCTOR .EQ. OORDNO)
+		BEGIN
+		if (oorddt .lt. 20200420)
+		then	XCALL DD_old (GAUGE,SIZE3,DUTYPE,WD_DEPT,STY)		
+		else	XCALL DDEPT (GAUGE,SIZE3,DUTYPE,WD_DEPT,STY)
+		USING WD_DEPT SELECT
+		('O'),	BEGIN
+			GOTO = 1
+			O_LBS = O_LBS + POUNDS*100
+			END
+		('P'),	BEGIN
+			GOTP = 1
+			P_LBS = P_LBS + POUNDS*100
+			END
+		ENDUSING
+
+		READS(CHN175, DUCACC, EOF_FDD)
+		END
+EOF_FDD,	
+	CLEAR DPTSTS
+	S_ORDN = OORDNO
+	IF(GOTP)
+		BEGIN
+		S_DEPT(1,1) = 'P'
+		XCALL CP_ISIO (CHN193, DPTSTS, S_KEY, STORE, LOKCTL, w_id)
+		CALL SET_LIN_DPT
+		END
+
+	IF(GOTO)
+		BEGIN
+		S_DEPT(1,1) = 'O'
+		XCALL CP_ISIO (CHN193, DPTSTS, S_KEY, STORE, LOKCTL, w_id)
+		CALL SET_LIN_DPT
+		END
+
+FNDLIN,
+	CLEAR I_LBS, C_LBS, L_LBS				;7-29-19
+	FIND (CHN045, ORDLIN, OORDNO) [ERR=NXTLIN]
+NXTLIN,
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF_LIN
+	IF (LORDNO .NE. OORDNO) GOTO EOF_LIN
+	IF (LTYPE .EQ. 'M') GOTO NXTLIN			;SKIP MEMOS
+	IF (%INSTR(1,LDESCR,'DISCOUNT') ) GOTO NXTLIN	;ssq 1-17-08 SKIP DISCOUNTS
+
+; check for excluded parts ... 11-26-18
+	CLEAR TBL_KEY
+	TBLCOD = 'EX'
+	TBLKEY = EX_ITEM = LITMNO
+	FIND (CHN182,COPTBL,TBL_KEY) [ERR=LCONT]	;continue if NOT in table
+	GOTO NXTLIN
+LCONT,
+; create a DPTSTS record for every dept in order.  If there are
+; already records in DPTSTS file, they will not be over-written.
+	CLEAR DPTSTS
+	S_ORDN = LORDNO
+
+;;;	xcall cvcan (ordlin, ocusno, chn182, is_vulcan)	;8-5-19
+;;;	if (is_vulcan) ldept(2,2) = 'V'			;8-5-19
+
+	S_DEPT(1,1) = LDEPT(1,1)
+;;;	if (ldept(2,2) .eq. 'V') s_dept(2,2) = 'V'	;8-5-19
+
+
+;2-5-20: this is causing problems, this icfil seems to be always in use, so
+;		I will assume the records are created correctly when the order is 
+;		printed...
+
+	if (ldept .eq. 'C')
+		begin
+		is_ic_item = 0	;assume not an IC item				;1-28-20
+		if (%is_ic(ordlin)) 
+			begin
+			xcall isio (chnic, icitem, lcfgim, read, lokctl) ;1-28-20
+			if (lokctl.eq.0) is_ic_item = 1
+			end
+		if (is_ic_item)	
+			begin
+			s_dept = 'IC'
+			ldept = s_dept
+			end
+		end
+;-
+
+;;;	if (ldept.eq.'C' .and. %is_ic(ordlin))
+;;;		begin
+;;;		s_dept = 'IC'
+;;;		ldept = s_dept
+;;;		end
+
+	USING LDEPT SELECT
+	('I'),	I_LBS = I_LBS + (LPWGT*LQTYOR)
+	('C'),	C_LBS = C_LBS + (LPWGT*LQTYOR)
+	('L'),	L_LBS = L_LBS + (LPWGT*LQTYOR)
+	('O'),	O_LBS = O_LBS + (LPWGT*LQTYOR)
+	('P'),	P_LBS = P_LBS + (LPWGT*LQTYOR)
+	ENDUSING
+
+;;;	IF (LDEPT .EQ. 'I ') I_LBS = I_LBS + (LPWGT*LQTYOR)		;7-29-19
+	XCALL CP_ISIO (CHN193, DPTSTS, S_KEY, STORE, LOKCTL, w_id)
+
+	CALL SET_LIN_DPT
+
+	GOTO NXTLIN
+
+
+EOF_LIN,
+
+	RETURN
+;------------------------------------------------------------------------
+
+
+TIME_STAMP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; TIME & DATE STAMP			;SSQ 10-26-06
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+	DT = %DATETIME
+	S_DATE = DT(1,8)
+	S_TIME = DT(9,12)
+
+	DE_DATE = S_DATE
+	DE_TIME = S_TIME
+
+	RETURN
+;----------------------------------------------------------
+
+
+GET_TABLE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; READ DEPT FROM COPTBL
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR TBL_KEY
+	TBLCOD = 'DD'
+	DD_DEPT = S_DEPT	
+;;;	DD_DEPT = S_DEPT(1,1)
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL) 
+		BEGIN
+		CLEAR COPTBL
+		DD_DESC = '* NOT ON FILE *'
+		END
+
+	X_BURN = D_BURN
+	X_FORM = D_FORM
+	RETURN
+;--------------------------------------------------------
+
+
+GETORD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (XORD .NE. OORDNO) CLEAR DEPT_CHANGED	;clear this if starting a new order, else this
+							;might be another dept for current order.
+	XCALL ISIO (CHN044, ORDHDR, XORD, READ, LOKCTL)
+	IF (LOKCTL)
+		BEGIN
+		XCALL wnmsg (wnd_1, 23,'ORDER NOT ON FILE',1)
+		XORD = 			;8-19-19, no last dept!
+		RETURN
+		END
+
+	IF (OLOC .NE. 'O')	;8-19-19 MUST BE AN ORDER
+		BEGIN
+		LOKCTL = 1
+		XCALL WNMSG (WND_1, 23, 'THIS IS AN QUOTE!',1)
+		XORD = 			;8-19-19, no last dept!
+		RETURN
+		END
+	
+	call open_ic
+
+	XCALL IO (CHN054, SALMAN, OSLMAN, READ, LOKCTL)
+	IF (LOKCTL) CLEAR SALMAN
+
+	XCALL w_disp (wnd_1, wd_pos, 2,23,OCUSNM)
+	XCALL w_disp (wnd_1, wd_pos, 5,1,HLINE)
+
+	XDATE(1,4) = OORDDT(5,8)
+	XDATE(5,8) = OORDDT(1,4)
+	ENTRY(1,10) = XDATE,	'XX/XX/XXXX'
+	XCALL w_disp (wnd_1, wd_pos, 6,3,ENTRY(1,10))
+
+	XCALL XYB(6,15,SLSNM(1,10), wnd_1)
+	ENTRY(1,3) = SLSTNO,'XXX'
+	XCALL XYB(6,26,ENTRY(1,3),wnd_1)
+
+	XCALL w_disp (wnd_1, wd_pos, 6,31,OPONO)
+	XCALL w_disp (wnd_1, wd_pos, 6,42,OJOBNO)
+	
+	TBLCOD = 'SC'
+	SC_SCAC = OSCAC
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL) SC_NAME = '* NOT ON FILE *'
+	XCALL w_disp (wnd_1, wd_pos, 6,54,SC_NAME)
+
+	call load_ic				;1-29-20
+	RETURN
+;---------------------------------------------------------
+
+LOAD_IC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; dept IC SB based on 
+		;;; consolidated qty
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+;;;	return			;2-5-20 not using this now
+
+	k3_ord = oordno
+	k3_dept = 'C '
+	k3_item =
+	k3_desc =
+
+	savitm = '-1'
+
+	find (chn045, ordlin, key3, krf=3) [err=ic_loop]
+ic_loop,
+	reads (chn045, ordlin, eof_ic)
+	if (lordno .ne. oordno) goto eof_ic
+	if (ldept .ne. 'C') goto ic_loop
+	if (lcfgim .ne. savitm) call newitm
+	if (.not. %is_ic2(ordlin) ) goto ic_loop
+	totqty = totqty + lqtyor
+	goto ic_loop
+
+eof_ic,
+	call newitm
+	return
+
+newitm,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if (savitm .eq. '-1') goto outitm
+	using totqty select
+	(0),		goto outitm	;no ic items
+	(.gt.9),	goto outitm	;qty more than 9
+	(),		begin
+			ic_item = savitm
+			ic_qty = totqty
+			xcall isio  (chnic, icitem, ic_item, store, lokctl)
+			end
+	endusing
+
+
+outitm,
+	savitm = lcfgim
+	totqty =
+	return
+;--------------------------------------------
+
+GETJOB,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (XORD .NE. JHNUM) CLEAR DEPT_CHANGED		;for new job
+
+	XCALL ISIO (CHN071, JOBHDR, XORD, READ, LOKCTL)
+	IF (LOKCTL)
+		BEGIN
+		XCALL WNMSG (WND_1, 23, 'FAB TICKET NOT ON FILE',1)
+		RETURN
+		END
+
+	xcall w_disp (wnd_1, wd_pos, 2,23, 'FAB TICKET')
+	xcall w_disp (wnd_1, wd_pos, 3,4, 'DEPARTMENT:')
+	xcall w_disp (wnd_1, wd_pos, 3,16, jhdept)
+	xcall w_disp (wnd_1, wd_pos, 3,22, 'DUE:')
+	xdate(1,4) = jhshdt(5,8)
+	xdate(5,8) = jhshdt(1,4)
+	entry(1,10) = xdate, 'ZX/XX/XXXX'
+	xcall w_disp (wnd_1, wd_pos, 3,27, entry(1,10))
+
+	RETURN
+;---------------------------------------------------------
+CHK_COMPLETE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; if all depts complete print cover sheet
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	LOCAL = 0					;DON'T PRINT LOCALLY
+	ALL_COMPLT = 1					;ASSUME ALL COMPLETE
+
+	FIND (CHN193, DPTSTS, OORDNO) [ERR=CC_LOOP]
+CC_LOOP,
+	savrow = row
+	XCALL CP_IOS (CHN193, DPTSTS, READ, LOKCTL, w_id)
+	IF (LOKCTL .NE. 0) GOTO CC_EOF
+	IF (S_ORDN .NE. OORDNO) GOTO CC_EOF
+	IF (S_DEPT .EQ. '**') GOTO CC_LOOP		;6-21-17 HEADER
+
+	IF (S_STAT .EQ. CMPLT) GOTO CC_LOOP
+	CLEAR ALL_COMPLT		;ALL IT TAKES IS ONE
+
+CC_EOF,
+	IF (.NOT. ALL_COMPLT)
+		begin
+		xcall w_disp(wnd_1, wd_pos,LL,1,wd_clr, wdc_eol)
+		inxctl = 7
+		xcall wnmsg (wnd_1, ll, 'NOT ALL DEPARTMENTS COMPLETE, PRINT ANYWAY?',INXCTL)
+		if (.not. inxctl) XCALL PRCVR (OORDNO, LOCAL)
+		return
+		end
+
+
+;;;	XCALL W_DISP(WND_1, WD_POS, LL, 1, wd_clr, wdc_eol, 'ALL DEPTS COMPLETE - PRINT COVER SHEET?')
+;;;	XCALL WINPT (WND_1, LL, 44, 01, 00, 'YN', ENTRY, INXCTL)
+
+	XCALL W_DISP(WND_1, WD_POS, LL, 1, wd_clr, wdc_eol, 'PRINTED BY:')
+	XCALL WINPT (WND_1, LL, 14, 30, 00, 'AE', ENTRY, INXCTL)
+	IF (INXCTL) RETURN
+
+
+	DT = %DATETIME
+	D = DT(1,8)
+	T = DT(9,12)
+	DATE = D,	'XXXX-XX-XX'
+	TIME = T,	'ZX:XX:XX'
+	PLINE = DATIME
+
+	CLEAR DPTSTS
+	S_ORDN = OORDNO
+	S_DEPT = '**'
+	XCALL ISIO (CHN193, DPTSTS, S_KEY, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0)
+	THEN	BEGIN
+		S_COMM = ENTRY
+		S_DATE = D
+		S_TIME = T
+		XCALL ISIO (CHN193, DPTSTS, S_KEY, WRITE, LOKCTL)
+		END
+	ELSE	BEGIN
+		CLEAR DPTSTS
+		S_ORDN = OORDNO
+		S_DEPT = '**'
+		S_COMM = ENTRY
+		S_DATE = D
+		S_TIME = T
+		XCALL ISIO (CHN193, DPTSTS, S_KEY, STORE, LOKCTL)
+		END
+
+
+CC_PRINT,
+	XCALL PRCVR (OORDNO, LOCAL, ENTRY)
+	RETURN
+;-----------------------------------------------------------
+
+LASTDEPT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	DT = %DATETIME
+
+	CLEAR LASDPT
+
+	LD_ORD = OORDNO
+	LD_CUS = OCUSNM
+	LD_CONT = OCOMNT(2)
+	LD_DATE = DT(3,8)	;YYMMDD
+	LD_TIME = HHMM
+	XCALL ISIO (CHN161, LASDPT, LD_ORD, STORE, LOKCTL)
+
+	RETURN
+;-----------------------------------------------------------
+
+CHK_LASTDEPT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; at least one dept still open, check LASDPT
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	CLEAR LASDPT
+	XCALL ISIO (CHN161, LASDPT, OORDNO, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0) XCALL ISIO (CHN161, LASDPT, OORDNO, DELETE, LOKCTL)
+	unlock chn161
+	RETURN
+;--------------------------------------------------------------
+
+OPEN_IC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;	return		;2-5-20 not using this now
+
+	IF (CHNIC)
+		BEGIN
+		CLOSE CHNIC
+		XCALL DELET (ICFIL)
+		END
+
+
+	chnic = %SYN_FREECHN(50,99)		;1-29-20
+	OCORD = OORDNO, 'XXXXXX'
+	dt = %datetime
+	xtime = dt(9,14)
+	XCALL ISAMC (ICFIL, 21, 1, 'START=1, LENGTH=15, NODUPS, ASCEND')
+	OPEN (CHNIC, SU, ICFIL)
+	RETURN
+;-----------------------------------------------------------------
+
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (4, 'SI', 044, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN044 = 4
+
+	XCALL FILES (5, 'SI', 045, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN045 = 5
+
+	XCALL FILES (6, 'I', 054, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN054 = 6
+
+	XCALL FILES (7, 'SI', 175, SWITCH)
+	IF(SWITCH .EQ. 9) RETURN
+	CHN175 = 7
+
+	XCALL FILES (17, 'SI',  182, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN182 = 17
+
+;;;	XCALL FILES (9, 'SU', 193, SWITCH)
+;;;	IF (SWITCH .EQ. 9) RETURN
+	xcall ffile (193, stsfil, switch)
+	stsfil(14,14) = 'M'
+	CHN193 = 9
+
+;open in input mode for IsLastDept	6-10-19
+	SWITCH = 5
+	XCALL FILES (59, 'SI', 193, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN193I = 59
+
+	SWITCH = 5
+	XCALL FILES (10, 'SU', 198, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN198 = 10
+
+
+	SWITCH = 5
+	XCALL FILES (94, 'SU', 194, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN194 = 94
+	
+
+	SWITCH = 5
+	XCALL FILES (35, 'SI', 135, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN135 = 35
+
+	SWITCH = 5
+	XCALL FILES (71, 'SI', 071, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN071 = 71
+
+	SWITCH = 5
+	XCALL FILES (72, 'SI', 072, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN072 = 72
+
+	SWITCH = 5
+	XCALL FILES (61, 'SU', 161, SWITCH)
+	CHN161 = 61
+
+	SWITCH = 5
+	XCALL FILES (28, 'SU', 128, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN128 = 28
+
+
+	OPNOK = 1
+	RETURN
+;---------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (CHN135) CLOSE CHN135		;NEED THIS FOR PRCVR
+	IF (CHN044) CLOSE CHN044
+	IF (CHN045) CLOSE CHN045
+	IF (CHN054) CLOSE CHN054
+	IF (CHN193) CLOSE CHN193
+	IF (CHN175) CLOSE CHN175
+	if (chn182) close chn182
+	IF (CHN198) CLOSE CHN198
+	IF (CHN194) CLOSE CHN194
+	IF (CHN071) CLOSE CHN071
+	IF (CHN072) CLOSE CHN072
+	IF (CHN193I) CLOSE CHN193I
+	IF (CHN161) CLOSE CHN161
+	IF (CHN128) CLOSE CHN128
+	if (chnic) 
+		begin
+		close chnic
+		xcall delet (icfil)
+		end
+
+	RETURN
+;---------------------------------------------
+ACCEPT,
+	XCALL FLAGS (00010000,1)
+	XCALL w_disp (wnd_1, wd_pos, ROW,COL,' ')
+	XCALL W_DISP(W_ID,wd_wait, 30, WD_ACCEPT,TCHAR) ; INPUT 1 DECIMAL CHARACTER AT A TIME
+;;;	ACCEPT (15,TCHAR,WAIT:60) [ERR=AC_RET]
+	IF (TCHAR.EQ.10) GOTO ACCEPT
+AC_RET,
+	if (tchar.eq.13) XCALL W_DISP(W_ID,wd_wait, 30, WD_ACCEPT,TCHAR) ; INPUT 1 DECIMAL CHARACTER AT A TIME
+;;;	IF (TCHAR.EQ.13) ACCEPT (15,DCHAR)
+	XCALL FLAGS (00010000,0)
+	RETURN
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	xcall u_start(,,,,40,100,,99)		;40 row by 100 col
+;;;	xcall u_start(,,,,40,150,,99)		;40 row by 150 col
+
+;-------------------------
+; this code from routine cid.man
+
+	xcall jbnam(pgname)
+	TL = %INSTR(1,PGNAME,'$')	;FIND THE $ (MAIN$ORDMNT)
+	TL = TL + 1
+	EL = %TRIM (PGNAME)
+	IF (TL .GT. EL) EL = TL
+
+	xcall e_sect(CMPCOD ,D_CAPTION)
+	xcall e_sect(pgname(TL,EL) ,D_CAPTION, D_NOCLEAR, D_POSITION,1,5)
+
+
+	ICONAM = CMPCOD
+	status = %u_icon(D_ICONSET,ICOFIL,1)
+;----------------------------
+
+	XCALL TNMBR (WN_TNMBR)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (WND_1.EQ.0)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,0,0)	;full size
+		END
+	XCALL W_BRDR(WND_1,WB_TITLE,'Order Completion Status',
+&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,WND_1,2,2)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	W_ID = WND_1
+	LL = 40
+
+;; POP info...
+
+	MAXARA = 20
+	PLEN = 50
+	NUMROW = 15
+	WX = 12
+	WY = 4
+	POP_WID(1,5) = "DPSTS"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "Status"
+
+;; POP1A info...
+
+	aMAXARA = 20
+	aPLEN = 53
+	aNUMROW = 15
+	aWX = 12
+	aWY = 4
+	aPOP_WID(1,5) = "STAGE"
+	aPOP_WID(6,8) = WN_TNMBR,	'XXX'
+	aPOP_TITLE = "STAGE"
+
+	RETURN
+	RETURN
+;-----------------------------------------------------------------
+CREATE_WND2,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_PROC(WP_FIND,WND_2,'S_WIN')
+	IF (.NOT. WND_2)
+		BEGIN
+		XCALL W_PROC(WP_CREATE, WND_2, 'S_WIN',12, 58)
+		XCALL W_BRDR(WND_2,WB_TITLE,'STAGING',WB_TPOS,WBT_TOP,WBT_CENTER)
+		END
+	XCALL W_PROC(WP_PLACE, WND_2, row, 83)
+	XCALL W_DISP(WND_2, WD_CLEAR)
+	XCALL W_UPDT
+
+	WLEN = 58
+	RETURN
+;--------------------------------------------------------
+
+debug,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	open (88, a, 'smc:dptbar_dbg.dat')
+
+	d88_key = 'man'
+	d88_val = man, 'X'
+	writes (88, d88)
+
+	d88_key = 's_ordn'
+	d88_val = s_ordn, 'XXXXXX'
+	writes (88, d88)
+
+	d88_key = 's_dept'
+	d88_val = s_dept
+	writes (88, d88)
+
+	d88_key = 's_comm'
+	d88_val = s_comm
+	writes (88, d88)
+
+	d88_key = 'dbl_burn'
+	d88_val = dfl_burn
+	writes (88, d88)
+
+	d88_key = 'dfl_form'
+	d88_val = dfl_form
+	writes (88, d88)
+
+	d88_key = 'dfl_cmplt'
+	d88_val = dfl_cmplt
+	writes (88, d88)
+
+	if (was_entry)
+		begin
+		d88_key = 'was_entry'
+		d88_val = was_entry_v
+		writes (88, d88)
+		end
+
+	if (was_op_desc)
+		begin
+		d88_key = 'was_op_desc'
+		d88_val = was_op_desc_v
+		writes (88, d88)
+		end
+
+	if (was_dfl)
+		begin
+		d88_key = 'was_dfl'
+		d88_val = was_dfl_v
+		writes (88, d88)
+		end
+
+	close 88
+	return
+;--------------------------------------------
+
+
+
+.END
+
+.SUBROUTINE XYB
+	X	,D
+	Y	,D
+	TEXT	,A
+	w_id	,d
+
+.include 'wnd:windows.def'
+
+.PROC
+	xcall w_disp (w_id, wd_attr, attr_set+attr_rvrs)
+	xcall w_disp (w_id, wd_pos, x, y, text)
+	xcall w_disp (w_id, wd_attr, attr_clr+attr_rvrs)
+
+;;;	DISPLAY (15, $SCR_ATT(REVERSE), $SCR_POS(X,Y), TEXT)
+;;;	DISPLAY (15, $SCR_ATT(CLEAR))
+	RETURN
+.END

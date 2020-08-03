@@ -1,0 +1,35 @@
+.script
+.date_generated "11/18/1998, 11:52"
+.version "6.3"
+
+.input fc_inp1, 5, 49
+.placement 2, 14
+.field q_date, a10, pos(2, 3), prompt("Quote Date"), fpos(2, 15), -
+     required
+.field q_type, a10, fpos(2, 34), select(1, 2, 3, "Open", "Sent", "Both"), -
+     radio
+.box Box1, 5, 20, pos(1, 29)
+.end
+
+.input fc_inp2, 20, 66
+.placement 2, 9
+.field fc_date, d6, pos(1, 3), prompt("Quote Date"), fpos(1, 15), -
+     required
+.field fc_cusname, a25, pos(2, 11), prompt("To"), fpos(2, 15)
+.field fc_cont, a20, pos(3, 9), prompt("Attn"), fpos(3, 15)
+.field fc_fax, d10, pos(3, 44), prompt("Fax #"), fpos(3, 51)
+.field fc_notes, 7a50, pos(8, 3), prompt("Notes"), fpos(8, 10)
+.field fc_salesman, a20, pos(17, 7), prompt("Rep"), fpos(17, 12)
+.text Text1, pos(5, 5), margin(4, 12)
+Here is the information that you have requested.
+.text Text2, pos(6, 5), margin(4, 0)
+Please call if there is anything else that we can do for you.
+.text Text3, pos(15, 12), margin(11, 42)
+Thank you  Sincerely,
+.button Button1
+.button Button2
+.text Text4, pos(19, 9), margin(8, 14)
+If you should have any questions or concerns
+.text Text5, pos(20, 9), margin(8, 0)
+please do not hesitate to call me at (800)328-1966
+.end

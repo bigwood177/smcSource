@@ -1,0 +1,104 @@
+.subroutine	roldx
+	cus_rec	,a		;cusmas record
+	allow_update	,d	;0 = no update allowed, 1 = updates
+	x	,d		;row
+	y	,d		;col
+;
+
+	.include 'wnd:tools.def'
+
+record	cusmas
+	.include 'def:rd001a.def'
+
+record	rolo		;(534 bytes)
+	.include 'def:rolo.def'
+
+record	vars
+	r_chan	,d2
+	inp_id	,i4
+	col_id	,i4
+	select	,d1
+	status	,d1	;0 = ok, 1 = abort
+	srchflg	,d1,	1
+	sts	,d4
+	done	,d1
+
+.proc
+	cusmas = cus_rec
+
+	xcall i_ldinp(inp_id, g_utlib, "roldx_input",D_NOPLC)
+
+	xcall i_display(inp_id,"cus_info",cusmas,"cusno,name,add1,add2,city,
+&		state,zip,phone,efax")
+
+	if (allow_update)
+	then	xcall b_enable(inp_id,"Save")
+	else	xcall b_disable(inp_id, "Save")
+
+;;;	open (r_chan,su,'UT:rolo2') 
+	xcall u_open(r_chan,"u:i","ut:ROLO2.ISM",,srcflg,sts)
+	if (sts)
+		begin
+		xcall u_message("Error opening Rolo2")
+		xreturn
+		end
+	select = 2			;change
+	read (r_chan,rolo,cusno) [err=eof]
+
+	xcall i_display(inp_id,"rolo_info",rolo,"r_cont1,r_cont2,
+&		r_cont3,r_cont4,r_sales,r_ship")
+
+eof,
+	xcall U_WINDOW (D_PLACE, inp_id, x, y)
+
+	if (r_cust .eq. cusno)
+	then	select = 2
+	else	select = 1	
+
+	xcall i_input(inp_id,"rolo_info", rolo,,,,,,,status)
+
+	if (g_select)
+		begin
+		using G_entnam select
+		("SAVE"),using select select
+			(1),	begin
+				r_cust = cusno
+				store (r_chan,rolo,r_cust)
+				end
+			(2),	write (r_chan,rolo,r_cust)
+			endusing
+		("CANCEL"),	 xcall u_message("User Abort")
+		endusing
+		done = TRUE
+		end
+
+
+	close r_chan
+fini,	
+	xcall u_close (r_chan)
+	XCALL U_WINDOW(D_DELETE, inp_id)
+	xreturn
+	.end
+
+.subroutine	cmd_save
+	id	,i
+	name	,a
+	status	,d
+.proc
+	status = 0	;ok
+	xcall m_signal("Save")
+	return
+.end
+
+.subroutine	cmd_cancel
+	id	,i
+	name	,a
+	status	,d
+.proc
+	status = 1	;abort
+	xcall m_signal("Cancel")
+	return
+.end
+
+
+

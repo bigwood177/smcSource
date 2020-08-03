@@ -1,0 +1,383 @@
+;FAXQUE.CP
+.MAIN FAXQUE
+;
+;	MAINTAIN quote FAX QUE.
+;
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+	.INCLUDE 'WND:WINDOWS.DEF'
+
+
+	.INCLUDE "TK:TOOLS.DEF"
+
+GLOBAL	DUCK, INIT
+	.INCLUDE 'DEF:RD175D.DEF'
+ENDGLOBAL
+
+RECORD	ORDHDR
+	.INCLUDE 'DEF:RD044A.DEF'
+
+RECORD	FAXFIL
+	.INCLUDE 'DEF:FAXFIL.DEF'
+
+RECORD	POP
+	.INCLUDE 'DEF:FAXPOP.DEF'
+
+RECORD	O_FILE
+;;;		,A4,	'SPL:'
+		,a*,	'\\server01\synergyde\faxscan\'
+		,A1,	'W'
+	O_ORDER	,D6
+		,A1,	'.'
+	O_EXT	,A3,	'txt'
+
+
+RECORD	CFS_MESSAGE
+		,A*,	'Checking fax status... '
+		,A20
+		,A*,	' attempt to send: '
+	CFS_COUNT	,D3
+
+RECORD	WN_NAME
+		,A5,	'FAXQU'
+	WN_TNMBR,D4
+RECORD	WARS
+	WND_1	,D4
+	W_ID	,D4
+	
+RECORD	CHANNEL
+	CHNFAX	,D2
+	CHN044	,D2
+
+RECORD	BUFFER
+		,A100
+
+RECORD	VARS
+	q_quote	,d6
+	q_name	,a25
+	PLINE	,A50
+	PHONEDATE	,A10
+	LETTERDATE	,A10
+	STAT	,D3
+	II	,D6	
+	SAVRFA	,A6
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OPNOK	,D1
+	XDATE	,D6
+	USRDAT	,D6
+	TODAY	,D6
+	SWITCH	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	V	,D1
+
+.PROC
+	xcall u_start(,,,,,,,15)
+	xcall e_sect("FaxQue",D_CAPTION)
+
+	XCALL TERID (V)
+	XCALL RDATE(TODAY)
+	CALL INIT_WINDOW
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+DISPLA,
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	XCALL W_DISP(WND_1,WD_POS,4,4,'DATE:')
+	XCALL W_UPDT
+	XCALL WINPT (W_ID,4,10,06,00,'DE',ENTRY,INXCTL)
+	GOTO (DISPLA,ENDOFF),INXCTL
+	USRDAT = ENTRY(1,6)
+	IF (USRDAT .EQ. 0)
+		BEGIN
+		USRDAT = TODAY
+		ENTRY(1,8) = USRDAT,	'XX/XX/XX'
+		XCALL W_DISP(WND_1,WD_POS,4,10,ENTRY(1,8))
+		END
+	XCALL W_UPDT
+
+	CALL GET_QUE
+	IF (NUMARA .EQ. 0) GOTO DISPLA
+
+	DLINE = '  ORDER#     DATE  CUST# NAME                           STS'
+	XCALL TTSTS(STAT)
+	IF (STAT) READS(15,ENTRY)
+	XCALL FXPOP (POP)
+	IF (PI .EQ. 0) GOTO DISPLA
+	GOTO (PROCES,ADDNEW,DELETE),P_ACTION
+	GOTO DISPLA
+
+;--------------------------------------------------------------
+PROCES,
+	SAVRFA = PARRFA(PI) 
+	READ (CHNFAX,FAXFIL,RFA:SAVRFA)[ERR=NO_FAX_RECORD]
+	XCALL ISIO (CHN044,ORDHDR,FAX_ORDER,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO NO_ORDER_RECORD
+
+; Code to send fax here
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	XCALL W_DISP(WND_1,WD_POS,22,1,'Sending Fax ...')
+	XCALL W_UPDT
+
+	O_ORDER = OORDNO
+	XCALL PRFAX(OORDNO ,WND_1)
+
+	XCALL W_DISP(WND_1,WD_POS,22,1,'Create Follow up Task ?')
+	XCALL WINPT (W_ID,22,26,01,01,'YN',ENTRY,INXCTL)
+	GOTO (UPDATE_FAXFIL),INXCTL-1
+
+; Interface to MS Outlook Tasks...
+	XCALL QTASK (FAX_ORDER, OCUSNM, LETTERDATE, PHONEDATE)
+
+	FAX_F_DATE(1) = XDATE
+	FAX_F_DATE(2) = XDATE
+
+UPDATE_FAXFIL,
+	O_EXT = "ok"
+	FAX_STATUS = 2	;DID NOT SEND
+	CFS_COUNT = 1
+CFS_LOOP,
+	XCALL W_DISP(WND_1,WD_POS,22,1,CFS_MESSAGE)
+	XCALL W_UPDT
+	INCR CFS_COUNT
+	SLEEP 2
+	OPEN (22,I,O_FILE)[ERR=CFS_LOOP]
+CFS_READ,
+	READS (22,BUFFER,EOF_CFS)
+	IF (.NOT. %INSTR(1, BUFFER ,"Fax sent successfully") )GOTO CFS_READ
+	FAX_STATUS = 1
+	XCALL W_DISP(WND_1,WD_POS,22,1,"Fax sent successfully")
+	XCALL W_UPDT
+	CLOSE 22
+	XCALL DELET(O_FILE)	;DELETE THE FILE
+
+EOF_CFS,
+	IF (%CHOPEN(22) ) CLOSE 22
+; Update and write back FAXFIL record...
+;;;	FAX_STATUS = 1
+	WRITE (CHNFAX,FAXFIL,RFA:SAVRFA) [ERR=BAD_WRITE]
+	GOTO DISPLA
+
+BAD_WRITE,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"Error Writing faxque Record !!")
+	XCALL WINPT (W_ID,4,01,00,00,'A ',ENTRY,INXCTL)
+	GOTO DISPLA
+
+;--------------------------------------------------------------
+;--------------------------------------------------------------
+DELETE,
+	SAVRFA = PARRFA(PI) 
+	READ (CHNFAX,FAXFIL,RFA:SAVRFA)[ERR=NO_FAX_RECORD]
+	DELETE(CHNFAX,FAX_ORDER) [ERR=BAD_DELETE]
+	GOTO DISPLA
+BAD_DELETE,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"Error Deleting Record !!")
+	XCALL WINPT (W_ID,4,01,00,00,'A ',ENTRY,INXCTL)
+	GOTO DISPLA
+;--------------------------------------------------------------
+ADDNEW,
+	GOTO DISPLA
+;--------------------------------------------------------------
+
+NO_ORDER_RECORD,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"CAN'T FIND ORDER RECORD !!")
+	XCALL WINPT (W_ID,4,01,00,00,'A ',ENTRY,INXCTL)
+	GOTO ENDOFF
+NO_FAX_RECORD,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"CAN'T FIND FAX RECORD !!")
+	XCALL WINPT (W_ID,4,01,00,00,'A ',ENTRY,INXCTL)
+ENDOFF,
+	CALL CLOSE
+	STOP
+;=========================================================
+;=========================================================
+
+GET_QUE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR NUMARA, II
+	FIND (CHNFAX,FAXFIL,^FIRST) [ERR=EXIT_QUE]
+QLOOP,
+	READS (CHNFAX,FAXFIL,EXIT_QUE,GETRFA:SAVRFA) [ERR=EXIT_QUE]
+	XDATE(1,2) = OORDDT(5,6)
+	XDATE(3,6) = OORDDT(1,4)
+;;;	IF (XDATE .NE. USRDAT) GOTO QLOOP
+
+	XCALL ISIO (CHN044,ORDHDR,FAX_ORDER,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) 
+		BEGIN
+		OCUSNO = 
+		OCUSNM = '***ORDER NOT FOUND ***'
+		END
+	CLEAR DLINE
+	DLINE(1,6) = FAX_ORDER,	'ZZZZZX'
+	DLINE(8,15) = FAX_DATE,	'XX/XX/XX'
+	DLINE(17,22) = OCUSNO,	'ZZZZZX'
+	DLINE (24,53) = OCUSNM
+	USING FAX_STATUS SELECT
+	(0),	DLINE(56,59) = "Open"
+	(1),	DLINE(56,59) = "Sent"
+	ENDUSING
+
+	INCR II
+	PARRFA(II) = SAVRFA
+	PARRY(II) = DLINE
+	GOTO QLOOP
+	
+EXIT_QUE,
+	NUMARA = II
+	RETURN
+;-----------------------------------------------
+
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (2,'SI',044,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN044 = 2
+
+	OPEN (1,SU,'SPL:FAXFIL.ISM')
+	CHNFAX = 1
+
+	OPNOK = 1
+	RETURN
+;-----------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN044) CLOSE CHN044
+	IF (CHNFAX) CLOSE CHNFAX
+	RETURN
+;-----------------------------------------------
+
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SET UP SCREEN 1 WINDOW
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+	XCALL TNMBR (WN_TNMBR)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (.NOT. WND_1)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,0,0)
+		END
+	XCALL W_BRDR(WND_1,WB_TITLE,'QUOTE FAX QUE',
+&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	W_ID = WND_1
+
+;; POP info...
+
+	MAXARA = 10		;9-19-97 NOT MORE THAN 1 FULL WINDOW
+	PLEN = 60
+	NUMROW = 18
+	WX = 
+	WY = 10
+	POP_WID(1,5) = "FXPOP"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "QUOTES"
+	RETURN
+;ORDER#     DATE  CUST# NAME                           STS
+;XXXXXX XX/XX/XX XXXXXX AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  X
+;1234567890123456789012345678901234567890123456789012345678
+;         1         2         3         4         5
+
+.END
+
+
+;----------------------------
+;----------------------------
+;
+.subroutine qtask
+	QUOTE	,D
+	NAME	,A
+	LETTERDATE	,A
+	PHONEDATE	,A
+	R_STATUS	,D
+	
+.include "dbldir:activex.def"
+
+.define AX_HEIGHT,	450
+.define AX_WIDTH,	430
+
+record	vars
+	axwid		,i4
+	axid		,i4
+
+.proc
+
+; Create container and load control...	
+	axwid = %ax_create(50, 50, AX_WIDTH, AX_HEIGHT)
+	axid = %ax_load(axwid,"AXQtaskPrj.AXQtask",0,0,AX_WIDTH, AX_HEIGHT)
+
+; Bind Events
+	xcall ax_bind(axid, "cmdSave", "cmdSave")
+	xcall ax_bind(axid, "cmdCancel","cmdCancel")
+
+	xcall ax_set(axid, "lblQuote", QUOTE)
+	xcall ax_set(axid, "lblCustomer",NAME)
+	xcall ax_set(axid, "cbPhone",1)
+	xcall ax_set(axid, "cbLetter",1)
+
+	xcall process_control (axwid, axid, LetterDate, PhoneDate)
+
+	xcall win_stop(1)
+
+	xreturn
+.end
+
+
+;----------------------------
+.subroutine process_control
+	a_axwid		,n		;id of container
+	a_axid		,n		;id of control
+	LetterDate	,a
+	PhoneDate	,a
+
+.proc
+	xcall ax_show(a_axwid)
+	xcall ax_set(a_axid, "EXT_FOCUS" ,1)
+	xcall win_proc(1)
+
+	xcall ax_get(a_axid,"txtLetterDate",LetterDate)
+	xcall ax_get(a_axid,"txtPhoneDate",PhoneDate)
+	xcall ax_hide(a_axwid)
+
+	xreturn
+.end
+
+;----------------------------
+.subroutine cmdSave
+	a_axid	,n
+	param	,a
+
+record
+	alpha	,a20
+.proc
+
+	xcall win_stop(1)
+	xreturn
+.end
+
+;----------------------------
+.subroutine cmdCancel
+	a_axid	,n
+
+.proc
+
+	xcall win_stop(1)
+	xreturn
+.end
+
+;----------------------------
+
+
+

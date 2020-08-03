@@ -1,0 +1,706 @@
+SUBROUTINE	S_ORDADD	; isam
+
+	S_OORDNO	,D
+	ESTIMA		,D
+	CCORD		,A
+	INET		,A	;SSQ 5-4-05
+	ABORT		,D	
+
+	; 6-04-18 ssq: make cusmas isam
+	; 3-28-19 ssq: express order mod
+	;11-18-19 ssq: miscus mod
+
+	.include 'wnd:tools.def'
+	.include 'def:hpsub.def'
+
+
+EXTERNAL FUNCTION		;3-28-19
+	IS_EXP	,A
+
+EXTERNAL FUNCTION		;7-20-20
+	IS_STOCK	,A
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+EXTERNAL FUNCTION
+	SCHDT	,D
+
+
+RECORD	S_DAT_MSG
+		,A*,	'COMPUTED PROMISE DATE: '
+	SDM_DAT	,A10
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+
+;define global sections...
+GLOBAL ORDL	
+RECORD ORDLIN  		
+		.INCLUDE 'DEF:RD045A.def'
+RECORD,X
+		.INCLUDE 'DEF:RD045D.def'
+RECORD,X
+		.INCLUDE 'DEF:RD045M.def'
+ENDGLOBAL
+;-------------------------------------------
+
+GLOBAL IMS	
+RECORD INVMAS
+	.INCLUDE 'DEF:RD041A.def'
+RECORD DUMINV,X
+	.INCLUDE 'DEF:RD041B.def'
+
+RECORD
+	FIL041	,A14		;ITMMAS FILE NAME
+ENDGLOBAL
+
+GLOBAL DUCK	
+		.INCLUDE 'DEF:RD175D.DEF'
+ENDGLOBAL
+
+;end of all globals.
+
+RECORD	EJECT
+	E_CHAR	,A1		;<ESC>
+		,A4,	"&l0H"	;PAGE EJECT
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+RECORD	FAXFIL
+	.INCLUDE 'DEF:FAXFIL.DEF'
+
+RECORD	WRKKEY
+	.INCLUDE 'DEF:RD183A.DEF'
+
+RECORD ORDHDR
+	.INCLUDE 'DEF:RD044A.DEF'
+RECORD			
+	.INCLUDE 'DEF:RD001W.DEF'
+
+RECORD	CRHOLD		;7-30-18
+	.INCLUDE 'DEF:RD195A.DEF'
+
+
+RECORD	CHANNEL
+	CHN001	,D2
+	CHN002	,D2
+	CHN041	,D2
+	CHN042	,D2
+	CHN044	,D2
+	CHN045	,D2
+	CHN060	,D2
+	chn084	,d2
+	CHN135	,D3	;ORDCM2.ISM	5-20-1
+	CHN137	,D2	;CCINFO.ISM
+	CHN138	,D2	;CCTRAN.ISM
+	CHN166	,D2
+	CHN182	,D2
+	CHN183	,D2
+	CHN101	,D3	;MISCUS		11-18-19
+	CHN102	,D3	;MISSHP
+
+RECORD	WVARS
+	TAXCC	,D1	;1= TAX CODE CHANGED IN OECC2 (4-29-13)
+	HAS_I	,D1	;1 = l/i w/ dept "I" is on order
+	BATFIL	,A10
+	cmpcod	,a3
+	W_ID	,D4
+	WND_1	,D4
+
+RECORD	WN_NAME
+		,A5,	'SCRN1'
+	WN_TNMBR,D4
+
+RECORD	SPLFIL
+		,A4,	'SPL:'
+	SPF_ORD	,A6
+		,A4,	'.SPL'
+
+RECORD	PBUF
+		,A10
+	PLINE	,A50
+
+RECORD	D_ORD
+		,A7,	'ORDER: '
+	DORD	,A6
+
+RECORD		
+	WORKD	,D8
+RECORD,X
+	YYYY	,D4
+	MM	,D2
+	DD	,D2
+
+RECORD	VARS
+	XPRS_ORD,A1	;3-28-10 Express order (Y/N)
+	STK_ORD	,A1	;7-20-20 Stock order (Y/N)	
+	local	,d1	;7-27-09 1 = print on local printer
+	distr	,d1	;6-12-07  1=cust is a distributor
+	NUMLBL	,D2	,04	;number of shipping labels to print(1 sheets)
+	RUNTOT	,D8
+	F_KEY	,D3
+	CUSTCD	,A2
+	U_NAME	,A25
+	X_FRT	,D1
+	NEG_ZERO	,D1,1
+	ZERO		,D1,0
+	A_FRT	,A7
+	ANS	,A1
+	E_FRGHT	,D7
+	C_FRGHT	,D7	;CALC FREIGHT
+	EN_FRT	,D7	;USER ENTERED FREIGHT
+	SAVFRT	,D7
+	LPSW	,D1
+	PGCNT	,D5
+	OPNOK	,D1
+	TAXFLG	,A3
+	FULL	,D1
+	ENTRY	,A30
+	MSGCTL	,D1
+	INXCTL  ,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OORSEQ	,D3
+	DUCSEQ	,D3
+	LSTDTE	,D8
+	TDATE	,D6
+	TODAY	,D8
+	XDATE	,D6
+	MON	,12D2,	31,28,31,30,31,30,31,31,30,31,30,31
+	NODAYS	,D6
+	SCH_DAT	,D8
+	MAXRC2	,D5
+	CUSTP2	,A2
+	PMAX	,D2
+	ORGINV	,D5
+	LOCTNS	,D2
+	PRICES	,D2
+	ADCNT1	,D5
+	MAXRC1	,D5
+	SWITCH	,D1,1
+	TAXTOT	,D8
+	LINCNT	,D5
+	V	,D1
+	CREDIT	,D8
+	CONTR	,D1	;1=CONTRACTOR
+	CTR	,D2
+	ODATE	,D8
+	READ	,D1,	0
+	WRITE	,D1,	1
+	STORE	,D1,	2
+	LOKCTL	,D1
+;;;	TYPSYS	,D1	;;;
+	FILNAM	,A14	;;;
+	SELECT	,D1,0	;;;
+	FIL045	,A14	;;;
+	FIL175	,A14	;;;
+	FIL174	,A14	;;;
+PROC
+
+	XCALL RDAT8 (TODAY)
+
+	U_NAME = %GU_NAME
+	clear ordhdr		;ssq 6-07-10
+	CLEAR TAXCC		;SSQ 4-29-13
+
+	XCALL RDATE (TDATE)
+	XCALL DATE8(TDATE, D_OUT, LSTDTE, D_FMT, D_SW)
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+DISPLA,
+;;;	xcall u_start("lib:smc_wnd",,,,,,,100)
+	xcall u_start("lib:smc_wnd",,,,,,,200)
+	xcall e_sect("Add",D_CAPTION,D_CLREOL, D_POSITION,1,5)
+
+	OORDNO = S_OORDNO
+	XCALL SCRN1(OORDNO,ODISC,OLOC,OCUSNM,INET,INXCTL,TAXFLG,
+&      CUSTP2,CCORD,LSTDTE,FULL,V,CONTR,ODATE,ESTIMA,ABORT,CUSTCD,distr)
+
+	IF (FULL) GO TO ENDOFF
+	IF (INXCTL.NE.2) GO TO SCRN2
+ENDOFF,
+	xcall u_finish
+	CALL CLOSE
+	RETURN			;END OF ROUTINE S_ORDADD ***
+
+
+SCRN2,
+	XCALL OUTPT (2,1,2,'\',1)
+	XCALL FFILE (45,FIL045,SWITCH)	
+	FIL045 (14,14) = 'M'		
+	OPEN (5,SU,FIL045)		
+	CHN045 = 5			;SSQ 9-9-03
+
+	OORSEQ = 1
+	XCALL SCRNX (CUSTP2,PCODES,PDISCS,PMAX,DCODES,DDISCS,DMAX,TYPSYS,
+&		OORSEQ,OORDNO,TAXFLG,MAXRC2,ORGINV,LOCTNS,PRICES,
+&		FULL,ODISC,OLOC,OCUSNM,TAXTOT,V,CONTR,ODATE,CUSTCD,distr)
+
+		if (CUSTCD .eq. 'NQ')	CALL RE_WRITE	;5-13-13
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 9-27-10 call before exiting scrnx...
+
+;;;	XCALL OEJR(OORDNO,CHN041,CHN042,CHN045,runtot,taxtot,oloc)		;SSQ 9-9-03
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLOSE CHN045					;SSQ 9-9-03
+
+	IF (FULL) GO TO ENDOFF
+SCRN3,					
+	XCALL OUTPT (1,1,2,'\',1)	
+
+	XCALL FFILE (174,FIL174,SWITCH)	
+	XCALL FFILE (175,FIL175,SWITCH)	
+	FIL175 (14,14) = 'M'
+	OPEN (5,SU,FIL175)		
+	DUCSEQ=ODSEQ
+
+	XCALL SCRN3 (OORDNO,TAXFLG,ORGINV,FULL,OCUSNM,ODATE,OLOC,FIL174,DUCSEQ,
+&			CUSTCD, oprtf)
+	
+	xcall u_finish
+SCRN4,					
+	DORD = OORDNO, 'ZZZZZX' [LEFT]
+	XCALL OUTPT(1,1,1,D_ORD,1)
+
+	CLEAR E_FRGHT
+	XCALL SCRN5 (OORDNO,FULL,SELECT,OLOC,FIL045,ORGINV,TAXFLG,E_FRGHT,
+&			CUSTCD,RUNTOT,TAXTOT,CONTR) ;2-29-16 added contr
+	CLOSE 5				
+	IF (FULL) GO TO ENDOFF		
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; 12-06-05 SSQ  do this after freight input...
+;;;	IF(CCORD.NE.' ')
+;;;		BEGIN
+;;;		XCALL OECC2(ORDHDR, RUNTOT, TAXTOT, E_FRGHT)
+;;;		TAXFLG = OTAXFL
+;;;		END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CUSTP2 =
+;;;	TAXTOT =		;moved 12-20-05 ssq
+	PCODES =
+	PDISCS =
+
+	XPRS_ORD = %IS_EXP (OORDNO, CHN182)	;is this an "Express" order? 3-28-19
+	STK_ORD = %IS_STOCK (OORDNO, CHN182)	;is this a "Stock" order? 7-20-20
+
+	EN_FRT = -9		;3-4-20	
+	call re_write		;7-18-13: otherwise ordseq might not get updated
+
+ASK_PRINT,
+	CLEAR LOCAL
+	USING OLOC SELECT
+	('O'),	XCALL OUTPT (24,1,1,'Print Work Order (Y/N/F/R/L/B) ? ',1)
+	('E'),	XCALL OUTPT (24,1,1,'Print Quote (Y/N/F/R) ? ',1)
+		ENDUSING
+
+	xcall outpt (25,1,1,'Yes/No/Freight/Reprice/Local/Blues Only',1)
+
+	XCALL INPTK (24,34,01,00,'A ',ENTRY,INXCTL,1,F_KEY)
+	USING F_KEY SELECT
+	(F_05),	BEGIN
+		XCALL OUTPT (1,70,0,'          ',1)
+		CUSTCD =
+		GOTO ASK_PRINT
+		END
+	(F_09),	BEGIN
+		XCALL OUTPT (1,64,0,"Don't Fax/Email",1)
+;;;		XCALL OUTPT (1,70,0,"Don't Fax",1)
+		CUSTCD = 'NQ'
+		CALL RE_WRITE
+		GOTO ASK_PRINT
+		END
+	ENDUSING
+
+	xcall outpt (25,1,1,' ',1)
+	ANS = ENTRY(1,1)
+	USING ANS SELECT
+	('F'),	BEGIN
+		SAVFRT = OFRGHT
+		E_FRGHT = OFRGHT
+		CALL FREIGHT
+		IF (E_FRGHT .NE. SAVFRT) CALL RE_WRITE
+		GOTO ASK_PRINT
+		END
+	('N'),	NOP
+	('R'),	BEGIN
+		SAVFRT = E_FRGHT
+		CCORD = 'R'		;SSQ 12-6-05 "CASH"
+		XCALL OECC2(ORDHDR, RUNTOT, TAXTOT, E_FRGHT, CCORD, TAXCC)
+		IF (E_FRGHT .NE. SAVFRT) EN_FRT = E_FRGHT	;3-4-20 MUST HAVE CHANGED
+		CALL RE_WRITE
+		GOTO ASK_PRINT
+		END
+	('L'),	BEGIN
+		INXCTL = 1
+		LOCAL = 1
+		END
+	('B'),	BEGIN
+		INXCTL = 1
+		END
+	('Y'),	INXCTL = 1
+	(' '),	BEGIN
+		INXCTL = 1
+		XCALL OUTPT (24,34,1,'Y',1)
+		END
+	(),	BEGIN
+		XCALL BEEP
+		GOTO ASK_PRINT
+		END
+	ENDUSING
+
+;;;	IF(CCORD.NE.' ')
+	IF(CCORD.EQ.'C')
+		BEGIN
+		XCALL OECC2(ORDHDR, RUNTOT, TAXTOT, E_FRGHT, CCORD, TAXCC)
+		TAXFLG = OTAXFL
+		END
+
+;--
+; 8-3-96 ssq: need oscac...
+	LOKCTL = 1
+	XCALL ISIO (4,ORDHDR,OORDNO,READ,LOKCTL)
+	unlock 4
+;--
+
+;-------------------------------------------------------------
+; shipping lables...
+	USING OSCAC SELECT
+	('0','4'),	NUMLBL = 0	;SPEE-DEE, UPS
+	(),		NUMLBL = 4	;
+	ENDUSING
+
+	USING CMPCOD SELECT
+	('SMC','TST'),	BATFIL = 'UPSFIL.BAT'	;4-4-17 (moved from below)	
+	('ROC'),	BATFIL = 'BROC.BAT'	;4-4-17
+	(),		NUMLBL = 0	;NO LABLES
+	ENDUSING
+
+				  
+;-------------------------------------------------------------
+
+	TAXTOT =
+	IF (INXCTL.EQ.1) 
+		BEGIN
+		USING OLOC SELECT
+		('O'),	BEGIN
+			XCALL FIND_I (OORDNO, HAS_I)
+
+			XCALL PDORD(OORDNO)
+			XCALL PRDUC(OORDNO, OCUSNM)	;;here 8-31-09
+			XCALL MKDEC(OORDNO)		;FTP COIL LINE		
+			IF (ANS .NE. 'B')
+			THEN	BEGIN
+				if (has_i)	;moved here 5-7-14
+				  begin
+				  XCALL LBLSH (OORDNO, CHN182, NUMLBL, BATFIL)	;ssq 7/11/06
+				  end
+				XCALL PRWOD (OORDNO,local)
+				XCALL PRWO3 (OORDNO)		;ROCKFORD .XX LINES
+				XCALL PRWO2 (OORDNO,local)
+				XCALL PRWOS (OORDNO,local)
+				IF (OSHFLG.EQ.'C') CALL PRSHP
+				END
+			ELSE	BEGIN				;7-30-18: remember if "blues only" when releasing credit hold...
+				XCALL FILES (40,'SU',195, SWITCH)
+				XCALL ISIO (40, CRHOLD, OORDNO, READ, LOKCTL)
+				IF (LOKCTL.EQ.0)
+					BEGIN
+					CH_ANS = 'B'
+					XCALL ISIO (40, CRHOLD, OORDNO, WRITE, LOKCTL)
+					END
+				CLOSE 40
+				END
+			END
+		('E'),	BEGIN
+			XCALL PDEST(OORDNO)	
+			XCALL PRDUC(OORDNO, OCUSNM)	;;moved 8-31-09
+			END
+
+		ENDUSING
+	;;;	XCALL PRDUC(OORDNO, OCUSNM)	;;moved 8-31-09
+		END
+
+	CALL CLOSE
+	XCALL OUTPT (1,1,2,'\',1)	
+	RETURN		;END OF S_ORDADD
+;===============================================================
+;===============================================================
+MAKE_PROM_DATE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (OPROMD .NE. 0) RETURN	;ALREADY SET
+
+return	;not installed yet
+
+	NODAYS = %SCHDT(OORDNO)	;get promise date from sched
+	WORKD = TODAY
+	DD = DD + NODAYS
+	IF (DD .GT. MON(MM))
+	  BEGIN
+	  DD = DD - MON(MM)
+	  MM = MM + 1
+	  IF (MM .GT. 12)
+		BEGIN
+		YYYY = YYYY + 1
+		MM = 1
+		END
+	  END
+	SCH_DAT = WORKD
+	WORKD(1,4) = SCH_DAT(5,8)
+	WORKD(5,8) = SCH_DAT(1,4)
+	SDM_DAT = WORKD,	'ZX/XX/XXXX'
+
+	MSGCTL = 1		;GET Y/N
+	XCALL MESAG (S_DAT_MSG,MSGCTL)
+
+	RETURN
+;------------------------------------------------------
+
+RE_WRITE,
+	LOKCTL = 1
+	XCALL ISIO (4,ORDHDR,OORDNO,READ,LOKCTL)
+	IF (LOKCTL) GO TO NOTFND
+
+	using oscac select
+	('1','10','WC'),	nop	
+	(),			IF (OCUSNO.EQ.10)		;11-27-19 CASH CUST BUT NOT WILL-CALL
+				BEGIN
+				IF (EN_FRT .GE. 0) 
+				THEN	E_FRGHT = EN_FRT
+				ELSE	BEGIN
+					C_FRGHT = (RUNTOT*20)#2	;FRT IS 20%
+					IF (C_FRGHT .LT. 1000) C_FRGHT = 1000	;MIN $10.00
+					IF (E_FRGHT .LT. C_FRGHT) E_FRGHT = C_FRGHT	;3-2-20
+					END
+				END
+	endusing
+
+
+	OXPRS = XPRS_ORD		;SSQ 3-28-19 
+	OXSTK = STK_ORD			;SSQ 7-20-20
+
+	SCH_DAT = OPROMD		;SSQ 10-29-14
+	IF (OLOC .EQ. 'O') CALL MAKE_PROM_DATE	;SSQ 9-22-14
+	OPROMD = SCH_DAT		;SSQ 9-22-14
+	OCCRD = CCORD			;SSQ 12-8-05
+	ORDSEQ = OORSEQ
+	ODSEQ = DUCSEQ
+	OFRGHT = E_FRGHT		;SSQ 7-23-99
+	OTAXFL = TAXFLG			;SAVE TAX FLAG
+	IF (CUSTCD .EQ. 'NQ') OCUSCD = 'NF'	;SSQ 12-19-01
+	OPRTF = 0		;NUMBER OF TIMES PRINTED
+	LOKCTL = 1
+	XCALL ISIO (4,ORDHDR,OORDNO,WRITE,LOKCTL)
+
+	IF (CUSTCD .EQ. 'NQ')	CALL BAT_FAX
+	RETURN
+;--------------------------------------------------------------------
+
+PRSHP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; PRINT SHIP-TO ADDRESS CHANGED PAGE
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	RETURN			;SSQ 2-20-03
+
+	SPF_ORD = OORDNO,	'XXXXXX'
+
+	OPEN(14,O,SPLFIL)
+	PLINE = 'THIS SHIP-TO ADDRESS HAS CHANGED!     ORDER:XXXXXX'
+;                12345678901234567890123456789012345678901234567890
+	PLINE (45,50) = OORDNO,	'XXXXXX'
+	CALL PRINT
+	PLINE(1,6) = OCUSNO,'ZZZZZX'
+	CALL PRINT
+	PLINE = OSHPNM
+	CALL PRINT
+	PLINE = OSHAD1
+	CALL PRINT
+	PLINE = OSHAD2
+	CALL PRINT
+	PLINE = OSHAD3
+	CALL PRINT
+
+	xcall ascii(27,e_char)
+	display(14,eject)
+	CLOSE 14
+
+	LPQUE (SPLFIL,DELETE)
+	RETURN
+PRINT,
+	WRITES(14,PBUF)
+	PLINE =
+	RETURN
+
+;---------------------------------------------------
+
+BAT_FAX,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; ADD THIS ORDER TO FAX QUE
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; write FAXFIL record...
+	OPEN (40,SU,'SPL:FAXFIL')
+	CLEAR FAXFIL
+	FAX_ORDER = OORDNO
+	XCALL RDATE(TDATE)
+	XDATE(1,2) =TDATE(5,6)
+	XDATE(3,6) = TDATE(1,4)
+	FAX_DATE = XDATE
+;;;	FAX_DATE = TDATE
+
+	FAX_SLSMAN = OSLMAN
+	FAX_STATUS = 0		;OPEN
+	FAX_OTYPE = 'O'		
+	STORE (40,FAXFIL,FAX_ORDER) [ERR=BAD_FAX]
+BAD_FAX,
+	CLOSE 40
+
+	RETURN
+;----------------------------------------------------
+
+FREIGHT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR ENTRY, CNGCTL
+	XCALL OUTPT (22,10,2,'FREIGHT',1)
+	CALL GET_NEG_ZERO
+	CALL D_FRT
+	GOTO ANYF
+FRGHT2,
+;;;	XCALL INPUT (22,18,06,00,'$ ',ENTRY,INXCTL,1)
+	XCALL INPUT (22,18,07,00,'$ ',ENTRY,INXCTL,1)
+	IF (INXCTL) RETURN
+	E_FRGHT = ENTRY(1,7)	;9-16-15 d6 -> d7
+	EN_FRT = E_FRGHT	;3-4-20
+	IF (E_FRGHT.EQ.0) SAVFRT = 1	;FORCE RE_WRITE
+	CALL GET_NEG_ZERO
+	CALL D_FRT
+ANYF,
+	CNGCTL = 2
+	XCALL ANYCN(CNGCTL,WHATNO)
+	GOTO (FRGHT2),CNGCTL
+	RETURN
+
+D_FRT,
+	USING X_FRT SELECT
+	(NEG_ZERO),	ENTRY(1,3) = 'N/C'
+	(9),		ENTRY(1,9) = E_FRGHT,	'ZZ,ZZX.XX' [LEFT]
+	ENDUSING
+	XCALL OUTPT (22,18,1,ENTRY(1,9),1)
+	RETURN
+;----------------------------------------------------
+	
+NOTFND,
+	XCALL MESAG ('ORDER HEADER RECORD NO LONGER ON FILE',1)
+	GO TO ENDOFF
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR OPNOK
+
+	SWITCH = 1
+;;;	XCALL FILES (7,'I',02,SWITCH)		;FILE # 02 -- CUSIDX FILE
+;;;	IF (SWITCH .EQ. 9) RETURN
+;;;	CHN002 = 7
+
+;;;	XCALL FILES (2,'I',42,SWITCH)		;FILE # 42 -- INVIDX FILE
+;;;	IF (SWITCH .EQ. 9) RETURN
+;;;	CHN042 = 2
+
+	XCALL FILES (4,'SU',44,SWITCH)		;FILE # 44 -- ORDHDR FILE
+	IF (SWITCH .EQ. 9) RETURN
+	CHN044 = 4
+
+	CHN041 = 1
+
+	XCALL FILES(6,'SI',01,SWITCH)		;FILE # 01 -- CUSMAS FILE
+	IF (SWITCH .EQ. 9) RETURN
+	CHN001 = 6
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	xcall who(cmpcod)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL FILES (3,'U',60,SWITCH)		;FILE #60 -- COPCTL
+	IF (SWITCH .EQ. 9) RETURN
+	CHN060 = 3
+
+	XCALL FILES (16,'SI',166,SWITCH)	;FILE #166 -- CUSALP
+	IF (SWITCH .EQ. 9) RETURN
+	CHN166 = 16
+
+	SWITCH = 5
+	XCALL FILES (17,'SI',182,SWITCH)	;FILE #182 -- COPTBL
+	IF (SWITCH .EQ. 9) RETURN
+	CHN182 = 17
+
+	XCALL FILES (18,'SU',183,SWITCH)	;FILE #183 -- ROLO2.ISM
+	CHN183 = 18
+
+	XCALL FILES (29,'SU',137,SWITCH)	;FILE #137 -- CCINFO.ISM
+	CHN137 = 29
+
+	XCALL FILES (50,'SU',138,SWITCH)	;FILE #138 -- CCTRAN.ISM
+	CHN138 = 50
+
+	;9-12-13
+	xcall filec ('SMC', 84, 'SI', 084, switch)	;EMAILC.SMM
+	chn084 = 84
+	
+
+	SWITCH = 5
+	XCALL FILES (135, 'SU', 135, SWITCH)	;FILE #135 ORDCM2
+	CHN135 = 135
+
+	SWITCH = 5
+	XCALL FILES (101, 'SU', 101, SWITCH)	;FILE #101 MISCUS
+	CHN101 = 101
+
+	SWITCH = 5
+	XCALL FILES (102, 'SU', 102, SWITCH)	;FILE #102 MISSHP
+	CHN102 = 102
+
+	OPNOK = 1
+
+	RETURN
+;-----------------------------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (CHN001) XCALL FILES (CHN001,'SI',001,4)
+;;;	IF (CHN002) XCALL FILES (CHN002,'I',002,4)
+;;;	IF (CHN042) XCALL FILES (CHN042,'I',042,4)
+	IF (CHN044) XCALL FILES (CHN044,'SU',044,4)
+	IF (CHN060) XCALL FILES (CHN060,'U',060,4)
+	IF (CHN166) XCALL FILES (CHN166,'SI',166,4)
+	IF (CHN182) XCALL FILES (CHN182,'SI',182,4)
+	IF (CHN183) CLOSE CHN183
+	IF (CHN137) CLOSE CHN137
+	IF (CHN138) CLOSE CHN138
+	if (chn084) close chn084
+	IF (CHN135) CLOSE CHN135
+	IF (CHN101) CLOSE CHN101
+	IF (CHN102) CLOSE CHN102
+
+	RETURN
+;-----------------------------------------------------------------------
+
+GET_NEG_ZERO,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	A_FRT = E_FRGHT
+	USING A_FRT SELECT
+	('    -0'),	X_FRT = NEG_ZERO
+	('     0'),	X_FRT = ZERO
+	(),		X_FRT = 9
+	ENDUSING
+
+	RETURN
+
+END

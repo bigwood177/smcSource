@@ -1,0 +1,11 @@
+TO.REC
+RECORD	TOFF
+	RT_SZ1	,D2
+		,A1,	'/'
+	RT_SZ2	,D2
+		,A4,	' ON '
+	RT_DIA	,D2
+		,A*,	'"RD '
+	RT_GA	,D2
+		,A*,	'GA REG. T.O.'
+	

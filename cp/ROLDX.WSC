@@ -1,0 +1,39 @@
+.script
+.date_generated "08/28/1998, 12:57"
+.version "6.3"
+
+.input roldx_input, 20, 49
+.placement 2, 14
+.field cusno, a6, fpos(1, 3)
+.field name, a25, fpos(2, 3)
+.field add1, a25, fpos(3, 3)
+.field add2, a21, fpos(4, 3)
+.field city, a15, fpos(5, 3)
+.field state, a2, fpos(5, 20)
+.field zip, a10, fpos(5, 24)
+.line Line2, 48, pos(6, 1)
+.field phone, d10, fmt("ZZZ-XXX-XXXX"), pos(2, 33), prompt("Ph"), fpos(2, 37)
+.field efax, d10, fmt("ZZZ-XXX-XXXX"), pos(3, 32), prompt("Fax"), fpos(3, 37)
+.field is_PD, a10, fpos(4, 38)
+.field is_Pdate, a10, fpos(5, 38)
+.field r_cont1, 1a44, fpos(7, 3)
+.field r_cont2, a44, fpos(8, 3)
+.field r_cont3, a44, fpos(9, 3)
+.field r_cont4, a44, fpos(10, 3)
+.text Text1, pos(11, 20), margin(19, 16)
+Sales Notes
+.field r_sales, 4a44, fpos(12, 3)
+.text Text2, pos(16, 17), margin(16, 18)
+Shipping Notes
+.field r_ship, 4a44, fpos(17, 3)
+.button Save, method("cmd_save"), select(s)
+.button Cancel, method("cmd_cancel"), select(c)
+.structure cusmas, cusno, name, add1, add2, city, state, zip, phone,<420>, efax
+.structure rolo, <6>,r_cont1, r_cont2, r_cont3, r_cont4, r_sales, r_ship
+.structure PriceDuct, is_PD, is_Pdate
+.set cus_info, cusmas, cusno, name, add1, add2, city, state, zip, phone, efax
+.set rolo_info, rolo, r_cont1, r_cont2, r_cont3, r_cont4, r_sales, r_ship
+.set rolo_sales, rolo, r_cont1, r_cont2, r_cont3, r_cont4, r_sales
+.set rolo_shipping, rolo,  r_ship
+.set pd_info, PriceDuct, is_PD, is_Pdate
+.end

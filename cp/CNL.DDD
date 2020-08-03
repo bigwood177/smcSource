@@ -1,0 +1,11 @@
+TIME
+!
+DATE
+!
+assign c:\mcba\source\SSQ\ def
+assign c:\mcba\source\temp\ OBJ
+assign c:\mcba\source\temp\ EXE
+assign c:\mcba\execute\ut\ ut
+dbl /obj=OBJ:^1.TMP/r:debug ^1.^2
+dblink /output=EXE:^1 OBJ:^1.TMP UT:util/olb
+del OBJ:^1.TMP/noq

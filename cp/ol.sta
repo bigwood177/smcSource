@@ -1,0 +1,27 @@
+The record length for this file is 180 characters.  There are 4 keys.
+There are currently 159075 records in this ISAM file.
+
+Primary key   is Lordno         
+The key is 9 characters long, starting at position 1 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may not be modified by WRITE.
+
+1st alternate is Litmno         
+The key is 15 characters long, starting at position 12 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+
+2nd alternate is Lprdcd         
+The key is 2 characters long, starting at position 74 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+
+3rd alternate is dept           
+The key is 54 characters long, segmented and is ordered in ascending sequence 
+with duplicates allowed. 
+This key may be modified by WRITE.
+ Segment #1 starts at 1 with length 6.
+ Segment #2 starts at 130 with length 2.
+ Segment #3 starts at 12 with length 45.
+ Segment #4 starts at 124 with length 1.
+

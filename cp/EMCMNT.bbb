@@ -1,0 +1,232 @@
+;emcmnt.cp
+; customer email maintenance
+; combination of emails from coptbl for "E2" & "EM"
+; smc:emailc.smm is used for cont.cp subroutine; customer contact emails.
+
+record	emailc
+	.include 'def:rd084a.def'
+;
+record	v_email
+;RD084A.DEF 
+; EMAILC.ISM
+;
+	V_CUST	,D6
+	V_NBR	,D3
+	V_DFLT	,D1	;0=default, else 9
+	V_FNAM	,A10
+	V_LNAM	,A10
+	V_CELL	,D10
+	V_MAIL	,A50
+
+record	cusmas
+	.include 'def:rd001a.def'
+record	cusctl
+	.include 'def:rd001b.def'
+
+record	cusidx
+	.include 'def:rd002a.def'
+
+record	channel
+	chn001	,d2
+	chn002	,d2
+	chn084	,d2
+	chn182	,d2
+
+record	vars
+	opnok	,d1
+	custok	,d1
+	mailok	,d1
+	key	,a6
+	select	,d1
+	entry	,a50
+	inxctl	,d1
+	cngctl	,d1
+	whatno	,d2
+	lokctl	,d1
+	read	,d1,0
+	write	,d1,1
+	store	,d1,2
+	delete	,d1,3
+	switch	,d1
+	v	,d1
+;
+proc
+	xcall terid (v)
+	xcall outpt (1,1,2,'CUSTOMER CONTACT EMAIL',1)
+;
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+DISPLA,
+	xcall outpt (1,1,2,'CUSTOMER CONTACT EMAIL',1)
+	CLEAR CNGCTL
+
+	XCALL OUTPT ( 4,4,0,'1. CUSTOMER #',1)
+	XCALL OUTPT ( 6,4,0,'2. NBR',1)
+	XCALL OUTPT ( 8,4,0,'3. DEFAULT <N>',1)
+;                            45678901234567890
+	XCALL OUTPT (10,4,0,'4. FIRST NAME',1)
+	XCALL OUTPT (12,4,0,'5. LAST NAME',1)
+	XCALL OUTPT (14,4,0,'6. CELL',1)
+	XCALL OUTPT (16,4,0,'7. EMAIL',1)
+;                            45678901234567890
+e_cust,
+	xcall input (4,20,06,00,'#E',entry,inxctl,1)
+	goto (displa, endoff),inxctl
+	v_cust = entry(1,6)
+	call get_cust
+	if (.not. custok) goto e_cust
+e_nbr,
+	xcall input (4,20,03,00,'# ',entry,inxctl,1)
+	v_nbr = entry(1,3)
+	call get_mail
+	if (mailok)
+	then 	select = 1		;add
+	else	begin
+		select = 2		;change
+		call dsprec
+		goto anycng
+		end
+
+	goto (anycng),cngctl
+e_dflt,
+	xcall input (6,20,01,00,'YN',entry,inxctl,1)
+	using inxctl select
+	(1),	v_dflt = 0	;is default
+	(2),	v_dflt = 9	;not default
+	endusing
+
+	goto (anycng),cngctl
+
+e_fnam,
+	xcall input (8,20,10,00,'A ',entry,inxctl,1)
+	v_fnam = entry(1,10)
+	goto (anycng),cngctl
+e_lnam,
+	xcall input (12,20,15,00,'A ',entry,inxctl,1)
+	v_lnam = entry(1,15)
+	goto (anycng),cngctl
+e_cell,
+	xcall input (14,20,10,00,'# ',entry,inxctl,1)
+	v_cell = entry(1,10)
+	goto (anycng),cngctl
+e_mail,
+	xcall input (16,20,40,00,'A ',entry,inxctl,1)
+	v_mail = entry(1,50)
+	goto (anycng),cngctl
+anycng,
+	xcall anycn (cngctl, whatno)
+	goto (proces, cngbr), cngctl+1
+cngbr,
+	goto (e_cust, e_nbr, e_dflt, e_fnam, e_lnam, e_cell, e_mail), whatno
+	goto anycng
+
+proces,
+
+	using select select
+	(1),	begin			;add
+		clear emailc
+		call set_rec
+
+		e_cust = v_cust
+		e_nbr = v_nbr
+
+		lokctl = 1
+		xcall isio (chn084, emailc, e_key, store, lokctl)
+		end
+	(2),	begin			;change
+		call set_rec
+		lokctl = 1
+		xcall isio (chn084, mailc, e_key, write, lokctl
+		end
+	endusing
+
+	goto displa
+
+
+set_rec,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	e_dflt = v_dflt
+	e_fnam = v_fnam
+	e_lnam = v_lnam
+	e_cell = v_cell
+	e_mail = v_mail
+	return
+;---------------------------------------------
+	
+get_cust,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear custok
+
+	KEY = OCUSNO, 'XXXXXX'
+	XCALL SERCH (chn002,CUSIDX,KEY,1,6,BSEND,BSMID,SRCCTL,4,7,11,0,0,0,0)
+	if (srcctl) return
+
+	LOKCTL = 1
+	XCALL IO (chn001,CUSMAS,IRC001,READ,LOKCTL)
+
+	custok = 1
+	return
+;---------------------------------------------
+get_mail,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear mailok
+
+	clear emailc
+	e_cust = v_cust
+	e_nbr = v_nbr
+	lokctl = 1
+	xcall isio (chn084, emailc, e_key, read, lokctl)
+	if (lokctl .eq. 0)
+	then	maillok = 1
+	else	mailok = 0
+
+	v_cust = e_cust
+	v_nbr = e_nbr
+	v_dflt = e_dflt
+	v_fnam = e_fnam
+	v_lnam = e_lnam
+	v_cell = e_cell
+	v_mail = e_mail
+
+	return
+;----------------------------------------------
+
+ENDOFF,
+	CALL CLOSE
+	STOP
+
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear opnok
+
+	switch = 1
+	xcall files (1, 'I', 001, switch)
+	if (switch .eq. 9) return
+	chn001 = 1
+
+	switch = 5
+	xcall files (2, 'I', 002, switch)
+	if (switch .eq. 9) return
+	chn002 = 2
+
+	switch = 5
+	xcall files (8,'SU', 084, swtich)
+	if (switch .eq. 9) return
+	chn084 = 4
+
+
+	lokctl = 1
+	xcall isio (chn001, cusctl, 1, read, lokctl)
+
+	RETURN
+;-------------------------------------------
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	switch = 4
+	xcall files (chn001, 'I', 001, switch)
+	if (chn002) close chn002
+	if (chn084) close chn084
+
+	RETURN
+;-------------------------------------------
+
+END
+

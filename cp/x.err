@@ -1,0 +1,12 @@
+
+O:\SOURCE\cp>call bld advic2 cp 
+
+O:\SOURCE\cp>dbl advic2.cp 
+
+O:\SOURCE\cp>dblink -o cp:advic2 advic2 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\cp>call bld advic3 cp 
+
+O:\SOURCE\cp>dbl advic3.cp 
+
+O:\SOURCE\cp>dblink -o cp:advic3 advic3 cp:cplib.elb UT:UTIL.ELB wnd:TKLIB.ELB 

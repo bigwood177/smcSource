@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ActiveReportsLayout 
+	GUIDLIB="{69F1A55E-3D38-4075-95FB-9AF2289436E1}" GUIDREP="{C18D0643-6B0A-410B-AA59-3A0DB19E11C8}" 
+	LICENSE="10000000"
+	PrintWidth="10350"
+	DocumentName="Print Pick List"
+	ScriptLang="VBScript"
+>
+<Watermark
+		>
+</Watermark>
+<Script>
+<![CDATA[Sub OnDataInitialize
+  dim f
+dim h 
+dim ppath 
+
+form.Log_Message("Starting 'Print Label'")
+
+rpt.fields.add ("fhandle")
+'rpt.fields.add ("div_name")
+'rpt.fields.add ("div_address")
+'rpt.fields.add ("div_address2")
+'rpt.fields.add ("div_phone_num")
+rpt.fields.add ("item_code")
+rpt.fields.add ("jpeg_name")
+rpt.fields.add ("quantity")
+rpt.fields.add ("item_description")
+rpt.fields.add ("product_lot_num")
+rpt.fields.add ("Description")
+rpt.fields.add ("picture_path")
+rpt.fields.add ("boxsiz")
+rpt.fields.add ("item_caption")
+rpt.fields.add ("smc_star")
+rpt.fields.add ("roc_star")
+rpt.fields.add ("binsiz")
+rpt.fields.add ("binqty")
+rpt.fields.add ("boxloc")
+rpt.fields.add ("binloc")
+
+
+f = iis.GetrptParameter("FileName", "c:\customers\smc\bar code label software\product.txt")
+h = fileio.FOpen(f)
+ppath = iis.GetrptParameter("PicturePath", "c:\customers\smc\bar code label software\")
+rpt.fields("picture_path").value = ppath
+
+
+rpt.fields("fhandle").value = h
+
+End Sub
+
+Sub OnFetchData(eof)
+  dim h
+  dim s2
+  dim a
+  dim i
+
+h = rpt.fields("fhandle")
+Do
+  s2 = fileio.readline(h)
+Loop Until Left(s2, Len("LABEL")) = "LABEL" Or fileio.Endoffile(h)
+
+If Not fileio.Endoffile(h) Then
+  a = Split(s2, vbTab)
+
+  on error resume next
+  'rpt.fields("div_name").value = a(1)
+  'rpt.fields("div_address").value = a(2)
+  'rpt.fields("div_address2").value = a(3)
+  'rpt.fields("div_phone_num").value = a(4)
+  rpt.fields("item_code").value = a(1)
+  rpt.fields("jpeg_name").value = timr(a(3))
+  rpt.fields("quantity").value = a(2)
+  rpt.fields("item_description").value = a(4)
+  rpt.fields("product_lot_num").value = a(5)
+  rpt.fields("description").value = a(6)
+  rpt.fields("boxsiz").value = a(7)
+  rpt.fields("item_caption").value = a(8)
+  rpt.fields("smc_star").value = a(9)
+  rpt.fields("roc_star").value = a(10)
+  rpt.fields("binsiz").value = a(11)
+  rpt.fields("binqty").value = a(12)
+  rpt.fields("boxloc").value = a(13)
+  rpt.fields("binloc").value = a(14)
+
+  rpt.sections("Detail").Controls("item_picture").picture = loadpicture(rpt.fields("picture_path").value + a(3) )
+  on error goto 0
+
+end if
+
+eof = fileio.endoffile(h)
+'msgbox "onfetch eof = " & eof
+End Sub
+
+'="             Packing Instructions"+chr(10)+iis.iif(len(trim(max_lift_size))>0,max_lift_size+chr(10),"")+iis.iif(len(trim(pack_line1))>0,pack_line1+chr(10),"")+iis.iif(len(trim(pack_line2))>0,pack_line2+chr(10),"")+iis.iif(len(trim(pack_line3))>0,pack_line3+chr(10),"")+iis.iif(len(trim(pack_line4))>0,pack_line4+chr(10),"")+iis.iif(len(trim(pack_line5))>0,pack_line5+chr(10),"")+PickOrdComments
+Sub OnReportEnd
+fileio.fclose(rpt.fields("fhandle"))
+End Sub
+
+Sub OnReportStart
+  dim dname
+dname = iis.GetrptParameter("DocumentName", "Print Preview")
+form.caption = dname
+rpt.documentname = dname
+End Sub
+]]></Script>
+<PageSettings	LeftMargin="0"
+	RightMargin="0"
+	TopMargin="0"
+	BottomMargin="0"
+	PaperSize="256"
+	PaperWidth="8640"
+	PaperHeight="5760"
+	Orientation="1"
+>
+</PageSettings>
+<StyleSheet>
+	<Style Name="Normal"
+	Value="font-family: &apos;Arial&apos;; font-style: normal; font-variant: inherit; font-weight: normal; font-size: 10pt; font-size-adjust: inherit; font-stretch: inherit; color: rgb(0,0,0); background-color: rgb(255,255,255); background-image: inherit; background-repeat: inherit; background-attachment: inherit; background-x-position: inherit; background-y-position: inherit; opacity: inherit; word-spacing: inherit; letter-spacing: inherit; text-decoration: none; vertical-align: inherit; text-transform: inherit; text-align: inherit; text-indent: inherit; unicode-bidi: inherit; line-height: inherit; white-space: inherit; ddo-can-grow: inherit; ddo-can-shrink: inherit; ddo-char-set: 0; "
+	/>
+	<Style Name="Heading1"
+	Value="font-family: &apos;inherit&apos;; font-style: inherit; font-variant: inherit; font-weight: bold; font-size: 16pt; font-size-adjust: inherit; font-stretch: inherit; "
+	/>
+	<Style Name="Heading2"
+	Value="font-family: &apos;Times New Roman&apos;; font-style: italic; font-variant: inherit; font-weight: bold; font-size: 14pt; font-size-adjust: inherit; font-stretch: inherit; "
+	/>
+	<Style Name="Heading3"
+	Value="font-family: &apos;inherit&apos;; font-style: inherit; font-variant: inherit; font-weight: bold; font-size: 13pt; font-size-adjust: inherit; font-stretch: inherit; "
+	/>
+	<Style Name="Heading4"
+	/>
+</StyleSheet>
+<Sections>
+	<Section Type="ReportHeader" Name="ReportHeader"
+		Height="0"
+	>
+<Script>
+<![CDATA[
+Sub OnFormat
+
+End Sub
+]]></Script>
+	</Section>
+	<Section Type="Detail" Name="Detail"
+		Height="5850"
+		ColumnDirection="1"
+		NewPage="1"
+		KeepTogether="-1"
+		CanGrow="0"
+	>
+		<Control 
+		Type="AR.Barcode"
+		Name="Barcode1"
+		DataField="item_code"
+		Left="450"
+		Top="990"
+		Width="4950"
+		Height="1170"
+		>
+<![CDATA[010000000100080000000000000002000000000000000200000041007200690061006C00200042006C00610063006B0000000000000000000000000000000000
+		0000000000000000000000000000000000000000000000000000A08601000000000001000000000000000000000000000000BC02000000000000FFFFFF000000
+		0000]]>
+		</Control>
+		<Control 
+		Type="AR.Image"
+		Name="item_picture"
+		Left="5850"
+		Top="1080"
+		Width="2700"
+		Height="2340"
+		BackStyle="1"
+		SizeMode="2"
+		LineWeight="10"
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field61"
+		DataField="quantity"
+		Left="3690"
+		Top="4860"
+		Width="1350"
+		Height="360"
+		Text="QTY: "
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; text-align: center; font-family: &apos;Arial&apos;; ddo-char-set: 1; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field62"
+		DataField="item_description"
+		Left="180"
+		Top="3600"
+		Width="9090"
+		Height="630"
+		Text="item_description"
+		ClassName="Normal"
+		Style="font-size: 20pt; vertical-align: middle; font-weight: bold; font-family: &apos;Arial Black&apos;; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field64"
+		DataField="product_lot_num"
+		Left="7830"
+		Top="4950"
+		Width="1530"
+		Height="270"
+		Text="Lot #"
+		ClassName="Normal"
+		Style="font-size: 10pt; font-family: &apos;Arial&apos;; ddo-char-set: 1; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field65"
+		DataField="description"
+		Left="180"
+		Top="4320"
+		Width="9090"
+		Height="540"
+		Text="description"
+		ClassName="Normal"
+		Style="font-size: 14pt; font-weight: bold; font-family: &apos;Arial Black&apos;; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label1"
+		Left="2070"
+		Top="4860"
+		Width="2160"
+		Height="360"
+		Caption="Pieces per. Box:"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label2"
+		Left="1980"
+		Top="180"
+		Width="4770"
+		Height="360"
+		Caption="SHEET METAL CONNECTORS, INC."
+		ClassName="Normal"
+		Style="font-size: 14pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label3"
+		Left="810"
+		Top="540"
+		Width="3240"
+		Height="270"
+		Caption="MINNEAPOLIS, MN   800-328-1966"
+		ClassName="Normal"
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label4"
+		Left="4680"
+		Top="540"
+		Width="3240"
+		Height="270"
+		Caption="ROCKFORD, IL   866-504-4600"
+		ClassName="Normal"
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field66"
+		DataField="boxsiz"
+		Left="180"
+		Top="4860"
+		Width="1710"
+		Height="360"
+		Text="boxsiz"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field67"
+		DataField="item_caption"
+		Left="1080"
+		Top="2250"
+		Width="3690"
+		Height="360"
+		Text="item_caption"
+		ClassName="Normal"
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field68"
+		DataField="smc_star"
+		Left="180"
+		Top="540"
+		Width="180"
+		Height="270"
+		Text="smc_*"
+		ClassName="Normal"
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field69"
+		DataField="roc_star"
+		Left="8100"
+		Top="540"
+		Width="180"
+		Height="270"
+		Text="roc_*"
+		ClassName="Normal"
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field70"
+		DataField="binsiz"
+		Left="180"
+		Top="5220"
+		Width="1710"
+		Height="360"
+		Text="BinSiz"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label5"
+		Left="2160"
+		Top="5220"
+		Width="1890"
+		Height="360"
+		Caption="Qty per. Bin:"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field71"
+		DataField="binqty"
+		Left="4050"
+		Top="5220"
+		Width="810"
+		Height="360"
+		Text="BinQty"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field72"
+		DataField="boxloc"
+		Left="6660"
+		Top="4860"
+		Width="1080"
+		Height="360"
+		Text="BoxLoc"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field73"
+		DataField="binloc"
+		Left="6660"
+		Top="5220"
+		Width="1080"
+		Height="360"
+		Text="BinLoc"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label6"
+		Left="5400"
+		Top="4860"
+		Width="1080"
+		Height="360"
+		Caption="Box Loc:"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label7"
+		Left="5400"
+		Top="5220"
+		Width="1080"
+		Height="360"
+		Caption="Bin Loc:"
+		ClassName="Normal"
+		Style="font-size: 12pt; font-weight: bold; "
+		>
+		</Control>
+<Script>
+<![CDATA[
+Sub OnFormat
+
+End Sub
+
+Sub OnBeforePrint
+
+End Sub
+]]></Script>
+	</Section>
+	<Section Type="ReportFooter" Name="ReportFooter"
+		Height="0"
+	>
+<Script>
+<![CDATA[
+Sub OnFormat
+
+End Sub
+]]></Script>
+	</Section>
+</Sections>
+</ActiveReportsLayout>

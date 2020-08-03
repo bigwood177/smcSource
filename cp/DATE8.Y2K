@@ -1,0 +1,119 @@
+SUBROUTINE	DATE8
+;
+;	AUTHOR: SHERWOOD S. QUIRING
+
+; Accept input date (D_IN) in any format and convert to Std formats.
+	D_IN	,D		;DATE-IN, ANY FORMAT
+	D_OUT	,D		;RETURN VALUE MMDDYY
+	D_OUTR	,D		;RETURN VALUE CCYYMMDD
+	D_FMT	,A		;RETURN VALUE MM/DD/CC/YY
+	D_SW	,A		;"99" = DATE CONVERSION ERROR
+
+RECORD
+	DATE	,D8
+	DATE6	,D6
+	DATE8	,D8
+	DATEW	,D8
+RECORD,X
+;; for DATE...
+	CC	,D2
+	YY	,D2
+	MM	,D2
+	DD	,D2
+;; for DATE6...
+	D6_MM	,D2
+	D6_DD	,D2
+	D6_YY	,D2
+;; for DATE8...
+	D8_MM	,D2
+	D8_DD	,D2
+	D8_CC	,D2
+	D8_YY	,D2
+
+RECORD	FORMAT
+	FMM	,D2
+		,A1,	'/'
+	FDD	,D2
+		,A1,	'/'
+	FCC	,D2
+	FYY	,D2
+
+RECORD	VARS
+	XDATE	,D6
+	I	,D5
+
+PROC
+	CLEAR D_OUT, D_OUTR, D_FMT, D_SW
+	IF (D_IN .LE. 0) RETURN		;NO DATE TO CONVERT
+
+	IF (D_IN .GT. 999999)
+	THEN	CALL DATE_8
+	ELSE	CALL DATE_6
+
+	D_OUTR = DATE			;CCYYMMDD
+	XDATE(1,4) = DATE(5,8)
+	XDATE(5,6) = DATE(3,4)
+	D_OUT = XDATE			;MMDDYY
+;; format the date...
+
+	FCC = CC
+	FYY = YY
+	FMM = MM
+	FDD = DD
+	D_FMT = FORMAT
+
+	CLEAR D_SW
+
+;;;	IF (CC.NE.19) D_SW = '99'
+;;;	IF (YY.LT.80) D_SW = '99'
+	IF (MM.LT.1 .OR. MM.GT.12) D_SW = '99'
+	IF (DD.LT.1 .OR. DD.GT.31) D_SW = '99'
+	RETURN
+;==================================================
+;==================================================
+
+DATE_6,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	DATE6 = D_IN
+	IF (D6_MM .GT. 12)
+		BEGIN
+		YY = D6_MM
+		MM = D6_DD
+		DD = D6_YY
+		D6_YY = YY
+		D6_MM = MM
+		D6_DD = DD
+		END
+
+	CLEAR DATE
+	CC = 19
+	YY = D6_YY
+	MM = D6_MM
+	DD = D6_DD
+	IF (YY .LT. 50) CC = 20
+	RETURN
+;--------------------------------------------------
+
+DATE_8,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	DATE8 = D_IN
+	IF (D8_MM .GT. 12)
+		BEGIN
+		CC = D8_MM
+		YY = D8_DD
+		MM = D8_CC
+		DD = D8_YY
+		D8_CC = CC
+		D8_YY = YY
+		D8_MM = MM
+		D8_DD = DD
+		END
+
+	CLEAR DATE
+	CC = D8_CC
+	YY = D8_YY
+	MM = D8_MM
+	DD = D8_DD
+	RETURN
+;--------------------------------------------------
+

@@ -1,0 +1,29 @@
+//Saddle Body
+FN = 1300-i
+PNUM= 
+QTY=
+MATALN= "FALV SPIRAL FITT";
+GAUGE=
+LSEAM= "None";
+W=
+L=
+PRCT= CATALOG SETUP Design Build S & D KD - ASMBL Mult Rfcmt Galvanized;
+END;
+
+//Round Lateral Tap
+FN = 51-i
+PNUM= 
+QTY=
+MATALN= "FALV SPIRAL FITT";
+GAUGE=
+LSEAM= "None";
+WR=
+LT=
+LB=
+OW=
+OD=
+AT=
+PRCT= CATALOG SETUP Design Build S & D KD - ASMBL Mult Rfcmt Galvanized;
+CONN= L;CN= ""; END;
+CONN= R;CN= ""; END;
+END;

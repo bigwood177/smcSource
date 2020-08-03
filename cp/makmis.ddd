@@ -1,0 +1,212 @@
+;makmis.dbl
+;
+;	create miscus.ism from tmpcus.ism
+;
+EXTERNAL FUNCTION
+	NORM	,A
+
+record	ordhdr
+	.include 'def:rd044a.def'
+
+record	tmpcus
+	.include 'def:rd139a.def'
+;
+record	miscus
+	.include 'def:rd001a.def'	;same format as cusmas
+;
+record	normal
+	nt_name	,a25
+	nt_add1	,a25
+	nt_city	,a15
+	nt_stat	,a2
+	nt_zip	,a10
+
+	nc_name	,a25
+	nc_add1	,a25
+	nc_city	,a15
+	nc_stat	,a2
+	nc_zip	,a10
+	
+record	dis0
+	xx	,d6
+		,a1
+	yy	,d6
+
+record	dis
+	jj	,d6
+
+record	vars
+	i	,d6
+	match	,d1
+	nxtnum	,d6
+	pass	,d6
+
+
+
+proc
+	open (15,i,'tt:')
+	display (15, $scr_clr(screen), 'makmis')
+;
+;;;	open (1,si,'smc:tmpcus.smm')
+	open (1,si,'tst:tmpssq.ism')
+	open (2,su,'tst:miscus.tsm')
+
+	pass = 2
+
+	using pass select
+	(1),	open (4,si,'smc:ordhdr.smm')
+	(2),	open (4,si,'smc:slhhdr.smm')
+	(3),	open (4,si,'smc:slhh18.smm')
+	(4),	open (4,si,'smc:slhh17.smm')
+	(5),	open (4,si,'smc:slhh16.smm')
+	(6),	open (4,si,'smc:slhh15.smm')
+	(7),	open (4,si,'smc:slhh14.smm')
+	(8),	open (4,si,'smc:slhh13.smm')
+	(9),	open (4,si,'smc:slhh12.smm')
+	endusing
+
+	nxtnum = 100
+
+	if (pass .eq. 1)		;first pass...
+		begin
+		clear miscus
+		cusno = 10		;catch-all
+		name = "NO-MATCH CUST 10"
+		store (2, miscus, cusno)
+		end
+
+
+;each pass gets progressivly less selective...
+	if (pass .ge. 1)
+		begin
+		read (2, miscus, ^last)
+		nxtnum = cusno
+		end
+
+
+	set jj = 0
+	set xx,yy = 0
+
+	find (4, ordhdr, ^first) [err=loop]
+loop,
+	incr xx
+	if (xx/250*250 .eq. xx) 
+		begin
+		display (15, $scr_pos(1,60), dis0)
+		display (15, $scr_pos(2,70), dis)
+		end
+
+	reads (4, ordhdr, eof)
+	if (ocusno .ne. 10) goto loop
+	incr yy
+
+	read (1, tmpcus, oordno) [err=badcus]
+	if (t_name .eq. '   ') goto loop
+
+
+	nt_name = %norm(t_name)
+	nt_add1 = %norm(t_add1)
+	nt_city = %norm(t_city)
+	nt_stat = t_state
+	nt_zip = t_zip
+	
+	call get_mis
+	if (.not. match) call add_mis
+		
+write_hdr,
+	;omicus = cusno
+	;write (4, ordhdr, oordno)
+
+	goto loop
+badcus,
+	cusno = 10
+	goto write_hdr
+
+add_mis,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+	incr jj
+
+	clear miscus
+	incr nxtnum
+	cusno = nxtnum
+	name = t_name
+	add1 = t_add1
+	add2 = t_add2
+	city = t_city
+	state = t_state
+	zip = t_zip
+	slsman = t_slsman
+	taxflg = t_taxflg
+	esorna = nt_name
+	call add_email
+	store (2, miscus, cusno)
+
+	return
+;----------------------------------------------
+
+
+eof,
+	close 1
+	close 2
+	close 4
+	stop
+;============================================
+
+get_mis,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	if (t_name .eq. 'AIRE SERV')
+		BEGIN
+		MATCH = 0
+		END
+
+	clear match				;assume no match
+	esorna = nt_name
+	find (2, miscus, esorna) [err=gm_loop]
+gm_loop,
+	reads (2, miscus, gm_eof)
+	nc_name = %norm(name)
+	nc_add1 = %norm(add1)
+	nc_city = %norm(city)
+	nc_stat = state
+	nc_zip = zip
+
+	if (nt_name .ne. nc_name) goto gm_eof	;must match
+	using pass select
+	(1),	begin
+		if (nt_add1 .ne. nc_add1) goto gm_loop
+		if (nt_city .ne. nc_city) goto gm_loop
+		if (nt_stat .ne. nc_stat) goto gm_loop
+		if (nt_zip .ne. nc_zip) goto gm_loop
+		end
+	(2,3),	begin
+		;;;	if (nt_add1 .ne. nc_add1) goto gm_loop
+			if (nt_city .ne. nc_city) goto gm_loop
+			if (nt_stat .ne. nc_stat) goto gm_loop
+		;;;	if (nt_zip .ne. nc_zip) goto gm_loop
+			end
+	(.ge.4),	begin
+		;;;	if (nt_add1 .ne. nc_add1) goto gm_loop
+		;;;	if (nt_city .ne. nc_city) goto gm_loop
+			if (nt_stat .ne. nc_stat) goto gm_loop
+		;;;	if (nt_zip .ne. nc_zip) goto gm_loop
+			end
+
+	endusing
+
+; have a match...
+	match = 1
+gm_eof,
+	return
+;----------------------------------------------------------
+
+add_email,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; add t_email to customer email file
+;
+	return
+;----------------------------------------------------------
+
+end	
+	
+	 
+
+
+

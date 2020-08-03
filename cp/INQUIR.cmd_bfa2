@@ -1,0 +1,10 @@
+-d INQUIR olmsg oeco \
+cp_makp ado o_note r1 \
+emcmn mail_cnt mail_dft \
+mkinv mkord mkest \
+arq pop40 pop80 ddept srep \
+cp_isio \
+funcv cfg2 g_item cfg_w \
+cp:cplib.elb ut:util.elb w7lib.elb dbldir:axlib.elb wnd:tklib.elb
+
+

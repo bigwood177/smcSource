@@ -1,0 +1,1038 @@
+SUBROUTINE ORDCN
+;
+;  ORDCN / COP 
+;
+; (01)	12-11-98 ssq: oeflag necc. reset going from 1 order to next,
+;			this caused allocation problems !
+;
+;		ORDER-HEADER CHANGE SUBROUTINE
+;
+	ORDHDR	,A
+	SCUSTP	,A
+	INXCTL	,D
+	CNGCTL	,D
+	INET	,A	;"I" = internet order
+	V	,D
+	TXFLG	,A
+	OEFLAG	,D
+	CUSTCD	,A		;FAX/
+	distr	,d		;1=cust is a distr
+
+GLOBAL ORDH
+RECORD TORDHD   	
+		.INCLUDE 'DEF:RD044A.DEF'
+ENDGLOBAL
+
+
+	.include 'wnd:windows.def'
+
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+record	popar
+	.include 'def:oepop.def'
+
+RECORD	CRHOLD
+	.INCLUDE 'DEF:RD195A.DEF'
+
+RECORD	TMPCUS
+	.INCLUDE 'DEF:RD139A.DEF'
+
+RECORD CUSMAS		
+		.INCLUDE 'DEF:RD001A.DEF'
+RECORD ,X		
+		.INCLUDE 'DEF:RD001B.DEF'
+RECORD CUSIDX		
+		.INCLUDE 'DEF:RD002A.DEF'
+RECORD COPCTL
+		.INCLUDE 'DEF:RD060A.DEF'
+RECORD ARTERM
+		.INCLUDE 'DEF:RD170A.DEF'
+RECORD ARTCTL	,X
+		.INCLUDE 'DEF:RD170B.DEF'
+RECORD SHIPTO
+		.INCLUDE 'DEF:RD171A.DEF'
+RECORD SHPCTL	,X
+		.INCLUDE 'DEF:RD171B.DEF'
+
+
+RECORD	COPTBL
+		.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD	CCTRAN
+	.INCLUDE 'DEF:RD138A.DEF'
+
+RECORD	C1_LINE
+		,A*,	'* Credit Card *   Auth:'
+	C1_AUTH	,A6
+
+RECORD TMPAD3
+	TMPCTY	,A15
+		,A1
+	TMPSTA	,A2
+		,A2
+	TMPZIP	,A10
+RECORD SKEY
+	XCUSNO	,D6
+	SHPNO	,D4
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+
+RECORD	ORDFMT
+	OF_ORD	,A6
+		,A1, '.'
+	OF_NUM	,D1
+
+record	wvars
+	W_ID	,D4
+	WND_1	,D4
+
+RECORD	WN_NAME
+		,A5,	'ORDCN'
+	WN_TNMBR,D4
+
+RECORD	VARS
+	i	,d6
+	cr_flag	,d1
+	A6	,A6
+	ON_CC	,D1
+	FK_DESC	,A48
+	POBOX	,D1
+	F_KEY	,D3
+	SAVV	,D1
+	TCHAR	,D3
+	LNAM	,A25
+	SNAM	,A12
+	SINT	,A3
+	TODAY	,D8
+	TDATE	,D6
+	XORDR	,D6
+	CHN182	,D2,	17
+	CHN195	,D2
+	ALPHA	,A8
+	L	,2D1
+	ORDNOA	,A6
+	OPTION	,D1
+	ENTRY	,A36
+	WHATNO	,D2
+	TMSARR	,5D2,05,10,15,20,25		;SET TO TERMS DISCOUNTS
+						;ALLOWED FOR EACH CUST
+	CTR	,D2
+	DECMAL	,D18
+	KEY   	,A16
+	BSEND	,D5
+	BSMID	,D5
+	SRCCTL	,D1
+	BLANKS	,A35
+	MASK	,A6,'XXXXXX'
+	COUNT	,D1
+	READ	,D1	,0
+	WRITE	,D1	,1
+	store	,d1	,2
+	LOKCTL	,D1
+	SWITCH	,D1	;;;
+	FILENM	,A14	;;;
+	CNGCUS	,D1	,0
+	SAVLOC	,A1
+;
+PROC
+	call init_window
+DISPLA,
+	CNGCUS =
+	LOKCTL = 1
+	OEFLAG = 0	;(01) SSQ 12-11-98
+
+	XCALL IO (3,COPCTL,1,READ,LOKCTL)
+
+	UNLOCK 3
+;;;	D =
+	CALL DISPL1
+	IF (ON_CC .EQ. 1) XRETURN		;CC ALREADY RUN
+	IF (OFLAG.EQ.1) GOTO SELCTD		;1-2-01 don't allow
+
+	XCALL w_disp(wnd_1,wd_pos,24,1,wd_clr,wdc_lin,'RIGHT ORDER <Y> ?')
+	CTL = '24,20,01,00,YY'
+	CALL INPUT
+	IF (INXCTL.EQ.2) RETURN
+
+	CALL CNG1
+
+	IF (INXCTL.EQ.1) GO TO DISPLA
+	GO TO (DISPLA), CNGCTL
+
+	IF (OEFLAG .EQ. 1) 
+		BEGIN			;SSQ 7-30-99
+		XCALL RDATE(TDATE)
+		XCALL DATE8(TDATE, D_OUT, TODAY, D_FMT, D_SW)
+		OORDDT = TODAY		;QUOTE BECAME ORDER
+		OKEYDT = TODAY
+		END
+
+	LOKCTL = 1
+	XCALL ISIO (4,TORDHD,OORDNO,WRITE,LOKCTL)
+END,
+	ORDHDR = TORDHD
+	RETURN
+
+SELCTD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL wnmsg(wnd_1,24,'ORDER SELECTED - MUST UNSELECT FIRST',1)
+	INXCTL =2
+	RETURN		;to calling routine
+;--------------------------------------------
+
+SELECTED,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SELECTED FOR BILLING
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL w_disp(wnd_1,wd_pos,24,1,wd_clr,wdc_lin,'ORDER SELECTED, CONTINUE ANYWAY?')
+	xcall winpt(wnd_1,24,36,01,01,'YN',entry,inxctl)
+;;;	XCALL INPUT (24,36,01,01,'YN',ENTRY,INXCTL,1)
+	IF (INXCTL .EQ. 2) XRETURN
+	RETURN
+;-------------------------------------------
+
+
+DISPL1,
+	UNLOCK 1
+	CNGCTL =
+	XCALL OE1w(DSTFLG,wnd_1)
+;;;	XCALL OE1(DSTFLG,V)
+	XCALL w_disp(wnd_1,wd_pos,2,1,'CHANGE')
+	IF (OCCRD .EQ. 'C')
+		BEGIN
+		CALL GET_CCTRAN
+		C1_AUTH = CT_AUTH,	'ZZZZZZ'
+		XCALL W_DISP(WND_1,WD_POS,2,10,C1_LINE)
+		END
+
+	IF (ORDTYP .EQ. 'I') XCALL w_disp(wnd_1,wd_pos,2,10,wd_clr,wdc_eol,' *INTERNET*')
+	IF (OCCRD .EQ. 'R') XCALL w_disp(wnd_1,wd_pos,2,10,wd_clr,wdc_eol,' *CASH*')
+
+	XCALL w_disp(wnd_1,wd_pos,4,3,'*')
+	XCALL w_disp(wnd_1,wd_pos,6,3,'*')
+
+	CTL = '04,16,06,01,#E'
+	ENTRY(1,6) = OORDNO,	'ZZZZZX' [LEFT]
+	XCALL w_disp(wnd_1,wd_pos,ROW, COL, ENTRY(1,6))
+
+	LOKCTL = 0
+	XCALL ISIO (4,TORDHD,OORDNO,READ,LOKCTL)
+	IF (LOKCTL.EQ.1) 
+		begin
+		inxctl = 2		;abort
+		xreturn		;ssq 3-4-04
+		end
+	IF (LOKCTL.GE.2) GO TO NOFIND
+
+	ORDTYP = INET		;SSQ 6-7-05
+DISPO,
+	OF_ORD = OORDNO,	'ZZZZZX' [LEFT]
+	IF(OPRTF.LE.0)OPRTF=0
+	OF_NUM = OPRTF
+	XCALL w_disp(wnd_1,wd_pos,ROW, COL,  ORDFMT)
+
+	SAVLOC = OLOC
+	CTL = '04,38'
+	DECMAL(1,8) = OORDDT
+	CALL DSPDTE
+	CTL = '04,68'
+	IF (OLOC.EQ.'E')  
+	THEN BEGIN
+	  XCALL w_disp(wnd_1,wd_pos,4,53,'EST DEL DAYS   ')
+	  DECMAL = OPROMD
+	  CALL DSPNUM
+	  XCALL w_disp(wnd_1,wd_pos,23,3,wd_clr,wdc_eol,'21. ATTN:')
+	  XCALL w_disp(wnd_1,wd_pos,23,14,OATTN)
+	END
+	ELSE BEGIN
+	  DECMAL(1,8) = OPROMD
+	  CALL DSPDTE
+	END
+	CTL = '06,16,06'
+	DECMAL = OCUSNO
+	CALL DSPNUM
+	XCALL w_disp(wnd_1,wd_pos,6,24,OCUSNM)
+
+	IF (OCUSNO .EQ. 999000) 
+	THEN	BEGIN
+		XCALL w_disp(wnd_1,wd_pos,7,4,wd_clr,wdc_eol,'   ORIGINAL ORDER:')
+		XCALL w_disp(wnd_1,wd_pos,7,23,OBIN)
+		END
+	ELSE	BEGIN
+		CLEAR OBIN
+		XCALL w_disp(wnd_1,wd_pos,7,4,wd_clr,wdc_eol,' ')
+		END
+
+;-
+	call getcus		;5-18-10
+	CTL = '06,68,06'	;5-18-10
+	DECMAL = CRDLMT		;5-18-10
+	CALL DSPNUM		;5-18-10
+;;;	IF (CRDLMT.NE.0) XCALL wnmsg(wnd_1,24,'NOTE CREDIT CODE & CHECK WITH DIANNA',2)
+;-
+	CTL = '08,16,02'
+	DECMAL = OSLMAN
+	CALL DSPNUM
+
+	XCALL SREP(OSLMAN,LNAM,SNAM,SINT)
+	XCALL w_disp(wnd_1,wd_pos,9,9,SNAM)
+
+	XCALL w_disp(wnd_1,wd_pos,8,35,OLOC)
+
+	XCALL w_disp(wnd_1,wd_pos,8,53,OSCAC)
+	CALL GET_SCAC
+	XCALL w_disp(wnd_1,wd_pos,9,53,SC_NAME)
+
+	IF (OMETRO .NE. BLANKS)
+		BEGIN
+		XCALL w_disp(wnd_1,wd_pos,7,58,'12DPO:')
+		XCALL w_disp(wnd_1,wd_pos,7,66,OMETRO)
+		END
+	XCALL w_disp(wnd_1,wd_pos,8,68,OPONO)
+
+	XCALL w_disp(wnd_1,wd_pos,10,53,OCLPPD)
+	XCALL w_disp(wnd_1,wd_pos,10,68,OJOBNO)
+DSPADD,
+	ALPHA (1,4) = OSHPTO,'ZZZZ'
+	XCALL w_disp(wnd_1,wd_pos,12,16,ALPHA(1,4))
+	XCALL w_disp(wnd_1,wd_pos,13,13,OSHPNM)
+	XCALL w_disp(wnd_1,wd_pos,14,13,OSHAD1)
+	XCALL w_disp(wnd_1,wd_pos,15,13,OSHAD2)
+	XCALL w_disp(wnd_1,wd_pos,16,13,OSHAD3)
+	
+	XCALL w_disp(wnd_1,wd_pos,19,16,OCOMNT(1))
+	XCALL w_disp(wnd_1,wd_pos,20,16,OCOMNT(2))
+
+	SWITCH = 5		;SSQ 12-19-01
+	XCALL FILES (20,'SI',195,SWITCH)
+	CHN195 = 20
+	FIND (CHN195,CRHOLD,OORDNO) [ERR=NOT_ON_HOLD]
+	IF (CH_FLAG .EQ. 'C') 
+	THEN	BEGIN
+		XCALL wnmsg(wnd_1,24,'Already on Credit Card, No Changes Allowed!',1)
+		ON_CC = 1
+		XRETURN
+		END
+	ELSE	BEGIN
+		ON_CC = 0
+		;;;IF(CH_FLAG.EQ.'H') XCALL wnmsg(wnd_1,24,'THIS ORDER ON CREDIT HOLD',1)
+		XCALL wnmsg(wnd_1,24,'THIS ORDER ON CREDIT HOLD',1)
+		END
+
+NOT_ON_HOLD,
+	CLOSE CHN195
+	RETURN
+;-------------------------------------------
+
+NOFIND,
+	UNLOCK 4
+	XCALL wnmsg(wnd_1,24,'ORDER NOT FOUND',1)
+	GO TO DISPL1
+;-------------------------------------------
+;-------------------------------------------
+
+CNG1,
+	INXCTL =
+	GO TO ANYCNG
+
+DATE,
+	CTL = '04,38,08,05,D '
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OORDDT = ENTRY
+	OKEYDT = OORDDT
+	GO TO ANYCNG
+PDATE,
+	CTL = '04,68,08,00,D '
+	IF (OLOC.EQ.'E')
+	BEGIN
+	  XCALL w_disp(wnd_1,wd_pos,4,53,'EST DEL DAYS   ')
+	  TYPE = '# '
+	END
+	CALL INPUT
+	GOTO (DISPLA), INXCTL
+	OPROMD = ENTRY
+	GO TO ANYCNG
+CUSNUM,
+	CNGCUS = 1
+	CTL = '06,16,06,01,# '
+	CALL INPUT
+	GO TO (DISPLA), INXCTL
+	OCUSNO = ENTRY
+	CALL GETCUS
+	XCALL w_disp(wnd_1,wd_pos,6,24,NAME)
+	OCUSNM = NAME
+	OCUSCD = CUSCD
+	TXFLG = TAXFLG
+	CTL = '06,68,06'			;;;
+	
+	A6 = CRDLMT,	'XXXXXXX'
+	IF (%INSTR(1,A6,'6') )
+	THEN	DISTR = 1
+	ELSE	DISTR = 0
+;-
+	clear cr_flag
+	a6 = crdlmt, 'XXXXXX'		
+	if (%instr(1, a6, '5') )	call on_hold	
+
+;-
+	DECMAL = CRDLMT				;;; ADDED DS 1/7/87
+	CALL DSPNUM				;;;
+	IF (CRDLMT.NE.0) 						;;;
+&	  XCALL wnmsg(wnd_1,24,'NOTE CREDIT CODE AND CHECK WITH DIANNA',2)	;;;
+
+	CALL TEMP_CUS	;SSQ 3-25-08
+
+	IF(OCUSNO.NE.999000) GOTO ANYCNG
+	XCALL w_disp(wnd_1,wd_pos,7,4,wd_clr,wdc_eol,'   ORIGINAL ORDER:')
+	xcall winpt(wnd_1,7,23,06,00,'# ',entry,inxctl)
+;;;	XCALL INPUT (7,23,06,00,'# ',ENTRY,INXCTL,1)
+	GOTO(DISPLA),INXCTL
+	XORDR = ENTRY(1,6)
+	OBIN = XORDR,	'XXXXXX'
+	GOTO ANYCNG
+
+SALMAN,
+	CTL = '08,16,02,00,N '
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OSLMAN = ENTRY
+
+	XCALL SREP(OSLMAN,LNAM,SNAM,SINT)
+	IF(LNAM.EQ.BLANKS .OR. LNAM.EQ.']]]]]]') GOTO SALMAN
+	XCALL w_disp(wnd_1,wd_pos,9,9,SNAM)
+	GOTO ANYCNG
+LOCA,
+	CTL = '08,35,02,00,A '
+	CALL INPUT
+	GOTO (DISPLA), INXCTL
+	IF (ENTRY(1,2).EQ.'  ') ENTRY(1,2) = 'O '
+	OLOC = ENTRY
+	XCALL w_disp(wnd_1,wd_pos,ROW,COL,OLOC)
+	IF (OLOC.NE.'E'.AND.OLOC.NE.'O') GOTO LOCA
+	OEFLAG = 0			;6-1-98 SSQ
+	IF (SAVLOC.EQ.'E'.AND.ENTRY.EQ.'O') OEFLAG = 1
+	IF (SAVLOC.EQ.'O'.AND.ENTRY.EQ.'E') OEFLAG = 2
+	GOTO ANYCNG
+PONUM,
+	CTL = '08,68,10,00,AT'
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	IF(INXCTL .EQ. 3)	;<TAB>
+		BEGIN
+		CALL OMETRO		;GET METRO PROJ #
+		IF(CNGCTL.EQ.0)GOTO PONUM
+		ENTRY = OPONO
+		XCALL w_disp(wnd_1,wd_pos,8,68,OPONO)
+		END
+
+	OPONO = ENTRY
+	GO TO ANYCNG
+SHIPV,
+	XCALL w_disp(wnd_1,wd_pos,9,53,'               ')
+	CTL = '08,53,04,00,A '
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OSCAC = ENTRY(1,4)
+	CALL GET_SCAC
+	IF (LOKCTL .NE. 0) GOTO SHIPV
+	XCALL w_disp(wnd_1,wd_pos,9,53,SC_NAME)
+
+	XCALL w_disp(wnd_1,wd_pos,8,59,'8. PO #')
+	GO TO ANYCNG
+COLPPD,
+	CTL = '10,53,01,00,A '
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OCLPPD = ENTRY
+	IF (OCLPPD.NE.'C'.AND.OCLPPD.NE.'P'.AND.OCLPPD.NE.'D' ) GO TO COLPPD
+	GO TO ANYCNG
+
+DISC,
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SSQ 3-14-97 DISABLE DISC CODE...
+
+;;;	CTL = '05,16,02,00,# '
+;;;	CALL INPUT
+;;;	GO TO (NDSRCH), INXCTL
+;;;	ODISC = ENTRY
+;;;	XCALL DSPLY (2,10,16,ODISC,1,1)
+;;;	XCALL w_disp(wnd_1,wd_pos,10,18,'%')
+;;;	D = 1		;D = 1 INDICATES A NEW ORDER DISCOUNT FOR LINCN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	GOTO ANYCNG
+TERMS,
+	XCALL w_disp(wnd_1,wd_pos,11,33,'               ',1)
+	CTL = '10,33,01,00,A '
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OTERMS = ENTRY
+	IF (OTERMS.EQ.' ') GO TO TERMS
+	XCALL FFILE (170,FILENM,SWITCH)
+	OPEN (10,I,FILENM)
+	LOKCTL = 1
+	XCALL IO (10,ARTCTL,1,READ,LOKCTL)
+	SRCCTL = 2
+	BSEND = ORG170
+	XCALL SERCH (10,ARTERM,OTERMS,1,1,BSEND,BSMID,SRCCTL,1,2,7,0,0,0,0)
+	GO TO (BADTRM), SRCCTL
+	close 10		;ssq 5-19-98
+
+	OTRMSD = ARTRDP
+	XCALL w_disp(wnd_1,wd_pos,11,33,ARTRDS)
+	GO TO ANYCNG
+JOBNUM,
+	CTL = '10,68,10,00,A '
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OJOBNO = ENTRY
+	GOTO ANYCNG
+SHIPTO,
+	switch = 5
+	xcall files (8,'SI',171,switch)
+
+	XCALL w_disp(wnd_1,wd_pos,13,12,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,14,12,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,15,12,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,16,12,wd_clr,wdc_eol)
+	CTL = '12,16,04,00,N '
+
+	xcall w_disp(wnd_1,wd_pos,24,1,'<F1>=Display Ship-To List')
+
+	CALL INPUT
+	xcall w_disp(wnd_1,wd_pos,24,1,wd_clr,wdc_eol)
+	if (inxctl)
+		begin
+		close 8
+		goto ndsrch
+		end
+
+	if (f_key .eq. f_01)
+		begin
+		call m_shipto
+		goto (shipto),inxctl
+		xcall w_disp(wnd_1,wd_pos,row,col,entry(1,4))
+		end
+
+;;;	GO TO (NDSRCH), INXCTL
+
+	OSHPTO = ENTRY
+	IF (ENTRY.EQ.BLANKS) 
+		begin
+		close 8
+		GO TO DFBLTO
+		end
+	IF (OSHPTO.EQ.9999) 
+		begin
+		close 8
+		GO TO SHIPNM
+		end
+
+;;;	SWITCH = 5
+;;;	XCALL FILES (8,'SI',171,SWITCH)
+
+
+	XCUSNO = OCUSNO
+	SHPNO = OSHPTO
+	XCALL ISIO (8,SHIPTO,SKEY,READ,LOKCTL)
+	CLOSE 8
+	IF (LOKCTL .NE. 0) GOTO BADSHP
+
+	OSHPNM = SHTONA
+	OSHAD1 = SHTOAD(1)
+	OSHAD2 = SHTOAD(2)
+	OSHAD3 = SHTOAD(3)
+	OTAXFL = SHTOTC		;SSQ 4/24/02
+
+	if (oordno.lt.500000 .and. otaxfl(1,2).eq.'IL' .and.
+&		otaxfl(3,3).ne.'N') otaxfl(3,3) = 'R'
+	CALL DSPSHP
+	GO TO ANYCNG
+
+DFBLTO,
+	IF (NAME.NE.OCUSNM) CALL GETCUS
+
+	if (t_cusno.eq.oordno)
+	then	begin
+		OSHPNM = T_NAME
+		OSHAD1 = T_ADD1
+		OSHAD2 = T_ADD2
+		TMPCTY = T_CITY
+		TMPSTA = T_STATE
+		TMPZIP = T_ZIP
+		OSHAD3 = TMPAD3
+		end
+	else	begin
+		OSHPNM = NAME
+		OSHAD1 = ADD1
+		OSHAD2 = ADD2
+		TMPCTY = CITY
+		TMPSTA = STATE
+		TMPZIP = ZIP
+		OSHAD3 = TMPAD3
+		end
+
+	CALL DSPSHP
+	GO TO ANYCNG
+SHIPNM,
+	CTL = '13,12,30,00,A '
+	xcall winpt(wnd_1,row,col,max,min,type,entry,inxctl)
+;;;	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,1)
+	GO TO (NDSRCH), INXCTL
+	OSHPNM = ENTRY
+	OSHFLG = 'C'		;USER CHANGED SHIP TO
+	IF (OSHPTO.NE.9999) GO TO ANYCNG
+SHIPA1,
+	CTL = '14,12,30,00,A '
+;;;	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,1)
+	xcall winpt(wnd_1,row,col,max,min,type,entry,inxctl)
+	GO TO (NDSRCH), INXCTL
+	OSHAD1 = ENTRY
+	OSHFLG = 'C'		;USER CHANGED SHIP TO
+	IF (OSHPTO.NE.9999) GO TO ANYCNG
+SHIPA2,
+	CTL = '15,12,30,00,A '
+;;;	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,1)
+	xcall winpt(wnd_1,row,col,max,min,type,entry,inxctl)
+	GO TO (NDSRCH), INXCTL
+	OSHAD2 = ENTRY
+	OSHFLG = 'C'		;USER CHANGED SHIP TO
+	IF (OSHPTO.NE.9999) GO TO ANYCNG
+SHIPA3,
+	CTL = '16,12,30,00,A '
+;;;	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,1)
+	xcall winpt(wnd_1,row,col,max,min,type,entry,inxctl)
+	GO TO (NDSRCH), INXCTL
+	OSHAD3 = ENTRY
+	OSHFLG = 'C'		;USER CHANGED SHIP TO
+	GO TO ANYCNG
+COMENT,
+	XCALL w_disp(wnd_1,wd_pos,22,16,BLANKS)
+	CTL = '19,16,35,00,AT'
+	CALL INPUT
+	GO TO (NDSRCH,DEFCOM,DEFCOM), INXCTL
+	OCOMNT(1) = ENTRY
+	ROW = 20
+	CALL INPUT
+	GO TO (NDSRCH), INXCTL
+	OCOMNT(2) = ENTRY
+	GO TO ANYCNG
+defcom,
+	ocomnt(1) = ordcom(1)
+	ocomnt(2) = ordcom(2)
+
+	XCALL w_disp(wnd_1,wd_pos,19,16,OCOMNT(1))
+	XCALL w_disp(wnd_1,wd_pos,20,16,OCOMNT(2))
+
+	GO TO ANYCNG
+ARACCT,
+	IF (DSTFLG.NE.'Y' .OR. MLARFG.NE.'Y') GO TO ANYCNG
+	XCALL w_disp(wnd_1,wd_pos,20,72,wd_clr,wdc_eol,)
+	XCALL GETAC (10,73,OARACT,INXCTL,V)
+	GO TO (NDSRCH), INXCTL
+	GOTO ANYCNG
+OATTN,
+	IF (OLOC .NE. 'E') GOTO ANYCNG
+	CTL = '23,14,20,00,A '
+	CALL INPUT
+	GOTO (NDSRCH),INXCTL
+	OATTN = ENTRY(1,20)
+	GOTO ANYCNG	
+ENDORD,
+	CALL CHECK_SHIPTO
+	IF (POBOX)
+		BEGIN
+		XCALL wnmsg(wnd_1,24,"Can't ship SPE-DEE or UPS if PO BOX",1)
+		GOTO ANYCNG
+		END
+
+	SCUSTP =
+
+	LOKCTL = 1
+	XCALL IO (6,CUSMAS,1,READ,LOKCTL)
+	BSEND = ORG001
+	KEY(1,6) = OCUSNO, MASK
+	XCALL SERCH(7,CUSIDX,KEY(1,6),1,6,BSEND,BSMID,SRCCTL,1,7,11,0,0,0,0)
+	IF (SRCCTL.EQ.1) GOTO NDSRCH	
+
+	LOKCTL = 1
+	XCALL IO (6,CUSMAS,IRC001,READ,LOKCTL)
+	SCUSTP = CUSCD
+	TXFLG = TAXFLG
+
+	;Added cust=3 or 10 test 6/24/02...
+	IF (OCUSNO.NE.3 .AND. OCUSNO.NE.10)OTAXFL = TAXFLG	;SSQ 4/11/02
+
+NDSRCH,
+	CUSTCD = OCUSCD
+	RETURN
+DEFLT1,
+	IF (ENTRY.EQ.BLANKS) ENTRY(1,1) = '1'
+	XCALL w_disp(wnd_1,wd_pos,ROW,COL,ENTRY(1,1))
+	RETURN
+;-------------------------------------------------------
+M_SHIPTO,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR ENTRY, INXCTL
+
+	XCUSNO = OCUSNO
+	SHPNO = 	;;;>OSHPTO
+	FIND(8,SHIPTO,SKEY)[ERR=MORE_SHIP]
+MORE_SHIP,
+	CALL GET_MSHIP
+	IF (%TTSTS) XCALL W_DISP(WND_1,WD_READS,ENTRY)
+	IF (NUMARA .GT. 0)
+	THEN	BEGIN
+		DLINE = '  SHIP  NAME'
+		POP_TITLE = "<CR> = MORE SHIP-TO'S"
+		XCALL OEPOP(POPAR)
+		END
+	ELSE	BEGIN
+		XCALL OLMSG(WND_1,24,"NO MORE SHIP-TO'S",1)
+		XCALL W_DISP(WND_1,WD_POS,24,1,'ADD NEW SHIP-TO?')
+		XCALL WINPT(W_ID,24,19,01,01,'YN',ENTRY,INXCTL)
+		IF(INXCTL.EQ.1)
+		THEN	CALL M_ADD_SHIP
+		ELSE	BEGIN
+			CLEAR ENTRY
+			INXCTL = 1
+			RETURN
+			END
+		XCALL W_DISP(WND_1,WD_POS,24,1,WD_CLR,WDC_EOL)
+		END
+
+	USING P_ACTION SELECT
+	(0),	INXCTL = 1		;<END>
+	(1),	BEGIN			;SELECTED
+		DLINE = PARRY(PI)	
+		ENTRY = DLINE(1,4)	;SHIPTO
+		OSHPTO = ENTRY(1,4)
+	;;;	XCALL MSHP (OCUSNO,OSHPTO,2)
+	;;;	XCALL MSHP (OCUSNO,OSHPTO,2,TAXFLG)
+		XCALL MSHP (OCUSNO,OSHPTO,2,TAXFLG,OCUSNM)
+		CLEAR INXCTL
+		END
+	(2),	CALL M_ADD_SHIP
+	(4),	GOTO MORE_SHIP
+
+	ENDUSING
+
+	RETURN
+;------------------------------------------------
+
+GET_MSHIP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR I
+MS_LOOP,
+	XCALL IOS (8,SHIPTO,READ,LOKCTL)
+	IF (LOKCTL.NE.0 .OR. SHCSNO.NE.OCUSNO) GOTO MS_EOF
+	CLEAR DLINE
+	DLINE(1,4) = SHTONO,	'ZZZZ' [LEFT]
+	DLINE(6,32) = SHTONA
+	INCR I
+	PARRY(I) = DLINE
+	
+	DLINE (1,25) = SHTAD1
+	DLINE (26,46) = SHTAD2
+	DLINE (47,61) = SHTCTY
+	DLINE (63,64) = SHTST
+	DLINE (66,75) = SHTZIP
+	P_ADD(I) = DLINE
+	IF (I .LT. MAXARA) GOTO MS_LOOP
+MS_EOF,
+	NUMARA = I
+	RETURN
+;------------------------------------------------
+M_ADD_SHIP,
+;;;	XCALL MSHP (OCUSNO,OSHPTO,1,TAXFLG)	;add
+	XCALL MSHP (OCUSNO,OSHPTO,1,TAXFLG,OCUSNM)	;add
+	ENTRY(1,4) = OSHPTO
+	CLEAR INXCTL
+	RETURN
+;------------------------------------------------
+;-------------------------------------------------------
+on_hold,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	a6 = crdlmt, 'XXXXXX'		;6-12-07 ssq
+	if (%instr(1, a6, '555') ) 
+		begin
+		cr_flag = 3
+		goto oh_fin
+		end
+
+	if (%instr(1, a6, '55') ) 
+		begin
+		cr_flag = 2
+		goto oh_fin
+		end
+
+	if (%instr(1, a6, '5') ) 
+		begin
+		cr_flag = 1
+		goto oh_fin
+		end
+
+oh_fin,
+	SWITCH = 5
+	XCALL FILES (CHN195, 'SU', 195, SWITCH)
+
+	IF (SWITCH .EQ. 9)
+	THEN	XCALL wnmsg(wnd_1,24,"CAN'T OPEN CRHOLD",2)	;;;
+
+	ELSE	BEGIN
+		CLEAR CRHOLD
+		CH_ORD = OORDNO
+		CH_FLAG = cr_flag		;ORDER ENTRY credit hold
+		XCALL ISIO (CHN195, CRHOLD, CH_ORD, STORE, LOKCTL)
+		CLOSE CHN195
+		END
+
+	return
+;------------------------------------------------------------------
+;-------------------------------------------------------
+
+TEMP_CUS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF(OCUSNO.EQ.3 .OR. OCUSNO.EQ.10 .OR. OCUSNO.EQ.58455)
+		BEGIN
+		XCALL OECUS(OORDNO, TMPCUS)
+		OTAXFL = T_TAXFLG		;SSQ 5/6/02
+; change taxcode from IL to ILR for Rockford orders, unless code is "IRL"
+	IF (OORDNO.LT.500000 .AND. OTAXFL(1,2).EQ.'IL' .AND. 
+&		OTAXFL(3,3).NE.'N') OTAXFL(3,3) = 'R'
+
+		IF (T_CUSNO.EQ.OORDNO)
+			BEGIN			;TEMP CUST ENTERED
+			OSHPNM = T_NAME
+			OSHAD1 = T_ADD1
+			OSHAD2 = T_ADD2
+			TMPCTY = T_CITY
+			TMPSTA = T_STATE
+			TMPZIP = T_ZIP
+			OSHAD3 = TMPAD3
+			call dspshp
+			END
+
+		END
+	RETURN
+;-------------------------------------------------------
+
+CLROE4,
+	XCALL w_disp(wnd_1,wd_pos,6,60,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,7,60,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,8,60,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,9,60,wd_clr,wdc_eol)
+	XCALL w_disp(wnd_1,wd_pos,10,60,wd_clr,wdc_eol)
+	RETURN
+
+ANYCNG,
+	IF (OCUSCD .EQ. 'NQ') 
+	THEN	XCALL w_disp(wnd_1,wd_pos,1,70,wd_clr,wdc_eol,"Don't Fax")
+	ELSE	XCALL w_disp(wnd_1,wd_pos,1,70,wd_clr,wdc_eol)
+
+	FK_DESC = "<F9> = don't fax"
+;;;;	IF (OCCRD.NE.' ') FK_DESC(18,33) = '<F1> = fax info'
+	XCALL WANFK(wnd_1,24,CNGCTL,WHATNO,F_KEY,FK_DESC)
+	USING F_KEY SELECT
+	(F_02),	BEGIN
+		CALL TEMP_CUS
+		END
+
+	(F_05),	BEGIN
+		OCUSCD = CUSCD
+		GOTO ANYCNG
+		END
+
+	(F_09),	BEGIN
+		OCUSCD = 'NQ'
+		GOTO ANYCNG
+		END
+	ENDUSING
+
+	GOTO (ENDORD,CNGBR,ENDORD), CNGCTL+1
+CNGBR,
+	GOTO (BADCNG,DATE,PDATE,CUSNUM,SALMAN,LOCA,SHIPV,PONUM,badcng,badcng,
+&	      COLPPD,JOBNUM,SHIPTO,SHIPNM,SHIPA1,SHIPA2,SHIPA3,
+&	      COMENT,badcng,BADCNG,OATTN), WHATNO
+BADCNG,
+	XCALL BEEP
+	GOTO ANYCNG
+
+OMETRO,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; GET METRO PROJ. NO.
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL w_disp(wnd_1,wd_pos,7,58,'METRO:')
+	CTL = '07,66,12,00,A '
+
+	IF (OMETRO .NE. BLANKS)GOTO OM_DISP
+
+	SAVV = V
+	V = 1
+	CALL INPUT
+	V = SAVV
+	GOTO (OM_ABORT),INXCTL
+	OMETRO = ENTRY(1,12)
+	GOTO OM_ABORT
+
+OM_DISP,
+	XCALL w_disp(wnd_1,wd_pos,ROW,COL,wd_clr,wdc_eol,OMETRO)
+
+	CALL ACCEPT		
+	USING TCHAR SELECT
+	(21),	BEGIN			;^U
+		OMETRO =
+		GOTO OMETRO
+		END
+	(13),	GOTO OM_ABORT		;<CR>
+	ENDUSING
+	GOTO OM_DISP
+
+OM_ABORT,
+	RETURN
+;------------------------------------------
+ACCEPT,
+	XCALL FLAGS (00010000)			;DISABLE CHARACTER ECHOING
+	XCALL w_disp(wnd_1,wd_pos,ROW,COL+13,' ')
+	ACCEPT (15,TCHAR)
+	XCALL FLAGS (00000000)			;RE-ENABLE CHARACTER ECHOING
+	RETURN
+
+DSPNUM,
+	OPTION = 1
+	GOTO CALDSP
+DSPDTE,
+	XCALL DATE8(DECMAL(1,8), D_OUT, D_OUTR, D_FMT, D_SW)
+	XCALL w_disp(wnd_1,wd_pos,ROW, COL, D_FMT)
+	RETURN
+DSPDLR,
+	OPTION = 3
+CALDSP,
+	xcall wdspl(wnd_1,max,row,col,decmal,option)
+;;;	XCALL DSPLY(MAX,ROW,COL,DECMAL,OPTION,V)
+	RETURN
+INPUT,
+	xcall winpt(wnd_1,row,col,max,min,type,entry,inxctl,f_key)
+;;;	XCALL INPUT(ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,V)
+	RETURN
+DSPSHP,
+	XCALL w_disp(wnd_1,wd_pos,13,12,OSHPNM)
+	XCALL w_disp(wnd_1,wd_pos,14,12,OSHAD1)
+	XCALL w_disp(wnd_1,wd_pos,15,12,OSHAD2)
+	XCALL w_disp(wnd_1,wd_pos,16,12,OSHAD3)
+	RETURN
+BADSHV,
+	XCALL wnmsg(wnd_1,24,'SHIP-VIA CODE NOT FOUND',1)
+	GO TO SHIPV
+BADTRM,	
+	XCALL wnmsg(wnd_1,24,'TERM CODE NOT FOUND',1)
+	GO TO TERMS
+BADSHP,
+	XCALL wnmsg(wnd_1,24,'SHIP-TO NUMBER NOT FOUND',1)
+	GO TO SHIPTO
+
+GETCUS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	LOKCTL = 1
+	XCALL IO (6,CUSMAS,1,READ,LOKCTL)
+	BSEND = ORG001
+	KEY(1,6) = OCUSNO, MASK
+	XCALL SERCH(7,CUSIDX,KEY(1,6),1,6,BSEND,BSMID,SRCCTL,1,7,11,0,0,0,0)
+	IF (SRCCTL.EQ.1.OR.IRC001.LE.0)	
+	THEN	BEGIN			
+		XCALL wnmsg(wnd_1,24,'CUSTOMER NOT FOUND FOR TAX CODE UPDATE',1)
+		CUSMAS = 
+		NAME = '** CUSTOMER NOT FOUND ***'
+		END			
+	ELSE	BEGIN
+		LOKCTL = 1
+		XCALL IO (6,CUSMAS,IRC001,READ,LOKCTL)
+		END
+	RETURN			
+;--------------------------------------------------
+
+GET_SCAC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; COP TABLE SCAC LOOK-UP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR TBL_KEY
+	TBLCOD = 'SC'
+	TBLKEY = OSCAC
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	IF (LOKCTL .NE. 0)
+		BEGIN
+		CLEAR COPTBL
+		SC_NAME = "* NOT ON FILE *"
+		END
+	RETURN
+;-----------------------------------------------------
+GET_CCTRAN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SWITCH = 5
+	XCALL FILES (33,'SI',138,SWITCH)
+	XCALL ISIO (33,CCTRAN,OORDNO,READ,LOKCTL)
+	CLOSE 33
+	IF (LOKCTL .NE. 0) CLEAR CCTRAN
+	RETURN
+;---------------------------------------------------
+
+CHECK_SHIPTO,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; CHECK SHIP-TO FOR "PO BOX"
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR POBOX
+
+	USING OSCAC SELECT
+	('0','4','8','9'),GOTO UPS_SPEEDY
+	(),	RETURN		;DON'T CARE
+	ENDUSING
+
+UPS_SPEEDY,
+	POBOX = 1	;ASSUME CONTAINS "PO " OR "BOX"...
+	IF (%INSTR(1,OSHPNM,'PO ') .OR. %INSTR(1,OSHPNM,'BOX')) RETURN
+	IF (%INSTR(1,OSHAD1,'PO ') .OR. %INSTR(1,OSHAD1,'BOX')) RETURN
+	IF (%INSTR(1,OSHAD2,'PO ') .OR. %INSTR(1,OSHAD2,'BOX')) RETURN
+	IF (%INSTR(1,OSHAD3,'PO ') .OR. %INSTR(1,OSHAD3,'BOX')) RETURN
+
+	CLEAR POBOX
+	RETURN
+;--------------------------------------------------
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SET UP SCREEN 1 WINDOW
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL TNMBR (WN_TNMBR)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (.NOT. WND_1)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,24,78)
+		END
+	XCALL W_BRDR(WND_1,WB_TITLE,'ORDER ADD',
+&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	W_ID = WND_1
+	xcall u_logwnd(wnd_1)
+
+;; POP info...
+
+	MAXARA = 10		;9-19-97 NOT MORE THAN 1 FULL WINDOW
+	PLEN = 34
+	NUMROW = 10
+	WX = 8
+	WY = 7
+	POP_WID(1,5) = "OEPOP"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "CUSTOMER NAMES"
+	RETURN
+;-------------------------------------------------------------------
+
+END

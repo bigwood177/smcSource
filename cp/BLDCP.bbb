@@ -1,0 +1,153 @@
+
+call bld ADVIC2 CP
+call bld ADVICE CP
+call bld ALNINV CP
+call bld analys CP
+call bld BAKORD CP
+call bld BDDMNT CP
+call bld BILEDT CP
+call bld BILIDX CP
+call bld BLDSLH CP
+call bld BOCUST CP
+call bld BOITEM CP
+call bld CANCEL CP
+call bld canest CP
+call bld CANINQ CP
+call bld canlog CP
+call bld catent CP
+call bld CATMNU CP
+call bld catprt CP
+call bld ccmain CP
+call bld CCTMNT CP
+call bld CFGMNT CP
+call bld CLRCRH CP
+call bld CLRCRL CP
+call bld CLRDUC CP
+call bld CLRHDR CP
+call bld CLRLIN CP
+call bld CLRMO2 CP
+call bld CLRORD CP
+call bld CLRYOE CP
+call bld coomnt CP
+call bld coprpt CP
+call bld CPFILS CP
+call bld CPMENU CP
+call bld CPSPOL CP
+call bld cpyord CP
+call bld crdmnt CP
+call bld desnew CP
+call bld DESQTY CP
+call bld dethis CP
+call bld DMPRIC CP
+call bld DPRICE CP
+call bld dptmnt CP
+call bld dszmnt CP
+call bld DUCMNT CP
+call bld DUCPRC CP
+call bld DUCPRT CP
+call bld fndpro CP
+call bld FRTCLM CP
+call bld imfmnt CP
+call bld IMFPRT CP
+call bld IMMENU CP
+call bld initcp CP
+call bld inqmnt CP
+call bld invoic CP
+call bld LINPRC CP
+call bld LINPRT CP
+call bld lvrmnt CP
+call bld mbxmnt CP
+call bld mmxmnt CP
+call bld oemnu CP
+call bld OFBRPT CP
+call bld oosprt CP
+call bld opnord CP
+call bld ORDEDT CP
+call bld ordhld CP
+call bld ORDINQ CP
+call bld ORDNUM CP
+call bld orgsht CP
+call bld ORGSHV CP
+call bld PCHMNT CP
+call bld PDACNT CP
+call bld pdalst CP
+call bld pdamnt CP
+call bld POSTAR CP
+call bld pstinv CP
+call bld PSTSLH CP
+call bld PURMSG CP
+call bld RECENT CP
+call bld rstcom CP
+call bld SAPCAT CP
+call bld sbdmnt CP
+call bld SHPMNU CP
+call bld shpwgt CP
+call bld shtcnt CP
+call bld shtmnt CP
+call bld shtprt CP
+call bld SHVCNT CP
+call bld SHVMNT CP
+call bld SHVPRT CP
+call bld SITMNT CP
+call bld SLHCA2 CP
+call bld slhcat CP
+call bld SLHCNT CP
+call bld SLHENT CP
+call bld SLHINQ CP
+call bld slhpr1 CP
+call bld SLHPR3 CP
+call bld SLHPR4 CP
+call bld SLHYEN CP
+call bld slmord CP
+call bld slsrpt CP
+call bld SPCFUN CP
+call bld SRTBCU CP
+call bld SRTBLD CP
+call bld SRTCRH CP
+call bld SRTCRL CP
+call bld SRTIID CP
+call bld SRTLIX CP
+call bld SRTPDA CP
+call bld SRTPIX CP
+call bld SRTPRC CP
+call bld srtsht CP
+call bld SRTSHV CP
+call bld SRTSIX CP
+call bld SRTSLH CP
+call bld SRTSSM CP
+call bld SSCNT CP
+call bld SSMCNT CP
+call bld STSAPC CP
+call bld TAGBOL CP
+call bld tblmnu CP
+call bld TERMSD CP
+call bld ti1mnt CP
+call bld tprice CP
+call bld TRKMNT CP
+call bld TRSMNT CP
+call bld TSCMNT CP
+call bld UNBILL CP
+call bld UNPRBL CP
+call bld UNPRBO CP
+call bld UNPRCM CP
+call bld UNPRSA CP
+call bld UNPSLH CP
+call bld updmis CP
+call bld upsedt CP
+call bld UPSMNT CP
+call bld UPSMNU CP
+call bld XPRICE CP
+call bills 
+call bladin
+call CPLMNU 
+call CVRSHT 
+call DPTPCK 
+call DPTSTS 
+call FAXQUE 
+call INQUIR 
+call nquire 
+call oosdsp 
+call ordhl1
+call ORDmnt 
+call prclst 
+call UPSPST 

@@ -1,0 +1,3 @@
+dbl -d ordadd.cp
+dblink -d ordadd scrn1 roldx cp:cplib.elb ut:util.elb tk:tklib.elb
+

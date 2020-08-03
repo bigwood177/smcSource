@@ -1,0 +1,92 @@
+;rft.sub
+.subroutine rtf
+	ch	,d	;output channel
+	func	,d	;function
+	param	,a	;optional parameter
+
+.include 'def:rtf.def'
+
+record	init_string
+		,a*,	'{\rtf1\ansi\ansicpg1252\deff0\deftab720'
+		,a*,	'{\fonttbl{\f0\fswiss MS Sans Serif;}'
+		,a*,	'{\f1\froman\fcharset2 Symbol;}'
+		,a*,	'{\f2\fmodern Courier New;}'
+		,a*,	'{\f3\fmodern\fprq1 Courier New;}}'
+		,a*,	'{\colortbl\red0\green0\blue0;}'
+
+record	font_size
+		,a3,	'\fs'
+	font	,d2
+
+record	vars
+	num	,d4
+	i	,d4
+;
+.proc
+
+	using func select
+	(START_RTF),		call f_init
+	(FS),		call font_size
+	(PLAIN),	call f_plain
+	(BOLD),		call f_bold
+	(FINI),		call f_fini
+	(LPRINT),	call f_print
+	(LN_FEED),	call line_feed
+	(FORMAT),	call f_format
+	endusing
+
+	return
+;=================================================
+;--------------- function routines ---------------
+
+f_print,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	writes (ch, param(1, %TRIM(param)) )
+	writes (ch, '\par')
+	clear param
+	return
+;----------------------------------------
+
+f_format,	;;;;;;;;;;;;;;;;;;;;;;;;
+	writes (ch, param(1, %TRIM(param)) )
+;;;	writes(ch, param)		;no \par
+	return
+;----------------------------------------
+
+line_feed,	;;;;;;;;;;;;;;;;;;;;;;;;
+	num = param			;# of lines to skip
+	for i from 1 thru num
+		begin
+		writes (ch, '\par')
+		end
+
+	return
+;----------------------------------------
+
+f_init,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	writes (ch, init_string)
+	call f_plain
+	return
+;----------------------------------------
+
+font_size,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	font = param
+	writes (ch, font_size )
+	return
+;----------------------------------------
+
+f_plain,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	writes (ch, '\plain\f3\fs20\cf0')
+	return
+;----------------------------------------
+
+f_bold,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	writes(ch, '\b')
+	return
+;----------------------------------------
+
+f_fini,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	writes (ch,'}')
+	return
+;----------------------------------------
+.end
+

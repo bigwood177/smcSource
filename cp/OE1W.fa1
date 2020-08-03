@@ -1,0 +1,48 @@
+SUBROUTINE OE1W
+;
+
+	OMLTAR	,A
+	W_ID	,D
+
+	.INCLUDE 'DEF:WINDOWS.DEF'
+
+RECORD	VARS
+	STAT	,D1
+
+PROC
+	XCALL W_PROC(WP_REDRAW)
+	XCALL W_DISP(W_ID,WD_CLR,WDC_WND)	;CLEAR ENTIRE WINDOW
+;;;	xcall w_disp(w_id,wd_pos,1,1,'last build: 10-13-07')
+
+	XCALL W_DISP(W_ID,WD_POS,4,4,'1. ORDER #')
+	XCALL W_DISP(W_ID,WD_POS,4,29,'2. DATE')
+	XCALL W_DISP(W_ID,WD_POS,4,50,'3. PROMISED DATE')
+	XCALL W_DISP(W_ID,WD_POS,6,4,'4. CUST #')
+	XCALL W_DISP(W_ID,WD_POS,6,50,'   CREDIT CODE  ')	;;; ADDED DS 1/7/87
+	XCALL W_DISP(W_ID,WD_POS,5,50,'   TAX CODE  ')	;;; ADDED 2-27-12
+	XCALL W_DISP(W_ID,WD_POS,8,4,'5. SALESMN')
+	XCALL W_DISP(W_ID,WD_POS,8,23,'6. ORD/EST ')
+	XCALL W_DISP(W_ID,WD_POS,8,40,'7. SHIP VIA')
+	XCALL W_DISP(W_ID,WD_POS,8,59,'8. PO #')
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	XCALL W_DISP(W_ID,WD_POS,10,4,'9. DISCNT')
+;;;	XCALL W_DISP(W_ID,WD_POS,10,22,'10. TERMS')
+;;;	XCALL W_DISP(W_ID,WD_POS,10,39,'11. COLL/PPD')
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL W_DISP(W_ID,WD_POS,10,35,'11. COLL/PPD/COD')
+	XCALL W_DISP(W_ID,WD_POS,10,58,'12. JOB #')
+	XCALL W_DISP(W_ID,WD_POS,12,3,'13. SHIP-TO')
+	XCALL W_DISP(W_ID,WD_POS,13,7,'14.')
+	XCALL W_DISP(W_ID,WD_POS,14,7,'15.')
+	XCALL W_DISP(W_ID,WD_POS,15,7,'16.')
+	XCALL W_DISP(W_ID,WD_POS,16,7,'17.')
+	XCALL W_DISP(W_ID,WD_POS,19,3,'18. COMMENT')
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	XCALL W_DISP(W_ID,WD_POS,19,57,'19. AR ACCT #')
+;;;	XCALL W_DISP(W_ID,WD_POS,21,57,'20. TAX FLAG ')
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_UPDT
+	RETURN
+END

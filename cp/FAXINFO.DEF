@@ -1,0 +1,14 @@
+;faxinfo.def
+	fc_date		,d6
+	fc_cusname	,a25
+	fc_cont		,a20
+	fc_fax		,d10
+	fc_notes	,a350
+	fc_salesman	,a20
+record,x
+			,d6
+			,a25
+			,a20
+			,d10
+	fc_notara	,7a50
+

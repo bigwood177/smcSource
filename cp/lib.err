@@ -1,0 +1,96 @@
+
+O:\SOURCE\cp>dbl CR2.cp 
+
+O:\SOURCE\cp>dbl CR4.cp 
+
+O:\SOURCE\cp>dbl DFITM.cp 
+
+O:\SOURCE\cp>dbl OE10.cp 
+
+O:\SOURCE\cp>dbl OE3.cp 
+
+O:\SOURCE\cp>dbl OE4.cp 
+
+O:\SOURCE\cp>dbl OE7.cp 
+
+O:\SOURCE\cp>dbl OLMSG.cp 
+
+O:\SOURCE\cp>dbl OECO.cp 
+
+O:\SOURCE\cp>dbl PRTLI.cp 
+
+O:\SOURCE\cp>dbl ORDBL.cp 
+
+O:\SOURCE\cp>dbl SCRN3.cp 
+
+O:\SOURCE\cp>dbl OEPOP.cp 
+
+O:\SOURCE\cp>dbl LNBIL.cp 
+
+O:\SOURCE\cp>dbl BLMNU.cp 
+
+O:\SOURCE\cp>dbl CMSC3.cp 
+
+O:\SOURCE\cp>dbl CR1.cp 
+
+O:\SOURCE\cp>dbl CR3.cp 
+
+O:\SOURCE\cp>dbl CRMNU.cp 
+
+O:\SOURCE\cp>dbl DSPDU.cp 
+
+O:\SOURCE\cp>dbl OE1.cp 
+
+O:\SOURCE\cp>dbl OE2.cp 
+
+O:\SOURCE\cp>dbl OE3B.cp 
+
+O:\SOURCE\cp>dbl OE6.cp 
+
+O:\SOURCE\cp>dbl PRTDU.cp 
+
+O:\SOURCE\cp>dbl RTF.cp 
+
+O:\SOURCE\cp>dbl SCRN5.cp 
+
+O:\SOURCE\cp>dbl OE1W.cp 
+
+O:\SOURCE\cp>dbl DUCBL.cp 
+
+O:\SOURCE\cp>dbl ROLDX.cp 
+
+O:\SOURCE\cp>dbl CINPUT.cp 
+
+O:\SOURCE\cp>dbl PROPOP.cp 
+
+O:\SOURCE\cp>dbl IMFM1.cp 
+
+O:\SOURCE\cp>dbl CMPRS.cp 
+
+O:\SOURCE\cp>dbl PDEST.cp 
+
+O:\SOURCE\cp>dbl PDORD.cp 
+
+O:\SOURCE\cp>dbl WCINP.cp 
+
+O:\SOURCE\cp>dbl cprol.cp 
+%DBL-F-OPENIN, Cannot open:  cprol.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\cp>dbl INPUT.y2k 
+
+O:\SOURCE\cp>dbl HPON.cp 
+
+O:\SOURCE\cp>dbl HPOFF.cp 
+
+O:\SOURCE\cp>dbl TRN3.cp 
+
+O:\SOURCE\cp>dbl DEC3.cp 
+
+O:\SOURCE\cp>dbl SREP.cp 
+
+O:\SOURCE\cp>dbl lpon.cp 
+
+O:\SOURCE\cp>dbl lpoff.cp 

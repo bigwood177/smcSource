@@ -1,0 +1,69 @@
+;color.dbl
+;
+record	co1
+		,a*,	'This is black '
+	c1	,a1
+;;;		,a*,	'*r-3U'
+		,a*,	'*r3U'
+	c2	,a1
+		,a*,	'*v6SThis is red '
+	c3	,a1
+		,a*,	'*r1U'
+
+record	co2
+	c22	,a1
+		,a*,	'*v1SThis is cyan '
+record	co3
+	c32	,a1
+		,a*,	'*v3SThis is blue '
+record	co4
+	c42	,a1
+		,a*,	'*v5SThis is green '
+	c43	,a1
+		,a*,	'*v7SBlack again'
+
+record	col1
+	e1	,a1		;esc
+		,a*,	'*r3U'	;RGB color
+	
+record	buf
+	ce	,a1
+		,a*,	'*v'
+;;;		,a*,	'&v'
+	cn	,d1
+		,a*,	'S'
+;
+proc
+	xcall ascii (27,ce)
+	e1 = ce
+	c1 = ce
+	c2 = ce
+	c3 = ce
+
+	c22 = ce
+
+	c32 = ce
+
+	c42 = ce
+	c43 = ce
+
+	open (14,o,'test.spl')
+
+
+;;;	display (14,col)
+
+	writes (14, 'start with test')
+	writes (14,co1)
+	display (14,co1)
+	writes (14,co2)
+	writes (14,co3)
+	writes (14,co4)
+	writes (14, 'done with test')
+
+
+	close 14
+	lpque ('test.spl')
+	stop
+	end
+
+

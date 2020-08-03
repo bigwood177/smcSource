@@ -1,0 +1,332 @@
+
+O:\SOURCE\cp>dbl BFORD.CP 
+
+O:\SOURCE\cp>dbl BILED2.CP 
+
+O:\SOURCE\cp>dbl BILEDT.CP 
+
+O:\SOURCE\cp>dbl BLTOT.CP 
+
+O:\SOURCE\cp>dbl BNQUIR.CP 
+
+O:\SOURCE\cp>dbl CANCEL.CP 
+
+O:\SOURCE\cp>dbl CANEST.CP 
+
+O:\SOURCE\cp>dbl CANROC.CP 
+
+O:\SOURCE\cp>dbl CHKCOM.CP 
+    79                 if (lmsq1.gt.0) lf1 = f1_key(lmsq1)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF1})
+    80                 if (lmsq2.gt.0) lf2 = f2_key(lmsq2)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF2})
+    81                 if (lmsq3.gt.0) lf3 = f3_key(lmsq3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    86                 O_F1 = LF1,     'ZZZ'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF1})
+    87                 O_F2 = LF2,     'ZZZ'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF2})
+    88                 O_F3 = LF3,     'ZZZZZ'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:         6, in file O:\SOURCE\cp\CHKCOM.CP
+
+O:\SOURCE\cp>dbl CLRHDR.CP 
+
+O:\SOURCE\cp>dbl CLRLIN.CP 
+
+O:\SOURCE\cp>dbl CLRORD.CP 
+
+O:\SOURCE\cp>dbl CPM.CP 
+
+O:\SOURCE\cp>dbl CPYORD.CP 
+
+O:\SOURCE\cp>dbl CPYROC.CP 
+
+O:\SOURCE\cp>dbl CRDMNT.CP 
+
+O:\SOURCE\cp>dbl CVRSHT.CP 
+
+O:\SOURCE\cp>dbl DAYROC.CP 
+
+O:\SOURCE\cp>dbl DESNEW.CP 
+
+O:\SOURCE\cp>dbl DESQTY.CP 
+
+O:\SOURCE\cp>dbl DETHIS.CP 
+
+O:\SOURCE\cp>dbl DPTPCK.CP 
+
+O:\SOURCE\cp>dbl DPTSTS.CP 
+
+O:\SOURCE\cp>dbl DY.CP 
+
+O:\SOURCE\cp>dbl DYROCK.CP 
+
+O:\SOURCE\cp>dbl EMSRPT.CP 
+
+O:\SOURCE\cp>dbl FABCNV.CP 
+
+O:\SOURCE\cp>dbl FIND_I.CP 
+
+O:\SOURCE\cp>dbl FXORD.CP 
+    118                .INCLUDE 'DEF:RD175D.NEW'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD175D.NEW
+%DBL-I-INCFIL, Occurring in the source file:  FXORD.CP
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\FXORD.CP
+
+O:\SOURCE\cp>dbl GETRNV.CP 
+
+O:\SOURCE\cp>dbl INETOR.CP 
+
+O:\SOURCE\cp>dbl INQUIR.CP 
+
+O:\SOURCE\cp>dbl INVOIC.CP 
+
+O:\SOURCE\cp>dbl LNBIL.CP 
+
+O:\SOURCE\cp>dbl MEMBL.CP 
+
+O:\SOURCE\cp>dbl NETDS2.CP 
+
+O:\SOURCE\cp>dbl NETDSC.CP 
+
+O:\SOURCE\cp>dbl NQUIRE.CP 
+    65                 .INCLUDE 'DEF:RD045X.DEF'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD045X.DEF
+%DBL-I-INCFIL, Occurring in the source file:  NQUIRE.CP
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\NQUIRE.CP
+
+O:\SOURCE\cp>dbl OEJ2.CP 
+
+O:\SOURCE\cp>dbl OEJR.CP 
+
+O:\SOURCE\cp>dbl OPNORD.CP 
+
+O:\SOURCE\cp>dbl ORDBL.CP 
+
+O:\SOURCE\cp>dbl ORDMNT.CP 
+
+O:\SOURCE\cp>dbl PDES2.CP 
+    59                 .INCLUDE 'DEF:RD175D.NEW'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD175D.NEW
+%DBL-I-INCFIL, Occurring in the source file:  PDES2.CP
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\PDES2.CP
+
+O:\SOURCE\cp>dbl PDES3.CP 
+    57                 .INCLUDE 'DEF:RD175D.NEW'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD175D.NEW
+%DBL-I-INCFIL, Occurring in the source file:  PDES3.CP
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\PDES3.CP
+
+O:\SOURCE\cp>dbl PDEST.CP 
+
+O:\SOURCE\cp>dbl PDORD.CP 
+
+O:\SOURCE\cp>dbl PHYDEP.CP 
+
+O:\SOURCE\cp>dbl PLARPT.CP 
+
+O:\SOURCE\cp>dbl POSTAR.CP 
+
+O:\SOURCE\cp>dbl PRFAX.CP 
+
+O:\SOURCE\cp>dbl PRTLI.CP 
+
+O:\SOURCE\cp>dbl PRWO2.CP 
+
+O:\SOURCE\cp>dbl PRWO3.CP 
+
+O:\SOURCE\cp>dbl PRWOD.CP 
+
+O:\SOURCE\cp>dbl PSTINV.CP 
+
+O:\SOURCE\cp>dbl PSTRIN.CP 
+
+O:\SOURCE\cp>dbl PSTSLH.CP 
+
+O:\SOURCE\cp>dbl REROCK.CP 
+
+O:\SOURCE\cp>dbl RNQUIR.CP 
+    73                 .INCLUDE 'DEF:RD045X.DEF'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD045X.DEF
+%DBL-I-INCFIL, Occurring in the source file:  RNQUIR.CP
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\RNQUIR.CP
+
+O:\SOURCE\cp>dbl ROCBL.CP 
+
+O:\SOURCE\cp>dbl ROCSLS.CP 
+
+O:\SOURCE\cp>dbl ROCSTS.CP 
+
+O:\SOURCE\cp>dbl RQUIRE.CP 
+    69                 .INCLUDE 'DEF:RD045X.DEF'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD045X.DEF
+%DBL-I-INCFIL, Occurring in the source file:  RQUIRE.CP
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\RQUIRE.CP
+
+O:\SOURCE\cp>dbl RSTCOM.CP 
+
+O:\SOURCE\cp>dbl R_IN.CP 
+
+O:\SOURCE\cp>dbl R_JOB.CP 
+
+O:\SOURCE\cp>dbl SCRN5.CP 
+
+O:\SOURCE\cp>dbl SCRNX.CP 
+
+O:\SOURCE\cp>dbl SLMORD.CP 
+
+O:\SOURCE\cp>dbl SLSRPT.CP 
+
+O:\SOURCE\cp>dbl S_CHANGE.CP 
+
+O:\SOURCE\cp>dbl S_ORDADD.CP 
+
+O:\SOURCE\cp>dbl UNBILL.CP 
+
+O:\SOURCE\cp>dbl UPDMIS.CP 
+
+O:\SOURCE\cp>dbl VT01S.CP 
+    134                CLEAR LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    135                IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    140                MM_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    197                V1_F3 = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    211                using lf3 select
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    212                (15,16),        if(sz.le.24)    ;ez flange .le. 24
+%DBL-E-PARSE, syntax error at or near {(15,16), IF(SZ}
+    213                                then    begin
+%DBL-E-PARSE, syntax error at or near {THEN BEGIN}
+    218                                else    clear sb, sr
+%DBL-E-PARSE, syntax error at or near {ELSE CLEAR SB, SR}
+    220                (),             begin           ;not ez flange
+%DBL-E-PARSE, syntax error at or near {(), BEGIN}
+    221                                SB = V1_SB 
+%DBL-E-PARSE, syntax error at or near {SB = V1_SB}
+    222                                SR = V1_SR 
+%DBL-E-PARSE, syntax error at or near {SR = V1_SR}
+    223                                end
+%DBL-E-PARSE, syntax error at or near {END}
+    224                endusing
+%DBL-E-PARSE, syntax error at or near {ENDUSING}
+    227                USING SZ SELECT
+%DBL-E-PARSE, syntax error at or near {USING SZ SELECT}
+    228                (8 THRU 19),    R = 8000
+%DBL-E-PARSE, syntax error at or near {(8 THRU 19), R}
+    229                (20 THRU 40),   R = 10000
+%DBL-E-PARSE, syntax error at or near {(20 THRU 40), R}
+    230                (42 THRU 60),   R = 20000
+%DBL-E-PARSE, syntax error at or near {(42 THRU 60), R}
+    231                (),             R = 1000
+%DBL-E-PARSE, syntax error at or near {(), R = 1000}
+    232                ENDUSING
+%DBL-E-PARSE, syntax error at or near {ENDUSING}
+    233                IF (CODE .EQ. 'EG') R = SZ*1000
+%DBL-E-PARSE, syntax error at or near {IF (CODE .EQ. "EG"}
+%DBL-F-ERRCNT, Too many errors
+%DBL-E-NOOBJ, No object file created
+
+Errors:        20, in file O:\SOURCE\cp\VT01S.CP
+
+O:\SOURCE\cp>dbl VT02S.CP 
+    152                CLEAR LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    153                IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    158                MM_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    223                V1_F3 = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    318                V2_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:         5, in file O:\SOURCE\cp\VT02S.CP
+
+O:\SOURCE\cp>dbl VT03S.CP 
+    164                CLEAR LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    165                IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    170                MM_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    196                V1_F3 = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    423                V2_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:         5, in file O:\SOURCE\cp\VT03S.CP
+
+O:\SOURCE\cp>dbl VT07S.CP 
+    113                CLEAR LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    114                IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    119                MM_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    129                lf3 = ik_f3             ;default key...
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    172                V1_F3 = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    195                V2_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:         6, in file O:\SOURCE\cp\VT07S.CP
+
+O:\SOURCE\cp>dbl VT08S.CP 
+    199                CLEAR LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    200                IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    205                MM_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    273                V1_F3 = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    299                V2_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    310                IF (t_ezjr .and. lf3.eq.15)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    437                LKEY = LF3, 'XXXXX'
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    438                IF (LF3 .EQ. 1) GOTO IS_SPIRAL
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    627                V1_F3 = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    709                V2_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:        10, in file O:\SOURCE\cp\VT08S.CP
+
+O:\SOURCE\cp>dbl VTRTS.CP 
+    124                CLEAR LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    125                IF (LMSQ3 .GT. 0) LF3 = F3_KEY(LMSQ3)
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    130                MM_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+    252                V2_KEY = LF3
+%DBL-E-AMBIGUOUS, Path specification is ambiguous (...{LF3})
+%DBL-E-NOOBJ, No object file created
+
+Errors:         4, in file O:\SOURCE\cp\VTRTS.CP

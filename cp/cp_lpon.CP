@@ -1,0 +1,149 @@
+;LPON.CP
+;	11-4-99 currently just used for inventory printout
+;	02-08-18: now cp_lpon for VS
+
+SUBROUTINE CP_LPON; (LPSW,SPLFIL)  ;SMC VERSION
+;
+			;
+;changed 5-20-98 lpsw returned as printer number
+;changed 9-24-01 lpsw = 8 - don't ask, use local printer...
+
+	LPSW	,D
+	SPLFIL	,A
+
+;-------- LPSW VALUES ---------
+
+;;;.INCLUDE 'DEF:HPSUB.DEF'
+
+record  s_filnam
+		,a4,    'spl:'
+	f_letr	,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record  time
+	hh      ,a2
+	mm      ,a2
+	ss      ,a2
+
+RECORD	COMPRES
+	C_CHAR	,A1		;<ESC>
+		,A4,	"&k2S"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+RECORD	COMP14
+	O_CHAR	,A1		;<ESC>
+		,a4,	"&l1O"	;landscape mode
+	ESC_12	,A1		;<ESC>
+		,A4,	"&l8D"	;vertical spacing, 8 lines/inch
+	ESC_13	,A1		;<ESC>
+		,A8,	"(s13.00H"	;pitch 14 CPI
+
+RECORD	TRAY_3
+	T_CHAR	,A1		;<ESC>
+		,A2,	"&l"
+	PAR	,A2,	"5H"	;select tray 3
+
+RECORD	VARS
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OPT	,D1
+	I	,D5
+
+PROC
+;;;	IF (LPSW .EQ. 6)	;PRINT TO LOCAL PRINTER
+	using lpsw select
+	(8),	begin
+		opt = lpsw
+		goto proces
+		end
+	(9),	begin
+		opt = 2		;local compressed
+		goto proces
+		end
+	endusing
+
+;;;	IF (LPSW .EQ. 8)	;PRINT TO LOCAL PRINTER
+;;;		BEGIN
+;;;		OPT = LPSW
+;;;		GOTO PROCES
+;;;		END
+
+DISPLA,
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (12,20,0,'REPORT DESTINATION',1)
+	XCALL OUTPT (13,25,0,'1. Local Printer',1)
+	XCALL OUTPT (14,25,0,'2. Local Printer - Compressed',1)
+	XCALL OUTPT (15,25,0,'3. Local Printer - Landscape',1)
+	XCALL OUTPT (16,25,0,'4. Edit',1)
+	XCALL OUTPT (17,25,0,'5. HP 8100',1)
+	XCALL OUTPT (18,25,0,'6. HP 8100 - Compressed',1)
+	XCALL OUTPT (19,25,0,'7. HP 8100 - Landscape',1)
+
+ASK,
+	XCALL INPUT (12,40,01,00,'#E',ENTRY,INXCTL,1)
+	GOTO (DISPLA,SPL_ERR),INXCTL
+	OPT = ENTRY(1,1)
+	IF (OPT .EQ. 0)
+		BEGIN
+		OPT = 1
+		XCALL OUTPT (12,40,0,'1',1)
+		END
+	IF (OPT.LT.1 .OR. OPT.GT.7) GOTO ASK
+
+ANYCNG,
+	CNGCTL = 2
+	XCALL ANYCN (CNGCTL,WHATNO)
+	GOTO (ASK),CNGCTL
+
+PROCES,
+	;;; Create a unique file name and open for output
+	xcall tnmbr (fter)
+	xcall time (time)
+	ftime(1,2) = hh
+	ftime(3,4) = mm
+
+	f_letr = "s"
+	onerror spl_err
+	open (14,o,s_filnam)            ;print output file
+	offerror
+
+	s_name(1,1) = OPT,'X'           ;save the printer # selected
+	splfil = s_name                 
+
+	
+	USING OPT SELECT
+	(2,6),	BEGIN			;local laser compressed
+		XCALL ASCII(27,C_CHAR)
+		WRITES (14,COMPRES)
+		END
+	(3,7),	BEGIN			;local laser landscape
+		XCALL ASCII(27,O_CHAR)
+		ESC_12 = O_CHAR
+		ESC_13 = O_CHAR
+		WRITES (14,COMP14)
+		END
+	(5,6,7),	BEGIN			;8100 compressed (tray 3)
+		XCALL ASCII(27,T_CHAR)
+		PAR = "5H"			;VERTICAL SPACING
+		WRITES (14, TRAY_3)		;1ST LINE OF SPOOL FILE
+		PAR = "8C"			;VERTICAL SPACING
+		WRITES (14, TRAY_3)		;1ST LINE OF SPOOL FILE
+		END
+	ENDUSING
+
+;;;	LPSW = 1
+	LPSW = OPT		;5-20-98
+	RETURN
+
+spl_err,
+	offerror
+	lpsw = 0		;error or <end>
+	RETURN
+END
+

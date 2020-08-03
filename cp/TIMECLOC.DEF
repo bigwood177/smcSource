@@ -1,0 +1,12 @@
+
+	tc_nbr	,d3	;number
+	tc_exc	,a8	;export code
+	tc_ssn	,a11	;xxx-xx-xxxx
+	tc_job	,d8	;Job Code
+	tc_rte	,d5	;Rate xxx.xx
+	tc_reg	,d4	;Reg xx.xx
+	tc_ot1	,d4	;Overtime 1 xx.xx
+	tc_ot2	,d4	;Overtime 2 xx.xx
+	tc_tk1	,d4	;Track1 xx.xx
+	tc_tk2	,d4	;Track2 xx.xx
+	tc_tk3	,d4	;Track3 xx.xx

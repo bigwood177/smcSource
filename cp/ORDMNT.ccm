@@ -1,0 +1,17 @@
+-d ORDmnt s_change s_ordadd scrn1 scrnx scrn3 oe10 scrn5 ordcn \
+prwod prwo2 PDORD popm popd olmsg olpop PDEST pdes2 \
+oe1w oe1 pop40 pop80 dspdu DEC3 TRN3 prduc srep \
+ccin2 oecc2 oecus mshp oepop cfg cfg_w find_i \
+oejr cfg2 catg alpdc oej2 oeco \
+iow wcinp isio PDES3 prwo3 \
+b128 of128 lblsh tabd gtitm pdlbl \
+rnick rbox rbox2 prwos \
+inpne winne \
+mkdec ftp \
+roldx cont con2 cspop \
+emcmn mail_cnt mail_dft \
+cvcan ddept schdt r1 \
+mkdps \
+cp:cplib.elb ut:util.elb wnd:tklib.elb
+
+

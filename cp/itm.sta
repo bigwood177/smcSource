@@ -1,0 +1,25 @@
+The record length for this file is 300 characters.  There are 3 keys.
+There are currently 35808 records in this ISAM file.
+
+Primary key   is itemno         
+The key is 15 characters long, starting at position 1 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may not be modified by WRITE.
+
+1st alternate is itmkey         
+The key is 27 characters long, segmented and is ordered in ascending sequence 
+with no duplicates allowed. 
+This key may not be modified by WRITE.
+ Segment #1 starts at 1 with length 15.
+ Segment #2 starts at 228 with length 1.
+ Segment #3 starts at 229 with length 3.
+ Segment #4 starts at 232 with length 3.
+ Segment #5 starts at 235 with length 5.
+
+2nd alternate is itmcat         
+The key is 17 characters long, segmented and is ordered in ascending sequence 
+with duplicates allowed. 
+This key may be modified by WRITE.
+ Segment #1 starts at 46 with length 2.
+ Segment #2 starts at 1 with length 15.
+

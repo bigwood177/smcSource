@@ -1,0 +1,1025 @@
+SUBROUTINE PRFAX
+	OR_NUMBER	,D
+	WND_1		,D		;PARENT WINDOW
+;;;	.include 'def:hpsub.def'
+
+	.INCLUDE 'DEF:WINDOWS.DEF'
+
+; Version of wrkord to print (E)stimates locally...
+;
+;
+;
+;	DE 6.3 printer interface
+
+	.include 'DBLDIR:winprint.def'
+
+;macros:
+.define SET_FONTSPEC(item,val) ^m(font_specs[1].item, m_font_handle) = val
+.define GET_TM_INFO(item) ^m(text_specs[1].item, m_ts_handle)
+
+record	pvars
+	x		,i4
+	y		,i4
+	pl		,i4
+	p_row		,i4
+	phand		,i4
+	r_height	,i4
+	c_width		,i4
+	r_ht		,i4
+	p_selected	,i1
+	m_font_handle	,i4	; Font spec memory handle
+	m_ts_handle	,i4	; Font spec memory handle
+	stats		,i4
+	alpha	,a10
+
+
+RECORD	O_FILE
+;;		,A4,	'SPL:'
+		,A1,	'W'
+	O_TIME	,D6
+		,A4,	'.WRK'
+
+
+RECORD CUSMAS
+	.INCLUDE 'DEF:RD001A.DEF'
+
+RECORD CUSCTL	,X
+	.INCLUDE 'DEF:RD001B.DEF'
+
+RECORD CUSIDX
+	.INCLUDE 'DEF:RD002A.DEF'
+
+RECORD	SALMAN
+	.INCLUDE 'DEF:RD054A.DEF'
+RECORD ORDHDR
+	.INCLUDE 'DEF:RD044A.DEF'
+
+RECORD ORDLIN
+	.INCLUDE 'DEF:RD045A.DEF'
+
+GLOBAL DUCK	;;;,INIT
+	.INCLUDE 'DEF:RD175D.DEF'
+ENDGLOBAL
+;:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+RECORD PARAM
+	.INCLUDE 'DEF:PARAM2.DEF'
+
+
+RECORD
+	MAXDUC	,D3,100
+	QTY	,D5
+	ITM	,A15
+	DES	,A30
+	PRC	,D7
+	COMPA	,A15
+	COMPB	,A15
+
+RECORD ARRAYS
+	SDUCRC	,100A32	;SUMMARIZED DUCT CONFIGURATIONS   (SEE DUCREC BELOW)
+	LINSQF	,8D6	;SUMMARIZE LINER SQUARE FEET
+
+RECORD DUCREC
+	DUCCFG	,D7	;CONFIGURATION CODE
+	DUCSQF	,D7	;SQ FEET OF MATERIAL
+	DUCPND	,D7	;POUNDS OF MATERIAL
+	DUCGPR	,D7	;GAUGE PRICE
+
+RECORD ACCREC
+	.INCLUDE 'DEF:ACCREC.DEF'
+
+RECORD
+	INIT	,20A3,	'JJM','TLE','LAM','DEG','JTH',
+&			'DLH','JIM','SJM','CJM','BIL',
+&			'MAW','PAT','BJZ','JPV','MJM',
+&			'JEF','   ','   ','   ','   '
+
+
+RECORD	VARS
+	row_cnt	,d2
+	CHN182	,D2
+	CHN044	,D2
+	CHN045	,D2
+	CHN054	,D2
+	CHN175	,D2
+	STAT	,D1
+	ORDER	,D6
+	LOKCTL	,D1
+	READ	,D1
+	Lrow	,D2
+	Lcol	,D3
+	DECMAL	,D18
+	PLINE	,A95
+	LINCNT	,D3
+	TOTPRC	,D8
+	BLANKS	,A30
+	CONFIG	,D7
+	PAGE	,D2
+	KEY	,A6
+	BSMID	,D5
+;;;	BSEND	,D5
+	SRCCTL	,D1
+	SWITCH	,D1
+	ORGCUS	,D5
+	ORGSHV	,D5
+	V	,D1
+	ACCUOM	,A2
+	LFEED	,D2
+	DTMASK	,A8,	'XX/XX/XX'
+	NUMASK	,A8,	'ZZZZZZX-'
+	MAXLIN	,D2
+	ENTRY	,A30
+	INXCTL	,D1
+	NO_DOLLARS	,D1
+
+PROC
+	call print_setup
+	if (.not. p_selected) return
+
+	CALL OPENS
+	IF (%PASSED(WND_1))
+	THEN	BEGIN
+		XCALL W_DISP(WND_1,WD_POS,22,1,"Suppress Price Info ?")
+		XCALL WINPT(wnd_1,22,23,01,00,'YN',ENTRY,INXCTL)
+		END
+	ELSE	BEGIN
+		XCALL OUTPT (24,1,1,'SUPPRESS PRICE INFO ?',1)
+		XCALL INPUT (24,23,01,00,'YN',ENTRY,INXCTL,1)
+		END
+	IF (INXCTL.EQ.1) 
+	THEN	NO_DOLLARS = 1
+	ELSE	CLEAR NO_DOLLARS
+
+RDHDR,
+	LOKCTL = 1
+	XCALL IO (36,CUSCTL,1,READ,LOKCTL)
+	ORGCUS = ORG001
+
+GETMSG,
+
+;;;	MAXLIN = 36
+	MAXLIN = 54
+
+	TOTPRC =
+	ARRAYS =
+	FOR I FROM 1 THRU MAXACC	SACCRC (I) =
+	DUCREC =
+	ACCREC =
+	OORDNO = OR_NUMBER
+	ORDER = OR_NUMBER
+
+	LOKCTL = 1
+	XCALL ISIO (CHN044,ORDHDR,OORDNO,READ,LOKCTL)
+	IF (LOKCTL.NE.0.OR.OORDNO.NE.ORDER) GOTO INVORD
+
+	CALL FNDCUS
+	PAGE = 1
+
+;;;	CALL PRTHDR
+	CALL PRTHDR_FIRST
+;;;here>>>
+;;;	goto endup
+;;;here>>>
+GETLIN,
+	LORDNO = ORDER
+	LOKCTL = 1
+	XCALL ISIO (CHN045,ORDLIN,LORDNO,READ,LOKCTL)
+	IF (LOKCTL.NE.0.OR.LORDNO.NE.ORDER) GOTO GETDUC
+	CALL PRTLIN
+NXTLIN,
+;;;	IF (LINCNT.GE.36) CALL CONTIN
+	LOKCTL = 1
+	XCALL IOS (CHN045,ORDLIN,READ,LOKCTL)
+	IF (LOKCTL.NE.0.OR.LORDNO.NE.ORDER) GOTO GETDUC
+	CALL PRTLIN
+	GOTO NXTLIN
+GETDUC,
+	DUCTOR = ORDER
+	LOKCTL = 1
+	XCALL ISIO (CHN175,DUCACC,DUCTOR,READ,LOKCTL)
+	IF (LOKCTL.NE.0.OR.DUCTOR.NE.ORDER) GOTO ENDORD
+	CALL PRTDUC
+	GOTO SUMDUC
+NXTDUC,
+	LOKCTL = 1
+	XCALL IOS (CHN175,DUCACC,READ,LOKCTL)
+	IF (LOKCTL.NE.0.OR.DUCTOR.NE.ORDER) GOTO ENDORD
+	CALL PRTDUC
+SUMDUC,
+	CONFIG(1,3) = GAUGE
+	IF (DUTYPE.EQ.2.OR.DUTYPE.EQ.3) CONFIG(1,3) = THICK
+	CONFIG(4,4) = DUTYPE
+	CONFIG(5,5) = CAT
+	CONFIG(6,6) = STY
+	CONFIG(7,7) = SEAM
+
+		; Check to see if the configuration has all ready 
+		; been on this order
+	I =
+	DO BEGIN
+	  INCR I
+	  DUCREC = SDUCRC(I)
+	END
+	UNTIL (DUCCFG.EQ.CONFIG.OR.DUCCFG.EQ.0.OR.I.GE.MAXDUC)
+	IF (I.GE.MAXDUC) GOTO BADCON
+
+	DUCCFG = CONFIG
+	DUCSQF = DUCSQF + SQFEET
+	DUCPND = DUCPND + POUNDS
+	DUCGPR = GPRICE
+	SDUCRC(I) = DUCREC
+
+	IF (LINER.GE.1.AND.LINER.LE.8.AND.LINER.NE.4)
+&		LINSQF(LINER) = LINSQF(LINER) + SQFLIN
+
+		;Summarize accessories
+
+	IF (ACC.EQ.2) GOTO NXTDUC
+
+	IF (SLIPS)
+	BEGIN
+	  QTY = SLIPS
+	  ITM = SLPITM
+	  PRC = SLPPRC
+	  DES = SLPDES
+	  CALL SUMACC
+	END
+	IF (DRIVES)
+	BEGIN
+	  QTY = DRIVES
+	  ITM = DRVITM
+	  PRC = DRVPRC
+	  DES = DRVDES
+	  CALL SUMACC
+	END
+	IF (TCORN)
+	BEGIN
+	  QTY = TCORN
+	  ITM = CORITM
+	  PRC = CORPRC
+	  DES = CORDES
+	  CALL SUMACC
+	END
+	IF (TNBQTY)
+	BEGIN
+	  QTY = TNBQTY
+	  ITM = TNBITM
+	  PRC = TNBPRC
+	  DES = TNBDES
+	  CALL SUMACC
+	END
+	IF (TGAQTY)
+	BEGIN
+	  QTY = TGAQTY
+	  ITM = TGAITM
+	  PRC = TGAPRC
+	  DES = TGADES
+	  CALL SUMACC
+	END
+	IF (TCLQTY)
+	BEGIN
+	  QTY = TCLQTY
+	  ITM = TCLITM
+	  PRC = TCLPRC
+	  DES = TCLDES
+	  CALL SUMACC
+	END
+	IF (TBAQTY)
+	BEGIN
+	  QTY = (JOINT * 4)
+	  ITM = TBAITM
+	  ITM (10,13) = SIZE1,'ZZX"'
+	  PRC = TBAPRC
+	  DES = TBADES
+	  CALL SUMACC
+	  QTY = (JOINT * 4)
+	  ITM = TBAITM
+	  ITM (10,13) = SIZE2,'ZZX"'
+	  PRC = TBAPRC
+	  DES = TBADES
+	  CALL SUMACC
+	END
+	IF (TBNQTY)
+	BEGIN
+	  QTY = TBNQTY
+	  ITM = TBNITM
+	  PRC = TBNPRC
+	  DES = TBNDES
+	  CALL SUMACC
+	END
+
+	GOTO NXTDUC
+
+SUMACC,
+		; Check to see if the accessories have all ready 
+		; been on this order
+	I =
+	DO BEGIN
+	  INCR I
+	  ACCREC = SACCRC(I)
+	END
+	UNTIL (ACCITM.EQ.ITM.OR.ACCITM.EQ.BLANKS.OR.I.GE.MAXACC)
+	IF (I.GE.MAXACC) GOTO BADACC
+
+	ACCQTY = ACCQTY + QTY
+	ACCITM = ITM
+	ACCPRC = PRC
+	ACCDES = DES
+	SACCRC(I) = ACCREC
+
+	RETURN
+BADCON,
+	GOTO ERRMSG
+BADACC,
+ERRMSG,
+	GOTO ENDUP
+INVORD,
+	GOTO ENDUP
+
+;------------------------------------------
+
+ENDORD,
+	CALL PRTSAC
+	CALL PRTSDU
+	LINCNT = 54
+
+	call set_bold
+	PLINE = "Please review all quantities,"
+	lcol = 15
+	call print
+	
+	lcol = 1
+	PLINE(15,50) = "items and gauges. Thank you."
+	pline(53,64) = 'TOTAL ORDER:'
+	PLINE (67,78) = TOTPRC,'ZZZZ,ZZZ.ZZ-'
+	call print	
+
+	CALL SET_NOBOLD
+
+ENDUP,
+	xcall wpr_print(phand, 	DWP_ENDPAGE)
+	xcall wpr_print(phand, 	DWP_ENDJOB)
+
+;;;	xcall wpr_execute(phand, DWP_PREVIEW, o_file, "Fax Request",1)
+;;;	xcall wpr_execute(phand, DWP_PRINT,O_FILE,1)	;KEEP_FILE
+	xcall wpr_execute(phand, DWP_PRINT)	;KEEP_FILE
+
+done,
+	xcall wpr_info(phand, DWP_DELPRINTER)
+
+	m_font_handle = %mem_proc(DM_FREE, m_font_handle)
+	m_ts_handle = %mem_proc(DM_FREE, m_ts_handle)
+
+STOPIT,
+	CLOSE 14
+	RETURN
+
+;=================================================
+
+CONTIN,
+	LFEED = MAXLIN - row_cnt
+	IF (LFEED) LINCNT = MAXLIN
+
+;;;	PLINE (25,58) = OCOMNT(1) 
+	CALL PRINT
+;;;	PLINE (25,58) = OCOMNT(2) 
+	PLINE (64,78) = '** CONTINUED **'
+	CALL PRINT
+
+	xcall wpr_print(phand, 	DWP_ENDPAGE)
+
+	INCR PAGE
+
+PRTHDR,		; Print the order header information
+
+	xcall wpr_print(phand, 	DWP_BEGINPAGE)
+
+PRTHDR_FIRST,
+	clear lincnt, lrow
+	call SET_8_CPI
+	lcol = 22
+	call set_bold
+	pline = "Q U O T A T I O N"
+	call print
+	
+	lincnt = lincnt + 1
+	call set_10_CPI
+	lcol = 56
+	pline = "Quotation No."
+	call print2
+
+	lcol = 70
+	pline(1,6) = oordno,	'XXXXXX'
+	call print
+
+	call set_12_CPI
+	lcol = 1
+	pline = "SHEET METAL CONNECTORS, INC."
+	call print
+
+
+
+	call set_noBold
+	call set_12_cpi
+	
+	lcol = 1
+	pline = "5850 MAIN STREET N. E."
+	pline(66,69) = "DATE"
+	pline(71,78) = oorddt,dtmask
+	pline (82,86) = "Page:"
+	pline (88,89) = PAGE,'XX'
+	if (page .gt. 1) 
+		begin
+		clear pline(1,50)
+		call print
+	;;;	lincnt = 19
+		goto done_hdr
+		end
+
+	call print
+
+	pline = "MINNEAPOLIS,  MN 55432"
+	call print
+
+	call set_bold
+	pline = "800-328-1966  612-572-0000"
+	call print
+
+	call set_nobold
+	pline = 'WEB SITE: WWW.SMCDUCT.COM'
+	call print
+
+	call set_bold
+	pline = "FAX:612-572-1100"
+	call print
+
+	call set_nobold
+	clear pline
+	lcol = 1
+	PLINE(23,28) = CRDLMT,'ZZZZZZ'
+	pline (55,62) = "SHIP TO:"
+	call print
+
+	clear pline
+	pline(17,55) = ocusnm
+	pline(55,90) = oshpnm
+	call print
+
+	clear pline
+	pline(17,55) = add1
+	pline(55,90) = oshad1
+	call print
+
+	clear pline
+	pline(17,55) = add2
+	pline(55,90) = oshad2
+	call print
+
+	CLEAR PLINE
+	PLINE (17,31) = CITY
+	PLINE (34,35) = STATE
+	PLINE (38,42) = ZIP
+	PLINE (55,84) = OSHAD3
+	call print
+
+;per Steve M...
+	call set_bold
+	clear pline
+	PLINE (17,21) = 'ATTN:'
+	PLINE (23,32) = OPONO
+	call print
+	call set_nobold
+
+	lincnt = lincnt + 3
+
+	PLINE = 'Cust #     Sales-Rep         Job #           Freight FOB                Fab Time     Terms'
+	call print
+
+	PLINE(1,6) = OCUSNO,'ZZZZZZ'
+	PLINE(30,39) = OJOBNO
+	IF (OCLPPD.EQ.'C') PLINE (46,53) = 'MPLS. - '
+	IF (OCLPPD.EQ.'P') PLINE (46,53) = 'DEST. - '
+	CALL GET_SCAC
+	PLINE (54,68) = SC_NAME
+	PLINE (86,91) = 'NET 30'
+	CALL PRINT2
+
+	call set_bold
+	CALL GET_SALESMAN
+	CLEAR PLINE
+	pline = slsnm
+	LCOL = 12
+	CALL PRINT2
+
+	lcol = 73
+	clear pline
+	PLINE(1,3) = OPROMD,"ZZX"
+	call print2
+	LCOL = 78
+	PLINE  = 'DAYS'
+	call print
+
+	call set_10_cpi
+	LINCNT = LINCNT - 2
+	lcol = 3
+	CALL SET_BOLD
+	PLINE = 'We are pleased to quote on your inquiry as follows:'
+	call print
+DONE_HDR,
+	row_cnt = 0
+	lincnt = lincnt + 2
+	call set_nobold
+	call set_10_cpi
+	LCOL = 1
+
+	PLINE = 
+&	"   Qty  Item No.        Description                     Price  UM  Ext. Price"
+	call print
+	incr lincnt
+	RETURN
+
+
+PRTLIN,		; Print out line item detail
+	IF ((LINCNT+2).GT.MAXLIN) CALL CONTIN
+
+	IF (LCPFLG) 
+	THEN	BEGIN
+		PLINE (67,68) = '**'	
+		END
+	ELSE	BEGIN
+		CLEAR PLINE
+		END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	PLINE (9,23) = LITMNO
+	IF ( LITMNO.EQ.'???' ) 
+		BEGIN
+	;;;	PLINE (18,30) = '*'
+		PLINE (19,20) = LITMNO(4,5)
+		END
+
+	PLINE (25,54) = LDESCR
+	IF (LITMNO.NE.'M')
+	BEGIN
+	  PLINE ( 1,7 ) = LQTYOR,NUMASK
+	  PLINE (54,62) = LPRICE,'ZZZZZZ.XXX-'
+	  PLINE (64,65) = LUOFM
+	  DECMAL = ( ( LQTYOR * LPRICE ) # 1 )
+&		- ( ( LQTYOR * ( LPRICE * LDISC ) #1 ) # 2 )
+	  PLINE (67,78) = DECMAL,'ZZZZ,ZZZ.XX-'
+	  TOTPRC = TOTPRC + DECMAL		;INVENTORY ITEMS
+	END
+	IF (NO_DOLLARS)
+		BEGIN
+		PLINE(54,62) = 
+		PLINE(67,78) =
+		END
+
+	CALL line_PRINT
+	RETURN
+
+PRTDUC,		;Print duct record
+
+	IF ((LINCNT+3).GT.MAXLIN) CALL CONTIN
+	INCR LINCNT		;SSQ 12-4-96
+
+	PLINE (1,7) = JOINT,NUMASK
+	PLINE (8,9) = 'JT'
+	IF (DUTYPE.NE.2.AND.DUTYPE.NE.3)
+	BEGIN
+	  PLINE (13,14) = GAUGE,'XX'
+	  PLINE (15,16) = 'GA'
+	END
+	IF (DUTYPE.EQ.2.OR.DUTYPE.EQ.3)
+	BEGIN
+	  PLINE (13,16) = THICK,'.XXX'
+	END
+	PLINE (18,20) = SIZE1,'ZZX'
+	PLINE (21,21) = 'X'
+	PLINE (22,24) = SIZE2,'ZZX'
+	PLINE (25,25) = 'X'
+	PLINE (26,27) = SIZE3,'ZX'
+	PLINE (31,34) = DTYPE(DUTYPE)
+	PLINE (36,41) = DCAT(CAT)
+	PLINE (43,45) = DSTY(STY)
+	PLINE (48,50) = DSEAM(SEAM)
+	IF (SEAL.EQ.1) PLINE (52,55) = 'SEAL'
+	PLINE (56,63) = GPRICE,'ZZZ.XXX-'
+	DECMAL = ( POUNDS * GPRICE ) # 1
+	PLINE (64,65) = 'LB'
+	PLINE (67,78) = DECMAL,'ZZZZ,ZZZ.XX-'
+	TOTPRC = TOTPRC + DECMAL		;DUCT
+
+	IF (NO_DOLLARS)
+		BEGIN
+		PLINE(56,63) = 
+		PLINE(67,78) =
+		END
+	CALL line_PRINT
+
+	PLINE (  1,7  ) = POUNDS,NUMASK
+	PLINE (  8,8  ) = '#'
+	PLINE ( 12,17 ) = SQFLIN,NUMASK
+	PLINE ( 19,23 ) = 'SQ FT'
+	PLINE (30,44) = '     NO LINER '
+	IF (LINER.GE.1.AND.LINER.LE.8.AND.LINER.NE.4)
+	BEGIN
+	  PLINE (31,37) = DLINER( LINER )
+	  PLINE (38,42) = 'LINER'
+	END
+	PLINE (43,54) = LOCAT
+	PLINE (56,63) = LINPRC,'ZZZ.XXX-'
+	PLINE (64,65) = 'SF'
+	DECMAL = ( LINPRC * SQFLIN ) # 1
+	PLINE (67,78) = DECMAL,'ZZZZ,ZZZ.XX-'
+	TOTPRC = TOTPRC + DECMAL		;LINER
+
+	IF (NO_DOLLARS)
+		BEGIN
+		PLINE(56,63) = 
+		PLINE(67,78) =
+		END
+	CALL line_PRINT
+
+	IF (ACC.EQ.1)
+&	DECMAL = ( ( SLIPS  * SLPPRC ) # 1 ) +
+&		 ( ( DRIVES * DRVPRC ) # 1 ) +
+&		 ( ( TCORN  * CORPRC ) # 1 ) +
+&		 ( ( TNBQTY * TNBPRC ) # 1 ) +
+&		 ( ( TGAQTY * TGAPRC ) # 1 ) +
+&		 ( ( TCLQTY * TCLPRC ) # 1 ) +
+&		 ( ( TBAQTY * TBAPRC ) # 1 ) +
+&		 ( ( TBNQTY * TBNPRC ) # 1 )
+
+	RETURN
+
+PRTSAC,
+		; Sort then Print summarized accessories from this order
+;
+;	BUBBLE SORT ACCREC ARRAY
+;
+	FOR I FROM 1 THRU MAXACC
+	  BEGIN
+	  ACCREC = SACCRC(I)
+	  IF (ACCQTY.EQ.0) GOTO PRTSA2
+	  COMPA = ACCITM
+	  ACCREC = SACCRC(I+1)
+	  IF (ACCQTY.EQ.0) GOTO PRTSA2
+	  COMPB = ACCITM
+	  IF (COMPA.GT.COMPB)
+	  BEGIN
+	    SACCRC(I+1) = SACCRC(I)
+	    SACCRC(I) = ACCREC
+	    I = I - 2
+	    IF (I.LT.0) I = 0
+	  END
+	END
+	GOTO BADACC
+PRTSA2,
+	FOR I FROM 1 THRU MAXACC
+	  BEGIN
+	  ACCREC = SACCRC(I)
+	  IF (ACCITM.EQ.BLANKS) RETURN
+;;;	  IF ((LINCNT+1).GT.MAXLIN) CALL CONTIN
+	  IF ((row_cnt+1).GT.MAXLIN) CALL CONTIN
+	  PLINE (1,7) = ACCQTY,NUMASK
+	  PLINE (9,23) = ACCITM
+	  PLINE (25,54) = ACCDES
+	  ACCUOM = 'EA'
+	  IF (ACCITM(4,6).EQ.'GS ') ACCUOM = 'FT'
+	  IF (ACCITM(4,6).EQ.'BAR') 
+	  BEGIN
+	    ACCUOM = 'IN'
+	    DECMAL = ACCITM(10,12)
+	    ACCQTY = ACCQTY * DECMAL
+	  END
+	  PLINE (64,65) = ACCUOM
+	  PLINE (54,62) = ACCPRC,'ZZZZZ.XXX-'
+	  DECMAL = (ACCQTY * ACCPRC) #1
+	  PLINE (67,78) = DECMAL,'ZZZZ,ZZZ.XX-'
+	  TOTPRC = TOTPRC + DECMAL		;ACCESSORIES
+
+	IF (NO_DOLLARS)
+		BEGIN
+		PLINE(54,62) = 
+		PLINE(67,78) =
+		END
+
+	  CALL line_PRINT
+	  SACCRC(I) =
+	END
+	IF (I.GE.MAXACC) GOTO BADACC
+	RETURN
+
+PRTSDU,
+		;Print summarized duct from this order
+;;;	IF ((LINCNT+1).GT.MAXLIN) CALL CONTIN
+	IF ((row_cnt+1).GT.MAXLIN) CALL CONTIN
+	INCR LINCNT
+	FOR I FROM 1 THRU MAXDUC
+	  BEGIN
+	  DUCREC = SDUCRC(I)
+	  IF (DUCCFG.EQ.0) GOTO PRTSD2
+;;;	  IF ((LINCNT+1).GT.MAXLIN) CALL CONTIN
+	  IF ((row_cnt+1).GT.MAXLIN) CALL CONTIN
+	  PLINE (1,7) = DUCPND,NUMASK
+	  PLINE (8,8) = '#'
+	  PLINE (18,19) = DUCCFG(1,3),'XX'
+	  PLINE (21,22) = 'GA'
+	  IF (DUCCFG(4,4).EQ.2.OR.DUCCFG(4,4).EQ.3)
+	  BEGIN
+	    PLINE (18,22) = DUCCFG(1,3),'.XXX'
+	  END
+	  PLINE (33,36) = DTYPE(DUCCFG(4,4))
+	  PLINE (38,43) = DCAT(DUCCFG(5,5))
+	  PLINE (45,47) = DSTY(DUCCFG(6,6))
+	  PLINE (49,51) = DSEAM(DUCCFG(7,7))
+	  CALL line_PRINT
+	  SDUCRC(I) =
+	END
+PRTSD2,
+	FOR I FROM 1 THRU 8
+	  BEGIN
+	  IF (LINSQF(I).NE.0.AND.I.NE.4)
+	  BEGIN
+;;;	    IF ((LINCNT+1).GT.MAXLIN) CALL CONTIN
+	    IF ((row_cnt+1).GT.MAXLIN) CALL CONTIN
+	    PLINE (1,7) = LINSQF(I),NUMASK
+	    PLINE (8,10) = 'SQF'
+	    PLINE (33,39) = DLINER(I)
+	    PLINE (40,45) = ' LINER'
+	    CALL line_PRINT
+	    LINSQF(I) =
+	  END
+	END
+	RETURN	
+
+FNDCUS,
+	IF (OCUSNO.NE.CUSNO)
+	BEGIN
+	  KEY = OCUSNO,'XXXXXX'
+	  XCALL SERCH (37,CUSIDX,KEY,1,6,ORGCUS,BSMID,SRCCTL,4,7,11,0,0,0,0)
+	  LOKCTL = 1
+	  CASE SRCCTL OF 
+	  BEGINCASE
+	  0:	XCALL IO (36,CUSMAS,IRC001,READ,LOKCTL)
+	  1:	BEGIN
+		  CUSMAS =
+		  NAME = '* CUSTOMER NOT ON FILE *'
+		END
+	  ENDCASE
+	END
+	RETURN
+
+GET_SCAC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; COP TABLE SCAC LOOK-UP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR TBL_KEY
+	TBLCOD = 'SC'
+	TBLKEY = OSCAC
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	IF (LOKCTL .NE. 0)
+		BEGIN
+		CLEAR COPTBL
+		SC_NAME = "* NOT ON FILE *"
+		END
+	RETURN
+;-----------------------------------------------------
+
+GET_SALESMAN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL IO (CHN054,SALMAN,OSLMAN,READ,LOKCTL)
+	IF (SLSNM.EQ.']]]]]]' .OR. SLSNM.EQ.']]]DEL' .OR. LOKCTL.NE.0) SLSNM =
+	RETURN
+;-----------------------------------------------------
+
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	SWITCH = 5
+	XCALL CHNOPN(24,STAT)
+	IF (STAT .EQ. 0)
+		BEGIN
+		XCALL FILES (24,'SI',044,SWITCH)
+		CHN044 = 24
+		END
+
+	XCALL CHNOPN(25,STAT)
+	IF (STAT .EQ. 0)
+		BEGIN
+		XCALL FILES (25,'SI',045,SWITCH)
+		CHN045 = 25
+		END
+
+	XCALL CHNOPN(26,STAT)
+	IF (STAT .EQ. 0)
+		BEGIN
+		XCALL FILES (26,'SI',175,SWITCH)
+		CHN175 = 26
+		END
+
+	XCALL CHNOPN(36,STAT)
+	IF (STAT .EQ. 0) XCALL FILES (36,'I',001,SWITCH)
+
+	XCALL CHNOPN(37,STAT)
+	IF (STAT .EQ. 0) XCALL FILES (37,'I',002,SWITCH)
+
+	XCALL CHNOPN(38,STAT)
+	IF (STAT .EQ. 0)
+		BEGIN
+		XCALL FILES (38,'I',054,SWITCH)
+		CHN054 = 38
+		END
+
+	XCALL CHNOPN(17,STAT)
+	IF (STAT .EQ. 0)
+		BEGIN
+		XCALL FILES (17,'SI',182,SWITCH)
+		END
+	CHN182 = 17	;COP TABLES
+	RETURN
+
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLOSE CHN044
+	CLOSE CHN045
+	CLOSE CHN054
+	CLOSE CHN175
+	CLOSE 36
+	CLOSE 37
+
+	RETURN
+
+;=================================================================
+;=================================================================
+; Print routines...
+;=================================================================
+;=================================================================
+
+PRINT_SETUP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Set up printer interface
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	; Set up memory areas
+	m_font_handle = %mem_proc(DM_ALLOC, ^size(font_specs))
+	m_ts_handle = %mem_proc(DM_ALLOC, ^size(text_specs))
+
+	phand = %wpr_info(phand, DWP_GETPRINTER)
+;;;	phand = %wpr_info(phand, DWP_GETPRINTER,"FAXmaker")
+;;;	p_selected = 1
+
+	p_selected = %wpr_info(phand, DWP_PRINTDLG)
+	if (.not. p_selected) return
+
+
+		;create a unique spool file 
+	XCALL TIME (O_TIME)
+
+		;start a job and page..
+;;;	xcall wpr_print(phand, 	DWP_BEGINJOB, o_file)
+	xcall wpr_print(phand, 	DWP_BEGINJOB)
+	xcall wpr_print(phand, 	DWP_BEGINPAGE)
+	call set_font
+;>faxmaker
+	pline = "::Sherwood Quiring,Computer Services,5721103"
+	call print
+;>faxmaker
+	return
+;---------------------------------------------------------------
+
+print_err,
+	display (15,$scr_pos(22,1), "an error occured")
+	stop
+
+line_print,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	Lcol = 1
+	call print
+	incr row_cnt
+	return
+;--------------------------------------------
+
+print,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; set up the print parameters
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	call print2
+	incr lincnt
+	return
+;--------------------------------------------
+
+print2,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;;print the line, don't incr lincnt
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	x = Lcol * c_width
+	y = (lincnt) * r_height
+
+	pl = %trim(pline)
+	if (pl .le. 0) return
+	xcall wpr_print(phand, DWP_WRITEOUT, x, y, pline(1,pl))
+	clear pline
+	return
+;--------------------------------------------
+
+SET_8_CPI,	;**********************************
+	SET_FONTSPEC(pointsize, 17)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+
+	; Set the pixel width and height of a character for this font
+	if ( .not. %wpr_info(phand, DWP_TEXTMETRICS, 
+	&  		^m(text_specs[1], m_ts_handle)))
+	    goto print_err
+
+	c_width = GET_TM_INFO(avewidth)
+	r_height = GET_TM_INFO(height)
+	RETURN
+;----------------------------------------------------
+
+SET_10_CPI,	;**********************************
+	SET_FONTSPEC(pointsize, 13)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+
+	; Set the pixel width and height of a character for this font
+	if ( .not. %wpr_info(phand, DWP_TEXTMETRICS, 
+	&  		^m(text_specs[1], m_ts_handle)))
+	    goto print_err
+
+	c_width = GET_TM_INFO(avewidth)
+	r_height = GET_TM_INFO(height)
+	RETURN
+;----------------------------------------------------
+SET_11_CPI,	;**********************************
+	SET_FONTSPEC(pointsize, 12)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+
+	; Set the pixel width and height of a character for this font
+	if ( .not. %wpr_info(phand, DWP_TEXTMETRICS, 
+	&  		^m(text_specs[1], m_ts_handle)))
+	    goto print_err
+
+	c_width = GET_TM_INFO(avewidth)
+	r_height = GET_TM_INFO(height)
+	RETURN
+;----------------------------------------------------
+
+SET_12_CPI,
+	SET_FONTSPEC(pointsize, 11)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+
+	; Set the pixel width and height of a character for this font
+	if ( .not. %wpr_info(phand, DWP_TEXTMETRICS, 
+	&  		^m(text_specs[1], m_ts_handle)))
+	    goto print_err
+
+	c_width = GET_TM_INFO(avewidth)
+	r_height = GET_TM_INFO(height)
+	RETURN
+;----------------------------------------------------
+
+SET_BOLD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SET_FONTSPEC(weight, 700)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+	RETURN
+;----------------------------------------------------
+SET_noBOLD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SET_FONTSPEC(weight, 400)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+	RETURN
+;----------------------------------------------------
+
+SET_UNDERLINE,	;*************************************
+	SET_FONTSPEC(underline, 1)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+	RETURN
+;----------------------------------------------------
+set_font,
+	SET_FONTSPEC(pointsize, 10)
+	SET_FONTSPEC(weight, 400)
+	SET_FONTSPEC(italic, 0)
+	SET_FONTSPEC(underline, 0)
+	SET_FONTSPEC(strikeout, 0)
+	SET_FONTSPEC(fixed, 1)
+
+	stats = %wpr_setdevice(phand, 
+&			DWP_FONT, ^m(font_specs[1], m_font_handle))
+
+	return
+
+END
+

@@ -1,0 +1,89 @@
+.NOLIST
+;===================================================================
+;              Copyright 1997 by Synergex, International
+;
+;   Synergex provides this software under a license and may only be
+;     used in accordance with the terms and conditions of such
+;    license and with the inclusion of the above Copyright notice.
+;===================================================================
+;
+; Module:	ActiveX.def
+;
+; Facility:	ActiveX Support
+;
+; Description:	Support definitions
+;
+; $Revision:   1.8  $
+;
+; $Date:   Jul 12 2002 15:02:16  $
+;
+;===================================================================
+.ifndef ACTIVEX_DEF_
+.define ACTIVEX_DEF_
+
+; ActiveX Event Codes
+;
+.define DB_AXSPT,		1024		;Range of ActiveX support events
+.define DE_AXSPT,		DB_SPT+1024	;  (including some system-levels)
+
+.define DB_AXMSG,		DB_AXSPT	;Local (user-based) range
+.define	DE_AXMSG,		DB_AXMSG+16
+
+.define DM_AX_LOAD,		DB_AXMSG+1	;Create an instance of an ActiveX control
+.define DM_AX_NOP,		DB_AXMSG+2	;No operation (for EM_START)
+
+.define DM_AX_SET, 		DB_AXMSG+3	;Set a property
+.define DM_AX_GET, 		DB_AXMSG+4	;Get a propertys value
+.define DM_AX_CALL, 		DB_AXMSG+5	;Call a supported method
+.define DM_AX_BIND, 		DB_AXMSG+6	;Bind DBL routine to supported event
+.define DM_AX_GETINT,		DB_AXMSG+7	;Return a property's integer value
+
+;
+; ActiveX support definitions
+;
+.define AX_LOAD(axwid,name,xp,yp,xs,ys,lic,ab) cl_sig(^val(DM_AX_LOAD),^val(axwid),name,xp,yp,xs,ys,lic,ab)
+
+.define AX_SET(cid,nam,nwval,i1,i2,i3,i4,i5,i6,i7,i8) cl_sig(^val(DM_AX_SET),^val(cid),nam,nwval,i1,i2,i3,i4,i5,i6,i7,i8)
+
+.define AX_GET(cid,nam,fld,i1,i2,i3,i4,i5,i6,i7,i8) cl_sig(^val(DM_AX_GET),^val(cid),nam,fld,i1,i2,i3,i4,i5,i6,i7,i8)
+
+.define AX_CALL(cid,mthd,a1,a2,a3,a4,a5,a6,a7,a8,a9) cl_sig(^val(DM_AX_CALL),^val(cid),mthd,a1,a2,a3,a4,a5,a6,a7,a8,a9)
+
+.define AX_BIND(cid,evnt,rtn) cl_sig(^val(DM_AX_BIND),^val(cid),evnt,rtn)
+.define AX_SHOW(id) cl_sig(^val(DM_AX_SET),^val(id),"EXT_VISIBLE",1)
+.define AX_HIDE(id) cl_sig(^val(DM_AX_SET),^val(id),"EXT_VISIBLE",0)
+.define AX_GETINT(cid,nam) cl_sig(^val(DM_AX_GETINT),^val(cid),nam)
+
+.define AX_NEWVAL(par,nwval) ap_misc(^val(%x(B20)),par,nwval)
+;
+; Some general utility macros
+;
+.define RGB_VALUE(r,g,b) ((((b).band.^x(FF))*^x(10000))+(((g).band.^x(FF))*^x(100))+((r).band.^x(FF)))
+.define RED_PART(rgbval) ((rgbval).band.^x(FF))
+.define GREEN_PART(rgbval) (((rgbval).band.^x(FF00))/^x(100))
+.define BLUE_PART(rgbval) (((rgbval).band.^x(FF0000))/^x(10000))
+;
+; Miscellaneous
+;
+.define D_AX_ALL,		-1	; Delete all containers define
+;
+; Container-related codes
+;
+						;Mouse OnClick/OnDblClick flags:
+						;  Which button:
+.define D_AXMS_LBTN,		^x(0001)	;    Left
+.define D_AXMS_RBTN,		^x(0002)	;    Right
+.define D_AXMS_MBTN,		^x(0004)	;    Middle
+						;  Other keys that are down:
+.define D_AXMS_LBTNDWN,		^x(0100)	;    Left
+.define D_AXMS_RBTNDWN,		^x(0200)	;    Right
+.define D_AXMS_MBTNDWN,		^x(0400)	;    Middle
+.define D_AXMS_SHFTDWN,		^x(0800)	;    Shift
+.define D_AXMS_CTRLDWN,		^x(1000)	;    Control
+						;Resize flags:
+.define D_AXSIZ_MIN,		-1		;  Minimized
+.define D_AXSIZ_NORM,		 0		;  Normal
+.define D_AXSIZ_MAX,		+1		;  Maximized
+
+.endc ;ACTIVEX_DEF_
+.LIST

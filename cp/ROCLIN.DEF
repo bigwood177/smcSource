@@ -1,0 +1,10 @@
+;roclin.def (100 BYTES)
+;
+;Rockford Inventory of Mfg Items
+;
+	RL_ITEM		,A15
+	RL_NOT3		,D5
+	RL_QTYOH	,D7
+	RL_QTYCM	,D7
+	RL_QTYOO	,D7
+			,A59	;FILLER

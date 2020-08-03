@@ -1,0 +1,52 @@
+;  CPLMNU / COP 
+;
+;
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+RECORD
+	ENTRY	,A3
+	INXCTL	,D1
+	PGM	,D2
+	MAXPRG	,D2,	5
+;;;	PROGNM	,5A10,	'CP:DPTbar ','CP:DPTPCK ','CP:CPLMNU ','CP:PCKLST ','CP:PRTCVR'
+	PROGNM	,5A10,	'CP:DPTbar ','CP:DPTPCK ','CP:CVRSHT ','CP:PCKLST ','CP:PRTCVR'
+	UNAME	,A25
+	cmpcod	,a3
+	V	,D1
+PROC
+	XCALL TERID (V)
+	xcall who(cmpcod)
+NORECV,
+	XCALL OUTPT (1,1,2,'ORDER COMPLETION',V)
+	XCALL OUTPT (4,1,0,'PLEASE SELECT APPLICATION',V)
+	XCALL OUTPT (5,3,0,'1. ORDER COMPLETION STATUS',V)
+	XCALL OUTPT (6,3,0,'2. ORDER PACKING STATUS',V)
+	XCALL OUTPT (7,3,0,'3. TIME STAMP',V)
+;;;	XCALL OUTPT (7,3,0,'3. PRINT COVER SHEET',V)
+	XCALL OUTPT (8,3,0,'4. PRINT PACKING LIST',V)
+	XCALL OUTPT (9,3,0,'5. PRINT STAGING COVER SHEET',V)
+INPUT,
+	XCALL INPUT (4,28,2,1,'#E',ENTRY,INXCTL,V)
+	GO TO (INPUT,ENDOFF), INXCTL
+	PGM = ENTRY (1,2)
+	IF (PGM.LT.1.OR.PGM.GT.MAXPRG) GO TO INPUT
+	XCALL SNMSG (' ',4)
+
+;-----------------------------------------------------------
+; removed 3-10-10
+;;;	if (cmpcod .eq. 'ROC') xcall pgchx('cp:rocsts',1)
+;-----------------------------------------------------------
+
+	XCALL PGCHX (PROGNM(PGM),1)
+ENDOFF,
+	UNAME = %GU_NAME		;GET USER NAME
+	IF (UNAME(1,4) .EQ. 'SHOP')
+		BEGIN
+		xcall flags (7000000)
+		stop
+		END
+
+	XCALL PGCHX ('CP:CPMENU',1)
+END

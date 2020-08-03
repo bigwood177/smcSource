@@ -1,0 +1,211 @@
+V200000                                        SMALL END      SPIRAL END     SPIRAL END                    		                                      
+V200001                                        DRAWING        SAFETY SEAL    SAFETY SEAL    SAFETY SEAL    SAFETY SEAL                             
+V200002                                        LARGE END      LARGE END      LARGE END      LARGE END      LARGE END                               
+V200003                                        E-Z FLANGES    EZ FLANGE      EZ FLANGE      EZ FLANGE      EZ FLANGE                               
+V200004                                        W/SP ENDS      SPIRAL END     SPIRAL END     SPIRAL END     SPIRAL END                              
+V200005                                        SWEDGE RINGS   SWEDGE RING    SWEDGE RING    SWEDGE RING    SWEDGE RING                             
+V200006                                        TACK RINGS     TACK RING      TACK RING      TACK RING      TACK RING                               
+V200007                                        WELDED RINGS   WELD RING      WELD RING      WELD RING      WELD RING                               
+V200008                                        RW             LARGE END      LARGE END      LARGE END      LARGE END                               
+V200009                                        EF BY HAND     EZ FLANGE      EZ FLANGE      EZ FLANGE      EZ FLANGE                               
+V200011                                        RW/RW          LARGE END      LARGE END                     	                                       
+V200012                                                       SAFETY SEAL    LARGE END                                                             
+V200013                                        RW/EF          SAFETY SEAL    EZ FLANGE                     	                                       
+V200014                                                       SAFTEY SEAL    SPIRAL END                                                            
+V200024                                        LE/SE          LARGE END      SPIRAL END                    	                                       
+V200031                                        EF/RW          EZ FLANGE      SAFETY SEAL                   	                                       
+V200033                                        EF/JR          EZ FLANGE      JR EZ FLANGE                  	                                       
+V200034                                        EF/SP          EZ FLANGE      SPIRAL END                    	                                       
+V200038                                        EF/RW          EZ FLANGE      LARGE END                     	                                       
+V200041                                                       SPIRAL END     SAFETY SEAL                                                           
+V200042                                        SE/LE          SPIRAL END     LARGE END                     	                                       
+V200043                                        SP/JR          SPIRAL END     JR EZ FLANGE                  	                                       
+V200045                                                       SPIRAL END     SWEDGE RING                                                           
+V200048                                        SP/RW          SPIRAL END     LARGE END                     	                                       
+V200083                                        RW/EF          LARGE END      EZ FLANGE                     	                                       
+V200084                                        RW/SP          LARGE END      SPIRAL END                    	                                       
+V200088                                        RW/RW          LARGE END      LARGE END                     	                                       
+V200111                                        RW/RW/RW       LARGE END      LARGE END      LARGE END                                              
+V200113                                        RW/RW/EF       SAFETY SEAL    SAFETY SEAL    EZ FLANGE                                              
+V200114                                                       SAFETY SEAL    SAFETY SEAL    SPIRAL END                                             
+V200122                                                       SAFETY SEAL    LARGE END      LARGE END                                              
+V200131                                        RW/EF/RW       SAFETY SEAL    EZ FLANGE      SAFETY SEAL                                            
+V200133                                        RW/EF/EF       SAFETY SEAL    EZ FLANGE      EZ FLANGE                                              
+V200134                                        RW/EF/SP       SAFETY SEAL    EZ FLANGE      SPIRAL END                                             
+V200141                                                       SAFETY SEAL    SPRIAL END     SAFETY SEAL                                            
+V200143                                        RW/SP/EF       SAFETY SEAL    SPIRAL END     EZ FLANGE                                              
+V200144                                        RW/SP/SP       SAFETY SEAL    SPIRAL END     SPIRAL END                                             
+V200224                                        LE/LE/SE       LARGE END      LARGE END      SPIRAL END                                             
+V200242                                                       LARGE END      SPIRAL END     LARGE END                                              
+V200244                                        LE/SE/SE       LARGE END      SPIRAL END     SPIRAL END                                             
+V200311                                        EF/RW/RW       EZ FLANGE      SAFETY SEAL    SAFETY SEAL                                            
+V200313                                        EF/RW/EF       EZ FLANGE      SAFETY SEAL    EZ FLANGE                                              
+V200314                                        EF/RW/SP       EZ FLANGE      SAFETY SEAL    SPIRAL END                                             
+V200331                                        EF/EF/RW       EZ FLANGE      EZ FLANGE      SAFETY SEAL                                            
+V200334                                        EF/EF/SP       EZ FLANGE      EZ FLANGE      SPIRAL END                                             
+V200338                                        EF/EF/RW       EZ FLANGE      EZ FLANGE      LARGE END                                              
+V200341                                        EF/SP/RW       EZ FLANGE      SPIRAL END     SAFETY SEAL                                            
+V200343                                        EF/SP/EF       EZ FLANGE      SPIRAL END     EZ FLANGE                                              
+V200344                                        EF/SP/SP       EZ FLANGE      SPIRAL END     SPIRAL END                                             
+V200348                                        EF/SP/RW       EZ FLANGE      SPIRAL END     LARGE END                                              
+V200383                                        EF/RW/EF       EZ FLANGE      LARGE END      EZ FLANGE                                              
+V200384                                        EF/RW/SP       EZ FLANGE      LARGE END      SPIRAL END                                             
+V200388                                        EF/RW/RW       EZ FLANGE      LARGE END      LARGE END                                              
+V200411                                                       SPIRAL END     SAFETY SEAL    SAFETY SEAL                                            
+V200413                                        SP/RW/JR       SPIRAL END     SAFETY SEAL    JR EZ FLANGE                                           
+V200414                                                       SPIRAL END     SAFETY SEAL    SPIRAL END                                             
+V200422                                        SE/LE/LE       SPIRAL END     LARGE END      LARGE END                                              
+V200431                                        SP/JR/RW       SPIRAL END     JR EZ FLANGE   SAFETY SEAL                                            
+V200433                                        SP/JR/JR       SPIRAL END     JR EZ FLANGE   JR EZ FLANGE                                           
+V200434                                        SP/JR/SP       SPIRAL END     JR EZ FLANGE   SPIRAL END                                             
+V200438                                        SP/JR/RW       SPIRAL END     JR EZ FLANGE   LARGE END                                              
+V200441                                                       SPIRAL END     SPIRAL END     SAFETY SEAL                                            
+V200442                                        SE/SE/LE       SPIRAL END     SPIRAL END     LARGE END                                              
+V200443                                        SP/SP/EF       SPIRAL END     SPIRAL END     EZ FLANGE                                              
+V200448                                        SP/SP/RW       SPIRAL END     SPIRAL END     LARGE END                                              
+V200483                                        SP/RW/JR       SPIRAL END     LARGE END      JR EZ FLANGE                                           
+V200484                                        SP/RW/SP       SPIRAL END     LARGE END      SPIRAL END                                             
+V200488                                        SP/RW/RW       SPIRAL END     LARGE END      LARGE END                                              
+V200833                                        RW/EF/EF       LARGE END      EZ FLANGE      EZ FLANGE                                              
+V200834                                        RW/EF/SP       LARGE END      EZ FLANGE      SPIRAL END                                             
+V200838                                        RW/EF/RW       LARGE END      EZ FLANGE      LARGE END                                              
+V200843                                        RW/SP/EF       LARGE END      SPIRAL END     EZ FLANGE                                              
+V200844                                        RW/SP/SP       LARGE END      SPIRAL END     SPIRAL END                                             
+V200848                                        RW/SP/RW       LARGE END      SPIRAL END     LARGE END                                              
+V200883                                        RW/RW/EF       LARGE END      LARGE END      EZ FLANGE                                              
+V200884                                        RW/RW/SP       LARGE END      LARGE END      SPIRAL END                                             
+V200888                                        RW/RW/RW       LARGE END      LARGE END      LARGE END                                              
+V201113                                        RW/RW/RW/EF    SAFETY SEAL    SAFETY SEAL    SAFETY SEAL    EZ FLANGE                               
+V201114                                        RW/RW/RW/SP    SAFETY SEAL    SAFETY SEAL    SAFETY SEAL    SPIRAL END                              
+V201131                                        RW/RW/EF/RW    SAFETY SEAL    SAFETY SEAL    EZ FLANGE      SAFETY SEAL                             
+V201133                                        RW/RW/EF/EF    SAFETY SEAL    SAFETY SEAL    EZ FLANGE      EZ FLANGE                               
+V201134                                        RW/RW/EF/SP    SAFETY SEAL    SAFETY SEAL    EZ FLANGE      SPIRAL END                              
+V201141                                        RW/RW/SP/RW    SAFETY SEAL    SAFETY SEAL    SPIRAL END     SAFETY SEAL                             
+V201143                                        RW/RW/SP/JR    SAFETY SEAL    SAFETY SEAL    SPIRAL END     JR EZ FLANGE                            
+V201144                                        RW/RW/SP/SP    SAFETY SEAL    SAFETY SEAL    SPIRAL END     SPIRAL END                              
+V201311                                        RW/EF/RW/RW    SAFETY SEAL    EZ FLANGE      SAFETY SEAL    SAFETY SEAL                             
+V201313                                        RW/EF/RW/JR    SAFETY SEAL    EZ FLANGE      SAFETY SEAL    JR EZ FLANGE                            
+V201314                                        RW/EF/RW/SP    SAFETY SEAL    EZ FLANGE      SAFETY SEAL    SPIRAL END                              
+V201331                                        RW/EF/EF/RW    SAFETY SEAL    EZ FLANGE      EZ FLANGE      SAFETY SEAL                             
+V201333                                        RW/EF/EF/EF    SAFETY SEAL    EZ FLANGE      EZ FLANGE      EZ FLANGE                               
+V201334                                        RW/EF/EF/SP    SAFETY SEAL    EZ FLANGE      EZ FLANGE      SPIRAL END                              
+V201343                                        RW/EF/SP/EF    SAFETY SEAL    EZ FLANGE      SPIRAL END     EZ FLANGE                               
+V201344                                        RW/EF/SP/SP    SAFETY SEAL    EZ FLANGE      SPIRAL END     SPIRAL END                              
+V201411                                        RW/SP/RW/RW    SAFETY SEAL    SPIRAL END     SAFETY SEAL    SAFETY SEAL                             
+V201413                                        RW/SP/RW/JR    SAFETY SEAL    SPIRAL END     SAFETY SEAL    JR EZ FLANGE                            
+V201414                                        RW/SP/RW/SP    SAFETY SEAL    SPIRAL END     SAFETY SEAL    SPIRAL END                              
+V201431                                        RW/SP/EF/RW    SAFETY SEAL    SPIRAL END     EZ FLANGE      SAFETY SEAL                             
+V201433                                        RW/SP/EF/EF    SAFETY SEAL    SPIRAL END     EZ FLANGE      EZ FLANGE                               
+V201434                                        RW/SP/EF/SP    SAFETY SEAL    SPIRAL END     EZ FLANGE      SPIRAL END                              
+V201441                                        RW/SP/SP/RW    SAFETY SEAL    SPIRAL END     SPIRAL END     SAFETY SEAL                             
+V201444                                        RW/SP/SP/SP    SAFETY SEAL    SPIRAL END     SPIRAL END     SPIRAL END                              
+V202111                                                       LARGE END      SAFETY SEAL    SAFETY SEAL    SAFETY SEAL                             
+V203111                                        EF/RW/RW/RW    EZ FLANGE      SAFETY SEAL    SAFETY SEAL    SAFETY SEAL                             
+V203113                                        EF/RW/RW/JR    EZ FLANGE      SAFETY SEAL    SAFETY SEAL    JR EZ FLANGE                            
+V203114                                        EF/RW/RW/SP    EZ FLANGE      SAFETY SEAL    SAFETY SEAL    SPIRAL END                              
+V203131                                        EF/RW/EF/RW    EZ FLANGE      SAFETY SEAL    EZ FLANGE      SAFETY SEAL                             
+V203133                                        EF/RW/EF/EF    EZ FLANGE      SAFETY SEAL    EZ FLANGE      EZ FLANGE                               
+V203134                                        EF/RW/EF/SP    EZ FLANGE      SAFETY SEAL    EZ FLANGE      SPIRAL END                              
+V203141                                        EF/RW/SP/RW    EZ FLANGE      LARGE END      SPIRAL END     LARGE END                               
+V203143                                        JR/RW/SP/JR    JR EZ FLANGE   SAFETY SEAL    SPIRAL END     JR EZ FLANGE                            
+V203144                                        EF/RW/SP/SP    EZ FLANGE      SAFETY SEAL    SPIRAL END     SPIRAL END                              
+V203311                                        EF/EF/RW/RW    EZ FLANGE      EZ FLANGE      SAFETY SEAL    SAFETY SEAL                             
+V203313                                        EF/EF/RW/JR    EZ FLANGE      EZ FLANGE      SAFETY SEAL    JR EZ FLANGE                            
+V203314                                        EF/EF/RW/SP    EZ FLANGE      EZ FLANGE      SAFETY SEAL    SPIRAL END                              
+V203331                                        EF/EF/EF/RW    EZ FLANGE      EZ FLANGE      EZ FLANGE      SAFETY SEAL                             
+V203334                                        EF/EF/EF/SP    EZ FLANGE      EZ FLANGE      EZ FLANGE      SPIRAL END                              
+V203338                                        EF/EF/EF/RW    EZ FLANGE      EZ FLANGE      EZ FLANGE      LARGE END                               
+V203341                                        EF/EF/SP/RW    EZ FLANGE      EZ FLANGE      SPIRAL END     SAFETY SEAL                             
+V203343                                        EF/EF/SP/JR    EZ FLANGE      EZ FLANGE      SPIRAL END     JR EZ FLANGE                            
+V203344                                        EF/EF/SP/SP    EZ FLANGE      EZ FLANGE      SPIRAL END     SPIRAL END                              
+V203348                                        EF/EF/SP/RW    EZ FLANGE      EZ FLANGE      SPIRAL END     LARGE END                               
+V203383                                        EF/EF/RW/JR    EZ FLANGE      EZ FLANGE      LARGE END      JR EZ FLANGE                            
+V203384                                        EF/EF/RW/SP    EZ FLANGE      EZ FLANGE      LARGE END      SPIRAL END                              
+V203388                                        EF/EF/RW/RW    EZ FLANGE      EZ FLANGE      LARGE END      LARGE END                               
+V203411                                        EF/SP/RW/RW    EZ FLANGE      SPIRAL END     SAFETY SEAL    SAFETY SEAL                             
+V203413                                        EF/SP/RW/JR    EZ FLANGE      SPIRAL END     SAFETY SEAL    EZ FLANGE                               
+V203414                                        EF/SP/RW/SP    EZ FLANGE      SPIRAL END     SAFETY SEAL    SPIRAL END                              
+V203431                                        EF/SP/EF/RW    EZ FLANGE      SPIRAL END     EZ FLANGE      SAFETY SEAL                             
+V203433                                        EF/SP/EF/EF    EZ FLANGE      SPIRAL END     EZ FLANGE      EZ FLANGE                               
+V203434                                        EF/SP/EF/SP    EZ FLANGE      SPIRAL END     EZ FLANGE      SPIRAL END                              
+V203438                                        EF/SP/EF/RW    EZ FLANGE      SPIRAL END     EZ FLANGE      LARGE END                               
+V203441                                        EF/SP/SP/RW    EZ FLANGE      SPIRAL END     SPIRAL END     SAFETY SEAL                             
+V203443                                        EF/SP/SP/EF    EZ FLANGE      SPIRAL END     SPIRAL END     EZ FLANGE                               
+V203444                                        EF/SP/SP/SP    EZ FLANGE      SPIRAL END     SPIRAL END     SPIRAL END                              
+V203448                                        EF/SP/SP/RW    EZ FLANGE      SPIRAL END     SPIRAL END     LARGE END                               
+V203483                                        EF/SP/RW/JR    EZ FLANGE      SPIRAL END     LARGE END      EZ FLANGE                               
+V203484                                        EF/SP/RW/SP    EZ FLANGE      SPIRAL END     LARGE END      SPIRAL END                              
+V203488                                        EF/SP/RW/RW    EZ FLANGE      SPIRAL END     LARGE END      LARGE END                               
+V203833                                        EF/RW/EF/EF    EZ FLANGE      LARGE END      EZ FLANGE      EZ FLANGE                               
+V203834                                        EF/RW/EF/SP    EZ FLANGE      LARGE END      EZ FLANGE      SPIRAL END                              
+V203838                                        EF/RW/EF/RW    EZ FLANGE      LARGE END      EZ FLANGE      LARGE END                               
+V203843                                        JR/RW/SP/JR    JR EZ FLANGE   LARGE END      SPIRAL END     JR EZ FLANGE                            
+V203844                                        EF/RW/SP/SP    EZ FLANGE      LARGE END      SPIRAL END     SPIRAL END                              
+V203848                                        EF/RW/SP/RW    EZ FLANGE      LARGE END      SPIRAL END     LARGE END                               
+V203883                                        EF/RW/RW/JR    EZ FLANGE      LARGE END      LARGE END      JR EZ FLANGE                            
+V203884                                        EF/RW/RW/SP    EZ FLANGE      LARGE END      LARGE END      SPIRAL END                              
+V203888                                        EF/RW/RW/RW    EZ FLANGE      LARGE END      LARGE END      LARGE END                               
+V204111                                        SP/RW/RW/RW    SPIRAL END     SAFETY SEAL    SAFETY SEAL    SAFETY SEAL                             
+V204113                                        SP/RW/RW/JR    SPIRAL END     SAFETY SEAL    SAFETY SEAL    JR EZ FLANGE                            
+V204114                                        SP/RW/RW/SP    SPIRAL END     SAFETY SEAL    SAFETY SEAL    SPIRAL END                              
+V204131                                        SP/RW/EF/RW    SPIRAL END     SAFETY SEAL    EZ FLANGE      SAFETY SEAL                             
+V204133                                        SP/RW/EF/JR    SPIRAL END     SAFETY SEAL    EZ FLANGE      JR EZ FLANGE                            
+V204134                                        SP/RW/EF/SP    SPIRAL END     SAFETY SEAL    EZ FLANGE      SPIRAL END                              
+V204144                                        SP/RW/SP/SP    SPIRAL END     SAFETY SEAL    SPIRAL END     SPIRAL END                              
+V204222                                                       SPIRAL END     LARGE END      LARGE END      LARGE END                               
+V204311                                        SP/EF/RW/RW    SPIRAL END     EZ FLANGE      SAFETY SEAL    SAFETY SEAL                             
+V204313                                        SP/JR/RW/JR    SPIRAL END     JR EZ FLANGE   SAFETY SEAL    JR EZ FLANGE                            
+V204314                                        SP/EF/RW/SP    SPIRAL END     EZ FLANGE      SAFETY SEAL    SPIRAL END                              
+V204331                                        SP/EF/EF/RW    SPIRAL END     EZ FLANGE      EZ FLANGE      SAFETY SEAL                             
+V204333                                        SP/EF/EF/EF    SPIRAL END     EZ FLANGE      EZ FLANGE      EZ FLANGE                               
+V204334                                        SP/EF/EF/SP    SPIRAL END     EZ FLANGE      EZ FLANGE      SPIRAL END                              
+V204338                                        SP/EF/EF/RW    SPIRAL END     EZ FLANGE      EZ FLANGE      LARGE END                               
+V204341                                        SP/EF/SP/RW    SPIRAL END     EZ FLANGE      SPIRAL END     SAFETY SEAL                             
+V204343                                        SP/EF/SP/JR    SPIRAL END     EZ FLANGE      SPIRAL END     JR EZ FLANGE                            
+V204344                                        SP/EF/SP/SP    SPIRAL END     EZ FLANGE      SPIRAL END     SPIRAL END                              
+V204348                                        SP/EF/SP/RW    SPIRAL END     EZ FLANGE      SPIRAL END     LARGE END                               
+V204383                                        SP/JR/RW/JR    SPIRAL END     JR EZ FLANGE   LARGE END      JR EZ FLANGE                            
+V204384                                        SP/EF/RW/SP    SPIRAL END     EZ FLANGE      LARGE END      SPIRAL END                              
+V204388                                        SP/EF/RW/RW    SPIRAL END     EZ FLANGE      LARGE END      LARGE END                               
+V204411                                        SP/SP/RW/RW    SPIRAL END     SPIRAL END     SAFETY SEAL    SAFETY SEAL                             
+V204414                                        SP/SP/RW/SP    SPIRAL END     SPIRAL END     SAFETY SEAL    SPIRAL END                              
+V204431                                        SP/SP/EF/RW    SPIRAL END     SPIRAL END     EZ FLANGE      SAFETY SEAL                             
+V204433                                        SP/SP/EF/EF    SPIRAL END     SPIRAL END     EZ FLANGE      EZ FLANGE                               
+V204434                                        SP/SP/EF/SP    SPIRAL END     SPIRAL END     EZ FLANGE      SPIRAL END                              
+V204438                                        SP/SP/EF/RW    SPIRAL END     SPIRAL END     EZ FLANGE      LARGE END                               
+V204441                                        SP/SP/SP/RW    SPIRAL END     SPIRAL END     SPIRAL END     SAFETY SEAL                             
+V204443                                        SP/SP/SP/EF    SPIRAL END     SPIRAL END     SPIRAL END     EZ FLANGE                               
+V204448                                        SP/SP/SP/RW    SPIRAL END     SPIRAL END     SPIRAL END     LARGE END                               
+V204484                                        SP/SP/RW/SP    SPIRAL END     SPIRAL END     LARGE END      SPIRAL END                              
+V204488                                        SP/SP/RW/RW    SPIRAL END     SPIRAL END     LARGE END      LARGE END                               
+V204833                                        SP/RW/EF/JR    SPIRAL END     LARGE END      EZ FLANGE      JR EZ FLANGE                            
+V204834                                        SP/RW/EF/SP    SPIRAL END     LARGE END      EZ FLANGE      SPIRAL END                              
+V204838                                        SP/RW/EF/RW    SPIRAL END     LARGE END      EZ FLANGE      LARGE END                               
+V204844                                        SP/RW/SP/SP    SPIRAL END     LARGE END      SPIRAL END     SPIRAL END                              
+V204883                                        SP/RW/RW/JR    SPIRAL END     LARGE END      LARGE END      JR EZ FLANGE                            
+V204884                                        SP/RW/RW/SP    SPIRAL END     LARGE END      LARGE END      SPIRAL END                              
+V204888                                        SP/RW/RW/RW    SPIRAL END     LARGE END      LARGE END      LARGE END                               
+V208333                                        RW/EF/EF/EF    LARGE END      EZ FLANGE      EZ FLANGE      EZ FLANGE                               
+V208334                                        RW/EF/EF/SP    LARGE END      EZ FLANGE      EZ FLANGE      SPIRAL END                              
+V208338                                        RW/EF/EF/RW    LARGE END      EZ FLANGE      EZ FLANGE      LARGE END                               
+V208343                                        RW/EF/SP/EF    LARGE END      EZ FLANGE      SPIRAL END     EZ FLANGE                               
+V208344                                        RW/EF/SP/SP    LARGE END      EZ FLANGE      SPIRAL END     SPIRAL END                              
+V208383                                        RW/EF/RW/JR    LARGE END      EZ FLANGE      LARGE END      JR EZ FLANGE                            
+V208384                                        RW/EF/RW/SP    LARGE END      EZ FLANGE      LARGE END      SPIRAL END                              
+V208388                                        RW/EF/RW/RW    LARGE END      EZ FLANGE      LARGE END      LARGE END                               
+V208433                                        RW/SP/EF/EF    LARGE END      SPIRAL END     EZ FLANGE      EZ FLANGE                               
+V208434                                        RW/SP/EF/SP    LARGE END      SPIRAL END     EZ FLANGE      SPIRAL END                              
+V208438                                        RW/SP/EF/RW    LARGE END      SPIRAL END     EZ FLANGE      LARGE END                               
+V208444                                        RW/SP/SP/SP    LARGE END      SPIRAL END     SPIRAL END     SPIRAL END                              
+V208448                                        RW/SP/SP/RW    LARGE END      SPIRAL END     SPIRAL END     LARGE END                               
+V208483                                        RW/SP/RW/JR    LARGE END      SPIRAL END     LARGE END      JR EZ FLANGE                            
+V208484                                        RW/SP/RW/SP    LARGE END      SPIRAL END     LARGE END      SPIRAL END                              
+V208488                                        RW/SP/RW/RW    LARGE END      SPIRAL END     LARGE END      LARGE END                               
+V208833                                        RW/RW/EF/EF    LARGE END      LARGE END      EZ FLANGE      EZ FLANGE                               
+V208834                                        RW/RW/EF/SP    LARGE END      LARGE END      EZ FLANGE      SPIRAL END                              
+V208838                                        RW/RW/EF/RW    LARGE END      LARGE END      EZ FLANGE      LARGE END                               
+V208843                                        RW/RW/SP/JR    LARGE END      LARGE END      SPIRAL END     JR EZ FLANGE                            
+V208844                                        RW/RW/SP/SP    LARGE END      LARGE END      SPIRAL END     SPIRAL END                              
+V208848                                        RW/RW/SP/RW    LARGE END      LARGE END      SPIRAL END     LARGE END                               
+V208883                                        RW/RW/RW/EF    LARGE END      LARGE END      LARGE END      EZ FLANGE                               
+V208884                                        RW/RW/RW/SP    LARGE END      LARGE END      LARGE END      SPIRAL END                              

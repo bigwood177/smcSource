@@ -1,0 +1,134 @@
+;sg.z - create the sss items
+record
+	totlen	,d10
+	sstamt	,d10
+	aluamt	,d10
+	wrkamt	,d10
+	k	,d6
+	s_adj	,d3
+	alu_amt	,d10
+	sst_amt	,d10
+
+proc
+
+make_sss,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	clear alu_amt, sst_amt
+
+	for k from 1 thru 40
+		begin
+		if (alumtl_18(k) .gt. 0)
+			begin
+			totlen = alumtl_18(k)
+			ppi = alumprc_18(k)
+			call sum_sss
+			end
+		if (s304tl_18(k) .gt. 0)
+			begin
+			totlen = s304tl_18(k)
+			ppi = s304prc_18(k)
+			call sum_sss
+			end
+		if (s316tl_18(k) .gt. 0)
+			begin
+			totlen = s316tl_18(k)
+			ppi = s316prc_18(k)
+			call sum_sss
+			end
+		if (alumtl_20(k) .gt. 0)
+			begin
+			totlen = alumtl_20(k)
+			ppi = alumprc_20(k)
+			call sum_sss
+			end
+		if (s304tl_20(k) .gt. 0)
+			begin
+			totlen = s304tl_20(k)
+			ppi = s304prc_20(k)
+			call sum_sss
+			end
+		if (s316tl_20(k) .gt. 0)
+			begin
+			totlen = s316tl_20(k)
+			ppi = s316prc_20(k)
+			call sum_sss
+			end
+		if (alumtl_22(k) .gt. 0)
+			begin
+			totlen = alumtl_22(k)
+			ppi = alumprc_22(k)
+			call sum_sss
+			end
+		if (s304tl_22(k) .gt. 0)
+			begin
+			totlen = s304tl_22(k)
+			ppi = s304prc_22(k)
+			call sum_sss
+			end
+		if (s316tl_22(k) .gt. 0)
+			begin
+			totlen = s316tl_22(k)
+			ppi = s316prc_22(k)
+			call sum_sss
+			end
+		if (alumtl_24(k) .gt. 0)
+			begin
+			totlen = alumtl_24(k)
+			ppi = alumprc_24(k)
+			call sum_sss
+			end
+		if (s304tl_24(k) .gt. 0)
+			begin
+			totlen = s304tl_24(k)
+			ppi = s304prc_24(k)
+			call sum_sss
+			end
+		if (s316tl_24(k) .gt. 0)
+			begin
+			totlen = s316tl_24(k)
+			ppi = s316prc_24(k)
+			call sum_sss
+			end
+		end
+
+; create SSSP/ASP line items if required...
+	if (sst_amt .gt. 0) 
+		begin
+		litmno = 'SSSP'
+		call getitm
+		ordqty = 1
+		fd_price = sst_amt
+		call sg_item		;add ordlin
+		end
+	if (alu_amt .gt. 0)
+		begin
+		litmno = 'ASP'
+		call getitm
+		ordqty = 1
+		fd_price = alu_amt
+		call sg_item		;add ordlin
+
+		end
+
+	return
+;------------------------------------------------------
+sum_sss,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	using totlen/12 select
+	(20 thru 49),	s_adj = 90
+	(50 thru 99),	s_adj = 85
+	(100 thru 149),	s_adj = 80
+	(.gt. 149),	s_adj = 70
+	(),		s_adj = 100
+	endusing
+
+	totlen = totlen + 72			;add 6' (72")
+	wrkamt = (totlen * ppi * s_adj)#1	;total amount
+	
+	using fd_f1 select
+	(64,65),	sst_tot = sst_tot + wrkamt
+	(66),		alu_tot = alu_tot + wrkamt
+	endusing
+	
+	return
+;------------------------------------------------------

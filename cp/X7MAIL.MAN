@@ -1,0 +1,50 @@
+;x7mail.man
+;	see w7lib.bat - it creates "w7mail.inc"
+;
+
+.include 'w7mail.inc'
+
+subroutine x7mail
+	recpt	,a
+	subj	,a
+	body	,a
+	att1	,a
+	att2	,a
+	att3	,a
+	att4	,a
+	att5	,a
+	att6	,a
+	att7	,a
+	sndflg	,d	;1=send, 2=display
+
+record
+	obj	,@w7mail.mail
+
+record	vars
+	a2	,a2
+	ssq	,a30
+;
+proc
+
+	obj = new Mail()
+	obj.gAttach (att1(1,%trim(att1)),
+&		 att2(1,%trim(att2)),
+&		 att3(1,%trim(att3)),
+&		 att4(1,%trim(att4)),
+&		 att5(1,%trim(att5)),
+&		 att6(1,%trim(att6)),
+&		 att7(1,%trim(att7)) )
+
+
+
+	using sndflg select
+	(1), obj.sMail (recpt, subj, body)
+	(2), obj.dMail (recpt, subj, body)
+	endusing
+
+
+	xreturn
+end
+
+	
+

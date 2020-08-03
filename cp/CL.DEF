@@ -1,0 +1,9 @@
+record	comlog
+	c_litmno	,a15
+	c_itemno	,a15
+	c_qty		,d6
+	c_order		,d6
+	c_oe		,a1
+	c_routine	,a8
+	c_date		,a11	;23-oct-1998
+	c_time		,a8	;xx:xx:xx

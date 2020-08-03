@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ActiveReportsLayout 
+	GUIDLIB="{582F480E-0E3C-45A2-AF04-7F3C9B93D3A1}" GUIDREP="{F1953706-FBE3-49AA-BD16-D11509256ECA}" 
+	LICENSE="10000000"
+	PrintWidth="14430"
+	DocumentName="Print Pick List"
+	ScriptLang="VBScript"
+>
+<Watermark
+		>
+</Watermark>
+<Script>
+<![CDATA[Sub OnDataInitialize
+  dim f
+dim h 
+
+rpt.fields.add ("fhandle")
+rpt.fields.add ("div_name")
+rpt.fields.add ("div_address")
+rpt.fields.add ("div_address2")
+rpt.fields.add ("div_phone_num")
+rpt.fields.add ("smc_order_num")
+rpt.fields.add ("billto_name")
+rpt.fields.add ("shipto_name")
+rpt.fields.add ("shipto_address")
+rpt.fields.add ("shipto_address2")
+rpt.fields.add ("shipto_address3")
+rpt.fields.add ("customer_po")
+rpt.fields.add ("customer_jobnum")
+rpt.fields.add ("product_lot_num")
+
+f = iis.GetrptParameter("FileName", "c:\smc\spool\shipping.txt")
+h = fileio.FOpen(f)
+
+rpt.fields("fhandle").value = h
+
+End Sub
+
+Sub OnFetchData(eof)
+  dim h
+  dim s2
+  dim a
+  dim i
+
+h = rpt.fields("fhandle")
+Do
+  s2 = fileio.readline(h)
+Loop Until Left(s2, Len("LABEL")) = "LABEL" Or fileio.Endoffile(h)
+
+If Not fileio.Endoffile(h) Then
+  a = Split(s2, vbTab)
+
+  on error resume next
+  rpt.fields("div_name").value = a(1)
+  rpt.fields("div_address").value = a(2)
+  rpt.fields("div_address2").value = a(3)
+  rpt.fields("div_phone_num").value = a(4)
+  rpt.fields("smc_order_num").value = a(5)
+  rpt.fields("billto_name").value = a(6)
+  rpt.fields("shipto_name").value = a(7)
+  rpt.fields("shipto_address").value = a(8)
+  rpt.fields("shipto_address2").value = a(9)
+  rpt.fields("shipto_address3").value = a(10)
+  rpt.fields("customer_po").value = a(11)
+  rpt.fields("customer_jobnum").value = a(12)
+  rpt.fields("product_lot_num").value = a(13)
+'msgbox "label printed"
+
+  on error goto 0
+
+end if
+
+eof = fileio.endoffile(h)
+'msgbox "onfetch eof = " & eof
+End Sub
+
+'="             Packing Instructions"+chr(10)+iis.iif(len(trim(max_lift_size))>0,max_lift_size+chr(10),"")+iis.iif(len(trim(pack_line1))>0,pack_line1+chr(10),"")+iis.iif(len(trim(pack_line2))>0,pack_line2+chr(10),"")+iis.iif(len(trim(pack_line3))>0,pack_line3+chr(10),"")+iis.iif(len(trim(pack_line4))>0,pack_line4+chr(10),"")+iis.iif(len(trim(pack_line5))>0,pack_line5+chr(10),"")+PickOrdComments
+Sub OnReportEnd
+fileio.fclose(rpt.fields("fhandle"))
+End Sub
+
+Sub OnReportStart
+  dim dname
+dname = iis.GetrptParameter("DocumentName", "Print Preview")
+form.caption = dname
+rpt.documentname = dname
+End Sub
+]]></Script>
+<PageSettings	LeftMargin="720"
+	RightMargin="0"
+	TopMargin="0"
+	BottomMargin="0"
+	PaperSize="1"
+	PaperWidth="15840"
+	PaperHeight="12240"
+	Orientation="2"
+>
+</PageSettings>
+<StyleSheet>
+	<Style Name="Normal"
+	Value="font-family: &apos;Arial&apos;; font-style: normal; font-variant: inherit; font-weight: normal; font-size: 10pt; font-size-adjust: inherit; font-stretch: inherit; color: rgb(0,0,0); background-color: rgb(255,255,255); background-image: inherit; background-repeat: inherit; background-attachment: inherit; background-x-position: inherit; background-y-position: inherit; opacity: inherit; word-spacing: inherit; letter-spacing: inherit; text-decoration: none; vertical-align: inherit; text-transform: inherit; text-align: inherit; text-indent: inherit; unicode-bidi: inherit; line-height: inherit; white-space: inherit; ddo-can-grow: inherit; ddo-can-shrink: inherit; ddo-char-set: 0; "
+	/>
+	<Style Name="Heading1"
+	Value="font-family: &apos;inherit&apos;; font-style: inherit; font-variant: inherit; font-weight: bold; font-size: 16pt; font-size-adjust: inherit; font-stretch: inherit; "
+	/>
+	<Style Name="Heading2"
+	Value="font-family: &apos;Times New Roman&apos;; font-style: italic; font-variant: inherit; font-weight: bold; font-size: 14pt; font-size-adjust: inherit; font-stretch: inherit; "
+	/>
+	<Style Name="Heading3"
+	Value="font-family: &apos;inherit&apos;; font-style: inherit; font-variant: inherit; font-weight: bold; font-size: 13pt; font-size-adjust: inherit; font-stretch: inherit; "
+	/>
+	<Style Name="Heading4"
+	/>
+</StyleSheet>
+<Sections>
+	<Section Type="ReportHeader" Name="ReportHeader"
+		Height="0"
+	>
+<Script>
+<![CDATA[
+Sub OnFormat
+
+End Sub
+]]></Script>
+	</Section>
+	<Section Type="PageHeader" Name="PageHeader"
+		Height="360"
+	>
+	</Section>
+	<Section Type="Detail" Name="Detail"
+		Height="5685"
+		ColumnCount="2"
+		ColumnDirection="1"
+		KeepTogether="-1"
+		CanGrow="0"
+	>
+		<Control 
+		Type="AR.Field"
+		Name="Field46"
+		DataField="=div_name"
+		Left="90"
+		Top="270"
+		Width="5850"
+		Height="360"
+		Text="div_name"
+		ClassName="Normal"
+		Style="font-size: 10pt; vertical-align: middle; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field52"
+		DataField="=div_address"
+		Left="90"
+		Top="630"
+		Width="3330"
+		Height="360"
+		Text="div_address"
+		ClassName="Normal"
+		Style="font-size: 10pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field53"
+		DataField="smc_order_num"
+		Left="4500"
+		Top="630"
+		Width="2520"
+		Height="720"
+		Text="smc_order_num"
+		ClassName="Normal"
+		Style="font-size: 36pt; font-weight: bold; text-align: center; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field55"
+		DataField="shipto_name"
+		Left="90"
+		Top="2520"
+		Width="5850"
+		Height="360"
+		Text="billto_name"
+		ClassName="Normal"
+		Style="font-size: 18pt; font-weight: bold; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field56"
+		DataField="=shipto_address+chr(10)+trim(shipto_address2)+chr(10)+trim(shipto_address3)"
+		Left="90"
+		Top="2970"
+		Width="5850"
+		Height="810"
+		Text="div_address"
+		ClassName="Normal"
+		Style="font-size: 16pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label2"
+		Left="180"
+		Top="4050"
+		Width="1800"
+		Height="270"
+		Caption="Customer PO#"
+		ClassName="Normal"
+		Style="text-align: left; font-size: 12pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field57"
+		DataField="=customer_po"
+		Left="180"
+		Top="4320"
+		Width="2430"
+		Height="360"
+		Text="=customer_po"
+		ClassName="Normal"
+		Style="font-size: 12pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label3"
+		Left="2880"
+		Top="4050"
+		Width="1980"
+		Height="270"
+		Caption="Customer Job#"
+		ClassName="Normal"
+		Style="text-align: left; font-size: 12pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field58"
+		DataField="=customer_jobnum"
+		Left="2880"
+		Top="4320"
+		Width="2610"
+		Height="360"
+		Text="=customer_jobnum"
+		ClassName="Normal"
+		Style="font-size: 12pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Label"
+		Name="Label4"
+		Left="5670"
+		Top="4050"
+		Width="1260"
+		Height="270"
+		Caption="Lot#"
+		ClassName="Normal"
+		Style="text-align: center; font-size: 12pt; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field59"
+		DataField="=product_lot_num"
+		Left="90"
+		Top="1620"
+		Width="3870"
+		Height="630"
+		Text="production_lot#"
+		ClassName="Normal"
+		Style="font-size: 36pt; font-weight: bold; text-align: center; "
+		>
+		</Control>
+		<Control 
+		Type="AR.Barcode"
+		Name="Barcode1"
+		DataField="smc_order_num"
+		Left="4500"
+		Top="1440"
+		Width="2610"
+		Height="540"
+		>
+<![CDATA[010000000100010000000000000002000000000000000200000041007200690061006C0000000000000000000000000000000000000000000000000000000000
+		00000000000000000000000000000000000000000000000000008038010000000000000000000000000000000000000000009001010000000000FFFFFF000000
+		0000]]>
+		</Control>
+		<Control 
+		Type="AR.Field"
+		Name="Field60"
+		DataField="=div_address2"
+		Left="90"
+		Top="990"
+		Width="3150"
+		Height="360"
+		Text="=div_address2"
+		ClassName="Normal"
+		>
+		</Control>
+<Script>
+<![CDATA[
+Sub OnFormat
+
+End Sub
+]]></Script>
+	</Section>
+	<Section Type="PageFooter" Name="PageFooter"
+		Height="360"
+	>
+	</Section>
+	<Section Type="ReportFooter" Name="ReportFooter"
+		Height="0"
+	>
+<Script>
+<![CDATA[
+Sub OnFormat
+
+End Sub
+]]></Script>
+	</Section>
+</Sections>
+</ActiveReportsLayout>

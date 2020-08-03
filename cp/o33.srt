@@ -1,0 +1,9 @@
+;o33.srt
+
+record	ordsch
+	.include 'def:Rd087a.def'
+;
+proc
+	sort (in='ordsch.dat', record=ordsch, key=(sch_dp1, sch_dat, sch_tim) )
+	stop
+	end

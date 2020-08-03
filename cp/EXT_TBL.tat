@@ -1,0 +1,168 @@
+RT  10001                                      PSA   0000HAMMER LOCK PIPE              00FJ05GA                                                    
+RT  10002                                      ES    0000                              00FJ                                                        
+RT  10003                                      EDS   0000                              00FJ                                                        
+RT  10004                                      ECS   0000                              00FJ                                                        
+RT  10005                                      ECD   0000ECDS                          00S FJ                                                      
+RT  10006                                      NS    0000                              00FJGA                                                      
+RT  10007                                      EC    0000                              00FJGA                                                      
+RT  10008                                      EDS   0000                              90FJAN20                                                    
+RT  10009                                      EDS   0000                              45FJAN20                                                    
+RT0110001                                      P     0000SNAP LOCK PIPE                00FJFCGA                                                    
+RT0110002                                      E     000 E-Z TAP COLLAR                00FJGA                                                      
+RT0110003                                      E     100 E-Z TAP COLLAR W/ DAMPER      00FJGA                                                      
+RT0110004                                      E     010 E-Z TAP CONICAL               00FJGA                                                      
+RT0110005                                      E     110 E-Z TAP CONICAL W/ DAMPER     00FJGA                                                      
+RT0110006                                      S     0000SPIN-IN COLLAR                00FJGAS                                                     
+RT0110007                                      S     1000SPIN-IN COLLAR W/ DAMPER      00FJGAS                                                     
+RT0110008                                      ECE   000 CONICAL BELL MOUTH SPIN-IN    00FJ                                                        
+RT0110009                                      HE    000 CONICAL BELL MOUTH SPIN-IN/W D00FJ                                                        
+RT0110010                                      H     0000HI-EFF TAKEOFF                00FJGA                                                      
+RT0110011                                      H     1000HI-EFF TAKEOFF W/ DAMPER        FJGA                                                      
+RT0110012                                      E90   0000ADJ ELBOW 90 LE/SE            90FJANGA                                                    
+RT0110013                                      A     0000ADJ ANGLE 45 LE/SE            45FJANGA                                                    
+RT0110014                                      S     00011.5 STANDOFF COLLAR             FJ                                                        
+RT0110015                                      E     0001E-Z TAP COLLAR W/1.5 STANDOFF   FJ                                                        
+RT0110016                                      B     0001E-Z TAP CONICAL W/ 1.5 S-OFF    FJ                                                        
+RT0110017                                      H     0001HI-EFF TAKEOFF W/ 1.5 STANDOFF  FJ                                                        
+RT0110018                                      N     0000NOTCHED COLLAR                  FJGAS                                                     
+RT0110019                                      N     1000NOTCHED COLLAR W/ DAMPER        FJGAS                                                     
+RT0110020                                      S     0010SPIN-IN CALLAR W/ SCOOP         FJGAS                                                     
+RT0110021                                      S     1010SPIN-IN W/SCOOP W/DAMPER        FJGAS                                                     
+RT0110022                                      EC    0000END CAP                         FJGAL                                                     
+RT0110023                                      X     0000R4.2 FLEX DUCT- 25FT BOX        FJ                                                        
+RT0110024                                      PH    0000HAMMER LOCK PIPE                FJFCGA                                                    
+RT0110025                                      SW9   0000SWEDGED SADDLE                  GAFJFD                                                    
+RT0110026                                      SC9   0000CONICAL TYPE 90 SWEDGED SADDLE  GAFJFD                                                    
+RT0110027                                      ST9   000090 SHOE TAP                     GAFJFD                                                    
+RT0110028                                      SW4   000045 SWEDGED SADDLE               GAFJFD                                                    
+RT0110029                                      E90   0000ADJ ELBOW W/ SPIRAL ENDS      90FJANGAS                                                   
+RT0110030                                      A     0000ADJ ANGLE W/SPIRAL ENDS       45FJANGAS                                                   
+RT0110031                                      ED    0000WELDED DIEFORM ELBOW          90FJAN                                                      
+RT0110032                                      ED    0000WELDED DIEFORM ANGLE          45FJAN                                                      
+RT0110033                                      GA    0000GORELOCK ANGLE (FULL SWEEP)   45FJANGA                                                    
+RT0110034                                      GE    0000GORELOCK ELBOW (FULL SWEEP)   90FJANGA                                                    
+RT0110036                                      SW9   000090 SWEDGED SADDLE W/ DAMPER   00GA* FJFD                                                  
+RT0110037                                      SC9   0000CONICAL SADDLE W/ DAMPER      00GA* FJFD                                                  
+RT0110038                                      ST9   0000SHOE TAP W/ DAMPER            00GA* FJFD                                                  
+RT0110039                                      SW4   0000SWEDGED SADDLE W/ DAMPER      00GA* FJFD                                                  
+RT0110040                                      BSE   0000BIRD SCREEN END CAP           00FJ                                                        
+RT0110041                                      RT    0000REGISTER TAKEOFF              00FAFBFD                                                    
+RT0110042                                      DD    0000VOLUME DAMPER                 00FJGA                                                      
+RT0113003                                      EZTAP 000                                                                                           
+RT0113004                                      EZTAP 100                                                                                           
+RT0113005                                      EZTAP 010                                                                                           
+RT0113010                                      EZTAP 110                                                                                           
+RT0114003                                      EZTAP 000                                                                                           
+RT0114004                                      EZTAP 100                                                                                           
+RT0114005                                      EZTAP 010                                                                                           
+RT0114010                                      EZTAP 110                                                                                           
+RT0120001                                      SG    0000SPIRAL PIPE                   00FJGAFD                                                    
+RT0120003                                      GE    000090 GORELOCK ELBOW             90FJANGA                                                    
+RT0120004                                      GA    000045 GORELOCK ANGLE             45FJANGA                                                    
+RT0120005                                      EG    000090 WELDED GORED ELBOW         90FJANGA                                                    
+RT0120006                                      EG    000045 WELDED GORED ANGLE         45FJANGA                                                    
+RT0120007                                            0000MITERED ELBOW                 00                                                          
+RT0120008                                      BN9   0000BULLNOSE TEE                  00GAFJFDFH                                                  
+RT0120009                                      BN9   0000BULLNOSE TEE                    GAFDFHFJ                                                  
+RT0120010                                      P4    0000WYE                           00GAFJFHFD                                                  
+RT0120011                                      R     0000CONCENTRIC REDUCER W/ COLLARS 00GAFHFJ                                                    
+RT0120012                                      ER    0000ECCENTRIC REDUCER W/ COLLARS  00GAFHFJ                                                    
+RT0120015                                      EC    0000END CAP SPIRAL                00FJGAS                                                     
+RT0120020                                      C     0000SPIRAL PIPE CONNECTOR         00FJGA                                                      
+RT0120023                                      T9    0000BODY MAIN FOR T 90 SADDLE T...00GAFEFJFH                                                  
+RT0120024                                      CT9   0000BODY MAIN TEE CONICAL TAP     00GAFEFJFH                                                  
+RT0120025                                      C9    0000BODY MAIN SADDLE CROSS        00GAFEFJFHFD                                                
+RT0120026                                      CC9   0000BODY MAIN TEE STRT CROSS      00GAFEFJFHFD                                                
+RT0120027                                      T4    0000BODY MAIN FOR T 45 SADDLE T   00GAFEFJFH                                                  
+RT0120029                                      C4    0000BODY MAIN FOR T 45 SADDLE CROS00GAFEFJFHFD                                                
+RT0120032                                      STT   0000SHOE TAP TEE                  00GAFEFJFH                                                  
+RT0120034                                      STC   0000SHOE TAP CROSS                00GAFEFJFHFD                                                
+RT0120035                                      S9    0000FULL SADDLE 90 SADDLE TAP-IN  00GAFHFE                                                    
+RT0120037                                      S4    0000FULL SADDLE 45 SADDLE TAP-IN C00GAFDFE                                                    
+RT0130001                                      DUC   0000STRAIGHT DUCTWORK             00FAFBFCFE                                                  
+RT0130002                                      FIT   0000SQUARE ELBOW                  00FCFB                                                      
+RT0130003                                      FIT   0000VARIABLE SQUARE ELBO          00FAFB                                                      
+RT0130004                                      FIT   0000                              00FAFB                                                      
+RT0130005                                      FIT   0000                              00FAFB                                                      
+RT0130006                                      FIT   0000                              00FAFB                                                      
+RT0130007                                      FIT   0000SQUARE THRT. RAD              00FEFD                                                      
+RT0130009                                      FIT   0000                              00FDFB                                                      
+RT0130010                                      FIT   0000TRANSITION 2 WAY              00FDFE                                                      
+RT0130011                                      FIT   0000MITRED OFFSET                 00FDFE                                                      
+RT0130012                                      FIT   0000                              00FDFE                                                      
+RT0130013                                      FIT   0000SQUARE TO ROUND               00FAFB                                                      
+RT0130014                                      FIT   0000                              00FDFE                                                      
+RT0130015                                      FIT   0000                              00FAFB                                                      
+RT0130016                                      FIT   0000                              00FAFB                                                      
+RT0130018                                      FIT   0000                              00FDFB                                                      
+RT0130020                                      FIT   0000                              00FDFB                                                      
+RT0130021                                      FIT   0000                              00FDFB                                                      
+RT0130022                                      FIT   0000                              00FDFB                                                      
+RT0130023                                      FIT   0000                              00FDFE                                                      
+RT0130024                                      FIT   0000                              00FCFD                                                      
+RT0130027                                      FCC   0000CANVAS CONNECTOR              00FAFB                                                      
+RT0130029                                      FIT   0000END CAP                       00FAFB                                                      
+RT0130030                                      FIT   0000                              00FEFF                                                      
+RT0130031                                      FIT   0000                              00FAFB                                                      
+RT0130032                                      FIT   0000                              00FEFF                                                      
+RT0130033                                      FIT   0000                              00FEFF                                                      
+RT0130035                                      FIT   0000                              00FAFB                                                      
+RT0140001                                      ITM   0000ITEM IS IN ITMMAS             00                                                          
+RT0150001                                      SG    0000E-Z SPIRAL                    00FEGAFD                                                    
+RT0410001                                      PSA   0000PIPE                          00FJ05GA                                                    
+RT0410002                                      ES    0000                              00FJ                                                        
+RT0410003                                      EDS   0000                              00FJ                                                        
+RT0410004                                      ECS   0000ECS                           00FJ                                                        
+RT0410005                                      E     1100CONICAL EZ TAP W/ DAMPER      00S FJ                                                      
+RT0410006                                      NS    0000NOTCH COLLAR                  00FJGAS                                                     
+RT0410007                                      EC    0000END CAP                       00FJGAL                                                     
+RT0410008                                      EDS   0000DIEFORM                       90FJAN20                                                    
+RT0410009                                      EDS   000045 DIEFORM                    45FJAN20                                                    
+RT0410010                                      H     0000HI EFFICIENCY TAKE-OFF        00FJGA                                                      
+RT0410011                                      H     1000HI EFFICIENCY TAKE-OFF W/ DAMP00FJGA                                                      
+RT0410012                                      SW9   0000SWEDGED SADDLE                00GAFJFD                                                    
+RT0410013                                      SC9   0000CONICAL SADDLE                00GAFJFD                                                    
+RT0410014                                      ST9   0000SHOE TAP                      00GAFJFD                                                    
+RT0410015                                      SW4   0000SWEDGE SADDLE 45              00GAFJFD                                                    
+RT0410016                                      ES    0000ELBOW                         90FJANGA                                                    
+RT0410017                                      AS    0000                              45FJANGA                                                    
+RT0410018                                      RT    0000REGISTER TAKE-OFF             00FAFBFD                                                    
+RT0410019                                      SW9   0000SWEDGE SADDLE 90              00GA* FJFD                                                  
+RT0710001                                      PSA   0000PIPE                          00FJ05GA                                                    
+RT0710002                                      ES    0000                              00FJ                                                        
+RT0710003                                      EDS   0000                              00FJ                                                        
+RT0710004                                      ECS   0000ECS                           00FJ                                                        
+RT0710005                                      E     1100CONICAL EZ TAP W/ DAMPER      00S FJ                                                      
+RT0710006                                      NS    0000NOTCH COLLAR                  00FJGAS                                                     
+RT0710007                                      EC    0000END CAP                       00FJGAL                                                     
+RT0710008                                      EDS   0000DIEFORM                       90FJAN20                                                    
+RT0710009                                      EDS   000045 DIEFORM                    45FJAN20                                                    
+RT0710010                                      H     0000HI EFFICIENCY TAKE-OFF        00FJGA                                                      
+RT0710011                                      HD    1000HI EFFICIENCY TAKE-OFF W/ DAMP00FJGA                                                      
+RT0710012                                      SW9   0000SWEDGED SADDLE                00GAFJFD                                                    
+RT0710013                                      SC9   0000CONICAL SADDLE                00GAFJFD                                                    
+RT0710014                                      ST9   0000SHOE TAP                      00GAFJFD                                                    
+RT0710015                                      SW4   0000SWEDGE SADDLE 45              00GAFJFD                                                    
+RT0710016                                      ES    0000ELBOW                         90FJANGA                                                    
+RT0710017                                      AS    0000                              90FJANGA                                                    
+RT0710018                                      RT    0000REGISTER TAKE-OFF             00FAFBFD                                                    
+RT0710019                                      SW9   0000SWEDGE SADDLE 90              00GA* FJFD                                                  
+RT0710024                                      PSA   0000PIPE                          00FJ05GA                                                    
+RT0710025                                      ES    0000                              00FJ                                                        
+RT0710026                                      EDS   0000                              00FJ                                                        
+RT0710027                                      ECS   0000ECS                           00FJ                                                        
+RT0710028                                      E     1100CONICAL EZ TAP W/ DAMPER      00S FJ                                                      
+RT0710029                                      NS    0000NOTCH COLLAR                  00FJGAS                                                     
+RT0710030                                      EC    0000END CAP                       00FJGAL                                                     
+RT0710031                                      EDS   0000DIEFORM                       90FJAN20                                                    
+RT0710032                                      EDS   000045 DIEFORM                    45FJAN20                                                    
+RT0710033                                      H     0000HI EFFICIENCY TAKE-OFF        00FJGA                                                      
+RT0710034                                      H     1000HI EFFICIENCY TAKE-OFF W/ DAMP00FJGA                                                      
+RT0710035                                      SW9   0000SWEDGED SADDLE                00GAFJFD                                                    
+RT0710036                                      SC9   0000CONICAL SADDLE                00GAFJFD                                                    
+RT0710037                                      ST9   0000SHOE TAP                      00GAFJFD                                                    
+RT0710038                                      SW4   0000SWEDGE SADDLE 45              00GAFJFD                                                    
+RT0710039                                      ES    0000ELBOW                         90FJANGA                                                    
+RT0710040                                      AS    0000                              45FJANGA                                                    
+RT0710041                                      RT    0000REGISTER TAKE-OFF             00FAFBFD                                                    
+RT0710042                                      SW9   0000SWEDGE SADDLE 90              00GA* FJFD                                                  

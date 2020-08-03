@@ -1,0 +1,4 @@
+-d mailor mkors \
+smtpm base64 localUMTOffset \
+cp:cplib.elb ut:smtp.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb
+

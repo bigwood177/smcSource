@@ -1,0 +1,3 @@
+-d shpcng ntmal mkpdf \
+cp:cplib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb
+

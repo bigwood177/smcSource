@@ -1,0 +1,13 @@
+.script
+.date_generated "11/04/1998, 07:48"
+.version "6.3"
+.column general, "General"
+.entry exit, "Exit", key(f4)
+.end
+
+.input Input1, 1, 30
+.display_area 1,1,1,24
+.placement 4, 15
+.field InputField1, a10, fpos(1, 11)
+.field InputField2, a10, fpos(1, 13)
+.end

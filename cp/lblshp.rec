@@ -1,0 +1,15 @@
+Column
+1		,a5,	'LABEL'
+2	div name
+3	div add1
+4	div add2
+5	div phone
+6	smc order#
+7	bill-to name
+8	ship-to name
+9	ship-to add1
+10	ship-to add2
+11	ship-to add3
+12	po#	,a10
+13	job#	,a10
+14	lot#

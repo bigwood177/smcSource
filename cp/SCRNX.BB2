@@ -1,0 +1,4459 @@
+;SCRNX.DBL	;isam
+
+
+; 3-9-04 - RE_PRICE_ROUTINE in test
+; 1/15/03 installed - note that material multiplier not activated!!
+SUBROUTINE SCRNX
+;
+;	16-MAY-1997 SSQ: ADD QTY BREAK PRICING.
+;	01-JUN-1998 SSQ: CHANGE "INCH" CHAR FROM "," TO "+"
+;	11-Nov-1998 SSQ: Streamline configuration logic
+;	16-FEB-1999 SSQ: No char. may follow "+" (inch) for r-angle
+;	01-MAR-1999 SSQ: CLEAR bad_dig
+;	14-JUL-1999 SSQ: "EDS"
+;	07-SEP-2001 SSQ: LTXFLG set based on ITMMAS only - don't
+;				care about customer until billing.
+;	19-Dec-2001 SSQ: <f9> = don't fax
+;	25-Jul-2002 SSQ: Saddle's "SV" & "S" - use Tee price table.
+;	07-AUG-2002 SSQ: SP,SPV -> SG SX conversion.
+;	13-SEP-2002 SSQ: DAMPER PRICE MATRIX
+;	16-OCT-2002 SSQ: <F5> Changes to reducers yields wrong price;
+;			  item not going thru config so config_price is
+;			  whatever happens to be in field, and whatever
+;			  happens to be damper_price(i) gets added to lprice...
+;
+;	15-jan-2003 ssq:  install pricing changes. Pricing info now in
+;				cop tables, <fkey> for material, new 
+;				configurators.
+;	31-jul-2003 ssq: coptbl.mm_key from d2 to d5, save key in rd045m.m_key
+;	04-sep-2003 ssq: ezflange jr mods
+;	09-mar-2004 ssq: re-price mod
+;	16-SEP-2004 SSQ: non-contractor multiplier mod
+;	26-Sep-2006 ssq: dampers & multipliers & pressed items.
+;	11-Dec-2007 ssq: set lf1, lf2, & lf3 from default keys.
+
+;		HANDLES SECOND SCREEN IN ADD MODE OF OE
+;
+	CUSTP2	,A
+	PCODES	,A
+	PDISCS	,D
+	PMAX	,D
+	DCODES	,A
+	DDISCS	,D
+	DMAX	,D
+	TYPSIS	,D
+	ORDSEQ	,D
+	OORDNO	,D
+	TAXFLG	,A
+	MAXRC2	,D
+	ORGINV	,D
+	LOCTNS	,D
+	PRICES	,D
+;;;	FULL	,D
+	RE_PRICE,D	;SSQ 4-1-04 now indicates order re-priced
+	ODISC	,D
+	OLOC	,A
+	OCUSNM	,A
+	TAXTOT	,D
+;;;	V	,D
+	OPRTF	,D	;SSQ 4-15-04
+	CONTR	,D	;1=CONTRACTER, 2=NOT CONTR, USE 1.2 * PRICE
+;;;	CREDIT	,D
+	ODATE	,D
+	CUSTCD	,A
+	distr	,d	;1 = customer is a distibutor
+
+	.INCLUDE 'WND:WINDOWS.DEF'
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+
+EXTERNAL FUNCTION
+	GNS	,D		;FUNCTION TO GET NUMBER OF DAMPER SECTIONS
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+GLOBAL ORDL	
+RECORD ORDLIN  		
+		.INCLUDE 'DEF:RD045A.def'
+RECORD,X
+		.INCLUDE 'DEF:RD045D.def'
+RECORD,X
+		.INCLUDE 'DEF:RD045M.def'
+ENDGLOBAL
+;------------------------------------------
+
+GLOBAL IMS	
+RECORD INVMAS
+	.INCLUDE 'DEF:RD041A.def'
+RECORD DUMINV,X
+	.INCLUDE 'DEF:RD041B.def'
+;;;RECORD ITMIDX 
+;;;	.INCLUDE 'DEF:RD042A.DEF'
+RECORD
+	FIL041	,A14		;ITMMAS FILE NAME
+ENDGLOBAL
+;------------------------------------------
+
+RECORD	ITMKEY
+	.INCLUDE 'DEF:RD041K.DEF'
+
+RECORD	FILPRC
+	FL_DEV	,A3
+		,A1,	':'
+	FL_NAME	,A6
+		,A1,	'.'
+	FL_EXT	,A3
+
+
+RECORD	MATERIALS
+	.INCLUDE 'DEF:CFGMAT.DEF'
+
+RECORD	OOSMSG
+	.INCLUDE 'DEF:OOSMSG.DEF'
+
+RECORD	SAV045
+	.INCLUDE 'DEF:RD045Z.DEF'
+
+
+RECORD	POP6		;MATERIAL
+	.INCLUDE 'DEF:POP6.DEF'
+
+RECORD	POP		;INTERNAL USE
+;;;	.INCLUDE 'DEF:POP1.DEF'
+	.INCLUDE 'DEF:POP40.DEF'
+
+record	mpop1
+	.include 'def:mpop1.def'
+RECORD	MPOP2
+	.INCLUDE 'def:MPOP2.DEF'
+RECORD	MPOP3
+	.INCLUDE 'def:MPOP3.DEF'
+RECORD	MPOP4
+	.INCLUDE 'def:MPOP4.DEF'
+RECORD	LPOP
+	.INCLUDE 'def:LPOP.DEF'
+RECORD	FKEYS
+	.INCLUDE 'DEF:FUNKEY.DEF'
+;------------------------------------
+
+
+RECORD	ID_LINE
+		,A*	,'ORDER: '
+	ID_ORDER	,A6
+		,A*	,'  CUST: '
+	ID_NAME	,A30
+
+RECORD	HD_LINE
+	,A*,'ITEM #          DESCRIPTION                  QTY            PRICE     EXT-PRICE'
+
+RECORD	F_MEMOS
+	.INCLUDE 'def:CPMEMO.DEF'
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; now in cpmemo.def
+;;;RECORD
+;;;	F1_SEQ	,20D2
+;;;	F2_SEQ	,20D2
+;;;	F3_SEQ	,20D2
+;;;	F4_SEQ	,20D2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+RECORD	WRKLIN
+	ARO	,A1
+;;;		,A1
+	REST	,A80
+
+;-------------------------
+RECORD	
+	D_LONG	,A90
+	D_SHORT	,A12
+	D_KEY	,D5		;SSQ 7-31-03
+	D_F6M	,D1		;SSQ 10-13-07
+	D_CDPT	,D1		;SSQ 12-26-07
+RECORD,X
+	DL_ARA	,3A30		;ssq 1-03-08, not sure why this was 31...
+;;;	DL_ARA	,3A31
+;-------------------------
+
+record	dsp_gasket
+		,a*,	'JR gasket: '
+	d_jr	,a10
+		,a2
+		,a*,	'TG gasket: '
+	d_tg	,a10
+		,a10
+		,a*,	'<Home>=Print Lines'
+
+RECORD	PM_LINE
+		,A6,	'PMULT:'
+		,A1
+	PM_MULT	,A4
+
+RECORD	NVP_MSG
+		,A*,	'NOT VALID FOR PRDCAT '
+	NVP	,A1
+
+RECORD	AUDIT		;SSQ 4-13-04
+	.INCLUDE 'DEF:AUDIT.DEF'
+
+RECORD	WVARS
+	W_ID	,D4
+	WND_1	,D4
+	W1_NAME	,A6
+	WND_2	,D4
+	W2_NAME	,A6
+	WND_4	,D4	;CNG_LI
+	W4_NAME	,A6
+	WND_6	,D4	;MATERIAL
+	W6_NAME	,A6
+;;;	WND_M	,D4	
+;;;	WM_NAME	,A6
+	WND_P	,D4	;P_MULT
+	WP_NAME	,A6
+	WND_D	,D4	;DAMPER
+	WD_NAME	,A6
+	WN_NAME	,A6,	'MAKMEM'
+	wnd_w2	,d4	;ssq 3-1-07
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD	DMPRIC
+	.INCLUDE 'DEF:DMPRIC.DEF'
+
+RECORD TPRICE
+	ARRAY	,80D5
+
+RECORD	TOFF
+	RT_SZ1	,D2
+		,A1,	'/'
+	RT_SZ2	,D2
+		,A4,	' ON '
+	RT_DIA	,D2
+		,A*,	'"RD '
+	RT_GA	,D2
+		,A*,	'GA '
+	RT_REST	,A10	
+	
+
+RECORD	DMPDAT
+	DMAT	,A1
+	DHT	,D3
+	DLEN	,D3
+	DHARA	,3D3		;ARRAY OF SECTION HEIGHTS
+	DLARA	,3D3		;ARRAY OF SECTION LENGTHS
+	DITEM	,A15
+
+RECORD TEEDAT
+	TGUAG	,D2
+	TMAIN	,D2
+	TREDU	,D2
+	TBRAN	,D2
+	TDESCR	,A30
+
+RECORD	SADDLE
+	SANGL	,A2
+	SGUAG	,A2
+	SBRAN	,A2
+	SMAIN	,A2
+		,A1	;IN CASE "DAMPER" (*)
+RECORD,X
+		,A4	;ANGLE, GAUGE
+	STAR	,A1	;FOR DAMPER
+	ST_BRAN	,A2
+	ST_MAIN	,A2
+
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+RECORD OUTSTK
+		,A9,	'ON-HAND: '
+	AQTYONH	,A7
+		,A13,	'| COMMITTED: '
+	AQTYCOM	,A7
+		,A12,	'| ON-ORDER: '
+	AQTYONO	,A7
+		,A13,	'| NET AVAIL: '
+	ANETAV	,A7
+
+RECORD	VDAMPR
+	DAMP		,D2	;DAMPER DIMENSIONS
+	DAMPER_PRICE	,3D8
+	SAVE_DP		,3D8
+	FL	,D2	;
+	MAXFLEN	,D2
+	BAD_DIGIT	,D1
+	PARTNO	,A15
+	PFF	,A15
+
+RECORD	W2_LINE
+	W2_ITEM		,A15
+			,A1
+	W2_DESCR	,A30
+	W2_QTY		,A6
+			,A1
+	W2_UOFM		,A2
+	W2_PRICE	,A9
+	W2_LPC		,A1
+			,A1
+	W2_EXT		,A10
+	W2_ROC		,A1		;R if roc po
+
+RECORD	PRC_LINE
+	PRC_ITEM	,A15
+			,A1
+	PRC_DESCR	,A30
+			,A1
+			,A*,	'ORIG:'
+	PRC_ORIG	,A9
+			,A1
+			,A*,	'NEW:'
+	PRC_NEW		,A9
+	
+RECORD	PVARS
+	IVFLAG	,D1
+	LI		,D2
+	VAL		,D1
+	SAVE_ROW	,D2
+	FIRST_ROW	,D2
+	LAST_ROW	,D2
+	WROW		,D2
+	FROW		,D2	;FOR <F5> MEMOS
+	WLEN		,D2
+	TITLEN		,D2
+	STAT_KEY	,D2
+	STAT		,D2
+	DEC		,D18
+
+
+RECORD	CHANNEL
+	CHN182	,D2
+	CHN045	,D2
+	CHNOOS	,D2
+	CHNAUD	,D2
+
+RECORD	VARS
+	SWFAB	,D1		;1=no exact match, set dept to prdcat 1-18-08
+	NEED_F3	,D1		;1=this item needs end treatment (f3 note)
+	CDPT	,D1		;1=change dept if this <F2> note running
+	CDPT1	,D1		
+	CDPT2	,D1		
+	
+	M_MAX	,D2		;input max for memos, see "INSERT,"
+	EM_CONT	,D1		;0=no exact match, continue/ 
+				;1=no exact match, don't continue
+	DF1	,D3		;default key1 (from coptbl)
+	DF2	,D3		;default key2
+	DF3	,D5		;default key3
+	TOP	,D2		;TOP OF REDUCER
+	l_pp		,a15	;save pressed part #
+	exact_match	,d1	;exact match w/ all notes
+	vanitm		,d1	;1 = item w/ zero notes was found
+	vanrfa		,a6	;rfa of vanilla item
+	girfa		,a6	;see "trec"
+	cmrfa		,a6	;for 'CR..'
+	is_dist	,d1	;1 = is a dist
+	C_ITEM	,A15	;FOR CFG() OR CFG2()
+	KEYCOD	,A2
+	savcfg	,d1	;save icfg 5-1-07
+	BF	,A1	;BOX/FLANGE  SSQ 1-24-06
+	SPLFIL	,A14
+	PLINE	,A80
+	PL_TOT	,D10
+	CMX	,D3	;X.XX non-contractor multiplier
+	RI	,D6
+	A15	,A15
+	D_OPT	,D1
+	D_OPT2	,D1
+	D_SFPRIC	,D5
+	str	,a20
+	totjg	,d10
+	tottg	,d10
+	amtjg	,d10
+	amttg	,d10
+	orgjg	,d10
+	orgtg	,d10
+	IS_15		,D1	;NOTE .15 IS RUNNING (EZ FLANGE)
+	HAS_SS		,D1	;1=SS SPIRAL PIPE
+	HAS_AS		,D1	;1=HAS ALUM SPIRAL PIPE
+	HAS_AS_ITEM	,D1	;1=HAS ASP
+	HAS_SS_ITEM	,D1	;1=HAS SSSP
+	NEED_SS_ITEM	,D1	;1=NEED "SSSP" ITEM
+	NEED_AS_ITEM	,D1	;1=NEED "ASP" ITEM
+	NEED_SP_ITEM	,D1	;0=OK, 1=NEED ASP, 2=NEED SSSP, 3=NEED BOTH
+;;;	F6A	,4A4,	'GALV','ALUM','SST ','PGRP'
+	F6A	,5A4,	'GALV','ALUM','SST ','PGRP','S.S.'
+	A4	,A4
+	A2	,A2
+	D2	,D2
+	BAD_MAT	,D1			;INVALID PART FOR THIS MAT'L
+	MAT_SEL	,D1			;MATERIAL SELECTED
+	MAT_MUL	,D4			;MATERIAL MULTIPLIER
+	N_PRICE	,D10
+	N_NUM	,D10
+	N_DIG	,D1
+	D_SQFT	,D6
+	D_MIN	,D5	;MIN PRICE
+	D_HV	,A1	;(Y/N)
+	D_FM	,A1
+	D_SL	,A1
+	D_CNGBR	,D1
+	DDIM	,D3
+	TL	,D6
+	TEMP	,D6
+	TEMP2	,D6
+	QLEN	,D3
+	QHT	,D3
+	DQTY	,D3
+	CFG_ON	,D1
+	CFG_ITEM	,D1	;1=CONFIGURABLE ITEM, 2=REGULAR ITEM
+	ENTDES	,A30	;OVER-RIDE DESCRIPTION
+	ABSQTY	,D6
+	RTLEN	,D2
+	RTVAL	,A6
+	VYNL	,D1
+	X_MEMO	,A90
+	P_MULT	,D3
+	X_MULT	,D3
+	SAVMLT	,D3
+	SAV_OP	,D8
+	SAVPRC	,D8
+	TODAY	,D8
+	SEARCH_ON	,D1	;LINE ITEM SEARCH FLAG
+	F5_POP_ON	,D1
+	F7_ON		,D1
+	S_ITEM	,A15		;SEARCH ITEM
+	SL	,D2		;SEARCH LENGTH
+	XROW	,D2
+	XROW2	,D2
+	CMTFLG	,D1
+	COMIT	,D1,0
+	UN_COMIT,D1,1
+	CNG_LI	,D1
+	NEWITEM	,D1		;new item# when changing line items
+	P_INS		,D1,2
+	P_DEL		,D1,3
+	P_UPD		,D1,4
+	P_PG_UP		,D1,5
+	P_PG_DN		,D1,6
+	LINRFA		,A6
+;;;	MM_CODE		,D2
+	MM_CODE		,D5		;ssq 7-31-03
+	V_LEVEL		,D1
+	KEY_FOUND	,D1
+	CLVL1		,D2
+	CLVL2		,D2
+	CLVL3		,D2
+	CLVL4		,D2
+	SAVL1		,D2
+	SAVL2		,D2
+	SAVL3		,D2
+	SAVL4		,D2
+	F_KEY	,D3
+	T_REC	,D5
+	VINYL		,D1
+	CONFIG_ERROR	,D1
+	A_GUAGE		,A2
+	ST_GUAGE	,A2
+	IS_DAMPER	,D1
+	PIDX	,D5
+	I	,D5
+	J	,D5
+	X	,D5
+	Y	,D5
+	NUMITM	,D2
+	ORIG_PRICE	,D8
+	CONFIG_PRICE	,D8
+	ADJTOT	,D8
+	RUNTOT	,D8
+	RUNQTY	,D6
+	EXEPRC	,D9
+	OLDEXE	,D9
+	NEWEXE	,D9
+	BKOCTL	,D1
+	BKOSEL	,D1
+	JUSTIF	,D1
+	WRKDAT	,D6
+	ROWX	,D2
+	ROW2	,D2
+	OPTION	,D1
+	ENTRY	,A36
+	INXCTL  ,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	DECMAL	,D18
+	KEY   	,A15
+	BSEND	,D5
+	BSMID	,D5
+	SRCCTL	,D1
+	ORDNOA	,A6
+	ODISCA	,A2
+;;;	SAVEL	,D2
+	RECNO	,D5
+	TCHAR	,D3
+	DCHAR	,D3
+	CTR	,D2
+	MSG	,A17
+	ALPHA	,A10
+	BLANKS	,A25
+	BLANK30	,A30
+	BLANK1	,A80
+	BADBIL	,D1
+	BRACKS	,A15,	']]]]]]]]]]]]]]]'
+	READ	,D1,	0	;USED FOR IO SUBROUTINE
+	WRITE	,D1,	1	;USED FOR IO SUBROUTINE
+	STORE	,D1,	2	;USED FOR ISIO SUBROUTINE
+	LOKCTL	,D1
+	SAVROW	,D2
+	SAVITM	,A15	;SAVE THE LAST ITEM NUMBER *** NOTE SIZE ***
+	SYSTEM	,D1
+	DISDAT	,A8
+	DPND	,D6
+	DSIZ	,D3
+	DGA	,D2
+	RA_SIZE	,D3		;R_ANGLE SIZE
+	SP_SIZE	,D3		;SPIRAL SIZE
+	WTPIN	,D6
+	PRPPN	,D6
+	WRANGL	,A12
+	INCH	,D3
+	DASH	,D2
+	BADTPR	,D1
+	NUMASK	,A7,'ZZ,ZZZ-'
+	KITMNO	,A15
+	TONH	,D8
+	TONO	,D8
+	TCOM	,D8
+	TREO	,D8
+	TREC	,D5
+	SWITCH	,D1
+;
+.PROC
+	XCALL ENVRN (SYSTEM)
+	XCALL RDAT8(TODAY)
+
+	IF (CONTR.EQ. 1)	;SSQ 9-16-04
+	THEN	CMX = 100	;CONTRACTOR
+	ELSE	CMX = 120	;NOT A CONTRACTOR
+
+OPEN_WND,
+	CALL INIT_WINDOW
+	CALL OPENS		;SET CH #'S
+	CALL SET_X		;DISPLAY HEADER, INIT VARS
+RE_START,
+	CALL FIND_LINE_ITEMS
+
+NEW_ITEM,	;;;;;;;;;;;;;;;;;;;;;
+		;;; NOW A ROUTINE
+		;;;;;;;;;;;;;;;;;;;;;
+
+BEGIN,
+	UNLOCK 1
+	ROW = XROW
+	ROW2 = XROW2
+	CLEAR NEWITEM
+ITEM,
+	clear cfg_item
+	ORDLIN =
+	IF (CLVL3.GT.0)			;SSQ 9-9-03
+	then	BEGIN
+		IF (F3_KEY(CLVL3).EQ.15)
+		THEN	IS_15 = 1
+		ELSE	IS_15 = 0
+		END
+	else	is_15 = 0
+	
+
+	is_dist = distr
+
+	CLEAR P_MULT		;ssq 8-9-00
+	XCALL W_DISP(WND_P, WD_CLEAR)
+	XCALL W_PROC(WP_REMOVE, WND_P)
+	XCALL W_UPDT
+
+	CLEAR CFG_ON
+	CLEAR BADTPR, LITMWT, LTXFLG, BKOCTL, DASH, INCH
+	CLEAR ST_GUAGE, SEARCH_ON
+
+	XCALL W_DISP(WND_1, WD_POS, ROW, 1, WD_CLR, WDC_LIN)
+	XCALL W_DISP(WND_1, WD_POS, ROW+1, 1, WD_CLR, WDC_LIN)
+	XCALL W_DISP(WND_1, WD_POS, 24,1,
+&	'<F1>=M1, <F2>=M2, <F3>=M3, <F5>=Chng, <F6>=Mat, <F7>=RePrice, <TAB>=Find')
+
+	IF (CUSTCD .EQ. 'NQ')
+	THEN	XCALL W_DISP(WND_1, WD_POS, 1, 70, "Don't Fax")
+	ELSE	XCALL W_DISP(WND_1, WD_POS, 1, 70, "         ")
+
+	CTL (4,14) = '01,15,00,AX'
+	CALL INPUT
+	IF (INXCTL) CALL CLEAR1
+	IF (F5_POP_ON)
+	THEN	GO TO (CLRDTA,ENDITM), INXCTL
+	ELSE	GO TO (CLRDTA,ENDITM,TABNXT), INXCTL
+
+	USING F_KEY SELECT
+	(HOME_KEY),	BEGIN		;home key
+			CALL PRINT_L
+			GOTO ITEM
+			END
+	(F_01),		BEGIN
+			CALL F1_POP
+			GOTO ITEM
+			END
+	(F_02),		BEGIN
+			CALL F2_POP
+			GOTO ITEM
+			END
+	(F_03),		BEGIN
+			CALL F3_POP
+			GOTO ITEM
+			END
+	(F_04),		BEGIN
+			CALL F4_POP
+			GOTO ITEM
+			END
+	(F_05),		BEGIN
+			IF (F5_POP_ON .EQ. 0)	CALL F5_POP
+			GOTO ITEM
+			END
+	(F_06),		BEGIN
+			CALL MATL
+			GOTO ITEM
+			END
+	(F_07),		BEGIN		;SSQ 3-9-04
+			CALL RE_PRICE_ROUTINE
+			GOTO ITEM
+			END
+	(F_09),		BEGIN
+			CUSTCD = 'NQ'
+			GOTO ITEM
+			END	
+	ENDUSING
+
+	IF (ENTRY .EQ. BLANKS)
+	THEN	BEGIN
+		CLEAR NEWITEM
+		IF (CNG_LI)
+		THEN	BEGIN
+			ORDLIN = SAV045
+		if (clvl1.ne.lmsq1.or.clvl2.ne.lmsq2.or.clvl3.ne.lmsq3) 
+				begin
+				kitmno = litmno
+				litmno = lcfgim
+				call getitm
+				litmno = kitmno
+				end
+
+			XCALL W_DISP(W_ID, WD_POS,ROW,1,LITMNO)
+			KITMNO = LITMNO		;ssq 9/23/02
+			SAVPRC = LSAVPR			;SSQ 8-10-04
+			CALL CHK_F6_MATL		;SSQ 5-14-03
+			GOTO (ITEM), BAD_MAT
+			GOTO CLI_DESC
+			END
+		ELSE	IF (CNGCTL)
+			THEN	BEGIN
+				CALL LSTITM
+				NEWITEM = 1	;ELSE WON'T GET CAT & DEPT
+				END
+			ELSE	GOTO ITEM
+		END
+	ELSE	NEWITEM = 1
+	
+	IF (JUSTIF) XCALL FRMAT (ENTRY(1,15),15)
+	XCALL W_DISP(W_ID, WD_POS,ROW,1,ENTRY(1,15))
+	LITMNO = ENTRY (1,15)
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 7-29-04 ssq moved here in case damper...
+	LCFGIM = LITMNO			;SSQ 7-29-03 SAVE ITEM#
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+	CALL FIND_DAMPER
+	GOTO (ITEM),BAD_DIGIT
+
+	IF (LITMNO.EQ.BLANKS) GO TO ITEM
+
+;---------------------------------------------------------
+; check to see if this is a pressed part...
+;;;>>	if (clvl2.ne.0) goto not_pressed	;can't be PP if level 2 note
+
+	IF (CLVL1) 
+		BEGIN
+		CLEAR TBL_KEY
+		TBLCOD = 'M1'
+		MM_KEY = F1_KEY(CLVL1)
+		XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+		IF (LOKCTL .NE. 0) GOTO NOT_PRESSED
+		IF (MM_PP .NE. 1) GOTO NOT_PRESSED
+		END
+
+; free hand F2 notes are OK for pressed parts...
+	IF (CLVL2) 
+		BEGIN
+		CLEAR TBL_KEY
+		TBLCOD = 'M2'
+		MM_KEY = F2_KEY(CLVL2)
+		XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+		IF(LOKCTL.EQ.0 .AND. MM_PP.NE.1) GOTO NOT_PRESSED
+	;;;	IF (LOKCTL .NE. 0) GOTO NOT_PRESSED
+	;;;	IF (MM_PP .NE. 1) GOTO NOT_PRESSED
+		END
+;;;	IF (CLVL3) 	;f3_key(clvl3) = 0 if free form note entered
+	IF (CLVL3 .and. F3_KEY(CLVL3).NE.0) 	;01-10-08
+		BEGIN
+		CLEAR TBL_KEY
+		TBLCOD = 'M3'
+		MM_KEY = F3_KEY(CLVL3)
+		XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+		IF (LOKCTL .NE. 0) GOTO NOT_PRESSED
+		IF (MM_PP .NE. 1) GOTO NOT_PRESSED
+		END
+;;;	if (clvl1.ne.0 .or. clvl2.ne.0 .or. clvl3 .ne. 0) goto not_pressed
+; is the item in the pressed part table?
+
+	CLEAR TBL_KEY
+	TBLCOD = 'PP'
+	PP_ITEM = LITMNO
+	READ (CHN182,COPTBL,TBL_KEY) [ERR=NOT_PRESSED]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	XCALL W_DISP(WND_1,WD_POS,24,1,WD_CLR,WDC_LIN,'Pressed Fitting (Y/N) ?')
+;;;	XCALL WINPT (WND_1,24,26,01,01,'YN',ENTRY,INXCTL)
+;;;	GOTO(not_pressed),INXCTL-1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; note that if the price changes, or a multiplier is used item will
+; revert back to item as entered (ie: not pressed).
+
+	litmno = pp_part		;item # for pressed part
+	l_pp = litmno			;save pressed -part itemn#
+	xcall w_disp(wnd_1,wd_pos,row,col,litmno)
+	xcall w_updt
+
+NOT_PRESSED,
+;-----------------------------------------------------------------
+
+;;;	clear tdescr			;10-5-07: here instead of 
+;;;	CALL GETITM			;check if item is in itmmas
+
+	CALL CHK_NEED_F3
+	IF (CLVL3.EQ.0 .AND. NEED_F3)
+		BEGIN
+		XCALL OLMSG(WND_1, 23,'ITEM REQUIRES <F3> NOTE',2)
+		GOTO ITEM
+		END
+
+	KITMNO = LITMNO					;;;
+
+	CLEAR TDESCR, CONFIG_ERROR
+	SP_SIZE = 1				;in case sph
+
+	
+;;;	USING LITMNO SELECT
+	USING LCFGIM SELECT	;in case litmno replaced by pressed part
+	('WR'),				CFG_ITEM = 1
+	('RW16' THRU 'RW20'),		CFG_ITEM = 1
+	('R16' THRU 'R26'),		CFG_ITEM = 1
+	('RV16' THRU 'RV26'),		CFG_ITEM = 1
+	('T4','T9','TV4','TV9'),	CFG_ITEM = 1
+	('C4020','C4420','C4620'),	CFG_ITEM = 2	;SSQ 10-14-03
+	('C4820','C4220 '),		CFG_ITEM = 2	;SSQ 10-14-03
+	('C9','C4','CV9','CV4'),	CFG_ITEM = 1
+	('CT','CC','CTV','CCV'),	CFG_ITEM = 1
+	('ER'),				CFG_ITEM = 1
+	('BN'),				CFG_ITEM = 1	
+	('P4','P9','PV4'),			CFG_ITEM = 1
+	('S9','S4','SV','SW','SC','ST'),	CFG_ITEM = 1
+	('SG','SX'),			CFG_ITEM = 1
+	('RT','RTV'),			CFG_ITEM = 1
+	('OB','PB','SBD','BDD'),	
+					BEGIN
+					CFG_ITEM = 1
+					GOTO CALL_CONFIG
+					END
+	('SLF','SLB'),			BEGIN		;LOUVERS
+					CFG_ITEM = 1
+					GOTO CALL_CONFIG
+					END
+	(),				CFG_ITEM = 2	;item not configurable
+	ENDUSING
+
+	GOTO (REG_ITEM),CFG_ITEM -1
+
+	CALL GETITM
+	IF (EXACT_MATCH) GOTO SKIP_CFG		
+	IF (CFG_ITEM.EQ.1 .AND. MAT_SEL.NE.GALV) GOTO CALL_CONFIG
+	IF (IVFLAG .EQ. 0) GOTO SKIP_CFG
+
+CALL_CONFIG,
+	CALL CONFIG			;call the configurator
+	GOTO (ITEM), CONFIG_ERROR
+
+	XCALL ISIO (1, INVMAS, LITMNO, READ, LOKCTL)	;just read instead of getitm
+	IF (LOKCTL .NE. 0) GOTO ITEM	;bad item
+	GOTO SKIP_CFG
+
+REG_ITEM,
+	CALL GETITM
+	GOTO (BADITM, ITEM, ITEM),IVFLAG
+
+SKIP_CFG,
+	IF (IS_15)	USING PRDCAT SELECT	;SSQ 9-9-03
+			('C' THRU 'H'),	NOP
+			('K1','K3'),	NOP
+			(),	BEGIN
+				XCALL OLMSG(WND_1, 23,'INVALID EZ FLANGE ITEM',2)
+				GOTO ITEM
+				END
+			ENDUSING
+
+	COL = 1
+	LITMNO = ITEMNO
+	SAVITM = ITEMNO
+	XCALL W_DISP(W_ID, WD_POS,ROW,COL,ITEMNO)
+	IF (LDAMPR) XCALL W_DISP(W_ID,WD_POS,ROW,COL+10,' DAMPER')
+
+	XCALL W_DISP(W_ID, WD_POS,15,1, WD_CLR, WDC_LIN)
+	IF (LITMNO.EQ.'???') GO TO ENTDES
+	IF (LITMNO.EQ.'M              ') GOTO ENTDES	;moved here 8-15-01 ssq
+	ROW2 = (ROW+1)
+
+	IF (TDESCR .EQ. BLANKS)		;was desc created in configurator ?
+	THEN	LDESCR = DESCR
+	ELSE	LDESCR = TDESCR
+
+	CALL CHK_F6_MATL		;SSQ 4-30-03
+	GOTO (ITEM), BAD_MAT
+
+	IF (LITMNO.EQ.'WR')
+	BEGIN
+	  LDESCR = DESCR
+	  IF (DASH.OR.INCH) LDESCR(1,8) = WRANGL(1,7)		;;;
+	  IF (DASH) LDESCR(DASH,DASH) = '/'		;;;
+	  IF (INCH) LDESCR(INCH,INCH) = '"'		;;;
+	END
+
+	LSTOKT = STOCK
+	LORDNO = OORDNO
+	LLOC = OLOC
+	LCOST = AVGCST#1	;(8-10-04 restored) 5-14-03 using for orig price
+
+CLI_DESC,
+	XCALL W_DISP(W_ID, WD_POS, ROW2, 3, LDESCR)
+	XCALL W_UPDT
+	COL = 03
+BADCHR,
+	SAVROW = ROW
+	ROW = ROW + 1
+	CALL ACCEPT
+	ROW = SAVROW
+	IF (TCHAR.EQ.13) GOTO QNTITY	;RETURN TYPED -- ITEM & DESCRIPTION OK
+	IF (TCHAR.EQ.09) GOTO TABNXT	;TAB TYPED -- RETREIVE NEXT ITEM
+;;;	IF (TCHAR.EQ.21) GOTO ENTDES	;CNTRL/U TYPED -- ENTER DESCRIPTION
+	IF (TCHAR.EQ.21) 
+		BEGIN
+		IF (CLVL2.LT.1 .OR. F2_KEY(CLVL2).NE.31)
+		THEN	BEGIN
+			XCALL OLMSG (WND_1, 23,'Turn on F2 Note 31',2)
+		;;;	GOTO CLI_DESC
+			CALL CLEAR1
+			ROW2 = ROW2-1
+			GOTO CLRDTA
+			END
+		ELSE	GOTO ENTDES	;CNTRL/U TYPED -- ENTER DESCRIPTION
+		END
+	IF (TCHAR.EQ.23) CALL CLEAR1
+	IF (TCHAR.EQ.23) ROW2 = ROW2 - 1
+	IF (TCHAR.EQ.23) GOTO CLRDTA	;CNTRL/W TYPED -- CLEAR LINE
+	GOTO BADCHR
+
+TABNXT,
+
+	XCALL W_DISP(WND_1, WD_POS, 24, 1, WD_CLR, WDC_LIN, 'SEARCH KEY')
+	XCALL WINPT (WND_1, 24, 13, 15, 00, 'AE', ENTRY, INXCTL)
+	GOTO (TABNXT, ITEM), INXCTL
+	S_ITEM = ENTRY(1,15)
+	SL = %TRIMZ(S_ITEM)
+	IF (SL .EQ. 0) GOTO TABNXT
+
+	SEARCH_ON = 1
+;;;	XCALL TTSTS(STAT)
+;;;	IF (STAT)  XCALL W_DISP(WND_1,WD_ACCEPT,ENTRY)
+	reads (15,entry)
+
+	CALL F5_POP
+	GOTO TABNXT
+;---------------------------------------
+
+LSTITM,
+	ENTRY = SAVITM
+	XCALL W_DISP(W_ID, WD_POS,ROW,1,SAVITM)
+	RETURN
+ACCEPT,
+	XCALL FLAGS (00010000,1)
+	XCALL W_DISP(W_ID, WD_ACCEPT, TCHAR)
+	IF (TCHAR.EQ.10) GOTO ACCEPT
+	IF (SYSTEM.NE.1 .AND. TCHAR.EQ.13) ACCEPT (15,DCHAR)
+	XCALL FLAGS (00010000,0)
+	RETURN
+ENTDES,
+	SAVROW = ROW
+	ROW = ROW + 1
+	CTL (4,14) = '03,30,01,A '
+	CALL INPUT
+	IF (INXCTL) CALL CLEAR2
+	IF (INXCTL.AND.LITMNO.NE.'???') ROW2 = ROW2 - 1
+	GO TO (CLRDTA), INXCTL
+	IF (ENTRY.EQ.BLANKS .AND. CNG_LI) ENTRY = Z_LDESCR
+
+	LDESCR = ENTRY
+	ENTDES = ENTRY
+	XCALL W_DISP(W_ID, WD_POS,ROW,3,WD_CLR, WDC_LIN ,LDESCR)
+	XCALL W_UPDT
+	ROW = ROW - 1
+;;;
+	IF (LITMNO.EQ.'M              ')
+	BEGIN
+	  ROW2 = ROW2 + 1
+	  LQTYOR = 1
+	  LPRICE =
+	  LUOFM = 
+	  LDISC = 
+	  EXEPRC =
+	  GOTO ISLNOK
+	END
+
+	IF (CFG_ON.EQ.0 .AND. CFG_ITEM.EQ.1)
+		BEGIN
+		CALL CONFIG	;CONFIGURE PART
+		GOTO (ITEM),CONFIG_ERROR
+		END
+
+QNTITY,
+	CTL (4,14) = '44,05,00,#-'		;;;ALLOW NEGATIVE QUANTITY
+	CALL INPUT
+	IF (INXCTL.AND.LITMNO.NE.'???') ROW2 = ROW2 - 1
+	IF (INXCTL) CALL CLEAR1
+	GO TO (CLRDTA), INXCTL
+	CALL DEFLT1
+	LQTYOR = ENTRY
+	IF ( %INSTR(1,ENTRY,'.') )			;SSQ 4-20-04
+	THEN	LROCPO = 9			;CREATE SMC ORDER
+	ELSE	LROCPO = 0			;NORMAL
+
+	AQTYONH = QTYONH,NUMASK
+	AQTYCOM = QTYCOM,NUMASK
+	AQTYONO = QTYONO,NUMASK
+	DECMAL = QTYONH-QTYCOM+QTYONO-REOLVL		;SSQ 6-13-97
+
+	CLEAR OOSMSG				;SSQ 10-16-03
+	F_ONH = QTYONH
+	F_COM = QTYCOM
+	F_ONO = QTYONO
+	F_REO = REOLVL
+
+;-------------------------------------------------------------
+; ending char. on items starting with 'CM' or 'CR0-CR9' represent
+; a process, not a different item.  'EDS0-EDS9' should not have
+; been included in this logic.
+
+;;;	IF (LITMNO.EQ.'CM'.OR.
+;;;&		(LITMNO.GE.'CR0'.AND.LITMNO.LE.'CR9') .OR.
+;;;&		(LITMNO.GE.'EDS0' .AND. LITMNO.LE.'EDS9') )
+	USING LITMNO SELECT
+	('CM', 'CR0' THRU 'CR9'),	BEGIN
+		  AQTYONH = TONH,NUMASK
+		  AQTYCOM = TCOM,NUMASK
+		  AQTYONO = TONO,NUMASK
+		  DECMAL = TONH-TCOM+TONO-TREO
+		  F_ONH = TONH
+		  F_COM = TCOM
+		  F_ONO = TONO
+		  F_REO = REOLVL
+		  END
+	ENDUSING
+;-------------------------------------------------------------
+
+	IF (STOCK.EQ.'S'.AND.LLOC.EQ.'O'.AND.LQTYOR.GT.DECMAL)
+	BEGIN
+	  ANETAV = DECMAL, NUMASK
+;;;	  XCALL W_DISP(WND_1, WD_POS,24,1,OUTSTK)
+;;;	  XCALL OLMSG (WND_1, 23,'WARNING - POSSIBLE OUT OF STOCK SITUATION',2)
+;;;	  XCALL W_DISP(WND_1, WD_POS,23,1, WD_CLR, WDC_EOW)
+	  CALL OOS		;WRITE OOSMSG RECORD
+	END
+;;;	IF (CNG_LI .AND. .NOT. NEWITEM) GOTO CLI_PRICE
+	IF (CNG_LI .AND. .NOT. NEWITEM) ;ssq 8-3-04
+		BEGIN
+		CALL QTY_B_PRICE	
+		GOTO CLI_PRICE
+		END
+
+	IF (LITMNO.EQ.'???') GO TO OVRPRC
+	CTR = 1
+PRICE1,
+;;;	IF (CNG_LI .AND. .NOT. NEWITEM) GOTO CLI_PRICE
+	IF (CNG_LI .AND. .NOT. NEWITEM) ;ssq 8-3-04
+		BEGIN
+		CALL QTY_B_PRICE	
+		GOTO CLI_PRICE
+		END
+
+	LPRICE = PRICE	;DEFAULT TO ITMMAS PRICE
+	LPRICE = (PRICE*CMX)#3*10	;SSQ 9-16-04
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; QTY BREAK PRICING...
+	CALL QTY_B_PRICE		;SSQ 3/9/04
+
+
+	IF (CFG_ITEM.EQ.2 .OR. CFG_ON.EQ.0) GOTO SKIP_ADJ
+
+CFG_PRICE,
+	CALL CFG_PRICE_ROUTINE
+
+SKIP_ADJ,
+;-------- Add in damper prices...
+; isam: this is now already in itmmas.price from "mak_prc.dbl"
+; 10-16-07 itmmas.price does NOT include damper price...
+	IF (LDAMPR)	CALL ADD_DAMPER_PRICE
+;--------------------------------------------------
+
+	SAVPRC=LPRICE
+
+CLI_PRICE,
+	IF(P_MULT.GT.0)	CALL ADD_MATL_MULT
+
+	CTL (4,8) = '57,08'
+	DECMAL = LPRICE
+	CALL DSP3DP
+	IF (BADTPR) GOTO BADTPR
+	CTR = 1	
+PREPRC,
+	COL = 56
+	CALL ACCEPT
+	USING TCHAR SELECT
+	(13),		BEGIN			;<CR>
+			IF(P_MULT) 
+				BEGIN
+				XCALL BEEP
+				LCPFLG = 1
+				END
+			GOTO DISCNT		
+			END
+	(9, 127),	GOTO OVRPRC		;<TAB>, <DEL>
+	(23),		BEGIN			;^W
+			CALL CLEAR1
+			ROW2 = ROW2 - 1
+			GO TO CLRDTA
+			END
+	(43),		BEGIN			;+
+			CALL ADD_MULT
+	IF(P_MULT.EQ.100.AND.IVFLAG.EQ.0.AND.CFG_ITEM.EQ.1
+&		.AND.CFG_ON.EQ.0)
+		BEGIN
+		if (is_dist) goto cli_price	;distr
+		XCALL W_DISP(WND_1,WD_POS,24,1,WD_CLR,WDC_LIN,'Pressed Fitting (Y/N) ?')
+		XCALL WINPT (WND_1,24,26,01,01,'YN',ENTRY,INXCTL)
+		GOTO(CLI_PRICE),INXCTL				;STAMPED
+		END
+		;;; 10/23/07	IF(CFG_ITEM.EQ.2)GOTO CLI_PRICE	;regular item
+			IF(IVFLAG .EQ. 0) GOTO CLI_PRICE	;don't config
+
+;---------------------------------------------------------------------
+			IF (LDAMPR)	;ssq 9-26-06
+				begin
+				litmno = lcfgim		;restore
+				call find_damper	;remove *'s
+				clear cfg_on		;need to get new config_price
+				end
+;---------------------------------------------------------------------
+			CALL CONFIG
+			GOTO(ITEM),CONFIG_ERROR
+			LDESCR = TDESCR
+			XCALL W_DISP(W_ID, WD_POS, ROW2, 3, LDESCR)
+			XCALL W_UPDT
+;---------------------------------------------------------------------
+;;; 9-26-06 ssq: this doesn't work if changing from pressed to cfg part...
+		;;;	IF (LDAMPR)
+			;;;	BEGIN
+			;;;	FOR I FROM 1 THRU 3
+			;;;	  begin
+			;;;	  DAMPER_PRICE(I) = SAVE_DP(I)
+			;;;	  config_price = config_price - DAMPER_PRICE(I) ;ssq 9-5-06
+			;;;	  end
+		;;;		END
+;---------------------------------------------------------------------
+			GOTO CFG_PRICE
+			END
+	(45),		BEGIN			;-
+			CALL SUB_MULT
+			GOTO CLI_PRICE
+			END
+	ENDUSING
+	GOTO PREPRC
+
+
+ADD_MULT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_PROC(WP_PLACE, WND_P, 1, 68)
+	XCALL W_DISP(WND_P, WD_POS, 1, 1, PM_LINE)
+	XCALL WINPT(WND_P, 1, 8, 3, 00, '$E', ENTRY, INXCTL)
+	GOTO(ADD_MULT,EA_MULT),INXCTL
+	P_MULT = ENTRY(1,3)
+
+	IF(P_MULT.EQ.0)	P_MULT = SAVMLT
+
+DISP_MULT,
+	SAVMLT = P_MULT
+	PM_MULT = P_MULT,	'X.XX'
+	XCALL W_PROC(WP_PLACE, WND_P, 1, 68)
+	XCALL W_DISP(WND_P, WD_POS, 1, 1, PM_LINE)
+	XCALL W_AREA(WND_P, WA_COLOR, 7)		;RED
+	XCALL W_UPDT
+EA_MULT,
+	RETURN
+;----------------------------------------------
+
+SUB_MULT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_DISP(WND_P, WD_CLEAR)
+	XCALL W_PROC(WP_REMOVE, WND_P)
+	XCALL W_UPDT
+	IF(LMULT) 
+	THEN	LPRICE=(SAVPRC*1000/LMULT)#1
+	ELSE	LPRICE=SAVPRC
+	CLEAR P_MULT, LMULT
+	RETURN
+;----------------------------------------------
+DEFLT1,
+	IF (ENTRY.EQ.BLANKS) 
+		BEGIN
+		IF (CNG_LI)
+		THEN	ENTRY(1,MAX+1) = Z_LQTYOR,'ZZZZZZZ-' [LEFT]
+		ELSE	ENTRY(1,MAX) = 1,	'ZZZZZZZZ' [LEFT]
+		END
+	XCALL W_DISP(W_ID, WD_POS,ROW,COL,ENTRY(1,MAX))
+	XCALL W_UPDT
+	RETURN
+;
+;	BAD TEE PRICE
+;
+ZERO_PRICE,
+	XCALL W_DISP(WND_1, WD_POS,24,1, WD_CLR, WDC_LIN)
+	XCALL W_DISP(WND_1, WD_POS,24,1,'ZERO PRICE ... DO YOU WANT TO OVERRIDE <Y/N> ? ')
+	GOTO APST
+BADTPR,
+	XCALL W_DISP(WND_1, WD_POS,24,1,'INVALID PRICING FOR TEE ... DO YOU WANT TO OVERRIDE <Y/N> ? ')
+APST,
+	XCALL WINPT (WND_1,24,61,01,01,'YN',ENTRY,INXCTL)
+	IF (INXCTL.NE.1) GOTO ITEM
+OVRPRC,
+	CTL (4,14) = '57,08,01,# '
+	CALL INPUT
+	IF (ENTRY.EQ.BLANKS .AND. CNG_LI) ENTRY(1,8) = Z_LPRICE, 'ZZZZ.XXX'
+	DECMAL = ENTRY		
+	CALL DSP3DP		
+	IF (INXCTL.AND.LITMNO.NE.'???') ROW2 = ROW2 - 1
+	IF (INXCTL) CALL CLEAR1
+	GO TO (CLRDTA), INXCTL
+
+;---------------------------------------------------
+;;; Flag if user changes price...
+;;; 3-24-00 SSQ: flag if user overrides price, and price not = 0,
+;;; this will set flag even if user changes price to existing price.
+
+	LPRICE = ENTRY
+	SAVPRC = LPRICE			;ssq 8-10-04 if it changes, save it
+	IF (LPRICE .NE. 0) LCPFLG = 1
+	IF (CFG_ON.EQ.1 .OR. CFG_ITEM.EQ.2) GOTO DISCNT	;NOT CONFIG
+	GOTO DISCNT		;10-29-07 SKIP ALL PRESSED FITTING STUFF...
+
+CHK_STMF,
+	if (is_dist) goto discnt
+	IF (LPRICE .EQ. 0) 
+		BEGIN
+		XCALL W_DISP(WND_1,WD_POS,24,1,WD_CLR,WDC_LIN,'Stamped Fitting (Y/N) ?')
+		XCALL WINPT (WND_1,24,26,01,01,'YN',ENTRY,INXCTL)
+		GOTO(DISCNT),INXCTL				;STAMPED
+		END
+
+;---------------------------------------------------
+;; this logic handles the case of R241210 -> 
+;;		R1210 (pp table) -> 
+;;		R241210 (price changed)
+;;		and possibly R24 (if a note is running that's not in itmmas)
+
+	litmno = lcfgim		;4-17-07 restore item as originally entered.
+	CALL GETITM			;check if item is in itmmas
+
+;;;	IF (IVFLAG .EQ. 0) GOTO SKIP_CFG2	;4-26-07
+	IF (IVFLAG .EQ. 0) 
+		BEGIN
+		TDESCR = DESCR
+		LDESCR = DESCR
+		GOTO SKIP_CFG2	;SKIP ALL CFG STUFF
+		END
+;---------------------------------------------------
+
+	SAVPRC = LPRICE				;DON'T USE CONFIG PRICE
+	CALL CONFIG
+	GOTO (ITEM),CONFIG_ERROR
+	LPRICE = SAVPRC
+	LDESCR = TDESCR
+skip_cfg2,
+	XCALL W_DISP(W_ID, WD_POS, ROW2, 3, LDESCR)
+	XCALL W_UPDT
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SSQ 2-23-00 remove all ref to discount...
+	CLEAR LODISC, LDISC
+
+DISCNT,
+
+UOFM,
+	ROW = ROW + 1
+	XCALL W_DISP(W_ID, WD_POS,ROW,45,'UNIT OF MEASURE:')
+	CTL (4,14) = '62,02,00,A '	
+	IF (LITMNO.NE.'???'.AND.LUOFM.EQ.BLANKS) LUOFM = SUOFM		;;;
+	IF(LITMNO.EQ.'???')LUOFM='EA'
+	ENTRY(1,2) = LUOFM
+	XCALL W_DISP(W_ID, WD_POS,ROW,COL,ENTRY(1,2))
+	XCALL W_UPDT
+
+	COL = 64
+	CALL ACCEPT
+	IF (TCHAR.EQ.13) GO TO ENDUOM
+	IF (TCHAR.EQ.09.OR.TCHAR.EQ.127) GO TO OVRUOM
+	IF (TCHAR.NE.23) 
+		BEGIN
+		ROW = ROW -1 
+		GO TO UOFM
+		END
+	CALL CLEAR1
+	GOTO CLRDTA
+;-
+OVRUOM,
+	COL = 62
+	CALL INPUT
+	GO TO (CLRDTA), INXCTL
+	IF (ENTRY.EQ.BLANKS)		
+	BEGIN				
+	  ENTRY(1,2) = 'EA'		
+	  IF (CNG_LI) ENTRY(1,2) = Z_LUOFM
+	  XCALL W_DISP(W_ID, WD_POS,ROW,COL,ENTRY(1,2))
+	END				
+	LUOFM = ENTRY			
+ENDUOM,
+	ROW = ROW - 1
+;-----------------------------------------
+
+EXTPRC,
+	DECMAL = ((LQTYOR)*LPRICE)#1				
+&		-(((LQTYOR*LPRICE)#1*LDISC)#2)			
+	EXEPRC = DECMAL - ((DECMAL*LODISC)#2)
+	IF (EXEPRC.GE.100000000.OR.(RUNTOT+EXEPRC).GE.100000000) GO TO TOOBIG
+	ALPHA = EXEPRC,'ZZ,ZZZ.XX-'
+	XCALL W_DISP(W_ID, WD_POS,ROW,70,ALPHA)
+	XCALL W_UPDT
+
+	IF (LITMNO.EQ.'???') ROW2 = ROW2 + 1
+ISLNOK,
+	CNGCTL = 2
+	XCALL WANCN(WND_1, 24, CNGCTL, WHATNO)
+	IF (LITMNO.EQ.'???') GO TO ANYCN2
+ANYCN1,
+	IF (CNGCTL) XCALL W_DISP(W_ID, WD_POS,ROW2,1,WD_CLR, WDC_LIN)
+	IF (CNGCTL) ROW2 = ROW2 - 1
+	ROW = ROW2
+	GO TO (LINEOK), CNGCTL+1
+	EXEPRC =
+	CALL CLEAR1
+	GO TO CLRDTA
+ANYCN2,
+	ROW2=ROW2 + 1
+	XCALL W_DISP(W_ID, WD_POS,ROW2,1,WD_CLR, WDC_LIN)
+	ROW2 = ROW2 - 1
+	GO TO ANYCN1
+RUNQTY,
+	CTL = '14,14,06'
+	DECMAL = RUNQTY
+	XCALL W_DISP(WND_1, WD_POS,03,52,'RUNNING TOTAL:')
+	CALL DIS_RUNTOT
+	RETURN
+;------------------------------------------------------------
+
+LINEOK,
+;;;	SAVEL = 1
+	LORDNO = OORDNO
+	LLOC = OLOC			;;;ON LINE ITEMS
+	RUNQTY = RUNQTY + LQTYOR - LQTYBO
+	RUNTOT = RUNTOT + EXEPRC
+	CALL RUNQTY
+;--------------------------------------------------------------------------
+; if a new item # was NOT entered, no ITMMAS record was read, 
+; skip any updates from ITMMAS to ORDLIN, the orginal ORDLIN
+; values were restored to the new line item in code above (ORDLIN = SAV045).
+
+	IF (NEWITEM .EQ. 0) GOTO NOT_NEWLINE
+;--------------------------------------------------------------------------
+
+	IF (LITMNO.EQ.'M              ') GOTO NOST2	
+	LPRDCD = PRDCAT
+	IF (TXFLAG .EQ. 'Y') LTXFLG = 1	;SSQ 9-7-01
+;;;	IF (TAXFLG.NE.BLANKS.AND.TXFLAG.EQ.'Y') LTXFLG = 1
+	LITMWT = WEIGHT
+NOST2,
+
+	LDEPT = USRDEF
+	LSRTSQ = PRICCD			;3-29-00 SSQ
+;5-12-03: override lsrtsq if <F6> material selected, to
+;	force all non-galv to bottom of order...
+	USING MAT_SEL SELECT
+	(PGRP),	LSRTSQ = '93'
+	(SST),	LSRTSQ = '94'
+	(ALUM),	LSRTSQ = '95'
+	ENDUSING
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; removed ssq 1-18-08
+;;;	CALL CHK_SIT		;always check stocked items.. (ssq 1-24-06)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+NOT_NEWLINE,			;LABEL MOVED HERE 5-10-00, price changed
+				;for existing line item must change
+				;dept...
+	if (exact_match) goto skip_dp_check	;don't change dept it exact match
+
+;-----------------------------------------------------------
+	clear cdpt, cdpt1, cdpt2			;01-17-08
+	if (clvl1.gt.0) cdpt1 = f1_cdpt(clvl1)
+	if (clvl2.gt.0) cdpt2 = f2_cdpt(clvl2)
+	if (cdpt1.eq.1 .or. cdpt2.eq.1) cdpt = 1
+;-----------------------------------------------------------
+;;;	IF (LCPFLG) LDEPT = LPRDCD	;if price "tabbed" set dept to prdcat
+
+	IF (CDPT.EQ.1 .OR. SWFAB.EQ.1) 
+		BEGIN
+		LDEPT = LPRDCD	;F2 note w/ change dept flag set 12-26-07
+		CLEAR A2
+		IF(IMDPT .NE. A2) LDEPT = IMDPT	;1-18-08
+		END
+
+	USING ST_GUAGE SELECT
+	('20','18','16'),
+		BEGIN
+		LDEPT = 'K'
+		LPRDCD = 'K3'
+		END
+	ENDUSING
+
+;;; new 11-27-07 for reducers...
+;	R241210, top = 10
+	USING LITMNO SELECT
+	('RW20','RW18','RW16'),	LDEPT = 'K'
+	('R22','R24'),		BEGIN
+				XCALL ALPDC(LCFGIM(6,7), TOP, SWITCH)
+				IF (SWITCH) CLEAR TOP
+				IF (TOP .LT. 12)
+				THEN	LDEPT = 'H'
+				ELSE	LDEPT = 'F'
+				END
+	ENDUSING
+;;; new 11-27-07 for reducers...
+
+skip_dp_check,				;don't change dept it exact match
+
+;;;NOT_NEWLINE,
+	IF (CLVL1.LT.0) CLVL1 = -CLVL1
+	IF (CLVL2.LT.0) CLVL2 = -CLVL2
+	IF (CLVL3.LT.0) CLVL3 = -CLVL3
+	IF (CLVL4.LT.0) CLVL4 = -CLVL4
+
+	LMSQ1 = CLVL1
+	LMSQ2 = CLVL2
+	LMSQ3 = CLVL3
+	LMSQ4 = CLVL4
+
+	IF (CNG_LI) RETURN
+
+	LINSEQ = ORDSEQ
+	ORDSEQ = ORDSEQ + 1
+	CLEAR CNG_LI
+ADDLIN,
+	LMULT=P_MULT
+	LTYPE = 'L'		;SSQ 12-16-99
+	LOKCTL = 1
+	LMAT = MAT_SEL
+	L_CFG = CFG_ITEM	;SSQ 5-14-03
+	LSAVPR = SAVPRC		;SSQ 8-10-04 save orig price in case <f6> mat'l
+
+	CLEAR LF1, LF2, LF3, LF4		;set to zero in case no default key
+	if (inn .eq. 1) goto skip_keys	;this item does not use keys!
+
+
+	IF (CLVL1) LF1 = F1_KEY(CLVL1)
+	IF (CLVL2) LF2 = F2_KEY(CLVL2)
+	IF (CLVL3) LF3 = F3_KEY(CLVL3)
+	IF (CLVL4) LF4 = F4_KEY(CLVL4)
+
+;if no notes running use default keys...
+	DEC = CLVL1+CLVL2+CLVL3
+	IF (DEC .LE. 0)
+		BEGIN
+		LF1 = DF1
+		LF2 = DF2
+		LF3 = DF3
+		END
+
+;if just the <f3> note is zero, use the default f3 key...
+	IF (CLVL3 .LE. 0) LF3 = DF3
+
+skip_keys,
+	if (l_pp .eq. litmno) lcfgim = litmno	;for pressed parts 
+
+	XCALL ISIO (5,ORDLIN,ORDKEY,STORE,LOKCTL)
+	IF (LOKCTL.EQ.4) GO TO DUPLIC
+	IF (LOKCTL.EQ.5) GO TO FULL
+	xcall oej2(f_memos, amtjg, amttg)	;ssq 10-21-03
+	totjg = totjg + amtjg
+	tottg = tottg + amttg
+	CALL dis_gasket
+;----------------------------------------------------
+	XCALL W_AREA(WND_2, WA_SCROLL, WAS_UP, 1)
+	CALL MAKE_W2
+	XCALL W_DISP(WND_2, WD_POS, 14, 1, W2_LINE)
+	XCALL W_UPDT
+;----------------------------------------------------
+
+	IF (LITMNO.EQ.'M              '.OR.LITMNO.EQ.'???') GOTO BEGIN
+	IF (LROCPO .EQ. 9) GOTO BEGIN	;SSQ 5-4-04
+
+	CMTFLG = COMIT		;COMMIT INVENTORY
+	CALL COMMIT
+	GOTO BEGIN
+
+COMMIT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; COMMIT INVENTORY
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (OLOC.NE.'O')	RETURN
+	if (.not. exact_match) return	;nothing to allocate if not exact match
+
+
+;-------------------------------------------------------------
+; removed for isam mod
+; read itmmas based on partial key for matching items below...
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 12-18-07 use cmrfa from GETITM
+	USING LITMNO SELECT
+	  ('CM'),		GIRFA = CMRFA
+	  ('CR0' thru 'CR9'),	GIRFA = CMRFA
+	  (),			KEY = LITMNO
+	ENDUSING
+
+;;;	USING LITMNO SELECT
+;;;	  ('CM'),		KEY = LITMNO(1,3)
+;;;	  ('CR0' thru 'CR9'),	KEY = LITMNO(1,4)
+;;;	  (),			KEY = LITMNO
+;;;	ENDUSING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;
+;;;	XCALL SERCH (2,ITMIDX,KEY,1,15,ORGINV,BSMID,SRCCTL,4,16,20,0,0,0,0)
+;;;	IF (SRCCTL.NE.0 .OR. IRC041.LE.0) 
+;;;		BEGIN
+;;;		XCALL OLMSG (WND_1, 23, 'BAD ITEM, DID NOT ALLOCATE',2)
+;;;		RETURN
+;;;		END
+
+; removed for isam mod
+;-------------------------------------------------------------
+	CLOSE 1
+	OPEN (1, SU, FIL041)
+
+	read (1, invmas, rfa:girfa) [err=no_grfa]	;re-read gi item
+	goto skip_itm_1		;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if we have a valid girfa, then update the invmas record, 
+;;; otherwise, there's nothing to do...
+
+;;;	CLEAR ITMKEY
+;;;	K_ITEM = KEY
+;;;	K_F1 = '000'
+;;;	K_F2 = '000'
+;;;	K_F3 = '00000'
+;;;	read (1, invmas, k_item) [err=no_itm_1]	;must check val of INN...
+;;;	if (inn .eq. 1) goto skip_itm_1		;ignore key values
+;;;no_itm_1,
+;;;	IF (CLVL1.GT.0) K_F1 = F1_KEY(CLVL1),	'XXX'
+;;;	IF (CLVL2.GT.0) K_F2 = F2_KEY(CLVL2),	'XXX'
+;;;	IF (CLVL3.GT.0) K_F3 = F3_KEY(CLVL3),	'XXXXX'
+;;;
+;;;TRY_ITM,
+;;;	XCALL W_DISP(WND_1, WD_POS, 25, 1, WD_CLR, WDC_LIN)
+;;;	READ (1, INVMAS, ITMKEY, KEYNUM:1) [ERR=I_NF, LOCK=I_LOCKED]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+skip_itm_1,
+	IF (STOCK.NE.'S') GOTO I_EXIT
+
+	USING CMTFLG SELECT
+	(COMIT),	  QTYCOM = QTYCOM + LQTYOR
+	(UN_COMIT),	  QTYCOM = QTYCOM - LQTYOR
+	ENDUSING
+
+
+	LOKCTL = 1
+	WRITE (1, INVMAS, ITMKEY) [ERR=I_EXIT]
+;;;	XCALL IO (1,INVMAS,IRC041,WRITE,LOKCTL)
+no_grfa,
+I_EXIT,
+	CLOSE 1
+	OPEN (1, SI, FIL041)
+	RETURN
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; now if locked record not updated, may need to change this later...
+;;;I_LOCKED,
+;;;	XCALL W_DISP(WND_1, WD_POS, 25, 1, WD_CLR, WDC_LIN,'item record locked')
+;;;	XCALL W_UPDT
+;;;	SLEEP 2
+;;;	GOTO TRY_ITM
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+I_NF,
+;;;	XCALL OLMSG (WND_1, 23, 'BAD ITEM, DID NOT ALLOCATE',2)
+	GOTO I_EXIT
+
+;--------------------------------------------------
+
+GETITM,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; NOW A ROUTINE, LOOK UP ITEM IN ITMMAS...
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; vanitm = item w/ all note keys = zero
+; exact_match = exact match
+
+
+	CLEAR IVFLAG, VANITM, EXACT_MATCH, SAVCFG
+	CLEAR DF1, DF2, DF3
+	clear swfab
+
+; read itmmas based on partial key for matching items below...
+; 11-29-07: this partial items don't have f-note keys, so after gi_temp
+; there's nothing else to do but exit...
+	USING LITMNO SELECT
+	  ('CM'),		BEGIN
+				KEY = LITMNO(1,3)
+				CALL GI_TEMP
+				cmrfa = girfa	;12-18-07 for commit
+			;;;	GOTO GI_DONE	;11-29-07 no keys for these
+				END
+	  ('CR0' thru 'CR9'),	BEGIN
+				KEY = LITMNO(1,4)
+				CALL GI_TEMP		;READ ITMMAS
+				cmrfa = girfa	;12-18-07 for commit
+			;;;	GOTO GI_DONE	;11-29-07 no keys for these
+				END
+	ENDUSING
+
+	KEY = LITMNO
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; removed 11-8-07 ssq: why check this? if it's a regular item
+;;; it should exist w/ 000 000 00000 notes...
+
+;;;	IF (CFG_ITEM .EQ. 2)		;REGULAR ITEM
+;;;		BEGIN
+;;;		LOKCTL = 0		;ALLOW ABORT
+;;;		XCALL ISIO (1, INVMAS, KEY, READ, LOKCTL)
+;;;		IF (LOKCTL .EQ. 0) GOTO GI_DONE
+;;;		IVFLAG = 2
+;;;		RETURN
+;;;		END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+; Configured items, check if vanilla item exists...
+	CLEAR ITMKEY
+	K_ITEM = LITMNO
+	K_F1 = '000'
+	K_F2 = '000'
+	K_F3 = '00000'
+
+	read (1, invmas, itmkey, keynum:1, getrfa:vanrfa) [err=no_itm_2]
+;;;	read (1, invmas, k_item, getrfa:vanrfa) [err=no_itm_2]	;must check val of INN...
+	vanitm = 1				;vanilla item was found
+	savcfg = icfg				;remember if cfg or not.
+	girfa = vanrfa				;in case this is the item to update
+	if (inn .eq. 1) goto gi_done		;ignore key values
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;if this has been run thru the configurator, there won't be any note keys...
+;;;	if (cfg_on) goto skip_itm_2		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; check for exact match...
+no_itm_2,
+; first, check for default keys...
+	CLEAR TBL_KEY		;is there a default key for this item?
+	TBLCOD = 'IK'		
+	IK_ITEM = LITMNO
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=NO_DEFAULT]
+	DF1 = IK_F1		;note that these values will 
+	DF2 = IK_F2		;be overridden if notes are
+	DF3 = IK_F3		;running
+
+no_default,
+	IF (CLVL1.GT.0) K_F1 = F1_KEY(CLVL1),	'XXX'
+	IF (CLVL2.GT.0) K_F2 = F2_KEY(CLVL2),	'XXX'
+	IF (CLVL3.GT.0) K_F3 = F3_KEY(CLVL3),	'XXXXX'
+
+;if no notes running use default keys...
+	DEC = CLVL1+CLVL2+CLVL3
+	IF (DEC .LE. 0)
+		BEGIN
+		K_F1 = DF1,	'XXX'
+		K_F2 = DF2,	'XXX'
+		K_F3 = DF3,	'XXXXX'
+		END
+
+;if just the <f3> note is zero, use the default f3 key...
+	IF (CLVL3 .LE. 0) K_F3 = DF3,	'XXXXX'
+
+	READ (1, INVMAS, ITMKEY, KEYNUM:1, getrfa:girfa) [ERR=NO_ITM_3]
+
+	exact_match = 1
+	goto gi_done
+
+no_itm_3,
+	em_cont = 7
+	xcall olmsg (wnd_1,23,'Item not found - continue?',em_cont)
+	goto (no_vrfa),em_cont	
+
+	clear girfa
+	ivflag = 1			;not found
+	if (vanitm .ne. 1) goto gi_done
+	read (1, invmas, rfa:vanrfa) [err=no_vrfa]	;re-read vanilla item
+	clear ivflag					;back to vanilla item
+	swfab = 1					;new item, fabricate
+
+GI_DONE,
+	IF (PRDCAT.EQ.'ZZ'.OR.USRDEF.EQ.'ZZ')
+		BEGIN
+		IVFLAG = 3
+		XCALL OLMSG(WND_1,23,'See Steve M (ZZ)',2)
+		END
+;;;	IF (CFG_ITEM.EQ.2 .AND. PRICE.EQ.0)
+;;;		BEGIN
+;;;		IVFLAG = 3
+;;;		XCALL OLMSG(WND_1,23,'Zero Price - See SteveM',2)
+;;;		END
+	RETURN
+no_vrfa,
+	ivflag = 1
+	RETURN
+
+;-----------------------------------------------------------------
+
+GI_TEMP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL ISIO (1, INVMAS, KEY, READ, LOKCTL)
+	read (1, invmas, KEY, getrfa:girfa) [err=git_bad]	
+
+	exact_match = 1
+;;;	TREC = IRC041
+	TONH = QTYONH
+	TONO = QTYONO
+	TCOM = QTYCOM
+	TREO = REOLVL
+	RETURN
+
+GIT_BAD,
+	IVFLAG = 1
+;;;	XCALL OLMSG(WND_1,23,'Item has not been set up',2)
+	RETURN
+;-----------------------------------------------------------------
+OOS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF(LPRDCD.NE.'K2' .AND. LPRDCD.NE.'J') RETURN
+	IF(PRDCAT.NE.'K2' .AND. PRDCAT.NE.'J') RETURN
+
+	F_DATE=TODAY
+	F_ORD=OORDNO
+	F_NAME=OCUSNM
+	F_ITEM=LITMNO
+	F_QTYOR=LQTYOR
+	F_QTYAV=DECMAL
+	F_FLAG=0
+	STORE(CHNOOS,OOSMSG,F_DATE)	;;;[ERR=BAD_STOREF]
+BAD_STOREF,
+	RETURN
+;----------------------------------------------
+
+DUPLIC,
+	XCALL OLMSG
+&	(WND_1, 23,'**RECORD NOT ADDED** ALREADY ADDED BY ANOTHER USER',1)
+	GO TO BEGIN
+FULL,
+	XCALL OLMSG
+&	(WND_1, 23,'**RECORD NOT ADDED**THE "ORDLIN" FILE IS NOW FULL',1)
+;;;	FULL = 1
+	RETURN
+TOOBIG,
+	XCALL OLMSG(WND_1, 23,'TOTAL SALE OVER 1 MILLION DOLLARS',1)
+	EXEPRC =
+	CALL CLEAR1
+	ROW2 = ROW2 - 1
+	GO TO CLRDTA
+BADITM,
+	XCALL OLMSG(WND_1, 23,'ITEM NOT ON FILE',1)
+	GO TO ITEM
+CLRDTA,
+	XCALL W_DISP(WND_1, WD_POS, 15, 1, WD_CLR, WDC_LIN)
+	XCALL W_DISP(WND_1, WD_POS, ROW, 1, WD_CLR, WDC_LIN)
+	ORDLIN =
+	LORDNO = OORDNO
+	GO TO BEGIN
+
+ENDITM,
+	IF (CNG_LI) RETURN
+
+;write memos to ordlin here...
+	CALL WRITE_MEMOS
+	USING NEED_SP_ITEM SELECT
+	(1),	BEGIN
+		XCALL OLMSG(wnd_1,23,'item ASP must be included on order!',1)
+		GOTO RE_START
+		END
+	(2),	BEGIN
+		XCALL olmsg(wnd_1,23,'item SSSP must be included on order!',1)
+		GOTO RE_START
+		END
+	(3),	BEGIN
+		XCALL olmsg(wnd_1,23,'items ASP & SSSP must be included on order!',1)
+		GOTO RE_START
+		END
+	ENDUSING
+
+;remove all windows...
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (WND_1)	XCALL W_PROC(WP_DELETE, WND_1)
+
+	XCALL W_PROC(WP_FIND,WND_2,W2_NAME)
+	IF (WND_2)	XCALL W_PROC(WP_DELETE, WND_2)
+
+	XCALL W_PROC(WP_FIND,WND_4,W4_NAME)
+	IF (WND_4)	XCALL W_PROC(WP_DELETE, WND_4)
+
+;;;	XCALL W_PROC(WP_FIND,WND_M,WM_NAME)
+;;;	IF (WND_M)	XCALL W_PROC(WP_DELETE, WND_M)
+
+	XCALL W_PROC(WP_FIND,WND_P,WP_NAME)
+	IF (WND_P)	XCALL W_PROC(WP_DELETE, WND_P)
+
+	XCALL W_PROC(WP_FIND,WND_6,WP_NAME)
+	IF (WND_6)	XCALL W_PROC(WP_DELETE, WND_6)
+
+	XCALL W_PROC(WP_FIND,POP_WND2,'F2WIN')
+	IF (POP_WND2)	XCALL W_PROC(WP_DELETE, POP_WND2)
+
+	XCALL W_PROC(WP_FIND,POP_WND3,'F3WIN')
+	IF (POP_WND3)	XCALL W_PROC(WP_DELETE, POP_WND3)
+
+;--------------------------------------------------------------
+; added ssq 3-1-07
+	XCALL W_PROC(WP_FIND,wnd_w2,'POPM-2')	;see popm.cp
+	IF (wnd_w2)	XCALL W_PROC(WP_DELETE, wnd_w2)
+;--------------------------------------------------------------
+
+	XCALL W_UPDT
+
+	XRETURN			;RETURN TO MAINLINE
+;===============================================================
+
+WRITE_MEMOS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR HAS_AS, HAS_SS, HAS_AS_ITEM, HAS_SS_ITEM
+	CLEAR NEED_AS_ITEM, NEED_SS_ITEM, NEED_SP_ITEM	;5-15-03
+
+	CLEAR ORDKEY
+	LORDNO = OORDNO
+	FIND (CHN045, ORDLIN, ORDKEY) [ERR=W_LOOP, EOF=EOF_W]
+W_LOOP,
+;;;	reads (chn045,ordlin,eof_w)
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF_W
+	IF (LORDNO .NE. OORDNO) GOTO EOF_W
+	USING LITMNO SELECT			;5-15-03
+	('SG','SX'),	USING LMAT SELECT
+			(GALV),	NOP
+			(ALUM),	HAS_AS = 1
+			(PGRP),	NOP
+			(SST),	HAS_SS = 1
+			ENDUSING
+	('ASP'),	HAS_AS_ITEM = 1
+	('SSSP'),	HAS_SS_ITEM = 1
+	ENDUSING
+
+	IF (LTYPE .NE. 'M') GOTO W_LOOP
+;mark for deletion...
+	LTYPE = 'W'		;to be deleted.
+	XCALL ISIO (CHN045,ORDLIN,ORDKEY,WRITE,LOKCTL)
+	GOTO W_LOOP
+EOF_W,
+	UNLOCK CHN045				;SSQ 7-5-00
+	IF (F1_NUM .LE. 0) GOTO WRITE_F2
+	FOR I FROM 1 THRU F1_NUM
+		BEGIN
+		CLEAR ORDLIN
+		LORDNO = OORDNO
+		LINSEQ = 0
+		LITMNO = 'MM_F1'
+		LMSQ1 = I
+		M_LDESCR = F1_MEMOL(I)
+		M_SHORTD = F1_MEMOS(I)		;ssq 1-23-07
+		M_KEY = F1_KEY(I)		;ssq 1-23-07
+		M_F6M = F1_F6M(I)		;SSQ 10-15-07
+		LTYPE = 'M'
+		STORE (CHN045, ORDLIN, ORDKEY)
+		END
+WRITE_F2,
+	IF (F2_NUM .LE. 0) GOTO WRITE_F3
+	FOR I FROM 1 THRU F2_NUM
+		BEGIN
+		CLEAR ORDLIN
+		LORDNO = OORDNO
+		LINSEQ = 0
+		LITMNO = 'MM_F2'
+		LMSQ2 = I
+		M_LDESCR = F2_MEMOL(I)
+		M_SHORTD = F2_MEMOS(I)
+		M_KEY = F2_KEY(I)
+		LTYPE = 'M'
+		STORE (CHN045, ORDLIN, ORDKEY)
+		END
+WRITE_F3,
+	FOR I FROM 1 THRU F3_NUM
+		BEGIN
+		CLEAR ORDLIN
+		LORDNO = OORDNO
+		LINSEQ = 0
+		LITMNO = 'MM_F3'
+		LMSQ3 = I
+		M_LDESCR = F3_MEMOL(I)
+		M_SHORTD = F3_MEMOS(I)
+		M_KEY = F3_KEY(I)
+		LTYPE = 'M'
+		STORE (CHN045, ORDLIN, ORDKEY)
+		END
+WRITE_F4,
+	FOR I FROM 1 THRU F4_NUM
+		BEGIN
+		CLEAR ORDLIN
+		LORDNO = OORDNO
+		LINSEQ = 0
+		LITMNO = 'MM_F4'
+		LMSQ4 = I
+		M_LDESCR = F4_MEMOL(I)
+		M_SHORTD = F4_MEMOS(I)
+		M_KEY = F4_KEY(I)
+		LTYPE = 'M'
+		STORE (CHN045, ORDLIN, ORDKEY)
+		END
+
+;Now delete the "W" records...
+	CLEAR ORDKEY
+	LORDNO = OORDNO
+	FIND (CHN045, ORDLIN, ORDKEY) [ERR=DM_LOOP,EOF=EOF_DM]
+DM_LOOP,
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF_DM
+	IF (LORDNO .NE. OORDNO) GOTO EOF_DM
+	IF (LTYPE .EQ. 'W') DELETE (CHN045)
+	GOTO DM_LOOP
+EOF_DM,
+	UNLOCK CHN045		;SSQ 7-5-00
+
+;5-15-03 determin if ASP or SSSP item is needed...
+	IF(HAS_AS.EQ.1 .AND. HAS_AS_ITEM.EQ.0) NEED_AS_ITEM = 1
+	IF(HAS_SS.EQ.1 .AND. HAS_SS_ITEM.EQ.0) NEED_SS_ITEM = 1
+	IF(NEED_AS_ITEM.EQ.1 .AND. NEED_SS_ITEM.EQ.0) NEED_SP_ITEM = 1
+	IF(NEED_AS_ITEM.EQ.0 .AND. NEED_SS_ITEM.EQ.1) NEED_SP_ITEM = 2
+	IF(NEED_AS_ITEM.EQ.1 .AND. NEED_SS_ITEM.EQ.1) NEED_SP_ITEM = 3
+
+	RETURN
+;-----------------------------------------------------------------
+
+;=================================================================
+INPUT,
+	XCALL WINPT(W_ID,ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,F_KEY)
+;;;	XCALL INPUT(ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,1)
+		;"V" REFERENCE REMOVED FOR 24-LINE OPERATION
+	RETURN
+DSP3DP,				
+	OPTION = 4		
+	GOTO CALDSP		
+DSPNUM,
+	OPTION = 1
+	GOTO CALDSP
+DSPDTE,
+	OPTION = 2
+	GOTO CALDSP
+DSPDLR,
+	OPTION = 3
+CALDSP,
+	XCALL WDSPL(W_ID, MAX, ROW, COL, DECMAL, OPTION)
+	RETURN
+
+DIS_RUNTOT,
+	XCALL W_DISP(WND_1, WD_POS,03,52,'RUNNING TOTAL:')
+	ENTRY(1,11) = RUNTOT,'ZZZ,ZZX.XX-' [LEFT]
+	XCALL W_DISP(WND_1, WD_POS,3,67,ENTRY(1,11))
+dis_gasket,
+	d_jr = (totjg*10/12)#2,	'ZZ,ZZZ,ZZX' [LEFT]
+	d_tg = (tottg*10/12)#2,	'ZZ,ZZZ,ZZX' [LEFT]
+	xcall w_disp(wnd_1,wd_pos,25,01,dsp_gasket)
+	XCALL W_UPDT
+	RETURN
+
+CLEAR1,
+	ROWX = ROW + 2
+	XCALL W_DISP(W_ID, WD_POS, ROWX,1, WD_CLR, WDC_LIN)
+	ROWX = ROW + 1
+	XCALL W_DISP(W_ID, WD_POS,ROWX,1, WD_CLR, WDC_LIN)
+	XCALL W_DISP(W_ID, WD_POS,ROW,1, WD_CLR, WDC_LIN)
+	RETURN
+CLEAR2,
+	ROWX = ROW + 1
+	XCALL W_DISP(W_ID, WD_POS,ROWX,1, WD_CLR, WDC_LIN)
+	XCALL W_DISP(W_ID, WD_POS,ROW,1, WD_CLR, WDC_LIN)
+	ROWX = ROW - 1
+	XCALL W_DISP(W_ID, WD_POS,ROWX,1, WD_CLR, WDC_LIN)
+	RETURN
+CLEAR3,
+	XCALL W_DISP(W_ID, WD_POS,ROW,1, WD_CLR, WDC_LIN)
+	ROWX = ROW - 1
+	XCALL W_DISP(W_ID, WD_POS,ROWX,1, WD_CLR, WDC_LIN)
+	ROWX = ROW - 2
+	XCALL W_DISP(W_ID, WD_POS,ROWX,1, WD_CLR, WDC_LIN)
+	RETURN
+
+CONFIG,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; BRANCH TO PRODUCT CONFIGURATORS
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	TDESCR=LDESCR			;SAVE IN CASE USER HAS CHANGED
+	CONFIG_PRICE = LPRICE		;ssq 10/16/02 moved here
+	IF(CFG_ON.EQ.1) RETURN		;ALREADY CONFIGRED
+;;;	IF(CNG_LI .AND. LITMNO.EQ.Z_LITMNO) RETURN	;SSQ 9/23/02
+	CFG_ON = 1
+;;;	CONFIG_PRICE = LPRICE		;INCASE NEXT LINE RETURNS
+
+	USING LITMNO SELECT		;SSQ 5-27-03
+	('SG','SX'),	IF(%TRIM(LITMNO) .LT. 7) RETURN
+	(),		IF(%TRIM(LITMNO) .LT. 5) RETURN
+	ENDUSING
+;;;	IF(%TRIM(LITMNO) .LT. 5) RETURN	;ASSUME CHANING CFG ITEM (USING <F5>)
+
+	CLEAR CONFIG_ERROR
+
+	USING LITMNO SELECT
+	('C4020','C4420','C4620'),	RETURN	;SSQ 2-19-03
+	('C4820','C4220 '),		RETURN	;SSQ 2-19-03
+	('WR'),				CALL R_ANGLE
+	('RW16' THRU 'RW20'),		CALL CALL_CFG
+	('R16' THRU 'R26'),		CALL CALL_CFG
+	('RV16' THRU 'RV26'),		CALL CALL_CFG
+	('T4','T9','TV4','TV9'),	CALL CALL_CFG
+	('C9','C4','CV9','CV4'),	CALL CALL_CFG
+	('CT','CC','CTV','CCV'),	CALL CALL_CFG
+	('ER'),				CALL CALL_CFG
+	('BN'),				CALL CALL_CFG	
+	('P4','P9','PV4'),			CALL CALL_CFG
+
+	('S9','S4','SV','SW','SC','ST'),CALL CALL_CFG
+	('SG','SX'),			CALL SPIRAL
+	('RT','RTV'),			CALL R_TAKEOFF
+	('OB','PB','SBD','BDD'),	CALL CFG_DAMPER	;BALANCING DAMPER
+	('SLF','SLB'),			CALL CFG_DAMPER	;LOUVERS
+	ENDUSING
+	RETURN
+;----------------------------------------------------
+
+CALL_CFG,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; internal routine so I can see parameter list...
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; if it gets this far, then all *'s need to be stripped from itemno, since
+; it can't be existing itmmas item...
+
+	IF (LDAMPR) litmno = PARTNO
+	clear vanitm		;if we got this far we're not using the vanitm...
+
+	XCALL CFG(LITMNO,CONFIG_PRICE,TDESCR,CONFIG_ERROR,MAT_SEL,ST_GUAGE)
+;;;	XCALL CFG(C_ITEM,CONFIG_PRICE,TDESCR,CONFIG_ERROR,MAT_SEL,ST_GUAGE)
+	IF (CONFIG_ERROR .EQ. 1) XCALL OLMSG(WND_1, 23,'INVALID CONFIGURATION',2)
+	RETURN
+;----------------------------------------------------
+
+;====================================================
+;----------- PRODUCT CONFIGURATOR ROUTINES ----------
+;====================================================
+CFG_DAMPER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; PRELIMINARY CALCS FOR ALL DAMPERS...
+		;;; AND LOUVERS (SSQ 12-16-03
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	CLEAR DMPDAT, CONFIG_PRICE, CONFIG_ERROR, TDESCR
+
+	DITEM = LITMNO(1,3)
+	DMAT = LITMNO(4,4)		;MATERIAL
+
+	USING DMAT SELECT		;NO MATERIAL IF GALV
+	('A','S'),	DITEM = LITMNO
+	('U','P'),	DITEM = LITMNO		;COLOR CLAD, PG
+	('0' THRU '9'),	DITEM(5,15) = LITMNO(4,14)	;ssq 2-18-03
+	(),		GOTO DAMPER_ERROR
+	ENDUSING
+
+	TL = %INSTR(1,DITEM,'X')			;FIND THE X
+
+	ONERROR DAMPER_ERROR
+	IF (TL .LE. 1) 
+	THEN	BEGIN
+		DLEN = DITEM(5,6)
+		DHT = DITEM(7,8)
+		END
+	ELSE	BEGIN
+		DLEN = DITEM(4,TL-1)
+		DHT = DITEM(TL+1,%TRIM(DITEM))
+		END
+	OFFERROR
+
+	IF (DLEN.LE.99)
+	THEN	BEGIN
+		TDESCR(1,2) = DLEN,	'ZX'
+		TDESCR(3,3) = 'X'
+		TDESCR(4,6) = DHT,	'ZZX' [LEFT]
+		END
+	ELSE	BEGIN
+		TDESCR(1,3) = DLEN,	'ZZX'
+		TDESCR(4,4) = 'X'
+		TDESCR(5,7) = DHT,	'ZZX' [LEFT]
+		END
+
+;148x148 PARALLEL BLADE STS STL
+;148x148 STD LOUVER FLG
+;123456789012345678901234567890
+
+
+	USING DMAT SELECT		;this get's overriden in lvr
+	('A'),	TDESCR(24,30) = 'ALUM'
+	('S'),	TDESCR(24,30) = 'STS STL'
+	('S'),	TDESCR(24,30) = 'SS'
+	('U'),	TDESCR(24,30) = 'CLAD'
+	('P'),	TDESCR(24,30) = 'PGRP'
+	ENDUSING
+
+	USING DITEM SELECT
+	('OB','PB'),	GOTO SMP	;BALANCING
+	('SB'),		GOTO SBD	;SINGLE BLADE
+	('BD'),		GOTO BDD	;BACKDRAFT
+	('SLF','SLB'),	GOTO LVR	;LOUVER
+	ENDUSING
+
+DAMPER_ERROR,
+	OFFERROR
+	XCALL OLMSG(WND_1, 23,'INVALID DAMPER PART NUMBER',1)
+	CONFIG_ERROR = 1
+	RETURN
+;----------------------------------------------------------
+
+SMP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; BALANCING DAMPER CONFIGURATOR
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;	IF (DHT.LT.12) GOTO DAMPER_ERROR	;10/28/02 per SM
+;;;	IF (DLEN.LT.12) GOTO DAMPER_ERROR	;10/28/02 per SM
+	IF (DHT.LT.6) GOTO DAMPER_ERROR	;10/28/02 per SM
+	IF (DLEN.LT.6) GOTO DAMPER_ERROR	;10/28/02 per SM
+
+	IF (DITEM(1,1) .EQ. 'P')
+	THEN	TDESCR(9,22) = 'PARALLEL BLADE'
+	ELSE	TDESCR(10,22) = 'OPPOSED BLADE'
+
+	IF (DITEM(3,3) .EQ. 'S') TDESCR(24,30) = ' SEALED'
+
+	FL_NAME = 'DMPRIC'		;SSQ 9-9-03
+	OPEN(9,I,FILPRC)		;SSQ 9-9-03
+;;;	OPEN(9,I,'SMC:DMPRIC.SMC')
+	IF (DITEM(3,3) .EQ. 'N')
+	THEN	READ(9,DMPRIC,1)	;NON-SEALED MATRIX
+	ELSE	READ(9,DMPRIC,2)	;SEALED MATRIX
+	CLOSE 9
+
+	DDIM = 48
+	CALL GET_DAMPER_SECTIONS
+
+	DITEM(5,15) = 
+	CLEAR CONFIG_PRICE
+
+	FOR I FROM 1 THRU 3
+		BEGIN
+		USING DHARA(I) SELECT		;FIND THE MATRIX ROW
+		(01 THRU 11),	X = 1
+		(12 THRU 18),	X = 2
+		(19 THRU 24),	X = 3
+		(25 THRU 32),	X = 4
+		(33 THRU 40),	X = 5
+		(41 THRU 48),	X = 6
+		(),		X = 0
+		ENDUSING
+		FOR J FROM 1 THRU 3
+		IF (X.GT.0 .AND. DLARA(J).GT.0)
+			BEGIN
+			USING DLARA(J) SELECT		;FIND THE MATRIX COLUMN
+			(01 THRU 18),	Y = 1
+			(19 THRU 24),	Y = 2
+			(25 THRU 30),	Y = 3
+			(31 THRU 36),	Y = 4
+			(37 THRU 42),	Y = 5
+			(43 THRU 48),	Y = 6
+			(),		Y = 0
+			ENDUSING
+	
+			PIDX = (X-1)*6 + Y		;GET THE INDEX
+
+			IF (PIDX.GT. 0)
+&			CONFIG_PRICE = CONFIG_PRICE+(DM_PRICE(PIDX)*DM_MULT)#1	;TO .XXX
+			END
+		END
+
+;;;	USING DMAT SELECT
+;;;	('A'),	CONFIG_PRICE = (CONFIG_PRICE * 175)#2	;ALUM
+;;;	('S'),	CONFIG_PRICE = (CONFIG_PRICE * 225)#2	;STAINLES
+;;;	ENDUSING
+
+
+	USING MAT_SEL SELECT
+	(ALUM),	CONFIG_PRICE = (CONFIG_PRICE * 200)#2	;ALUM
+	(SST),	CONFIG_PRICE = (CONFIG_PRICE * 225)#2	;STAINLESS
+	ENDUSING
+
+	CALL ROUND_NICKLE		;ROUND CONFIG_PRICE UP TO NEAREST .05
+	
+	LITMNO = DITEM(1,4)
+	RETURN
+;----------------------------------------------------------
+
+SBD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; SINGLE BLADE DAMPER
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  changed per MikeM 2-19-03...
+;;;	IF (DHT.LT.06 .OR. DHT.GT.12) GOTO DAMPER_ERROR
+;;;	IF (DLEN.LT.06 .OR. DLEN.GT.48)GOTO DAMPER_ERROR
+	IF (DHT.LT.04 .OR. DHT.GT.12) GOTO DAMPER_ERROR
+	IF (DLEN.LT.04 .OR. DLEN.GT.48)GOTO DAMPER_ERROR
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	TDESCR(7,20) = 'SINGLE BLADE'
+
+	CLEAR TBL_KEY
+	TBLCOD = 'SB'
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=DAMPER_ERROR]
+	CONFIG_PRICE = (DLEN*DHT)*SB_PCUN + SB_QUAD
+	IF (CONFIG_PRICE .LT. SB_MIN) CONFIG_PRICE = SB_MIN
+
+	USING DMAT SELECT
+	('A'),	CONFIG_PRICE = (CONFIG_PRICE*SB_AMUL)#2
+	('S'),	CONFIG_PRICE = (CONFIG_PRICE*SB_SMUL)#2
+	ENDUSING
+
+	CONFIG_PRICE = (CONFIG_PRICE*SB_PMUL)#1		;.XXX
+	LITMNO = DITEM(1,4)
+	CALL ROUND_NICKLE		;ROUND CONFIG_PRICE UP TO NEAREST .05
+	RETURN
+;----------------------------------------------------------
+LVR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; LOUVERS
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (DHT.LT.06) GOTO DAMPER_ERROR
+	IF (DLEN.LT.06)GOTO DAMPER_ERROR
+;;;	D_SQFT = ((DLEN*DHT*1000)/144)#1	 	;SQ FT (.xx)
+	D_SQFT = ((DLEN*DHT*1000)/144)		 	;SQ FT (.xxx)
+
+;148x148 STD LOUVER FLG
+;123456789012345678901234567890
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; added box/flange 1-24-06 ssq
+
+;;;	USING DITEM SELECT
+;;;	('SLB'),	TDESCR(8,30) = 'STD LOUVER BOX'
+;;;	('SLF'),	TDESCR(8,30) = 'STD LOUVER FLANGE'
+;;;	ENDUSING
+	USING DITEM SELECT
+	('SLB'),	BEGIN
+			TDESCR(8,30) = 'STD LOUVER BOX'
+			BF = 'B'
+			END
+	('SLF'),	BEGIN
+			TDESCR(8,30) = 'STD LOUVER FLANGE'
+			BF = 'F'
+			END
+	ENDUSING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	USING DMAT SELECT		;this get's overriden in lvr
+	('A'),	TDESCR(27,30) = 'ALUM'
+	('U'),	TDESCR(27,30) = 'CLAD'
+	('P'),	TDESCR(27,30) = 'PGRP'
+	ENDUSING
+
+L_DISPLA,
+	CLEAR CNGCTL
+	XCALL W_PROC(WP_PLACE, WND_D, 8, 15)
+	XCALL W_DISP(WND_D, WD_CLEAR)
+	XCALL W_DISP(WND_D,WD_POS,1,1,'CHOOSE ONE OF THE FOLLOWING:')
+	XCALL W_DISP(WND_D,WD_POS,2,4,'2. 2" FRAME')
+	XCALL W_DISP(WND_D,WD_POS,3,4,'4. 4" FRAME (STD)')
+	XCALL W_DISP(WND_D,WD_POS,4,4,'6. 6" FRAME')
+	XCALL W_UPDT
+L_OPT,
+	XCALL WINPT(WND_D, 1, 32, 01, 00, '#', ENTRY, INXCTL)
+	D_OPT = ENTRY(1,1)
+	IF (D_OPT .EQ. 0) D_OPT = 4
+
+	USING D_OPT SELECT
+	(2,4,6),	BEGIN
+			ENTRY(1,1) = D_OPT,'X'
+			XCALL W_DISP(WND_D,WD_POS,1,32,ENTRY(1,1))
+			XCALL W_UPDT
+			IF(D_OPT.NE.4) 
+				BEGIN
+				TDESCR(8,8) =
+				TDESCR(9,9) = D_OPT,'X'
+				TDESCR(10,10) = '"'
+				END
+			END
+	(),		GOTO L_DISPLA
+	ENDUSING
+
+	CNGCTL = 2
+	XCALL WANCN(WND_D, 7, CNGCTL, WHATNO)
+	GOTO (L_OPT),CNGCTL
+
+	XCALL W_DISP(WND_D, WD_CLEAR)
+	XCALL W_PROC(WP_REMOVE, WND_D)
+	XCALL W_UPDT
+
+	CLEAR TBL_KEY
+	TBLCOD = 'LV'
+	TBLKEY = BF		;SSQ 1-24-06
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=DAMPER_ERROR]
+
+	IF (DMAT.EQ.'A' .OR. DMAT.EQ.'U')
+	THEN	D_MIN = LV_AMIN			;ALUM/COLOR CLAD
+	ELSE	D_MIN = LV_GMIN
+	D_MIN = D_MIN*10			;to .xxx
+
+	USING D_OPT SELECT
+	(2),		USING DMAT SELECT
+			('A','U'),	D_SFPRIC = LV_A02
+			(),		D_SFPRIC = LV_G02
+			ENDUSING
+	(4),		USING DMAT SELECT
+			('A','U'),	D_SFPRIC = LV_A04
+			(),		D_SFPRIC = LV_G04
+			ENDUSING
+	(6),		USING DMAT SELECT
+			('A','U'),	D_SFPRIC = LV_A06
+			(),		D_SFPRIC = LV_G06
+			ENDUSING
+	ENDUSING
+;;;	CONFIG_PRICE = (D_SQFT*D_SFPRIC)#1
+	CONFIG_PRICE = (D_SQFT*D_SFPRIC)#2	;ssq 12-16-03
+	IF (CONFIG_PRICE .LT. D_MIN) CONFIG_PRICE = D_MIN
+	CALL ROUND_NICKLE		;ROUND CONFIG_PRICE UP TO NEAREST .05
+
+	LITMNO = DITEM(1,4)
+	RETURN
+;----------------------------------------------------------
+
+BDD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; BACKDRAFT DAMPER
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (DHT.LT.06) GOTO DAMPER_ERROR
+	IF (DLEN.LT.06)GOTO DAMPER_ERROR
+	D_SQFT = ((DLEN*DHT*1000)/144)#1	 	;SQ FT (.xx)
+
+	TDESCR(7,13) = 'B-DRAFT'
+
+	DDIM = 36
+	CALL GET_DAMPER_SECTIONS
+
+	CLEAR TBL_KEY
+	TBLCOD = 'BD'
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=DAMPER_ERROR]
+
+; after this, price will be .XXX, convert all add-on's to 3 dec places...
+;;;	CONFIG_PRICE = (CONFIG_PRICE*BD_PMUL)#1		;.XXX
+
+; Backdraft damper add-on's ...
+
+D_DISPLA,
+	CLEAR CNGCTL
+	XCALL W_DISP(WND_D, WD_CLEAR)
+	XCALL W_PROC(WP_PLACE, WND_D, 8, 15)
+	XCALL W_DISP(WND_D,WD_POS,1,1,'CHOOSE ONE OF THE FOLLOWING:')
+	XCALL W_DISP(WND_D,WD_POS,2,4,'1. REGULAR')
+	XCALL W_DISP(WND_D,WD_POS,3,4,'2. SPRING LOADED')
+	XCALL W_DISP(WND_D,WD_POS,4,4,'3. COUNTER BALANCED')
+	XCALL W_UPDT
+D_OPT,
+	XCALL WINPT(WND_D, 1, 32, 01, 00, '#', ENTRY, INXCTL)
+	D_OPT = ENTRY(1,1)
+	IF (D_OPT .EQ. 0) D_OPT = 1
+
+	IF (D_OPT.LT.1 .OR. D_OPT.GT.3) GOTO D_DISPLA
+	ENTRY(1,1) = D_OPT,'X'
+	XCALL W_DISP(WND_D,WD_POS,1,32,ENTRY(1,1))
+	XCALL W_UPDT
+D_ANY,
+	CNGCTL = 2
+	XCALL WANCN(WND_D, 7, CNGCTL, WHATNO)
+	GOTO (D_OPT),CNGCTL
+
+D2_DISP,
+	CLEAR CNGCTL
+	XCALL W_DISP(WND_D, WD_CLEAR)
+	XCALL W_DISP(WND_D,WD_POS,1,1,'CHOOSE ONE OF THE FOLLOWING:')
+	XCALL W_DISP(WND_D,WD_POS,2,4,'1. REGULAR')
+	XCALL W_DISP(WND_D,WD_POS,3,4,'2. FLANGED')
+	XCALL W_DISP(WND_D,WD_POS,4,4,'3. HIGH VELOCITY')
+	XCALL W_UPDT
+D2_OPT,
+	XCALL WINPT(WND_D, 1, 32, 01, 00, '#', ENTRY, INXCTL)
+	D_OPT2 = ENTRY(1,1)
+	IF (D_OPT2 .EQ. 0) D_OPT2 = 1
+	IF (D_OPT2.LT.1 .OR. D_OPT2.GT.3) GOTO D2_DISP
+	ENTRY(1,1) = D_OPT2,'X'
+	XCALL W_DISP(WND_D,WD_POS,1,32,ENTRY(1,1))
+	XCALL W_UPDT
+
+	CNGCTL = 2
+	XCALL WANCN(WND_D, 7, CNGCTL, WHATNO)
+	GOTO (D2_OPT),CNGCTL
+
+	XCALL W_DISP(WND_D, WD_CLEAR)
+	XCALL W_PROC(WP_REMOVE, WND_D)
+	XCALL W_UPDT
+
+	USING D_OPT2 SELECT
+	(1),	D_SFPRIC = BD_PCUN		;REGULAR PRICE/SQ FT
+	(2),	D_SFPRIC = BD_FM		;FLANGED
+	(3),	D_SFPRIC = BD_HV		;HIGH VEL
+	ENDUSING
+
+
+	BD_SL = BD_SL * 10		;.XXX
+	BD_MIN = BD_MIN * 10		;.XXX
+	CONFIG_PRICE = (D_SQFT*D_SFPRIC)#1
+
+	USING D_OPT SELECT
+	(2),	CONFIG_PRICE = CONFIG_PRICE + BD_SL	;SPRING LOADED
+	(3),	CONFIG_PRICE = CONFIG_PRICE + BD_SL	;COUNTER BALANCE
+	ENDUSING
+
+	IF (CONFIG_PRICE .LT. BD_MIN) CONFIG_PRICE = BD_MIN	;MINIMUM...
+
+	USING DMAT SELECT					;MATERIAL
+	('A'),	CONFIG_PRICE = (CONFIG_PRICE*BD_AMUL)#2
+	('S'),	CONFIG_PRICE = (CONFIG_PRICE*BD_SMUL)#2
+	ENDUSING
+
+	CONFIG_PRICE = (CONFIG_PRICE*BD_PMUL)#2		;.XXX	PROFIT
+
+	LITMNO = DITEM(1,4)
+	CALL ROUND_NICKLE		;ROUND CONFIG_PRICE UP TO NEAREST .05
+
+	CLEAR STR
+	USING D_OPT SELECT
+	(2),	STR = 'SPNG/'
+	(3),	STR = 'CB/'
+	ENDUSING
+
+	TL = %TRIM(STR)
+	USING D_OPT2 SELECT
+	(2),	STR = STR(1,TL) + 'FLG'
+	(3),	STR = STR(1,TL) + 'HI-VEL'
+	ENDUSING
+	
+	TL = %TRIM(STR)
+	IF (STR(TL,TL) .EQ. '/') STR(TL,TL) = 
+	TDESCR(15,30) = STR
+
+	RETURN
+;------------------------------------------------------
+
+ROUND_NICKLE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	N_PRICE = CONFIG_PRICE#1	;.XXX -> .XX
+	N_NUM = N_PRICE/10*10
+	N_DIG = N_PRICE - N_NUM		;ENDING DIGIT .XX
+
+	USING N_DIG SELECT
+	(0),	RETURN		;ALREADY ENDS IN ZERO
+	(.LE. 5),	N_PRICE = N_NUM + 5	;.05
+	(.GT. 5),	N_PRICE = N_NUM + 10	;.10
+	ENDUSING
+	
+	CONFIG_PRICE = N_PRICE * 10	;.XX -> .XXX
+	RETURN
+;----------------------------------------------------------
+
+R_TAKEOFF,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	USING LITMNO(3,3) SELECT
+	('V'),		BEGIN			;VINYL
+			RTVAL = LITMNO(4,9)
+			CLEAR LITMNO(4,15)
+			VYNL = $TRUE
+			END
+	('.'),		RETURN			;"RT." is a valid part #
+	(),		BEGIN			;NOT VINYL
+			RTVAL = LITMNO(3,8)
+			CLEAR LITMNO(3,15)
+			VYNL = $FALSE
+			END
+	ENDUSING
+
+	RTLEN = %TRIM(RTVAL)
+	IF(RTLEN .LT. 6) GOTO R_TAKEOFF_ERROR
+
+	ONERROR R_TAKEOFF_ERROR
+	RT_SZ1 = RTVAL(1,2)
+	RT_SZ2 = RTVAL(3,4)
+	RT_DIA = RTVAL(5,6)
+	OFFERROR
+
+	IF(RT_SZ2 .GT. RT_DIA) GOTO R_TAKEOFF_ERROR
+
+; find the greater of SZ1 & SZ2 to determin the gauge...
+	RTLEN = RT_SZ1
+	IF(RT_SZ2 .GT. RTLEN) RTLEN = RT_SZ2
+
+	IF (VYNL .EQ. $TRUE)
+	THEN	BEGIN
+		USING RTLEN SELECT
+		(.GE. 25),	RT_GA = 20
+		(17 THRU 24),	RT_GA = 22
+		(1 THRU 16),	RT_GA = 24
+		(),		GOTO R_TAKEOFF_ERROR
+		ENDUSING
+		IF (MAT_SEL.NE.GALV .AND. RT_GA.GT.24) RT_GA = 24
+		LITMNO(4,5) = RT_GA,	'XX'
+		RT_REST = 'PVS SADDLE'
+		END
+	ELSE	BEGIN
+		USING RTLEN SELECT
+		(.GE. 31),	RT_GA = 22
+		(13 THRU 30),	RT_GA = 24
+		(1 THRU 12),	RT_GA = 26
+		(),		GOTO R_TAKEOFF_ERROR
+		ENDUSING
+		IF(MAT_SEL.NE.GALV .AND. RT_GA.GT.24) RT_GA = 24
+		LITMNO(3,4) = RT_GA,	'XX'
+		RT_REST = 'REG. T.O.'
+		END
+
+	TDESCR = TOFF
+	RETURN
+
+R_TAKEOFF_ERROR,
+	OFFERROR
+	XCALL OLMSG(WND_1, 23,'INVALID REGISTER TAKEOFF PART NUMBER',1)
+	CONFIG_ERROR = 1
+	RETURN
+;----------------------------------------------------------
+
+R_ANGLE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	WRANGL = LITMNO(4,15)
+	XCALL INSTR (1,WRANGL,'-',DASH)
+	XCALL INSTR (1,WRANGL,'+',INCH)	;SSQ 6-1-98
+
+	IF (DASH.EQ.0.AND.INCH.EQ.0) GOTO R_ANGLE_ERROR		;NEITHER
+	IF (DASH.NE.0.AND.INCH.NE.0) GOTO R_ANGLE_ERROR		;BOTH
+	IF (WRANGL(8,12).NE.BLANKS)  GOTO R_ANGLE_ERROR
+	LITMNO(4,15) = 
+
+	TDESCR = WRANGL(1,7)	
+	IF (DASH) 
+		BEGIN
+		 ONERROR R_ANGLE_ERROR
+		TDESCR(DASH,DASH) = '/'
+		DSIZ = WRANGL(1,DASH-1)
+		DECMAL = WRANGL(DASH+1,DASH+3)
+		 OFFERROR
+		RA_SIZE = DSIZ + DECMAL
+		IF (DECMAL .LE. 0) GOTO R_ANGLE_ERROR	;3-26-99 SSQ
+		END
+	IF (INCH) 
+		BEGIN
+		TDESCR(INCH,INCH) = '"'
+		 ONERROR R_ANGLE_ERROR
+		RA_SIZE = WRANGL(1,INCH-1)
+		 OFFERROR
+		IF (WRANGL(INCH+1,12) .NE. BLANKS) GOTO R_ANGLE_ERROR	;2-17-99
+		END
+
+	RETURN
+
+R_ANGLE_ERROR,
+	OFFERROR
+	XCALL OLMSG(WND_1, 23,'INVALID R-ANGLE PART NUMBER',1)
+	CONFIG_ERROR = 1
+	RETURN
+;----------------------------------------------------------
+
+
+SPIRAL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (KITMNO.EQ.'SX' .AND. MAT_SEL.NE.GALV)
+		BEGIN
+		XCALL OLMSG(WND_1, 23,"DON'T SELECT MATERIAL",1)
+		CONFIG_ERROR = 1
+		RETURN
+		END
+ 
+	IF (KITMNO(7,7).EQ.'+')		;PROCESS INCHES
+	THEN	BEGIN
+		 ONERROR SPIRAL_ERROR
+		INCH = KITMNO(8,10)
+		 OFFERROR
+		TDESCR = '__"-__GA X ___"LONG SPIRL ____'
+		TDESCR(12,14) = INCH,'ZZX'
+		DPND = (INCH*100) / 12
+		IF (DPND(5,6).NE.0) 
+		THEN DSIZ = DPND(1,4) + 1 
+		ELSE DSIZ = DPND(1,4)
+		END
+	ELSE	BEGIN
+		INCH = 
+		 ONERROR SPIRAL_ERROR
+		DSIZ = KITMNO(7,8)
+		 OFFERROR
+		TDESCR = '__"-__GA X __''SPIRAL PIPE ____'
+		TDESCR(12,13) = DSIZ,'ZX'
+		DSIZ = KITMNO(7,8)
+		END
+
+	IF (DSIZ.GT.30) GOTO SPIRAL_ERROR
+
+	TDESCR(1,2) = KITMNO(3,4)	;DIA
+	TDESCR(5,6) = KITMNO(5,6)	;GA
+
+	IF (MAT_SEL .EQ. ALUM)			;SSQ 5-12-03
+		BEGIN
+		DGA = KITMNO(5,6)	;GA
+		USING DGA SELECT
+		(18),	TDESCR(5,8) = '.063'
+		(20),	TDESCR(5,8) = '.050'
+		(22),	TDESCR(5,8) = '.040'
+		(24),	TDESCR(5,8) = '.032'
+		ENDUSING
+		END
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SSQ 8-7-02
+	LITMNO(7,15) = 
+	SP_SIZE = DSIZ
+
+; 5-12-03: force price to zero if alum or sst...
+	IF (KITMNO.EQ.'SG') 
+	THEN	USING MAT_SEL SELECT
+		(GALV),	TDESCR(27,30) = 'GALV'
+		(ALUM),	BEGIN
+			TDESCR(27,30) = 'ALUM'
+			SP_SIZE = 0		;FORCE PRICE TO ZERO
+			END
+		(SST),	BEGIN
+			TDESCR(27,30) = 'SST'
+			SP_SIZE = 0		;FORCE PRICE TO ZERO
+			END
+		(PGRP),	TDESCR(27,30) = 'PGRP'
+		ENDUSING
+	ELSE	TDESCR(27,30) = 'PVS '
+
+
+	RETURN
+
+SPIRAL_ERROR,
+	OFFERROR
+	CONFIG_ERROR = 1
+	XCALL W_DISP(WND_1, WD_POS,23,1,WD_CLR, WDC_LIN)
+	DISPLAY (15,'ITEM CODE ENTERED: ',KITMNO,     '/ ITEM CODE CALCULATED: ',LITMNO      )
+	XCALL OLMSG(WND_1,23,'INVALID ITEM NUMBER FOR SPIRAL',2)
+	RETURN
+;----------------------------------------------------------------
+
+FIND_DAMPER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;03/08/07 isam: now itmmas.item contains the *'s and is priced to reflect
+;;;		the fact that there are dampers. just set ldampr.
+
+	if (%instr(1, litmno, "*") )
+	then	ldampr = 1
+	else	ldampr = 0
+
+;;;	return	;10-16-07 get partno but leave litmno alone
+;------------------------------------------------------------------
+
+	CLEAR LDAMPR, BAD_DIGIT
+
+	PARTNO = LITMNO
+
+	FOR I FROM 1 THRU 3
+		BEGIN
+		CLEAR DAMPER_PRICE(I)
+		CLEAR SAVE_DP(I)
+		END
+
+	MAXFLEN = %TRIM(PARTNO)
+	FOR I FROM 1 THRU 3
+		BEGIN
+		XCALL INSTR(1, PARTNO, "*", FL)
+		IF (.NOT. FL) 		EXITLOOP
+		PARTNO(FL, MAXFLEN) = PARTNO(FL+1, MAXFLEN)
+		CALL D_SIZE
+		IF (BAD_DIGIT)
+			BEGIN
+			XCALL OLMSG(WND_1,23,'damper configuration',2)
+			RETURN
+			END
+		END
+
+;;;	LITMNO = PARTNO
+	RETURN
+
+D_SIZE,	;---------------------------------------
+	CLEAR BAD_DIGIT
+
+	ONERROR BADDIG
+	DAMP = PARTNO(FL, FL+1)
+	OFFERROR
+
+;check damper price...
+	CLOSE 9
+
+	FL_NAME = 'SDPRIC'		;SSQ 9-9-03
+	OPEN(9,I,FILPRC)		;SSQ 9-9-03
+	XCALL IO (9,TPRICE,1,READ,LOKCTL)
+	IF(DAMP.LE.80) 
+	THEN	DAMPER_PRICE(I) = ARRAY(DAMP)*10
+	ELSE	CLEAR DAMPER_PRICE(I)
+
+	CLOSE 9
+	IF (DAMPER_PRICE(I) .LE. 0)
+		BEGIN
+		XCALL OLMSG(WND_1,23,'Zero or missing damper price',2)
+		GOTO BADDIG
+		END
+	LDAMPR = 1
+	RETURN
+BADDIG,
+	CLEAR DAMPER_PRICE(I)
+	BAD_DIGIT = 1
+	CLEAR LDAMPR
+	RETURN
+;----------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;; FUNCTION KEY WINDOWS.....
+
+MATL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	DLINE6 = "MATERIAL"
+	XCALL POP1(POP6,10)	;PALETTE 10 - YELLOW
+;;;	XCALL POPM(POP6)
+	IF (PI6 .LT. 0) PI6 = -PI6
+	USING P_ACTION6 SELECT
+	(1, 4),	NOP			;USE WHATEVER SELECTED
+	(),	PI6 = 1			;GALVANIZED
+	ENDUSING
+DISP_MATL,
+	IF (PI6.LT.1 .OR. PI6.GT.4)PI6 = 1	;ssq 10-23-07 just in case...
+	DLINE6 = PARRY6(PI6)
+	MAT_SEL = PI6		;MATERIAL SELECTED
+;;;	LMAT = PI6		;MATERIAL SELECTED
+	IF (MAT_SEL .EQ. GALV)
+	THEN	XCALL W_DISP(WND_6, WD_CLEAR)
+	ELSE	BEGIN
+		XCALL W_DISP(WND_6, WD_POS, 1, 1, DLINE6(1,PLEN6))
+		XCALL W_AREA(WND_6, WA_COLOR, 10)	;blue
+		END
+	XCALL W_UPDT
+
+	CLEAR TBL_KEY
+	TBLCOD = 'CF'
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=NOT_CF_MUL]
+
+	USING MAT_SEL SELECT
+	(GALV),	MAT_MUL = 100		;1.00
+	(ALUM),	MAT_MUL = ALUMUL
+	(PGRP),	MAT_MUL = PGRMUL
+	(SST),	MAT_MUL = SSTMUL
+	ENDUSING
+
+	RETURN
+;----------------------------------------
+
+CHK_F6_MATL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR BAD_MAT
+
+	USING LITMNO SELECT
+	('SG','SX'),	NOP
+	('RT','RTV'),	NOP
+	('WR'),		NOP
+	(),		IF (CFG_ITEM .NE. 2) RETURN	;MUST BE NON-CFG PART
+	ENDUSING
+
+;;;	IF (CFG_ITEM .NE. 2) RETURN	;MUST BE NON-CFG PART
+;;;	IF (MAT_SEL .EQ. GALV) RETURN	;DO NOTHING IF GALV...
+;;;	IF (MAT_SEL.EQ.GALV .AND. LMAT.LE.1) RETURN	;MAY BE CHANGING TO GALV
+	IF (MAT_SEL.LE.GALV .AND. LMAT.LE.1) RETURN	;SSQ 9-24-03
+;also check prdcat = "G" and ga >24
+	I = 1
+CF6L,
+	A4 = F6A(I)			;CHECK FOR EACH MAT'L
+	TL = %INSTR(1,LDESCR,A4)
+	IF (TL .LE. 1) 
+		BEGIN
+		INCR I
+		IF(I.LE.5) GOTO CF6L
+		END
+
+	IF (TL .LE. 1) 
+		BEGIN
+		BAD_MAT = 1
+		XCALL OLMSG(WND_1, 23,'INVALID ITEM FOR CURRENT MATERIAL',2)
+		RETURN
+		END
+
+	;;;IF (PRDCAT(1,1) .EQ. 'G')
+	;;;USING PRDCAT(1,1) SELECT
+	USING PRDCAT SELECT
+	('G','A','J','K2'),	BEGIN
+			BAD_MAT = 1
+		;;;	XCALL OLMSG(WND_1,23,'NOT VALID FOR PRDCAT "G"',2)
+			NVP = PRDCAT(1,1)
+			XCALL OLMSG(WND_1,23,NVP_MSG,2)
+			RETURN
+			END
+	ENDUSING
+
+	SL = %INSTR(1,LDESCR,'GA')
+	IF (SL .LE. 2) GOTO C_F6_OK
+	SL = SL - 2
+	A2 = LDESCR(SL,SL+1)
+	ONERROR C_F6_OK
+	D2 = A2
+	OFFERROR
+	
+	IF (D2 .GT. 24)
+		BEGIN
+		BAD_MAT = 1
+		XCALL OLMSG(WND_1,23,'GAUGE MUST BE 24 OR LESS',2)
+		RETURN
+		END
+C_F6_OK,
+	USING MAT_SEL SELECT
+	(GALV),	LDESCR(TL,TL+3) = 'GALV'
+	(ALUM),	LDESCR(TL,TL+3) = 'ALUM'
+	(PGRP),	LDESCR(TL,TL+3) = 'PGRP'
+	(SST),	LDESCR(TL,TL+3) = 'SST'
+	ENDUSING
+
+	; changing spiral - alum & sst are zero price...
+	IF (CNG_LI .AND. (LITMNO.EQ.'SG'.OR.LITMNO.EQ.'SX'))	
+&		USING MAT_SEL SELECT
+		(GALV),	NOP
+		(ALUM),	SAVPRC = 0
+		(PGRP),	NOP
+		(SST),	SAVPRC = 0
+		ENDUSING
+
+	P_MULT = MAT_MUL
+	CALL DISP_MULT
+NOT_CF_MUL,
+	RETURN
+;----------------------------------------------------
+
+PRINT_L,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Print lines in order input
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	FIND (CHN045, ORDLIN, OORDNO) [ERR=PL_CHK]
+PL_CHK,
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO PL_NONE
+	IF (LORDNO .NE. OORDNO) GOTO PL_NONE
+
+	CLEAR PL_TOT
+
+	xcall w_disp(wnd_1,wd_pos,25,1,'Printing ...')
+	xcall beep
+	SPLFIL(1,4) = 'SPL:'
+	SPLFIL(5,10) = OORDNO,'XXXXXX'
+	SPLFIL(11,14) = '.SPL'
+	OPEN (14,O,SPLFIL)
+
+	PLINE(1,6) = 'ORDER:'
+	PLINE(8,13) = OORDNO,	'XXXXXX'
+	CALL PL_PRINT
+PL_LOOP,
+	DECMAL = (LQTYOR*LPRICE)#1
+	PLINE(1,15) = LITMNO
+	PLINE(17,46) = LDESCR
+	PLINE(48,53) = LQTYOR
+	PLINE(55,65) = LPRICE,	'ZZ,ZZX.XXX'
+	PLINE(67,76) = DECMAL,	'ZZZ,ZZX.XX-'
+	CALL PL_PRINT
+	
+	PL_TOT = PL_TOT + DECMAL
+
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO PL_EOF
+	IF (LORDNO .NE. OORDNO) GOTO PL_EOF
+	GOTO PL_LOOP
+
+;ORDER: XXXXXX	                                    ORDER TOTAL:
+;AAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ZZZZZX ZZ,ZZX.XXX ZZZ,ZZX.XX-
+;1234567890123456789012345678901234567890123456789012345678901234567890123456
+;         1         2         3         4         5         6         7
+PL_EOF,
+	CALL PL_PRINT
+	PLINE(53,64) = 'ORDER TOTAL:'
+	PLINE(67,76) = PL_TOT,	'ZZZ,ZZX.XX-'
+	CALL PL_PRINT
+	CLOSE 14
+	LPQUE (SPLFIL, DELETE)
+	CALL DIS_GASKET
+PL_NONE,
+	RETURN
+PL_PRINT,
+	WRITES (14,PLINE)
+	CLEAR PLINE
+	RETURN
+
+;----------------------------------------
+
+F4_POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear pi4
+	if (f4_num .le. 0)
+		begin
+		call insert_f4
+		if (inxctl .ne. 0) return
+		end
+disp_f4,
+	i = 0
+	for j from f4_num thru 1 by -1
+		begin
+		x_memo = f4_memol(j)
+		incr i
+		f4_seq(i) = j
+		parry4(i) = x_memo
+		end
+	numara4 = f4_num
+	palet4 = 7		;red
+;;;	xcall popm (mpop4,1)	;no double window
+	xcall popm (mpop4,0)	;double window
+	if (pi4.lt.0)pi4 = -pi4
+	using p_action4 select
+	(2),	begin
+		call insert_f4
+		if (inxctl .ne. 0)
+		then	return
+		else	goto disp_f4
+		end
+	(),	if (pi4 .gt. 0)
+		then	clvl4 = f4_seq(pi4)
+		else	clvl4 = 0
+
+	endusing
+	return
+
+;--------------------------------
+
+F1_POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear pi1
+	if (f1_num .le. 0)
+		begin
+		call insert_f1
+		if (inxctl .ne. 0) return
+		end
+disp_f1,
+	i = 0
+	for j from f1_num thru 1 by -1
+		begin
+		x_memo = f1_memol(j)
+		incr i
+		f1_seq(i) = j
+		parry1(i) = x_memo
+		end
+	numara1 = f1_num
+	palet1 = 7		;red
+;;;	xcall popm (mpop1,1)	;no double window
+	xcall popm (mpop1,0)	;double window
+	if (pi1.lt.0)pi1 = -pi1
+	using p_action1 select
+	(2),	begin
+		call insert_f1
+		if (inxctl .ne. 0)
+		then	return
+		else	goto disp_f1
+		end
+	(),	if (pi1 .gt. 0)
+		then	begin
+			clvl1 = f1_seq(pi1)
+		;;;	pi6 = f1_f6m(pi1)
+			pi6 = f1_f6m(clvl1)
+			call disp_matl
+			CDPT1 = F1_CDPT(PI1)	;SSQ 01-17-08
+			end
+		else	begin
+			clvl1 = 0
+			pi6 = 1
+			call disp_matl
+			end
+
+	endusing
+	return
+
+;--------------------------------
+insert_f1,
+	if (f1_num .ge. f_max)
+		begin
+		xcall olmsg (w_id, 23, 'Cannot exceed 20 memos',1)
+		return
+		end
+
+	xcall w_disp (w_id, wd_pos, row, 1, 'level-1 memo')
+	v_level = 1
+	m_max = 5		;1-3-08, must be in table
+	m_max = 30
+	call insert
+	if (inxctl .ne. 0) return
+
+	incr f1_num
+	f1_idx = f1_num
+	f1_memos(f1_idx) = d_short
+	f1_memol(f1_idx) = d_long
+	f1_key(f1_idx) = d_key
+	f1_cdpt(f1_idx) = d_cdpt
+	f1_f6m(f1_idx) = d_f6m		;f6 matl code from memo table
+	return
+
+;--------------------------------
+;;;	XCALL WINPT(WND_M, 1, 12, 30, 00, 'AE', ENTRY, INXCTL, F_KEY)
+;;;	USING F_KEY SELECT
+;;;	(F_01),	BEGIN
+;;;		XCALL W_DISP(WND_M, WD_POS,1,1,WD_CLR, WDC_LIN)
+;;;		CLEAR CLVL1
+;;;		RETURN
+;;;		END
+;;;	ENDUSING
+;;;
+;;;	GOTO (F1_POP,ABORT_F1),INXCTL
+;;;
+;;;	IF (ENTRY(1,1).EQ.'.' .OR. ENTRY(1,1) .EQ. '9')
+;;;		BEGIN
+;;;		V_LEVEL = 1
+;;;		CALL GET_MEMO_TABLE
+;;;		IF (KEY_FOUND)
+;;;		THEN	ENTRY(1,30) = MM_LONG
+;;;		ELSE	GOTO F1_POP
+;;;		END
+;;;
+;;;	IF (ENTRY.EQ.BLANKS)	ENTRY(1,30) = F1_MEMOL(1)
+;;;
+;;;	XCALL W_DISP(WND_M, WD_POS, 6, 12, ENTRY(1,30))
+;;;	XCALL W_UPDT
+;;;	XCALL W_AREA(WND_M, WA_COLOR, 7)		;RED
+;;;
+;;;	CNGCTL = 2
+;;;	XCALL WANCN(WND_1, 24, CNGCTL, WHATNO)
+;;;	GOTO (F1_POP),CNGCTL	
+;;;
+;;;	F1_NUM = 1		;ONLY 1 MAIN COMMENT ALLOWED
+;;;	F1_IDX = F1_NUM
+;;;	F1_MEMOL(F1_IDX) = ENTRY(1,30)		
+;;;	CLVL1 = F1_IDX
+;;;ABORT_F1,
+;;;	RETURN
+;---------------------------------------
+
+F2_POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR PI2
+	IF (F2_NUM .LE. 0)
+		BEGIN
+		CALL INSERT_F2
+		IF (INXCTL .NE. 0) RETURN
+		END
+
+DISP_F2,
+; reverse order...
+	I = 0
+	FOR J FROM F2_NUM THRU 1 BY -1
+		BEGIN
+		X_MEMO = F2_MEMOL(J)
+		INCR I
+		F2_SEQ(I) = J		;save the actual seq #
+;;;		PARRY2(I) = X_MEMO(1,30)
+		PARRY2(I) = X_MEMO
+		END
+	NUMARA2 = F2_NUM
+
+	DLINE2 = 'LEVEL-2 MEMOS'
+	PALET2 = 5				;PALETTE 5 - GREEN
+;;;	XCALL POPM (MPOP2,1)
+	XCALL POPM (MPOP2,0)
+	IF(PI2 .LT. 0) PI2 = -PI2
+	USING P_ACTION2 SELECT
+	(2),	BEGIN			;INSERT
+		CALL INSERT_F2
+		IF (INXCTL .NE. 0)
+		THEN	RETURN
+		ELSE	GOTO DISP_F2
+		END
+	(),	IF(PI2.GT.0)
+		THEN	BEGIN
+			CLVL2 = F2_SEQ(PI2)
+			CDPT2 = F2_CDPT(PI2)	;SSQ 12-26-07
+			END
+		ELSE	CLVL2 = 0
+	ENDUSING
+
+	RETURN
+;---------------------------------------
+F3_POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR PI3
+	IF (F3_NUM .LE. 0)
+		BEGIN
+		CALL INSERT_F3
+		IF (INXCTL .NE. 0) RETURN
+		END
+
+DISP_F3,
+; reverse order...
+	I = 0
+	FOR J FROM F3_NUM THRU 1 BY -1
+		BEGIN
+		X_MEMO = F3_MEMOL(J)
+		INCR I
+		F3_SEQ(I) = J		;save the actual seq #
+;;; 3-1-07		PARRY3(I) = X_MEMO(1,30)
+		PARRY3(I) = X_MEMO	;3-1-07
+		END
+
+	NUMARA3 = F3_NUM
+
+	DLINE3 = 'LEVEL-3 MEMOS'
+	PALET3 = 6			;PALETTE 6 - CYAN
+;;;	XCALL POPM (MPOP3,1)
+	XCALL POPM (MPOP3,0)
+	IF(PI3.LT.0)PI3 = -PI3
+	USING P_ACTION3 SELECT
+	(2),	BEGIN			;INSERT
+		CALL INSERT_F3
+		IF (INXCTL .NE. 0)
+		THEN	RETURN
+		ELSE	GOTO DISP_F3
+		END
+	(),	IF(PI3 .GT. 0)
+		THEN	CLVL3 = F3_SEQ(PI3)
+		ELSE	CLVL3 = 0
+	ENDUSING
+
+	RETURN
+;---------------------------------------
+
+INSERT_F2,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF(F2_NUM .GE. F_MAX)
+		BEGIN
+		XCALL OLMSG(W_ID, 23, 'Cannot exceed 10 memos',1)
+		RETURN
+		END
+	XCALL W_DISP(W_ID, WD_POS, ROW, 1, 'LEVEL-2 MEMO')
+	V_LEVEL = 2
+	m_max = 5		;1-3-08, must be in table
+	m_max = 30
+	CALL INSERT
+	IF (INXCTL .NE. 0) RETURN
+
+	INCR F2_NUM
+	F2_IDX = F2_NUM
+	F2_MEMOS(F2_IDX) = D_SHORT		
+	F2_MEMOL(F2_IDX) = D_LONG		
+	F2_KEY(F2_IDX) = D_KEY
+	F2_CDPT(F2_IDX) = D_CDPT
+	RETURN
+;---------------------------------------
+
+INSERT_F3,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF(F3_NUM .GE. F_MAX)
+		BEGIN
+		XCALL OLMSG(W_ID, 23, 'Cannot exceed 10 memos',1)
+		RETURN
+		END
+	XCALL W_DISP(W_ID, WD_POS, ROW, 1, 'LEVEL-3 MEMO')
+	V_LEVEL = 3
+;;;	m_max = 5		;1-3-08, must be in table
+	m_max = 30		;1-10-08, doesn't have to be in table
+	CALL INSERT
+	IF (INXCTL .NE. 0) RETURN
+
+	INCR F3_NUM
+	F3_IDX = F3_NUM
+	F3_MEMOL(F3_IDX) = D_LONG
+	F3_MEMOS(F3_IDX) = D_SHORT		
+	F3_KEY(F3_IDX) = D_KEY
+	RETURN
+;---------------------------------------
+
+INSERT_F4,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF(F4_NUM .GE. F_MAX)
+		BEGIN
+		XCALL OLMSG(W_ID, 23, 'Cannot exceed 20 memos',1)
+		RETURN
+		END
+	XCALL W_DISP(W_ID, WD_POS, ROW, 1, 'LEVEL-4 MEMO')
+	V_LEVEL = 4
+	M_MAX = 20
+	CALL INSERT
+	IF (INXCTL .NE. 0) RETURN
+
+	INCR F4_NUM
+	F4_IDX = F4_NUM
+	F4_MEMOL(F4_IDX) = D_LONG
+	F4_MEMOS(F4_IDX) = D_SHORT		
+	F4_KEY(F4_IDX) = D_KEY
+	RETURN
+;---------------------------------------
+
+INSERT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR D_SHORT, D_LONG, D_KEY, D_CDPT
+	XCALL W_DISP(WND_1, WD_POS, 24,1,WD_CLR, WDC_LIN,'".XX"=Canned memos')
+
+	IF (M_MAX .LE. 0) M_MAX = 30
+	XCALL WINPT(W_ID, ROW+1, 3, M_MAX, 00, 'AE', ENTRY, INXCTL)
+	GOTO (INSERT,ABORT),INXCTL
+	if (v_level .eq. 4) goto level_4
+
+	IF (ENTRY(1,1).EQ.'.' .OR. ENTRY(1,1) .EQ. '9')
+		BEGIN
+		CALL GET_MEMO_TABLE
+		IF (KEY_FOUND)
+		THEN	BEGIN
+			ENTRY(1,30) = MM_LONG
+			D_SHORT = MM_SHORT
+			D_KEY = MM_KEY		;SSQ 7-31-03
+			D_F6M = MM_MATL		;SSQ 10-13-07
+			D_CDPT = MM_CDPT	;SSQ 12-27-07
+			XCALL W_DISP(W_ID, WD_POS, ROW+1, 3, ENTRY(1,30))
+			END
+		ELSE	GOTO INSERT
+		END
+
+level_4,
+	DL_ARA(1) = ENTRY(1,30)
+
+	XCALL W_DISP(W_ID, WD_POS, ROW+2, 3, WD_CLR, WDC_LIN)
+	XCALL W_DISP(W_ID, WD_POS, ROW+3, 3, WD_CLR, WDC_LIN)
+	XCALL W_PROC(WP_REMOVE, WND_2)
+	XCALL W_UPDT
+
+	XCALL WINPT(W_ID, ROW+2, 3, 30, 00, 'AE', ENTRY, INXCTL)
+	GOTO (INSERT,ABORT),INXCTL
+	IF (ENTRY .EQ. BLANKS) GOTO I_CHANGE
+	DL_ARA(2) = ENTRY(1,30)
+
+	XCALL WINPT(W_ID, ROW+3, 3, 30, 00, 'AE', ENTRY, INXCTL)
+	GOTO (INSERT,ABORT),INXCTL
+	IF (ENTRY .EQ. BLANKS) GOTO I_CHANGE
+	DL_ARA(3) = ENTRY(1,30)
+
+I_CHANGE,
+	CNGCTL = 2
+	XCALL WANCN(WND_1, 24, CNGCTL, WHATNO)
+	GOTO (INSERT),CNGCTL	
+	IF (D_SHORT .EQ. BLANKS) D_SHORT = D_LONG
+ABORT,
+	XCALL W_PROC(WP_MOVE, WND_2, 0, 0)
+	XCALL W_UPDT
+	RETURN
+
+GET_MEMO_TABLE,	;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR KEY_FOUND
+
+	ONERROR NOT_KEY
+	USING ENTRY(1,1) SELECT
+	('.'),	MM_CODE = ENTRY(2,3)
+	('9'),	MM_CODE = ENTRY(1,5)
+	ENDUSING
+	OFFERROR
+MEMO_KEY,
+	CLEAR TBL_KEY
+	KEYCOD(1,1) = 'M'
+	KEYCOD(2,2) = V_LEVEL, 'X'
+	TBLCOD = KEYCOD
+;;;	TBLCOD = 'MM'
+	MM_KEY = MM_CODE
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=NOT_KEY]
+	KEY_FOUND = 1		;PER STEVE M 1-18-00
+	RETURN
+NOT_KEY,
+	OFFERROR
+	IF(MM_CODE.GT.91) XCALL OLMSG (WND_1,23,'BAD CONFIGURATION',2)	;SSQ 9/4/03
+
+	CALL LOAD_MEMO_POP
+	IF (NUMARA .EQ. 0) RETURN
+	DLINE = "  NO  MEMO"
+	READS (15,ALPHA)
+	XCALL POP40(POP)
+	USING P_ACTION SELECT
+	(1, 4),	BEGIN
+		DLINE = PARRY(PI)
+		MM_CODE = DLINE (1,5)	;ssq 7-31-03
+		GOTO MEMO_KEY
+		END
+	ENDUSING
+
+	RETURN
+LOAD_MEMO_POP,
+	CLEAR MM_KEY
+	FIND (CHN182, COPTBL, TBL_KEY) [ERR=LM_FIND]
+LM_FIND,
+	CLEAR I
+	FOR J FROM 1 THRU MAXARA
+		BEGIN
+		XCALL IOS (CHN182, COPTBL, READ, LOKCTL)
+		IF (LOKCTL .NE. 0) GOTO NO_MORE_TBL
+	;;;	IF (TBLCOD .NE. 'MM') GOTO NO_MORE_TBL
+		IF (TBLCOD .NE. KEYCOD) GOTO NO_MORE_TBL
+	;;;	IF (MM_VALID.EQ.0 .OR. MM_VALID.EQ.V_LEVEL)
+		IF (MM_VALID.EQ.0 .OR. MM_VALID.EQ.V_LEVEL)
+		   BEGIN
+		   CLEAR DLINE
+		   DLINE (1,5) = MM_KEY,	'ZZZZX' [LEFT]
+		   DLINE (7,37) = MM_LONG
+		   INCR I
+		   PARRY(I) = DLINE
+		   END
+		END
+NO_MORE_TBL,
+	NUMARA = I
+	RETURN
+;----------------------------------------------------------------
+;===========================================================
+
+;---------------------------------------
+ADD_LINE,
+	IF (PIL .EQ. 0) RETURN
+	RETURN
+;---------------------------------------
+DEL_LINE,
+	RETURN
+;---------------------------------------
+
+F5_POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; Inquire mode, hi-lite memos
+	;;; associated w/ each line...
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	F5_POP_ON = 1		;DON'T ALLOW MULTIPLE ENTRY INTO F5_POP
+; save current memos...
+	SAVL1 = CLVL1
+	SAVL2 = CLVL2
+	SAVL3 = CLVL3
+	SAVL4 = CLVL4
+
+	CALL GET_LINES
+
+	SAVE_ROW = 1
+	LI = 1
+;wham
+RE_PAGE,
+	IF (NUMARAL .EQ. 0) GOTO F5_RETURN
+	LAST_ROW = NUMROWL
+	IF (NUMROWL .GT. NUMARAL) LAST_ROW = NUMARAL
+
+	XCALL W_PROC(WP_REMOVE,WND_2)
+	XCALL W_PROC(WP_DELETE,WND_2)
+	XCALL W_PROC(WP_CREATE, WND_2, 'SCROL',LAST_ROW, 78)
+	XCALL W_BRDR(WND_2,WB_TITLE,'Review Memos/Change Lines',
+&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE, WND_2, 8, 0)
+	XCALL W_DISP(WND_2, WD_CLEAR)
+	WLEN = 78
+
+	CLEAR ARO
+	CLEAR WROW
+	FOR I FROM 1 THRU LAST_ROW
+		BEGIN
+		INCR WROW
+	;;;	DLINE = PARRYL(I)
+		REST = PARRYL(I)
+		XCALL W_DISP(WND_2, WD_POS, WROW, 1, WRKLIN(1,PLENL+2))
+
+	;;;	REST = DLINE(1,PLENL)
+	;;;	XCALL W_DISP(WND_2, WD_POS, WROW, 1, WRKLIN(1,PLENL+2))
+		END
+	XCALL W_UPDT
+
+	IF (F7_ON .EQ. 1) RETURN		;SSQ 4-9-04
+
+	CLEAR VAL
+	WROW = SAVE_ROW	
+	CLEAR SAVE_ROW	
+	IF (WROW .LE. 0) WROW = 1	;SSQ 12-16-99
+
+	FIRST_ROW = 1
+	CALL DSPLIN
+
+DSPLOP,
+	IF (SAVE_ROW .NE. 0)	CALL CLEAR_LAST_LINE
+
+	WROW = WROW + VAL
+	IF (WROW .GT. LAST_ROW) CALL SCROLL_DN
+	IF (WROW .LT. FIRST_ROW) CALL SCROLL_UP
+
+	LI = LI + VAL
+	IF (LI .LE. 0) LI = 1
+	IF (LI .GT. NUMARAL) LI = NUMARAL
+
+	CALL DSPLIN
+	CALL PINPUT
+	USING F_KEY SELECT
+	(EXIT_KEY, CR_KEY),	BEGIN
+			CLEAR PIL
+			CLEAR P_ACTIONL
+			END
+	(UP_ARO),	BEGIN
+			VAL = - 1
+			GOTO DSPLOP
+			END
+	(DN_ARO),	BEGIN
+			VAL =  1
+			GOTO DSPLOP
+			END
+	(PAGE_UP),	BEGIN
+			CALL OL_PAGE_UP
+			IF (NUMARAL .GT. 0) GOTO RE_PAGE
+			END
+	(PAGE_DN),	BEGIN
+			CALL OL_PAGE_DN
+			IF (NUMARAL .GT. 0) GOTO RE_PAGE
+			END
+	(RGHT_ARO),	BEGIN
+			PIL = LI
+			CALL CNG_LI		;CHANGE THIS LI
+			IF (NUMARAL .GT. 0) 
+				BEGIN
+				if (%ttsts)READS (15, ENTRY)
+				GOTO RE_PAGE
+				END
+			END
+	(DEL_KEY),	BEGIN
+			CALL DEL_LI
+			GOTO DSPLOP
+			END
+	ENDUSING
+	
+DONE_F5,
+	XCALL W_UPDT
+	CALL LOAD_LINE_ITEMS
+
+; restore current memos...
+	CLVL1 = SAVL1
+	CLVL2 = SAVL2
+	CLVL3 = SAVL3
+	CLVL4 = SAVL4
+
+	LMSQ1 = CLVL1
+	LMSQ2 = CLVL2
+	LMSQ3 = CLVL3
+	LMSQ4 = CLVL4
+
+	CALL DISPLAY_MEMO_WINDOWS
+
+	CLEAR ORDLIN
+	CLEAR PI2, PI3
+
+F5_RETURN,
+	F5_POP_ON = 0		;DON'T ALLOW MULTIPLE ENTRY INTO F5_POP
+	RETURN
+;;;control point here..
+
+
+DSPLIN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; move arrow, highlight selected line
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR CLVL1, CLVL2, CLVL3, CLVL4
+	ARO = '>'
+	REST = PARRYL(LI)
+	XCALL W_DISP (WND_2,WD_ATTR,ATTR_SET+ATTR_RVRS)
+	XCALL W_DISP (WND_2,WD_POS,WROW,1,WRKLIN(1,WLEN))
+	XCALL W_DISP (WND_2,WD_POS,WROW,1)
+	SAVE_ROW = WROW
+;display any memos for current item...
+	READ (CHN045, ORDLIN, RFA=PARRFAL(LI))
+
+	CALL DISPLAY_MEMO_WINDOWS
+	RETURN
+;----------------------------------------------------------------------
+DISPLAY_MEMO_WINDOWS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;-------------------------------------------------
+
+	IF (LMSQ1 .GT. F1_NUM)
+		BEGIN
+		XCALL OLMSG(WND_1, 23,'Missing <F1> Memo',2)
+		XCALL TTSTS(STAT)
+		IF (STAT) XCALL W_DISP(WND_2,WD_ACCEPT,decmal)
+		RETURN
+		END
+
+	IF (LMSQ2 .GT. F2_NUM)
+		BEGIN
+		XCALL OLMSG(WND_1, 23,'Missing <F2> Memo',2)
+		XCALL TTSTS(STAT)
+		IF (STAT) XCALL W_DISP(WND_2,WD_ACCEPT,decmal)
+		RETURN
+		END
+
+	IF (LMSQ3 .GT. F3_NUM)
+		BEGIN
+		XCALL OLMSG(WND_1, 23,'Missing <F3> Memo',2)
+		XCALL TTSTS(STAT)
+		IF (STAT) XCALL W_DISP(WND_2,WD_ACCEPT,decmal)
+		RETURN
+		END
+
+	IF (LMSQ4 .GT. F4_NUM)
+		BEGIN
+		XCALL OLMSG(WND_1, 23,'Missing <F4> Memo',2)
+		XCALL TTSTS(STAT)
+		IF (STAT) XCALL W_DISP(WND_2,WD_ACCEPT,decmal)
+		RETURN
+		END
+
+;-------------------------------------------------
+
+	IF (LMSQ1 .GT. F1_NUM)
+		BEGIN
+		XCALL OLMSG (WND_1, 23, 'Missing <F1> Memo',2)
+		XCALL TTSTS(STAT)
+		IF (STAT) XCALL W_DISP(WND_2, WD_ACCEPT,decmal)
+		RETURN
+		END
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF (LMSQ1.GT.0)
+;;;	THEN	BEGIN
+;;;		ENTRY(1,30) = F1_MEMOL(LMSQ1)
+;;;		XCALL W_DISP(WND_M, WD_POS, 6, 12, ENTRY(1,30))
+;;;		XCALL W_AREA(WND_M, WA_COLOR, 7)		;RED
+;;;		CLVL1 = LMSQ1
+;;;		END
+;;;	ELSE	XCALL W_DISP(WND_M, WD_CLEAR)
+;;;	XCALL W_UPDT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (LMSQ1 .EQ. 0)
+	THEN	BEGIN
+		XCALL W_PROC(WP_FIND, POP_WND1, POP_WID1)
+		IF (POP_WND1)
+		   BEGIN
+		   XCALL W_PROC(WP_REMOVE,POP_WND1)
+	    	   XCALL W_PROC(WP_DELETE,POP_WND1)
+		   END
+		END
+	ELSE	BEGIN
+		PI1 = -((F1_NUM-LMSQ1)+1)
+		CALL DISP_F1
+		END
+
+	IF (LMSQ2 .EQ. 0)
+	THEN	BEGIN
+		XCALL W_PROC(WP_FIND, POP_WND2, POP_WID2)
+		IF (POP_WND2)
+		   BEGIN
+		   XCALL W_PROC(WP_REMOVE,POP_WND2)
+	    	   XCALL W_PROC(WP_DELETE,POP_WND2)
+		   END
+		END
+	ELSE	BEGIN
+		PI2 = -((F2_NUM-LMSQ2)+1)
+		CALL DISP_F2
+		END
+
+	IF (LMSQ3 .EQ. 0)
+	THEN	BEGIN
+		XCALL W_PROC(WP_FIND, POP_WND3, POP_WID3)
+		IF (POP_WND3)
+		   BEGIN
+		   XCALL W_PROC(WP_REMOVE,POP_WND3)
+		   XCALL W_PROC(WP_DELETE,POP_WND3)
+		   END
+		END
+	ELSE	BEGIN
+		PI3 = -((F3_NUM-LMSQ3)+1)
+		CALL DISP_F3
+		END
+
+	IF (LMSQ4 .EQ. 0)
+	THEN	BEGIN
+		XCALL W_PROC(WP_FIND, POP_WND4, POP_WID4)
+		IF (POP_WND4)
+		   BEGIN
+		   XCALL W_PROC(WP_REMOVE,POP_WND4)
+		   XCALL W_PROC(WP_DELETE,POP_WND4)
+		   END
+		END
+	ELSE	BEGIN
+		PI4 = -((F4_NUM-LMSQ4)+1)
+		CALL DISP_F4
+		END
+
+
+;--------------------------------------------------------------
+; added ssq 3-1-07
+	XCALL W_PROC(WP_FIND,wnd_w2,'POPM-2')	;see popm.cp
+	IF (wnd_w2)	
+		begin
+		XCALL W_PROC(WP_remove, wnd_w2)
+		XCALL W_PROC(WP_DELETE, wnd_w2)
+		end
+;--------------------------------------------------------------
+
+	PI6 = LMAT
+	IF (PI6.LT.1 .OR. PI6.GT.4)PI6 = 1
+	CALL DISP_MATL
+
+	RETURN
+;----------------------------------------------------------------------
+
+CLEAR_LAST_LINE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+			;;; CLEAR HI-LITE ON PREV LINE
+			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR ARO
+	XCALL W_DISP (WND_2,WD_ATTR,ATTR_CLR+ATTR_RVRS)
+	XCALL W_DISP (WND_2,WD_POS,SAVE_ROW,1,WRKLIN(1,WLEN))
+	RETURN
+;----------------------------------------------------------------------
+PINPUT,	;;;;;;;;;;;;;;;;;;;;;;;
+	;;; FUNCTION KEY INPUT
+	;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL W_DISP(WND_2,WD_ACCEPT,STAT_KEY)
+	XCALL TTSTS(STAT)
+	IF (STAT) 
+	THEN	XCALL W_DISP(WND_2,WD_ACCEPT,F_KEY)
+	ELSE	F_KEY = STAT_KEY
+
+	CASE F_KEY OF
+	BEGINCASE
+	079:	F_KEY = 027
+	133:	F_KEY = 027
+	008:	F_KEY = 027		;<BS>
+	010:	F_KEY = 013		;<CR>
+	ENDCASE
+
+	RETURN
+
+GETCHR,	
+	XCALL W_DISP(WND_2,WD_ACCEPT,ALPHA)
+	XCALL DECML (ALPHA, DEC)
+	RETURN
+
+;----------------------------------------------------------------------
+;----------------------------------------------------------------------
+
+;;; WINDOW SCROLLING ROUTINES
+SCROLL_DN,
+	WROW = LAST_ROW
+	IF (LI .EQ. NUMARAL) RETURN
+	XCALL W_AREA(WND_2,WA_SCROLL,WAS_UP,1)
+	RETURN
+
+SCROLL_UP,
+	WROW = FIRST_ROW
+	IF (LI .EQ. 1) RETURN
+	XCALL W_AREA(WND_2,WA_SCROLL,WAS_DOWN,1)
+	RETURN
+;--------------------------
+;===================================================================
+CNG_LI,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; ALLOW CHANGES TO SELECTED L/I
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	READ (CHN045, ORDLIN, RFA=PARRFAL(PIL)) ;;dbg [ERR=CNG_LI_ERR]
+	xcall oej2(f_memos, amtjg, amttg)	;ssq 10-21-03
+	orgjg = amtjg
+	orgtg = amttg
+
+	SAV045 = ORDLIN
+	SAVPRC = LPRICE
+	OLDEXE = (LQTYOR*LPRICE)#1
+	MAT_SEL = LMAT			;SSQ 5-14-03
+	CFG_ITEM = L_CFG		;SSQ 5-14-03
+
+	;;ssq 12-13-07 need itmmas info to allocate...
+	if (lcfgim.ne.blanks) litmno = lcfgim
+	kitmno = litmno
+	call getitm
+	litmno = kitmno
+	; 12-13-07...
+
+;uncommit selected item...
+	CMTFLG = UN_COMIT
+	CALL COMMIT
+
+;create and place input window to make change in...
+	CNG_LI = 1
+	CALL CREATE_WND4
+	W_ID = WND_4
+	XROW = 1
+	XROW2 = 2
+
+;input...
+	CALL NEW_ITEM
+
+	if (lqtyor.ne.z_lqtyor .and. oprtf.gt.0) 
+		begin
+		CLEAR AUDIT
+		A_ORDNO = lordno
+		A_OPRTF = oprtf
+		A_ITEM = litmno
+		A_DATE = %datetime
+		A_USER = %gu_name
+		A_OLD = z_lqtyor
+		A_NEW = lqtyor
+		store (chnaud, audit, a_ordno)
+		end
+
+;remove the input window, and restore screen...
+	XCALL W_PROC(WP_REMOVE, WND_4)
+	XCALL W_PROC(WP_DELETE, WND_4)
+	XCALL W_UPDT
+
+	XROW = 5
+	XROW2 = 6
+	ROW = XROW
+	ROW2 = XROW2
+	W_ID = WND_1
+	CNG_LI = 0
+
+	IF (LITMNO.EQ.BLANKS) ORDLIN = SAV045	;in case aborted
+;commit new item...
+	CMTFLG = COMIT
+	CALL COMMIT
+
+	LINSEQ = Z_LINSEQ
+	LTYPE = 'L'		
+	LMULT = P_MULT
+	LMAT = MAT_SEL
+	L_CFG = CFG_ITEM
+;;;	LDEPT = Z_LDEPT
+
+
+	CLEAR LF1, LF2, LF3, LF4	;set to zero in case no default key
+	if (inn .eq. 1) goto skip_key2	;this item does not use keys!
+
+	IF (CLVL1) LF1 = F1_KEY(CLVL1)
+	IF (CLVL2) LF2 = F2_KEY(CLVL2)
+	IF (CLVL3) LF3 = F3_KEY(CLVL3)
+	IF (CLVL4) LF4 = F4_KEY(CLVL4)
+
+;if no notes running use default keys...
+	DEC = CLVL1+CLVL2+CLVL3
+	IF (DEC .LE. 0)
+		BEGIN
+		LF1 = DF1
+		LF2 = DF2
+		LF3 = DF3
+		END
+
+;if just the <f3> note is zero, use the default f3 key...
+	IF (CLVL3 .LE. 0) LF3 = DF3
+
+skip_key2,
+;-
+	RUNTOT = RUNTOT - OLDEXE
+	WRITE (CHN045, ORDLIN, RFA=PARRFAL(PIL)) ;;;>[ERR=CNG_LI_ERR]	
+
+	xcall oej2(f_memos, amtjg, amttg)	;ssq 10-21-03
+	totjg = totjg + (amtjg-orgjg)
+	tottg = tottg + (amttg-orgtg)
+; refresh array
+	FOR I FROM 1 THRU NUMARAL
+		BEGIN
+		READ (CHN045, ORDLIN, RFA=PARRFAL(I) )
+		CALL MAKE_W2
+		PARRYL(I) = W2_LINE
+		END
+;--------------------------------------------------
+
+	CALL DIS_RUNTOT
+	RETURN
+CNG_LI_ERR,
+	RETURN
+;--------------------------------------------------
+
+DEL_LI,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; ALLOW CHANGES TO SELECTED L/I
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	FIND (CHN045, ORDLIN, RFA=PARRFAL(1)) [ERR=GL_INIT]
+	GOTO GL_INIT
+	RETURN
+;--------------------------------------------------
+
+OL_PAGE_DN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; PAGE FORWARD NUMARAL RECORDS
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR SAVE_ROW
+	WROW = 1
+	LI = 1
+	FIND (CHN045, ORDLIN, RFA=PARRFAL(NUMARAL)) [ERR=GL_INIT]
+	GOTO GL_INIT
+
+OL_PAGE_UP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; PAGE BACKWARDS NUMARAL RECORDS
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR SAVE_ROW
+	WROW = 1
+	LI = 1
+; read reverse numaral records...
+	FIND (CHN045, ORDLIN, RFA=PARRFAL(1)) [ERR=GL_INIT]
+	FOR I FROM 1 THRU MAXARAL
+		BEGIN
+		READS (CHN045, ORDLIN, GL_INIT, REVERSE) [ERR=GL_INIT]
+		IF (LORDNO.NE.OORDNO) GOTO GL_INIT
+		END
+	GOTO GL_INIT
+;------------------------------------------------------------------
+
+GET_LINES,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; READ NUMARAL ORDLIN RECORDS INTO ARRAY
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR I
+	CLEAR ORDKEY
+	LORDNO = OORDNO
+	FIND (CHN045, ORDLIN, ORDKEY) [ERR=GL_INIT, EOF=RL_EOF]
+
+GL_INIT,
+	FOR I FROM 1 THRU MAXARAL CLEAR PARRYL(I), PARRFAL(I), PFLAGSL(I)
+	CLEAR I
+
+READ_LINES,
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO RL_EOF
+	IF (LORDNO.NE.OORDNO) GOTO RL_EOF
+	IF (LTYPE .EQ. 'M') GOTO READ_LINES
+	IF (SEARCH_ON .AND. (LITMNO(1,SL).NE.S_ITEM(1,SL)) ) GOTO READ_LINES
+	INCR I
+	XCALL GETRFA(CHN045, LINRFA)
+	PARRFAL(I) = LINRFA
+	CALL MAKE_W2
+	PARRYL(I) = W2_LINE
+
+	IF (I .LT. MAXARAL) GOTO READ_LINES	
+RL_EOF,
+	UNLOCK CHN045
+	NUMARAL = I
+	RETURN
+;---------------------------------------
+FIND_LINE_ITEMS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+			;;; CHECK FOR EXISTING LINE ITEMS
+			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR F1_NUM, F2_NUM, F3_NUM, F4_NUM
+	FOR I FROM 1 THRU F_MAX
+		BEGIN
+		CLEAR F1_MEMOS(I)
+		CLEAR F2_MEMOS(I)
+		CLEAR F3_MEMOS(I)
+		CLEAR F4_MEMOS(I)
+
+		CLEAR F1_MEMOL(I)
+		CLEAR F2_MEMOL(I)
+		CLEAR F3_MEMOL(I)
+		CLEAR F4_MEMOL(I)
+		END
+
+	CLEAR ORDKEY
+	LORDNO = OORDNO
+	
+	FIND (CHN045, ORDLIN, ORDKEY) [ERR=MLOOP, EOF=EOF_M]
+MLOOP,
+	LOKCTL = 1
+	XCALL IOS (CHN045, ORDLIN, READ, LOKCTL)
+
+	IF (LOKCTL .NE. 0) GOTO EOF_M
+	IF (LORDNO .NE. OORDNO) GOTO EOF_M
+	IF (LTYPE .NE. 'M') GOTO MLOOP		;SSQ 12-16-99
+	IF (LMSQ1 .GT. 0) 
+		BEGIN
+		F1_MEMOS(LMSQ1) = M_SHORTD
+		F1_MEMOL(LMSQ1) = M_LDESCR
+		F1_KEY(LMSQ1) = M_KEY
+		INCR F1_NUM
+		END
+	IF (LMSQ2 .GT. 0) 
+		BEGIN
+		F2_MEMOS(LMSQ2) = M_SHORTD
+		F2_MEMOL(LMSQ2) = M_LDESCR
+		F2_KEY(LMSQ2) = M_KEY
+		INCR F2_NUM
+		END
+	IF (LMSQ3 .GT. 0) 
+		BEGIN
+		F3_MEMOS(LMSQ3) = M_SHORTD
+		F3_MEMOL(LMSQ3) = M_LDESCR
+		F3_KEY(LMSQ3) = M_KEY
+		INCR F3_NUM
+		END
+	IF (LMSQ4 .GT. 0) 
+		BEGIN
+		F4_MEMOS(LMSQ4) = M_SHORTD
+		F4_MEMOL(LMSQ4) = M_LDESCR
+		F4_KEY(LMSQ4) = M_KEY
+		INCR F4_NUM
+		END
+
+	GOTO MLOOP
+EOF_M,
+	UNLOCK CHN045
+
+	CALL LOAD_LINE_ITEMS
+	RETURN
+;-----------------------------------------------------------
+
+LOAD_LINE_ITEMS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+			;;; LOAD EXISTIN LINE ITEMS INTO WND_2
+			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; restore current line items...
+	XCALL W_PROC(WP_REMOVE,WND_2)
+	XCALL W_PROC(WP_DELETE,WND_2)
+	CALL CREATE_WND2
+
+	CLEAR RUNQTY, RUNTOT
+	clear totjg, tottg		;ssq 10-21-03
+	FIND (5, ORDLIN, OORDNO) [ERR=RES_LOOP, EOF=RES_EOF]
+RES_LOOP,
+	LOKCTL = 1
+	XCALL IOS (5,ORDLIN,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO RES_EOF
+	IF (LORDNO .NE. OORDNO) GOTO RES_EOF
+	IF (LTYPE .EQ. 'M') GOTO RES_LOOP		;MEMOS
+	RUNQTY = RUNQTY + LQTYOR
+	EXEPRC = (LQTYOR*LPRICE)#1
+	RUNTOT = RUNTOT + EXEPRC
+
+	XCALL W_AREA(WND_2, WA_SCROLL, WAS_UP, 1)
+	CALL MAKE_W2
+	XCALL W_DISP(WND_2, WD_POS, 14, 1, W2_LINE)
+	XCALL W_UPDT
+	xcall oej2(f_memos, amtjg, amttg)	;ssq 10-21-03
+	totjg = totjg + amtjg
+	tottg = tottg + amttg
+
+	GOTO RES_LOOP
+RES_EOF,
+	UNLOCK CHN045
+	CALL DIS_RUNTOT
+	RETURN
+;----------------------------------------------------
+SET_X,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR RE_PRICE
+
+	ID_ORDER = OORDNO,	'ZZZZZX'
+	ID_NAME = OCUSNM
+	XCALL W_DISP(WND_1, WD_POS,1,1, ID_LINE)
+	XCALL W_DISP(WND_1, WD_POS,4,1, HD_LINE)
+	XCALL W_UPDT
+
+	CLEAR RUNTOT, RUNQTY, SAVITM
+	CLEAR CLVL1, CLVL2, CLVL3, CLVL4
+	CLEAR CNG_LI
+	F5_POP_ON = 0
+	F7_ON = 0
+	RE_PRICE = 0
+	W_ID = WND_1
+	XROW = 5
+	XROW2 = 6
+	FROW = 5
+	NUMITM = 4
+
+	LOKCTL = 1
+;;;	XCALL IO (1,DUMINV,1,READ,LOKCTL)
+	ITEMNO = '!!!!!!!!!!!!!!!'
+	XCALL ISIO (1, DUMINV, ITEMNO, READ, LOKCTL)
+
+	JUSTIF = JSTIFY
+	ORGINV = ORG041
+	LOCTNS = NUMLOC
+	PRICES = NUMPRC
+	MAT_SEL = GALV
+	CLEAR IS_15		;9-4-03 SSQ
+	clear totjg, tottg
+	RETURN
+;---------------------------------------------------	
+
+CHK_SIT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;;;if LITMNO is in "stocked part 
+		;;; numbers" table, change dept to "I"...
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR TBL_KEY
+	TBLCOD = 'SI'
+	IF (IS_15)			;SSQ 11-6-03
+	THEN	SI_ITEM = "J" + KITMNO
+	ELSE	SI_ITEM = KITMNO
+	READ (CHN182,COPTBL,TBL_KEY)[ERR=NOT_SIT]
+;-
+; SSQ 1-24-06:
+	USING MAT_SEL SELECT
+	(PGRP),	IF (SI_PG.EQ.1)   LDEPT = 'I'
+	(SST),	IF (SI_SS.EQ.1)   LDEPT = 'I'
+	(ALUM),	IF (SI_ALUM.EQ.1) LDEPT = 'I'
+	(),	LDEPT = 'I'	
+	ENDUSING
+;-
+;;;	LDEPT = 'I'	;STOCKED
+NOT_SIT,
+	RETURN
+;---------------------------------------------------	
+
+ADD_MATL_MULT,	;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	LPRICE=(SAVPRC*P_MULT)#2
+	CONFIG_PRICE=LPRICE
+	CALL ROUND_NICKLE
+	LPRICE=CONFIG_PRICE
+	RETURN
+;---------------------------------------------------	
+
+ADD_DAMPER_PRICE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if (vanitm .eq. 1) return	;damper already included 10-24-07
+	if (exact_match) return		;damper already included 
+
+	FOR I FROM 1 THRU 3 
+		BEGIN
+		LPRICE = LPRICE + DAMPER_PRICE(I)
+		SAVE_DP(I) = DAMPER_PRICE(I)	;SSQ 12/23/02
+		DAMPER_PRICE(I) = 		;ssq 10/16/02
+		END
+	RETURN
+;---------------------------------------------------	
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		; made a routine on 3-9-04 ssq
+QTY_B_PRICE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR TBL_KEY
+	TBLCOD = 'I1'
+	I1_KEY = LITMNO
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) RETURN
+
+	ABSQTY = LQTYOR
+	IF(ABSQTY.LT.0) ABSQTY = -ABSQTY	;ABSOLUTE QTY
+	FOR I FROM 1 THRU NUMITM
+		BEGIN
+		IF (ABSQTY.LT.I1_QTY(I))
+		    BEGIN
+		    LPRICE = I1_PRICE(I)
+		    LPRICE = (I1_PRICE(I)*CMX)#3 * 10	;SSQ 9-16-04
+		    EXITLOOP
+		    END
+		END
+	RETURN
+;---------------------------------------------------	
+
+CFG_PRICE_ROUTINE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;===================================================
+; ------- Configuration Price Adjustments -------
+	USING LITMNO SELECT
+	('WR'),		BEGIN		;R_ANGLE
+			IF (DASH)
+			   BEGIN
+			   WTPIN = ((WEIGHT*1000)/120)
+			   DPND = (WTPIN * RA_SIZE)#3
+			   PRPPN = ((PRICE(CTR)*1000)/WEIGHT)
+			   LPRICE = (PRPPN * DPND)#3
+			   LPRICE = ((PRPPN * DPND)#3 * CMX)#3 *10	;SSQ 9-16-04
+			   END
+			IF (INCH)
+			   BEGIN
+			   WTPIN = ((WEIGHT*10000)/120)/2
+			   DPND = (WTPIN * RA_SIZE)#3
+			   PRPPN = ((PRICE(CTR)*1000)/WEIGHT)
+			   LPRICE = (PRPPN * DPND)#4
+			   LPRICE = ((PRPPN * DPND)#4 * CMX)#3 *10
+			   END
+			END
+;;;	('SP','SPV'),	BEGIN	;SPIRAL PIPE	;SSQ 8-7-02
+	('SG','SX'),	BEGIN	;SPIRAL PIPE
+	  		LPRICE = (SP_SIZE * PRICE(1))
+	  		LPRICE = ((SP_SIZE * PRICE(1)) * CMX)#3 * 10
+			LUOFM = 'EA'
+			END
+	('RT','RTV'),			LPRICE = (PRICE(CTR)*(RT_SZ1+RT_SZ2)*CMX)#3 * 10
+	('T4','T9','TV4','TV9'),	LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('C9','C4','CV9','CV4'),	LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('CT','CC','CTV','CCV'),	LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('ER'),				LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('BN'),				LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('P4','P9','PV4'),		LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+
+	('RW16'  THRU  'RW20'),		LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('R16'  THRU  'R26'),		LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('RV16' THRU 'RV26'),		LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('S9','S4','SV','SW','SC','ST'), LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('OB','PB','SBD','BDD'),	LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	('SLF','SLB'),			LPRICE = (CONFIG_PRICE * CMX)#3 * 10
+	ENDUSING
+
+	RETURN
+;---------------------------------------------------	
+
+MAKE_W2,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR W2_LINE
+	W2_ITEM = LITMNO
+	IF (LMSQ1) W2_ITEM(13,13) = '*'
+	IF (LMSQ2) W2_ITEM(14,14) = '*'
+	IF (LMSQ3) W2_ITEM(15,15) = '*'
+	W2_DESCR = LDESCR
+	W2_QTY = LQTYOR,	'ZZZZZ-'
+	W2_PRICE = LPRICE,	'ZZZZZX.XXX'
+	IF(LCPFLG) W2_LPC='*'
+	W2_UOFM = LUOFM
+	EXEPRC = ((LQTYOR)*LPRICE)#1	
+	W2_EXT = EXEPRC,	'ZZ,ZZX.XX-'
+	IF (LROCPO .EQ. 9) W2_ROC = 'R'
+	RETURN
+;---------------------------------------------------	
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RE_PRICE_ROUTINE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CTR = 1					;PRICE ARRAY
+; reprice all items user DIDN'T change...
+	FIND (CHN045,ORDLIN,OORDNO) [ERR=RPR_LOOP]
+RPR_LOOP,
+	LOKCTL = 1
+	XCALL IOS (CHN045,ORDLIN,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO RPR_EOF
+	IF (LORDNO .NE. OORDNO) GOTO RPR_EOF
+	IF (LTYPE .EQ. 'M') GOTO RPR_LOOP		;SKIP MEMOS
+	IF (LJRMAK .EQ. 9) GOTO RPR_LOOP		;SKIP JR
+	IF (LCPFLG .EQ. 1) GOTO RPR_LOOP		;CHANGED PRICE
+	CALL RPR_GET					;update price
+	GOTO RPR_LOOP
+RPR_EOF,
+; now re-price the changed items...
+
+	RE_PRICE = 1				;ORDER HAS BEEN RE-PRICED
+	F7_ON = 1
+	CALL F5_POP				;use first part of f5 logic...
+F7_CHK,
+	IF (NUMARAL .LE. 0) GOTO F7_RETURN
+	FOR RI FROM 1 THRU NUMARAL
+		BEGIN
+		W2_LINE = PARRYL(RI) 
+		READ (CHN045, ORDLIN, RFA=PARRFAL(RI)) ;;dbg [ERR=CNG_LI_ERR]
+		IF (LCPFLG.EQ.1)	;price changed by user
+			BEGIN
+			ORIG_PRICE = LPRICE
+			LI = RI		;simulate <selected>
+			WROW = RI
+			CALL DSPLIN
+			CALL RPR_GET		;re-price 
+			IF (SAVE_ROW .NE. 0)	CALL CLEAR_LAST_LINE
+			END
+		END	
+
+	CALL OL_PAGE_DN			;get next batch of l/i's
+	IF (NUMARAL .GT. 1) 		;if 0, will always repeat last line
+		BEGIN
+		CALL RE_PAGE
+		GOTO F7_CHK
+		END
+
+F7_RETURN,
+	XCALL OLMSG(WND_1, 23,'Line items re-priced',2)
+	CALL DONE_F5
+	F7_ON = 0
+	RETURN
+;--------------------------------------------------
+RPR_GET,
+	IF (LCFGIM .NE. A15) LITMNO = LCFGIM
+	MAT_SEL = LMAT
+
+	KITMNO = LITMNO
+	CALL GETITM
+
+	USING IVFLAG SELECT
+	(0),	BEGIN			;FOUND IN ITMMAS
+		LPRICE = (PRICE*CMX)#3 * 10
+	;;;	CFG_ON = 1		;WILL CAUSE ABRUPT RETURN FROM CONFIG
+		IF(LMAT.EQ.1)
+		THEN	CFG_ON = 1	;WILL CAUSE ABRUPT RETURN FROM CONFIG
+		ELSE	CFG_ON = 0	;NOT GALV, RUN THRU CONFIG
+		END
+	(1),	CFG_ON = 0		;NOT FOUND, RUN THROUGH CONFIG
+	(2),	RETURN			;ITMMAS READ ABORT
+	ENDUSING
+
+	CALL QTY_B_PRICE
+
+	IF (L_CFG .EQ. 1)
+		BEGIN
+		CALL CONFIG
+		CALL GETITM		;in case config change item #
+	;;;	GOTO (RPR_LOOP, RPR_LOOP, RPR_LOOP),IVFLAG
+		IF (IVFLAG .GT. 0) RETURN
+		CALL CFG_PRICE_ROUTINE
+		END
+
+	IF (LDAMPR)	CALL ADD_DAMPER_PRICE
+
+	SAVPRC = LPRICE
+	SAV_OP = ORIG_PRICE
+;;;	IF (LCPFLG .EQ. 1) CALL USER_PRICE		;CHANGED PRICE
+
+	IF (LMULT .GT. 0)
+		BEGIN
+		SAVPRC = LPRICE
+		P_MULT = LMULT
+		CALL ADD_MATL_MULT
+		END
+
+	IF (LCPFLG .EQ. 1) CALL USER_PRICE		;CHANGED PRICE
+
+	XCALL IO (CHN045,ORDLIN,ORDKEY,WRITE,LOKCTL)
+	RETURN
+;---------------------------------------------------	
+
+USER_PRICE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; user must input price...
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (LMULT .GT. 0)
+		BEGIN
+	;;;	LPRICE=(SAVPRC*1000/LMULT)#1
+	;;;	ORIG_PRICE = (SAV_OP*1000/LMULT)#1
+		P_MULT = LMULT
+		CALL DISP_MULT
+		END
+
+	PRC_ITEM = LITMNO
+	PRC_DESCR = LDESCR
+	PRC_ORIG = ORIG_PRICE,	'ZZZZX.XXX' [LEFT]
+	PRC_NEW = LPRICE,	'ZZZZX.XXX' [LEFT]
+
+	XCALL W_DISP(WND_1, WD_POS,23,1, WD_CLR, WDC_EOW)
+	XCALL W_DISP(WND_1,WD_POS,23,1,PRC_LINE)
+	XCALL W_DISP(WND_1,WD_POS,24,10,
+&		'<TAB>=INPUT NEW PRICE, Y=REPLACE, N=KEEP OLD PRICE')
+
+	XCALL W_DISP(WND_1,WD_POS,24,66)
+	XCALL W_UPDT
+	XCALL BEEP
+
+	CALL ACCEPT
+	USING TCHAR SELECT
+;;;	(9, 13,127),	GOTO UP_INP		;<TAB>, <CR>, <DEL>
+	(9, 127),	GOTO UP_INP		;<TAB>, <DEL>
+	(43),		CALL ADD_MULT		;+
+	(89),			BEGIN
+				IF(LPRICE.LE.0 .AND. ORIG_PRICE.NE.0)
+					BEGIN
+			XCALL OLMSG(WND_1, 23,'Zero not an option',2)
+					GOTO USER_PRICE
+					END
+				GOTO UPR_RET		;;;	;Y=replace old with new
+				END
+	(78),		LPRICE = ORIG_PRICE	;restore original price
+	(),		GOTO USER_PRICE		;^W
+	ENDUSING
+	GOTO UPR_RET
+
+UP_INP,
+	XCALL WINPT(WND_1,23,67,08,01,'# ',ENTRY,INXCTL)
+	LPRICE = ENTRY(1,8)
+	CALL MAKE_W2
+	XCALL W_DISP(WND_1,WD_POS,23,1,W2_LINE)
+	CALL ACCEPT
+	XCALL W_UPDT
+UPR_RET,
+	IF (LMULT .GT. 0)
+		BEGIN
+		XCALL W_DISP(WND_P, WD_CLEAR)
+		XCALL W_PROC(WP_REMOVE, WND_P)
+		XCALL W_UPDT
+		END
+
+	CALL MAKE_W2
+	REST = W2_LINE
+	XCALL W_DISP (WND_2,WD_ATTR,ATTR_SET+ATTR_RVRS)
+	XCALL W_DISP (WND_2,WD_POS,WROW,1,WRKLIN(1,WLEN))
+	XCALL W_DISP (WND_2,WD_POS,WROW,1)
+	RETURN	
+;---------------------------------------------------	
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CHN182 = 17		;OPENED IN ORDADD
+	CHN045 = 5
+	CHNOOS = 19
+	CHNAUD = 21		;ssq 4-15-04
+
+	XCALL FFILE(1,FILPRC,SWITCH)	;SSQ 9-9-03
+	RETURN
+;---------------------------------------------------
+
+CHK_NEED_F3,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; the following items need an end-
+		;;; treatment, ie: <f3> note...
+
+	CLEAR NEED_F3
+	USING LCFGIM SELECT	;in case litmno replaced by pressed part
+	('RW16' THRU 'RW20'),		NEED_F3 = 1
+	('R16' THRU 'R26'),		NEED_F3 = 1
+	('RV16' THRU 'RV26'),		NEED_F3 = 1
+	('T4','T9','TV4','TV9'),	NEED_F3 = 1
+	('C4020','C4420','C4620'),	NEED_F3 = 1
+	('C4820','C4220 '),		NEED_F3 = 1
+	('C9','C4','CV9','CV4'),	NEED_F3 = 1
+	('CT9','CC9','CTV','CCV'),	NEED_F3 = 1
+	('ER0' thru 'ERZ'),				NEED_F3 = 1
+	('BN'),				NEED_F3 = 1	
+	('P4','P9','PV4'),			NEED_F3 = 1
+	('S9','S4','SV','SW','SC','ST'),	NEED_F3 = 1
+;;;	('RT','RTV'),			NEED_F3 = 1
+	('GA','GE'),			NEED_F3 = 1
+	(),				NEED_F3	= 0
+	ENDUSING
+
+	RETURN
+;---------------------------------------------------
+
+;===========================================================
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SET UP SCREEN 1 WINDOW
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	W2_NAME = 'SCROL'
+	W4_NAME = 'CNGLI'
+	W6_NAME = 'MATL'
+	WP_NAME = 'PMULT'
+
+;;;	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (.NOT. WND_1)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,0,0)
+		END
+	XCALL W_BRDR(WND_1,WB_TITLE,'ORDER ADD',
+&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	W_ID = WND_1
+
+	CALL CREATE_WND2
+
+
+	XCALL W_PROC(WP_CREATE, WND_P, 'PMULT',1, 12)
+	XCALL W_DISP(WND_P, WD_CLEAR)
+
+	XCALL W_PROC(WP_CREATE, WND_6, W6_NAME,1, 15)
+	XCALL W_PROC(WP_PLACE, WND_6, 2, 48)
+	XCALL W_DISP(WND_6, WD_CLEAR)
+
+	XCALL W_PROC(WP_CREATE, WND_D, 'DAMPER',7, 42)
+	XCALL W_DISP(WND_D, WD_CLEAR)
+
+;Pallets...
+	XCALL W_PROC(WP_PALET, 4, 1, 0)		;1=BLUE
+	XCALL W_PROC(WP_PALET, 5, 2, 0)		;2=GREEN
+	XCALL W_PROC(WP_PALET, 6, 3, 0)		;3=CYAN
+	XCALL W_PROC(WP_PALET, 7, 4, 7)		;4=RED
+	XCALL W_PROC(WP_PALET, 8, 7, 0)		;7=WHITE
+	XCALL W_PROC(WP_PALET, 9, 0, 7)		;4=BLACK ON WHITE
+	XCALL W_PROC(WP_PALET,10, 6, 0)		;6=YELLOW
+;POP40:
+	MAXARA = 40
+	PLEN = 48
+	NUMROW = 10
+	WX = 19
+	WY = 18
+	POP_WID(1,5) = "MM_TBL"
+	POP_TITLE = "CANNED MEMOS"
+
+;POP-M1:
+	MAXARA1 = 10
+	PLEN1 = 34
+	NUMROW1 = 1
+	WX1 = 2
+	WY1 = 2
+	POP_WID1(1,5) = "F1WIN"
+	POP_TITLE1 = "LEVEL-1 MEMOS"
+;POP-M4:
+	MAXARA4 = 10
+	PLEN4 = 34
+	NUMROW4 = 4
+	WX4 = 18
+	WY4 = 24
+	POP_WID4(1,5) = "F4WIN"
+	POP_TITLE4 = ;;;"LEVEL-4 MEMOS"
+;POP-M2:
+	MAXARA2 = 10
+	PLEN2 = 34
+	NUMROW2 = 4
+	WX2 = 19
+	WY2 = 4
+	POP_WID2(1,5) = "F2WIN"
+	POP_TITLE2 = "LEVEL-2 MEMOS"
+
+;POP-M3:
+	MAXARA3 = 10	
+	PLEN3 = 34
+	NUMROW3 = 4
+	WX3 = 19
+	WY3 = 44
+	POP_WID3(1,5) = "F3WIN"
+	POP_TITLE3 = "LEVEL-3 MEMOS"
+
+;POP-MATERIAL:
+	MAXARA6 = 4	
+	NUMARA6 = 4
+	PLEN6 = 15
+	NUMROW6 = 4
+	WX6 = 1
+	WY6 = 48
+	POP_WID6(1,5) = "F6WIN"
+	POP_TITLE6 = "MATERIAL"
+	
+	FOR I FROM 1 THRU 4	PARRY6(I) = C_DES(I)
+;;;	PARRY6(1) = "GALVANIZED"
+;;;	PARRY6(2) = "ALUMINUM"
+;;;	PARRY6(3) = "PAINT GRIP"
+;;;	PARRY6(4) = "STAINLESS STEEL"
+
+;CNGLI:
+	MAXARAL = 10
+	PLENL = 76
+	NUMROWL = 10
+	WXL = 8
+	WYL = 1
+	POP_WIDL(1,5) = "F4WIN"
+	POP_TITLEL = "Select/Unselect Memos"
+
+	RETURN
+
+;---------------------------------------
+CREATE_WND2,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_PROC(WP_CREATE, WND_2, 'SCROL',10, 78)
+	XCALL W_BRDR(WND_2,WB_TITLE,'LINE ITEMS',
+&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE, WND_2, 8, 0)
+	XCALL W_DISP(WND_2, WD_CLEAR)
+	WLEN = 78
+	RETURN
+;--------------------------------------------------------
+
+CREATE_WND4,
+	XCALL W_PROC(WP_CREATE, WND_4, 'CNGLI',2, 78)
+
+	XCALL W_BRDR(WND_4, WB_OFF)
+	XCALL W_PROC(WP_PLACE, WND_4, 5, 0)
+	XCALL W_DISP(WND_4, WD_CLEAR)
+	XCALL W_AREA(WND_4, WA_COLOR, 4)		;blue
+	WLEN = 78
+	XCALL W_UPDT
+	RETURN
+;--------------------------------------------------------
+
+GET_DAMPER_SECTIONS,
+; new logic - look up dimensions in table...
+
+
+	DHARA(1) = DHT
+	CLEAR TBL_KEY
+	TBLCOD = 'SZ'
+	SZ_KEY = DHT	;FIND DIM'S FOR THIS HGHT
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	IF (LOKCTL .EQ. 0)
+		BEGIN
+		DHARA(1) = SZ_S1
+		DHARA(2) = SZ_S2
+		DHARA(3) = SZ_S3
+		END
+
+	DLARA(1) = DLEN
+	CLEAR TBL_KEY
+	TBLCOD = 'SZ'
+	SZ_KEY = DLEN	;FIND DIM'S FOR THIS HGHT
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	IF (LOKCTL .EQ. 0)
+		BEGIN
+		DLARA(1) = SZ_S1
+		DLARA(2) = SZ_S2
+		DLARA(3) = SZ_S3
+		END
+	RETURN
+;--------------------------------------------------------
+
+;;;; determine if overall size requires multiple damper sections...
+;;;	QLEN = %GNS(DLEN,DDIM)		;NUMBER OF COLUMNS
+;;;	QHT = %GNS(DHT,DDIM)		;NUMBER OF ROWS
+;;;	DQTY = QLEN * QHT		;NUMBER OF DAMPER SECTIONS
+;;;
+;;;	TEMP = DLEN/QLEN 		;LEN OF EACH SEG
+;;;	TEMP2 = DLEN/QLEN*QLEN
+;;;	IF (TEMP .LT. TEMP2) TEMP = TEMP + 1
+;;;;;;	IF (TEMP.LT.DLEN/QLEN*QLEN) TEMP = TEMP + 1
+;;;	DLEN = TEMP
+;;;
+;;;	TEMP = DHT/QHT 			;HT OF EACH SEG
+;;;	IF (TEMP.LT.DHT/QHT*QHT) TEMP = TEMP + 1
+;;;	DHT = TEMP
+;;;
+;;;	RETURN
+;--------------------------------------------------------
+
+.END
+
+.FUNCTION GNS		;GET NUMBER OF SECTIONS
+	NUM	,D	;HEIGHT OR WIDTH
+	DIM	,D	;MAX DIM (48 FOR OBN, 36 FOR BDD)
+RECORD
+	VAL	,D18
+.PROC
+	VAL = NUM/DIM
+	IF (NUM .GT. VAL*DIM) INCR VAL
+	FRETURN VAL	
+.END
+

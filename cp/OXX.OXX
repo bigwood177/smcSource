@@ -1,0 +1,6 @@
+-d ordmnt s_change s_ordadd scrn1 scrnx scrn5 ordcn \
+prwod prwo2 PDORD popm olmsg olpop winpt PDEST pdes2 \
+oe1w pop40 TERID ut:rdat8\
+cp:cplib.elb ut:util.elb wnd:tklib.elb
+
+

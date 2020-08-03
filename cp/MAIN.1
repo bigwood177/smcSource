@@ -1,0 +1,697 @@
+;FAXQUE.CP
+.MAIN FAXQUE
+;
+;	MAINTAIN quote FAX QUE.
+;
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+	.INCLUDE 'WND:WINDOWS.DEF'
+
+
+	.INCLUDE "WND:TOOLS.DEF"
+
+	.INCLUDE 'DEF:HPSUB.DEF'
+
+GLOBAL	DUCK, INIT
+	.INCLUDE 'DEF:RD175D.DEF'
+ENDGLOBAL
+
+RECORD	ORDHDR
+	.INCLUDE 'DEF:RD044A.DEF'
+
+RECORD	FAXFIL
+	.INCLUDE 'DEF:FAXFIL.DEF'
+
+RECORD	FAXINFO
+	.INCLUDE 'FAXINFO.DEF'
+
+RECORD	CUSMAS
+	.INCLUDE 'DEF:RD001A.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD001B.DEF'
+
+RECORD	CUSIDX
+	.INCLUDE 'DEF:RD002A.DEF'
+
+RECORD	SALMAN
+	.INCLUDE 'DEF:RD054A.DEF'
+
+RECORD	ROLO
+	.INCLUDE 'DEF:ROLO.DEF'
+
+
+RECORD	POP
+	.INCLUDE 'DEF:FAXPOP.DEF'
+
+RECORD	O_FILE
+		,A4,	'SPL:'
+;;;		,a*,	'\\server01\synergyde\faxscan\'
+		,A1,	'W'
+	O_ORDER	,D6
+		,A1,	'.'
+	O_EXT	,A3,	'txt'
+
+
+RECORD	F_FILE
+		,A4,	'SPL:'
+		,A1,	'F'
+	F_TIME	,D6
+		,A4,	'.FAX'
+
+
+RECORD	CFS_MESSAGE
+		,A*,	'Checking fax status... '
+		,A20
+		,A*,	' attempt to send: '
+	CFS_COUNT	,D3
+
+RECORD	WN_NAME
+		,A5,	'FAXQU'
+	WN_TNMBR,D4
+RECORD	WARS
+	WND_1	,D4
+	W_ID	,D4
+	
+RECORD	CHANNEL
+	CHN001	,D2
+	CHN002	,D2
+	CHN044	,D2
+	CHN054	,D2
+	CHNFAX	,D2
+	CHNROL	,D2
+
+RECORD	BUFFER
+		,A100
+
+RECORD	VARS
+	A_NODATE	,I4
+	A_RESET		,I4
+	J	,i4
+	PD_PHONE	,A12	;'XXX-XXX-XXXX'
+	OPNOK	,D1
+	lincnt	,d3
+	PLINE	,A96
+	TODAY	,D6
+	Lrow	,D2
+	Lcol	,D3
+	DECMAL	,D18
+	BLANKS	,A30
+	F_SEND	,D1
+	BADCUS	,D1
+	q_quote	,d6
+	q_name	,a25
+;;;	PLINE	,A50
+	PHONEDATE	,A10
+	LETTERDATE	,A10
+	STAT	,D3
+	II	,D6	
+	SAVRFA	,A6
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	BSEND	,D5
+	BSMID	,D5
+	SRCCTL	,D1
+	XDATE	,D6
+	USRDAT	,D6
+	SENT	,A1
+	SWITCH	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	V	,D1
+
+.PROC
+
+	XCALL TERID (V)
+	XCALL RDATE(TODAY)
+	CALL INIT_WINDOW
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+DISPLA,
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	XCALL W_DISP(WND_1,WD_POS,4,4,'SHOW SENT FAXES ?')
+	XCALL W_UPDT
+	XCALL WINPT (W_ID,4,23,01,00,'YE',ENTRY,INXCTL)
+	SENT = ENTRY(1,1)
+	IF (INXCTL.EQ.2 .AND. SENT.NE.'N') GOTO ENDOFF
+	XCALL W_UPDT
+
+	CALL GET_QUE
+	IF (NUMARA .EQ. 0) GOTO DISPLA
+
+	DLINE = '  ORDER#     DATE  CUST# NAME                           STS'
+	XCALL TTSTS(STAT)
+	IF (STAT) READS(15,ENTRY)
+	XCALL FXPOP (POP)
+	IF (PI .EQ. 0) GOTO DISPLA
+	GOTO (PROCES,ADDNEW,DELETE),P_ACTION
+	GOTO DISPLA
+
+;--------------------------------------------------------------
+PROCES,
+	SAVRFA = PARRFA(PI) 
+	READ (CHNFAX,FAXFIL,RFA:SAVRFA)[ERR=NO_FAX_RECORD]
+	XCALL ISIO (CHN044,ORDHDR,FAX_ORDER,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO NO_ORDER_RECORD
+
+
+; fill in fax cover page info...
+	CALL GET_CUST
+	IF (BADCUS) GOTO DISPLA
+
+; SSQ 5-12-99: pass order po# as contact name...
+	CLEAR FAXINFO
+	FC_CONT = OPONO
+
+	XCALL UIFAX(OORDDT, F_SEND, CUSMAS, ROLO, SALMAN, FAXINFO, OORDNO)
+	IF (.NOT. F_SEND) GOTO DISPLA		;ABORT
+
+; send the fax...
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	XCALL W_DISP(WND_1,WD_POS,22,1,'Sending Fax ...')
+	XCALL W_UPDT
+
+	O_ORDER = OORDNO
+
+;>>>DBG SSQ	XCALL PRFAX(OORDNO ,WND_1, FAXINFO)
+	XCALL PRFAX(OORDNO ,WND_1, FAXINFO, F_SEND)
+	IF (.NOT. F_SEND) GOTO DISPLA		;ABORT
+
+	XCALL W_DISP(WND_1,WD_POS,22,1,'Create Follow up Task ?')
+	XCALL WINPT (W_ID,22,26,01,00,'YY',ENTRY,INXCTL)
+	GOTO (UPDATE_FAXFIL),INXCTL-1
+
+; Interface to MS Outlook Tasks...
+	XCALL QTASK (FAX_ORDER, OCUSNM, LETTERDATE, PHONEDATE, FC_CONT, PD_PHONE)
+
+	FAX_F_DATE(1) = XDATE
+	FAX_F_DATE(2) = XDATE
+
+UPDATE_FAXFIL,
+;>>>DBG>>
+;;; goto test
+;>>>DBG>>
+	FAX_STATUS = 2	;DID NOT SEND (ERROR)
+	CFS_COUNT = 1
+CFS_LOOP,
+	XCALL W_DISP(WND_1,WD_POS,22,1,CFS_MESSAGE)
+	XCALL W_UPDT
+	INCR CFS_COUNT
+	SLEEP 2
+	O_EXT = "ok"
+	OPEN (22,I,O_FILE)[ERR=CHK_ERR]
+CFS_READ,
+	READS (22,BUFFER,EOF_CFS)
+	IF (.NOT. %INSTR(1, BUFFER ,"Fax sent successfully") )GOTO CFS_READ
+	FAX_STATUS = 1
+	XCALL W_DISP(WND_1,WD_POS,22,1,"Fax sent successfully")
+	XCALL W_UPDT
+	CLOSE 22
+	XCALL DELET(O_FILE)	;DELETE THE FILE
+test,
+	CALL LOCAL_COVER 	;print local copy of cover page
+
+EOF_CFS,
+	IF (%CHOPEN(22) ) CLOSE 22
+; write back FAXFIL record...
+	WRITE (CHNFAX,FAXFIL,RFA:SAVRFA) [ERR=BAD_WRITE]
+
+	GOTO ENDOFF
+;;;	GOTO DISPLA
+
+;------------------------------------
+CHK_ERR,	;check for .err file...
+	O_EXT = "err"
+	OPEN (22,I,O_FILE)[ERR=CFS_LOOP]
+ERR_READ,
+	XCALL W_DISP(WND_1,WD_POS,22,1,"Fax did not go, see error report")
+	CALL FAX_ERR_REPORT
+	CLOSE 22
+	XCALL DELET(O_FILE)	;DELETE THE FILE
+	GOTO ENDOFF
+;;;	GOTO DISPLA
+;------------------------------------
+
+BAD_WRITE,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"Error Writing faxque Record !!")
+	XCALL WINPT (W_ID,4,01,00,00,'A ',ENTRY,INXCTL)
+	GOTO DISPLA
+
+;--------------------------------------------------------------
+;--------------------------------------------------------------
+DELETE,
+	SAVRFA = PARRFA(PI) 
+	READ (CHNFAX,FAXFIL,RFA:SAVRFA)[ERR=NO_FAX_RECORD]
+	DELETE(CHNFAX,FAX_ORDER) [ERR=BAD_DELETE]
+	GOTO DISPLA
+BAD_DELETE,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"Error Deleting Record !!")
+	XCALL WINPT (W_ID,4,01,00,00,'A ',ENTRY,INXCTL)
+	GOTO DISPLA
+;--------------------------------------------------------------
+ADDNEW,
+	GOTO DISPLA
+;--------------------------------------------------------------
+
+NO_ORDER_RECORD,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"CAN'T FIND ORDER RECORD !!")
+	XCALL WINPT (W_ID,4,01,01,00,'A ',ENTRY,INXCTL)
+	GOTO ENDOFF
+NO_FAX_RECORD,
+	XCALL W_DISP(WND_1,WD_POS,20,1,"CAN'T FIND FAX RECORD !!")
+	XCALL WINPT (W_ID,4,01,01,00,'A ',ENTRY,INXCTL)
+ENDOFF,
+	CALL CLOSE
+	XCALL FLAGS (7000000)	;suppress program termination message
+	STOP
+;=========================================================
+;=========================================================
+
+GET_QUE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR NUMARA, II
+	FIND (CHNFAX,FAXFIL,^FIRST) [ERR=EXIT_QUE]
+QLOOP,
+	READS (CHNFAX,FAXFIL,EXIT_QUE,GETRFA:SAVRFA) [ERR=EXIT_QUE]
+;;;	XDATE(1,2) = OORDDT(5,6)
+;;;	XDATE(3,6) = OORDDT(1,4)
+;;;	IF (XDATE .NE. USRDAT) GOTO QLOOP
+	IF (SENT.EQ.'N' .AND. FAX_STATUS.EQ.1) GOTO QLOOP
+
+	XCALL ISIO (CHN044,ORDHDR,FAX_ORDER,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) 
+		BEGIN
+		OCUSNO = 
+		OCUSNM = '***ORDER NOT FOUND ***'
+		END
+	CLEAR DLINE
+	DLINE(1,6) = FAX_ORDER,	'ZZZZZX'
+	DLINE(8,15) = FAX_DATE,	'XX/XX/XX'
+	DLINE(17,22) = OCUSNO,	'ZZZZZX'
+	DLINE (24,53) = OCUSNM
+	USING FAX_STATUS SELECT
+	(0),	DLINE(56,59) = "Open"
+	(1),	DLINE(56,59) = "Sent"
+	(2),	DLINE(56,69) = "ERR"
+	ENDUSING
+
+	INCR II
+;;;	IF (II .GT. MAXARA) II = 1
+	IF (II .GT. MAXARA) 
+		BEGIN
+		II = MAXARA
+		GOTO EXIT_QUE
+		END
+	PARRFA(II) = SAVRFA
+	PARRY(II) = DLINE
+	GOTO QLOOP
+	
+EXIT_QUE,
+	NUMARA = II
+	RETURN
+;-----------------------------------------------
+GET_CUST,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; read cusmas, salman, rolo
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL SERCH (CHN002,CUSIDX,OCUSNO,1,6,BSEND,BSMID,SRCCTL,4,7,11,0,0,0,0)
+	IF (SRCCTL .OR. IRC001.LE.0)
+	THEN	BADCUS = 1
+	ELSE	BEGIN
+		LOKCTL = 1
+		XCALL IO (CHN001, CUSMAS, IRC001, READ, LOKCTL)
+		XCALL IO (CHN054, SALMAN, OSLMAN, READ, LOKCTL) ;from ordhdr
+	;;;	XCALL IO (CHN054, SALMAN, SLSMAN, READ, LOKCTL)
+		XCALL ISIO (CHNROL, ROLO, CUSNO, READ, LOKCTL)
+		IF (LOKCTL .NE. 0) CLEAR ROLO
+		PD_PHONE = PHONE,'ZZZ XXX-XXXX' [LEFT]
+		END
+	RETURN
+;-----------------------------------------------
+
+LOCAL_COVER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;	create a unique spool file name and open it...
+	XCALL TIME (F_TIME)
+	OPEN (14,O,F_FILE)
+	CLEAR LINCNT
+
+	XCALL HP (14,hpDOTS, 0)
+	XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+
+	PLINE (17,90) = 'TELECOMMUNICATION TRANSMITTAL'
+	CALL PRINT
+	INCR LINCNT
+
+	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	PLINE = 'SHEET METAL CONNECTORS, INC.'
+	CALL PRINT
+
+	PLINE = '5850 MAIN STREET N.E.'
+	CALL PRINT
+
+	PLINE = 'MINNEAPOLIS, MN  55423'
+	CALL PRINT
+
+	PLINE = '1-800-328-1966, 612-572-0000, FAX 612-572-1100'
+	CALL PRINT
+	
+	PLINE = 'WWW.SMCDUCT.COM'
+	CALL PRINT
+	LINCNT = LINCNT + 3
+
+	XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	PLINE = 'DATE:'
+	CALL PRINT2
+	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	PLINE(10,17) = TODAY,	'XX/XX/XX'
+	CALL PRINT
+	INCR LINCNT
+
+	XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	PLINE = 'TO:'
+	CALL PRINT2
+	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	PLINE(10,80) = FC_CUSNAME
+	PLINE (41,80) = PHONE,'ZZZ XXX-XXXX' [LEFT]
+	CALL PRINT
+	INCR LINCNT
+
+	XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	PLINE = 'ATTN:'
+	CALL PRINT2
+	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	PLINE(10,80) = FC_CONT
+	CALL PRINT
+	INCR LINCNT
+
+	XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	PLINE = 'RE:'
+	CALL PRINT2
+	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+	PLINE(10,80) = "Quotation #"
+	PLINE(21,26) = OORDNO, 'XXXXXX'
+	CALL PRINT
+	INCR LINCNT
+
+	XCALL HP (14,hpFONT,hp8CPI+hpBOLD)
+	PLINE = 'NOTE:'
+	CALL PRINT2
+	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)
+
+	INCR LINCNT
+
+	for J from 1 thru 7
+		begin
+		pline(10,60) = fc_notara(J)
+		call print
+		end
+
+	INCR LINCNT
+
+	XCALL HP (14,hpFONT,hpBOLD)
+	PLINE(20,80) = "Thank you,"
+	CALL PRINT
+
+	XCALL HP (14,hpFONT,hpMEDIUM)
+
+	PLINE(20,80) = FC_SALESMAN
+	CALL PRINT
+	LINCNT = LINCNT + 3
+
+	PLINE(10,80) = 'If you should have any questions or concerns'
+	CALL PRINT
+	PLINE(10,80) = 'please do not hesitate to call me at (800) 328-1966'
+	CALL PRINT
+	
+ENDUP,
+	XCALL HP (14,hpFLUSH)
+	CLOSE 14
+	LPQUE(F_FILE, DELETE)
+	RETURN
+;--------------------------------------------------
+FAX_ERR_REPORT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;	create a unique spool file name and open it...
+	XCALL TIME (F_TIME)
+	OPEN (14,O,F_FILE)
+	XCALL HP (14,hpDOTS, 0)
+
+	LINCNT = 1
+	PLINE = O_FILE
+	CALL PRINT
+
+FER_LOOP,
+	READS (22, BUFFER, EOF_FER)
+	IF (%INSTR(1, BUFFER ,"Description:") )GOTO EOF_FER
+	PLINE = BUFFER(1,80)
+	CALL PRINT
+	GOTO FER_LOOP
+EOF_FER,	
+	PLINE = BUFFER(1,80)
+	CALL PRINT
+
+	XCALL HP (14,hpFLUSH)
+	CLOSE 14
+	LPQUE(F_FILE, DELETE)
+	RETURN
+;--------------------------------------------------
+
+PRINT,
+	XCALL HP (14,hpPOS,LINCNT,1,0,PLINE)
+	PLINE =
+	INCR LINCNT
+	RETURN
+PRINT2,
+	XCALL HP (14,hpPOS,LINCNT,1,0,PLINE)
+	PLINE =
+	RETURN
+
+;--------------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (1,'I',001,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN001 = 1
+
+	XCALL FILES (2,'I',002,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN002 = 2
+
+	OPEN (3,SI,'SMC:ROLO.SMM')
+	CHNROL = 3
+
+	XCALL FILES (4,'SI',044,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN044 = 4
+
+	XCALL FILES (5,'I', 054, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN054 = 5
+
+	OPEN (6,SU,'SPL:FAXFIL.ISM')
+	CHNFAX = 6
+
+	XCALL IO (CHN001, CUSMAS, 1, READ, LOKCTL)
+	BSEND = ORG001
+
+	OPNOK = 1
+	RETURN
+;-----------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN001) CLOSE CHN001
+	IF (CHN002) CLOSE CHN002
+	IF (CHN044) CLOSE CHN044
+	IF (CHN054) CLOSE CHN054
+	IF (CHNROL) CLOSE CHNROL
+	IF (CHNFAX) CLOSE CHNFAX
+	RETURN
+;-----------------------------------------------
+
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SET UP SCREEN 1 WINDOW
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+	xcall u_start("LIB:FAX_WND",1,0,,23,80,,40)
+
+	XCALL USR_ENTRST (A_NODATE, A_RESET)
+
+	XCALL TNMBR (WN_TNMBR)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (.NOT. WND_1)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,0,0)
+		END
+;;;	XCALL W_BRDR(WND_1,WB_TITLE,'QUOTE FAX QUE',
+;;;&			WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	xcall e_sect("FaxQue",D_CAPTION)
+	xcall u_logwnd(wnd_1)
+
+	W_ID = WND_1
+
+;; POP info...
+
+	MAXARA = 10		;9-19-97 NOT MORE THAN 1 FULL WINDOW
+	PLEN = 60
+	NUMROW = 18
+	WX = 
+	WY = 10
+	POP_WID(1,5) = "FXPOP"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "QUOTES"
+	RETURN
+;ORDER#     DATE  CUST# NAME                           STS
+;XXXXXX XX/XX/XX XXXXXX AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  X
+;1234567890123456789012345678901234567890123456789012345678
+;         1         2         3         4         5
+
+.END
+
+
+;----------------------------
+;----------------------------
+;
+
+.subroutine qtask
+	QUOTE	,D
+	NAME	,A
+	LETTERDATE	,A
+	PHONEDATE	,A
+	PD_CONT		,A		;CONTACT 5-12-99
+	PD_PHONE	,A		;ROLO PHONE 5-12-99
+	R_STATUS	,D
+	
+.include "dbldir:activex.def"
+
+.define AX_HEIGHT,	450
+.define AX_WIDTH,	430
+
+record	
+	wrkdat	,d6
+record,x
+	mm	,d2
+	dd	,d2
+	yy	,d2
+
+record	vars
+	axwid		,i4
+	axid		,i4
+	month		,12d2,	31,28,31,30,31,30,31,31,30,31,30,31
+	today		,d6
+	tomorrow	,a8	;xx-xx-xx
+
+.proc
+	xcall rdate(today)
+	call make_tomorrow
+
+; Create container and load control...	
+	axwid = %ax_create(50, 50, AX_WIDTH, AX_HEIGHT)
+;;;	axid = %ax_load(axwid,"AXQtaskPrj.AXQtask",0,0,AX_WIDTH, AX_HEIGHT)
+	axid = %ax_load(axwid,"AXProj1.AXTaskQ",0,0,AX_WIDTH, AX_HEIGHT)
+
+; Bind Events
+	xcall ax_bind(axid, "cmdSave", "cmdSave")
+	xcall ax_bind(axid, "cmdCancel","cmdCancel")
+
+	xcall ax_set(axid, "lblQuote", QUOTE)
+	xcall ax_set(axid, "lblCustomer",NAME)
+	xcall ax_set(axid, "cbPhone",1)
+	xcall ax_set(axid, "txtPhoneDate",tomorrow)
+
+	xcall process_control (axwid, axid, LetterDate, PhoneDate,
+&		PD_CONT, PD_PHONE)
+
+	xcall win_stop(1)
+
+	xreturn
+make_tomorrow,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; computer tomorrows date
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	wrkdat = today
+	dd = dd + 1
+	if (dd .gt. month(mm))
+		begin
+		dd = 1
+		incr mm
+		if (mm .gt. 12)
+			begin
+			mm = 1
+			incr yy
+			end
+		end
+	tomorrow = wrkdat,	'XX-XX-XX'
+	return
+;------------------------------------------------
+.end
+
+
+;----------------------------
+.subroutine process_control
+	a_axwid		,n		;id of container
+	a_axid		,n		;id of control
+	LetterDate	,a
+	PhoneDate	,a
+	pd_cont		,a		;contact name
+	pd_phone	,a		;rolo phone #
+
+.proc
+	xcall ax_show(a_axwid)
+;;;	xcall ax_set(a_axid, "EXT_FOCUS" ,1)
+	xcall ax_call(a_axid, "GetPassedData", pd_cont, pd_phone)
+	xcall ax_call(a_axid, "SetControlFocus")
+	xcall win_proc(1)
+
+	xcall ax_get(a_axid,"txtLetterDate",LetterDate)
+	xcall ax_get(a_axid,"txtPhoneDate",PhoneDate)
+	xcall ax_hide(a_axwid)
+
+	xreturn
+.end
+
+;----------------------------
+.subroutine cmdSave
+	a_axid	,n
+	param	,a
+
+record
+	alpha	,a20
+.proc
+
+	xcall win_stop(1)
+	xreturn
+.end
+
+;----------------------------
+.subroutine cmdCancel
+	a_axid	,n
+
+.proc
+
+	xcall win_stop(1)
+	xreturn
+.end
+
+;----------------------------
+.subroutine	USR_ENTRST
+	a_nodate	,n
+	a_reset		,n
+.proc
+	clear a_reset
+	xreturn
+.end
+
+
+

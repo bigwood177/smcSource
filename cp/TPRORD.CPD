@@ -1,0 +1,7 @@
+-d TPRORD \
+prwod prwo2 prwo3 PDORD \
+ddept \
+cp:cplib.elb ut:util.elb wnd:tklib.elb
+
+
+

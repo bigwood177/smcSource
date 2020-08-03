@@ -1,0 +1,59 @@
+	ipc1 = 255
+	ipc2 = 255
+	ipc3 = 255
+	ipidx = 0	;black
+	display (14,idx_pal)
+
+	ipc1 = 0
+	ipc2 = 0
+	ipc3 = 255
+	ipidx = 1	;green
+	display (14,idx_pal)
+
+	ipc1 = 0	;B
+	ipc2 = 255	;R
+	ipc3 = 0	;G
+	ipidx = 2	;red
+	display (14,idx_pal)
+
+	ipc1 = 0
+	ipc2 = 255
+	ipc3 = 255
+	ipidx = 3	;orange
+	display (14,idx_pal)
+
+	ipc1 = 255	;B
+	ipc2 = 0	;R
+	ipc3 = 0	;G
+	ipidx = 4	;blue
+	display (14,idx_pal)
+
+	ipc1 = 255
+	ipc2 = 0
+	ipc3 = 255
+	ipidx = 5	;green
+	display (14,idx_pal)
+
+	ipc1 = 0
+	ipc2 = 48
+	ipc3 = 194
+	ipidx = 6	;dark blue
+	display (14,idx_pal)
+
+	ipc1 = 194
+	ipc2 = 0
+	ipc3 = 145	
+	ipidx = 7	;purple
+	display (14,idx_pal)
+
+	ipc1 = 240
+	ipc2 = 0
+	ipc3 = 180
+	ipidx = 8	;bright pink
+	display (14,idx_pal)
+
+	ipc1 = 214
+	ipc2 = 164
+	ipc3 = 0
+	ipidx = 9	;bad yellow
+	display (14,idx_pal)

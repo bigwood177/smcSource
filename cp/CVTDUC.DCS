@@ -1,0 +1,153 @@
+; CVTDUC.DCS - CONVERT SLHDUC FILE FROM 556 CHAR RECORD TO SMALL RECORD SIZE
+;
+;
+RECORD DUCACC
+			; DUCT ACCESSORY FILE RECORD DEFINITION
+			; RECORD SIZE = 556	DEVICE - 175
+			; NAME - "DUCACC"
+			;
+			; DUCT ACCESSORY FILE RECORD DEFINITION
+			; RECORD SIZE = 556	DEVICE - 175
+			; NAME - "DUCACC"
+			;
+	DUCTOR	,D6	; Order number ---
+	DUTYPE	,D1	; Type of duct 1-GALV,2-ALUM,3-STAIN STEEL,4-OTHER(0)
+	STY	,D1	; Style 1-SLIP/DRIVE,2-TDC,3-NEXUS,4-OTHER	(1)
+	LINER	,D1	; Liner 1-					(2)
+	SEAM	,D1	; Seam  1-SNAP/LOCK,2-PITTSBURG			(3)
+	SEAL	,D1	; Sealnant 1-YES,2-NO				(4)
+	GAUGE	,D2	; Gauge ( 26,24,22,20,18 )			(5)
+	SIZE3	,D2	; LENGTH					(6)
+	SIZE1	,D3	; SLIP						(7)
+	THICK	,D3	; Dec. Thickness .024-24g .032-22g .040-20g .050-18g
+	CAT	,D1	; Catagory 1-LSHAP,2-WRAPAROUND,3-4 PC,4-OTHER
+	JOINT	,D5	; Number of joints ( quantity)
+	SIZE2	,D3	; DRIVE
+	LOCAT	,A15	; Location ( comment )
+	SQFEET	,D6	; Square feet of material ( calculated )
+	POUNDS	,D6	; Pounds of material ( calculated )
+	SQFLIN	,D6	; Square feet of liner 
+	GPRICE	,D8	; Price per pound of material
+	LINPRC	,D8	; Price per square feet of liner 
+	RST175	,D1	; Restart flag for PSTINV
+	FLG175	,D1	; Select for billing flag (0=not selected 1=selected)
+	ACC	,D1	; Accessories 1-YES,2-NO
+	SLIPS	,D5	; Quantity of slips
+	SLPITM	,A15	; Slip item number ( from inventory )
+	SLPPRC	,D8	; Price of the slip ( from inventory  XXXXX.XXX
+	SLPDES	,A30	; Description of slip from inventory
+	DRIVES	,D5	; Quantity of drives
+	DRVITM	,A15	; Drive item number ( from inventory )
+	DRVPRC	,D8	; Price of the drive ( from inventory  XXXXX.XXX
+	DRVDES	,A30	; Description of drive from inventory
+	TCORN	,D5	; Quantity of corners
+	CORITM	,A15	; Corner item number ( from inventory )
+	CORPRC	,D8	; Price of the corner ( from inventory  XXXXX.XXX
+	CORDES	,A30	; Description of corner from inventory
+	DUCTT	,A1	; Type of duct O = order, E = estimate
+	TNBITM	,A15	; item number ( from inventory )
+	TNBQTY	,D5	; Quantity of TDC nuts/bolts
+	TNBPRC	,D8	; Price of TDC nuts/bolts ( from inventory  XXXXX.XXX
+	TNBDES	,A30	; Description of nut/bolts from inventory
+	TGAITM	,A15	; item number ( from inventory )
+	TGAQTY	,D5	; Quantity of gasket ( in feet )
+	TGAPRC	,D8	; Price of gasket ( from inventory  XXXXX.XXX
+	TGADES	,A30	; Description of gasket inventory
+	TCLITM	,A15	; item number ( from inventory )
+	TCLQTY	,D5	; Quantity of cleats
+	TCLPRC	,D8	; Price of cleat ( from inventory  XXXXX.XXX
+	TCLDES	,A30	; Description of cleat from inventory
+	TBAITM	,A15	; item number ( from inventory ) 
+	TBAQTY	,D5	; Quantity of TDC Bar (in feet)
+	TBAPRC	,D8	; Price of TDC bar ( from inventory  XXXXX.XXX
+	TBADES	,A30	; Description of bar from inventory
+	TBNITM	,A15	; item number ( from inventory )
+	TBNQTY	,D5	; Quantity of TDC nuts/bolts
+	TBNPRC	,D8	; Price of TDC bar nut/bolt( from inventory  XXXXX.XXX
+	TBNDES	,A30	; Description of bar nut/bolt from inventory
+	DCOMPS	,D1	; COMPLETION FLAG
+		,A8	; Filler
+;:
+RECORD ,X
+	KEY175	,A18
+;:
+RECORD SLHDUC	,X
+			; DUCT ACCESSORY FILE RECORD DEFINITION
+			; RECORD SIZE = 81	DEVICE - 186
+			; NAME - "SLHDUC"
+			;
+	HDUCTOR	,D6	; Order number ---
+	HDUTYPE	,D1	; Type of duct 1-GALV,2-ALUM,3-STAIN STEEL,4-OTHER(0)
+	HSTY	,D1	; Style 1-SLIP/DRIVE,2-TDC,3-NEXUS,4-OTHER	(1)
+	HLINER	,D1	; Liner 1-					(2)
+	HSEAM	,D1	; Seam  1-SNAP/LOCK,2-PITTSBURG			(3)
+	HSEAL	,D1	; Sealnant 1-YES,2-NO				(4)
+	HGAUGE	,D2	; Gauge ( 26,24,22,20,18 )			(5)
+	HSIZE3	,D2	; LENGTH					(6)
+	HSIZE1	,D3	; SLIP						(7)
+	HTHICK	,D3	; Dec. Thickness .024-24g .032-22g .040-20g .050-18g
+	HCAT	,D1	; Catagory 1-LSHAP,2-WRAPAROUND,3-4 PC,4-OTHER
+	HJOINT	,D5	; Number of joints ( quantity)
+	HSIZE2	,D3	; DRIVE
+	HLOCAT	,A15	; Location ( comment )
+	HSQFEET	,D6	; Square feet of material ( calculated )
+	HPOUNDS	,D6	; Pounds of material ( calculated )
+	HSQFLIN	,D6	; Square feet of liner 
+	HGPRICE	,D8	; Price per pound of material
+	HLINPRC	,D8	; Price per square feet of liner 
+	HRST175	,D1	; Restart flag for PSTINV
+	HFLG175	,D1	; Select for billing flag (0=not selected 1=selected)
+;:
+RECORD ,X
+	KEY186	,A18
+RECORD
+			;RD186S.DEF
+			;SLHDUC FILE "RD186S.DEF'
+	SIZ186	,D4,	0081
+	K186_1	,A56,'START=1,LENGTH=18,NAME=KEY175,DUPS,NOMODIFY,ASCEND,ATEND'
+;:
+;:;:
+RECORD TIMDAT
+	DATE	,A9
+		,A3
+	ATIME	,A8
+		,A3
+RECORD INFIL
+		,A4,'SMC:'
+	INAME	,A6
+		,A1,'.'
+	IEXT	,A3
+RECORD OUTFIL
+		,A4,'SMC:'
+	ONAME	,A6
+		,A1,'.'
+	OEXT	,A3
+RECORD
+	RCNT	,D6
+	TIME	,D6
+	TDATE	,D6
+	I	,D2
+RECORD	,X
+	ARCNT	,A6
+PROC
+	OPEN (15,I,'TT:')
+DUCT,
+	RCNT =
+	INAME = 'SLHDUC'
+	IEXT = 'SMM'
+	OPEN (6,SI,INFIL)
+	ONAME = INAME
+	OEXT = 'NEM'
+	XCALL ISAMC (OUTFIL,SIZ186,1,K186_1)
+	OPEN (26,SU,OUTFIL)
+	DISPLAY (15,TIMDAT,'REORGANIZING ',INFIL,' TO ',OUTFIL,13,10)
+DUCLOOP,
+	READS (6,DUCACC,EOFDUC)
+	INCR RCNT
+	STORE (26,SLHDUC,KEY186)
+	GOTO DUCLOOP
+EOFDUC,
+	CLOSE 6
+	CLOSE 26
+	STOP
+END

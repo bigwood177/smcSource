@@ -1,0 +1,235 @@
+
+O:\SOURCE\cp>call BATFAX.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- batfax.cp 
+
+O:\SOURCE\cp>dblink -d batfax bford bffax oeco rtf replc cp:cplib.elb ut:util.elb 
+
+O:\SOURCE\cp>call BILEDT.BAT 
+
+O:\SOURCE\cp>dblink -T  0<biledt.cmd 
+DBLink> -d BILEDT lpon lpoff lpout \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call BILLS.BAT 
+
+O:\SOURCE\cp>dblink -T  0<bills.cmd 
+DBLink> -d bills ordbl linbl oe1b ducbl membl combl dec3 trn3 oe10 dspdu \
+DBLink> bltot oejr cfg cfg2 catg alpdc rocbl oecus blmnu\
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call BLADIN.BAT 
+
+O:\SOURCE\cp>dblink -T  0<bladin.cmd 
+DBLink> -d bladin bloff alpdc mshp cp:cplib.elb UT:UTIL.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\cp>call BNQUIR.BAT 
+
+O:\SOURCE\cp>dblink -T  0<bnquir.cmd 
+DBLink> -d bNQUIR GU_NAME olmsg oeco files \
+DBLink> filr ffilr \
+DBLink> makp ado o_note \
+DBLink> RegStartSession RegGetString \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call CPLMNU.BAT 
+
+O:\SOURCE\cp>DBL CPLMNU.CP 
+
+O:\SOURCE\cp>DBLINK CPLMNU GU_NAME UT:UTIL.ELB WND:TKLIB.ELB 
+
+O:\SOURCE\cp>call CRDMNT.BAT 
+
+O:\SOURCE\cp>dblink -T  0<crdmnt.cmd 
+DBLink> -d crdmnt ccin2 ut:wanfk \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call CVRSHT.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- CVRSHT.CP 
+
+O:\SOURCE\cp>DBLINK -d CVRSHT GU_NAME SREP UT:RDAT8 CP:CPLIB.ELB UT:UTIL.ELB WND:TKLIB.ELB 
+
+O:\SOURCE\cp>call DPTPCK.BAT 
+
+O:\SOURCE\cp>DBL DPTPCK.CP 
+
+O:\SOURCE\cp>DBLINK DPTPCK GU_NAME CP:CPLIB.ELB UT:UTIL.ELB WND:TKLIB.ELB 
+
+O:\SOURCE\cp>call DPTSTS.BAT 
+
+O:\SOURCE\cp>DBL -d -l -- DPTSTS.CP 
+
+O:\SOURCE\cp>DBLINK -d DPTSTS GU_NAME INPTT CP:CPLIB.ELB UT:UTIL.ELB WND:TKLIB.ELB 
+
+O:\SOURCE\cp>call EMSRPT.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- emsrpt.cp 
+
+O:\SOURCE\cp>DBL -T -X -d -l -- sndem.cp 
+
+O:\SOURCE\cp>dblink -d EMSRPT sndem rtf cp:cplib.elb DBLDIR:AXLIB.ELB TK:TKLIB.ELB UT:UTIL.ELB 
+
+O:\SOURCE\cp>call FABCNV.BAT 
+
+O:\SOURCE\cp>dblink -T  0<fabcnv.cmd 
+DBLink> -d fabcnv xpars scrn1 scrnx scrn5 ccin2 mshp oecus ut:wanfk \
+DBLink> cfg oej2 pop40 popm alpdc catg cfg2 dec3 par2 \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call FAXQUE.BAT 
+
+O:\SOURCE\cp>DBL -T -X -d -l -- FAXQUE.cp 
+
+O:\SOURCE\cp>dblink -T  0<faxque.cmd 
+DBLink> -d FAXQUE FXPOP UIFAX PRFAX RTF TRN3 DATE8 \
+DBLink> who oeco BFFAX BFORD \
+DBLink> ut:roldx DBLDIR:AXLIB.ELB TK:TKLIB.ELB UT:UTIL.ELB
+DBLink> 
+
+O:\SOURCE\cp>call INQUIR.BAT 
+
+O:\SOURCE\cp>dblink -T  0<inquir.cmd 
+DBLink> -d INQUIR GU_NAME olmsg oeco files \
+DBLink> makp ado o_note \
+DBLink> RegStartSession RegGetString \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call INVOIC.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- invoic.cp 
+
+O:\SOURCE\cp>dblink -d invoic hpoff hpof3 oeco cp:cplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\cp>call NQUIRE.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- nquire.cp 
+    65                 .INCLUDE 'DEF:RD045X.DEF'
+%DBL-F-OPENIN, Cannot open:  \\server01\smc\i_def\RD045X.DEF
+%DBL-I-INCFIL, Occurring in the source file:  nquire.cp
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1, in file O:\SOURCE\cp\nquire.cp
+
+O:\SOURCE\cp>DBLINK -d nquire GU_NAME olmsg oeco CP:CPLIB.ELB UT:UTIL.ELB WND:TKLIB.ELB 
+%DBLINK-F-OPFNF, Cannot open input file:  nquire.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call OOSDSP.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- OOSDSP.CP 
+
+O:\SOURCE\cp>dbl -d -l -- OOPOP.CP 
+
+O:\SOURCE\cp>DBLINK -d OOSDSP OOPOP CP:CPLIB.ELB UT:UTIL.ELB WND:TKLIB.ELB 
+
+O:\SOURCE\cp>call ORDMNT.BAT 
+
+O:\SOURCE\cp>rem files.dbo=files.man until util.elb rebuilt 9-12-06 
+
+O:\SOURCE\cp>dblink -T  0<ordmnt.cmd 
+DBLink> -d ORDmnt s_change s_ordadd scrn1 scrnx scrn3 oe10 scrn5 ordcn \
+DBLink> prwod prwo2 PDORD popm popd olmsg olpop winpt PDEST pdes2 \
+DBLink> oe1w oe1 pop40 dspdu DEC3 TRN3 prduc srep ut:rdat8 GU_NAME \
+DBLink> ccin2 oecc2 oecus wnmsg mshp oepop cfg find_i \
+DBLink> oejr cfg2 catg alpdc oej2 oeco \
+DBLink> iow wcinp isio pop1 PDES3 prwo3 \
+DBLink> hp ut:wanfk ut:anyfk ut:inptk \
+DBLink> b128 of128 lblsh tabd \
+DBLink> files \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call PLABLE.BAT 
+
+O:\SOURCE\cp>dblink -d plable lblpd tabd pop40 cplib.elb ut:util.elb wnd:tklib.elb 
+%DBLINK-F-OPFNF, Cannot open input file:  plable.dbo
+%DBLINK-F-ABORT,  Link aborted
+
+O:\SOURCE\cp>call PRTBAR.BAT 
+
+O:\SOURCE\cp>dblink -d prtbar b128 of128 cp:cplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\cp>call PRTBR2.BAT 
+
+O:\SOURCE\cp>dblink -d prtbr2 b128 of128 cp:cplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\cp>call RINENT.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- rinent.cp 
+
+O:\SOURCE\cp>dblink -T  0<rinent.cmd 
+DBLink> -d rinent cfg pop40 popm alpdc \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\cp>call RNQUIR.BAT 
+
+O:\SOURCE\cp>dblink -T  0<rnquir.cmd 
+DBLink> -d rNQUIR GU_NAME olmsg oeco files \
+DBLink> filr ffilr \
+DBLink> makp ado o_note \
+DBLink> RegStartSession RegGetString \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call ROCFAX.BAT 
+
+O:\SOURCE\cp>dbl -d -l -- rocfax.cp 
+
+O:\SOURCE\cp>dblink -d rocfax bford bffax oeco rtf replc cp:cplib.elb ut:util.elb 
+
+O:\SOURCE\cp>call ROCSTS.BAT 
+
+O:\SOURCE\cp>DBL rocSTS.CP 
+
+O:\SOURCE\cp>DBLINK -d rocSTS GU_NAME INPTT CP:CPLIB.ELB UT:UTIL.ELB WND:TKLIB.ELB 
+
+O:\SOURCE\cp>call RQUIRE.BAT 
+
+O:\SOURCE\cp>dblink -T  0<rquire.cmd 
+DBLink> -d rQUIRe GU_NAME olmsg oeco files \
+DBLink> makp ado o_note \
+DBLink> RegStartSession RegGetString \
+DBLink> cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\cp>call SLABL3.BAT 
+
+O:\SOURCE\cp>dblink -d slabl3 lblsh tabd cplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\cp>call SLABLE.bat 
+
+O:\SOURCE\cp>dblink -d slable lblsh tabd cplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\cp>call SLABLU.BAT 
+
+O:\SOURCE\cp>dblink -d slablu lblsh tabd cplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\cp>call VTEST.BAT 
+
+O:\SOURCE\cp>dblink -T  0<vtest.cmd 
+DBLink> -d vtest vt01s \
+DBLink> vt02s \
+DBLink> vt03s \
+DBLink> vt07s \
+DBLink> vt08s \
+DBLink> vtrts \
+DBLink> cpm alpdc cp:cplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 

@@ -1,0 +1,8 @@
+record	neword		;record added by prwod (dept copy)
+	new_dpt	,a2	;dept
+	new_dat	,d4	;mmddhh:mm
+	new_tim	,d4
+	new_ord	,d6	;order
+	new_stat,d1	;9=processed
+record,x
+	new_key	,a16
