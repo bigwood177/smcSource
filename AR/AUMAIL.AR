@@ -1,0 +1,212 @@
+;aumail.ar
+;
+;	auto mail month end reports
+;
+record	au_header
+		,a*,	'MONTH END EMAIL REPORTS'
+		,a3
+	adate	,a10
+
+RECORD	RPTDIR
+		,a30,	'\\server-dc01\smc\Reports\smc\'
+	RPTMON	,A3
+		,A1,	'\'
+	RPTRPT	,A69
+
+RECORD	RPTDI2
+		,a30,	'\\server-dc01\smc\Reports\smc\'
+	RPTMO2	,A3
+		,A1,	'\'
+	RPTRP2	,A69
+
+
+RECORD	EJECT
+	E_CHAR	,A1
+		,A4,	'&l0H'
+
+RECORD	RESET
+	R_CHAR	,A1
+		,A1,	'E'
+
+
+RECORD	COMP14
+	O_CHAR	,A1		;<ESC>
+		,a4,	"&l1O"	;landscape mode
+	ESC_12	,A1		;<ESC>
+		,A4,	"&l8D"	;vertical spacing, 8 lines/inch
+	ESC_13	,A1		;<ESC>
+		,A8,	"(s13.00H"	;pitch 14 CPI
+
+
+
+
+RECORD
+	MON,	12A3,	'JAN','FEB','MAR','APR','MAY','JUN',
+&			'JUL','AUG','SEP','OCT','NOV','DEC'
+		
+
+RECORD
+	WDATE	,D8
+RECORD,X
+	WCC	,D2
+	WYY	,D2
+	WMM	,D2
+	WDD	,D2
+
+
+record	c_body
+		,a43,	'The attached report(s) generated and mailed'
+;			 1234567890123456789012345678901234567890123
+		,a3,	'on '
+	cb_date	,a10
+
+record	vars
+	cbd	,d8
+	send	,d1,	1
+	xdate	,d8
+	i	,d6
+	sal_man	,4d2,	01,04,16,25	;Leon, Don G, Ryan B, James O
+	maxman	,d2,	04
+
+	SPLFIL	,A*,	'c:\smc\spool\aumail.spl'
+	SPLFI2	,A*,	'c:\smc\spool\aumai2.spl'
+	c_mail	,a100
+	c_subj	,a100
+	attr	,4a100	;up to 4 attachments
+	entry	,a30
+	inxctl	,d1
+	cngctl	,d1
+	whatno	,d2
+	row	,d2
+	a2	,a2
+	tl	,d3
+	tl2	,d3
+	v	,d1
+;
+proc
+	xcall terid (v)
+	xcall rdat8(cbd)
+	xdate(1,4) = cbd(5,8)
+	xdate(5,8) = cbd(1,4)
+	cb_date = xdate,	'ZX/XX/XXXX'
+
+displa,
+	xcall outpt (1,1,2,'MONTH END EMAIL REPORTS',1)
+	XCALL OUTPT (12,5,1,'MONTH END DATE: ',1)
+	XCALL INPUT (12,23,08,00,'DE',ENTRY,INXCTL,1)
+	GOTO (DISPLA,ENDOFF),INXCTL
+
+	wdate = entry(1,8)
+
+	cngctl = 2
+	xcall anycn (cngctl, whatno)
+	goto (displa),cngctl
+
+	xdate (1,4) = wdate(5,8)
+	xdate(5,8) = wdate(1,4)
+	adate = xdate,	'ZX/XX/XXXX'
+	xcall outpt (1,1,2,au_header,1)
+
+	row = 1
+	RPTMON = MON(WMM)	;for reports directory
+	RPTMO2 = RPTMON
+
+;=============== Create the Report PDF files ==================
+
+;A/R Aging summary...
+	xcall a_artbl2 (row, wdate, splfil)
+
+	RPTRPT = 'artbl2.pdf'
+	TL = %TRIM(RPTDIR)
+	xcall mkpdf (splfil,rptdir(1,tl))
+
+	c_subj = 'A/R Aging Summary'
+	c_mail = 'JMyers@smcduct.com'
+	c_mail = 'JimM@smcduct.com'	;4-25-16
+
+;;;	c_mail = 'wood@smcduct.com'
+;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl) )
+	xcall mail (c_mail,c_subj,c_body,rptdir(1,tl),,,,,,,send)
+
+;;; Marty retired 6/10/20
+;;;	c_mail = 'MARTYW@smcduct.com'
+;;;	c_mail = 'wood@smcduct.com'
+	xcall mail (c_mail,c_subj,c_body,rptdir(1,tl),,,,,,,send)
+;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl) )
+
+;------------------------------------------------------------------
+; 3-26-09 these reports created and mailed from AUTOME...
+;Sales by Territory, detail & summary...
+
+;;;	xcall a_newsta (row, 0, splfil)	;detail
+;;;
+;;;	RPTRPT = 'newsta_det.pdf'
+;;;	TL = %TRIM(RPTDIR)
+;;;	xcall mkpdf (splfil,rptdir(1,tl))
+;;;
+;;;	xcall a_newsta (row, 1, splfil)	;summary
+;;;
+;;;	RPTRP2 = 'newsta_sum.pdf'
+;;;	TL2 = %TRIM(RPTDI2)
+;;;	xcall mkpdf (splfil,rptdi2(1,tl2))
+;;;
+;;;	c_subj = 'Sales by Territory'
+;;;	c_mail = 'JMyers@smcduct.com'
+;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl), rptdi2(1,tl2) )
+;;;
+;;;
+;;;;SMC/ROCKFORD SALES SUMMARY...
+;;;	xcall a_smcroc (row, wdate, splfil)
+;;;
+;;;	RPTRPT = 'smcroc.pdf'
+;;;	TL = %TRIM(RPTDIR)
+;;;	xcall mkpdf (splfil,rptdir(1,tl))
+;;;
+;;;	c_subj = 'SMC/Rockford Sales Summary'
+;;;	c_mail = 'JMyers@smcduct.com'
+;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl) )
+;;;
+;;;	c_mail = 'MARTYW@smcduct.com'
+;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl) )
+;;;
+;;;;;;	c_mail = 'WOOD@smcduct.com'
+;;;;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl) )
+;;;
+;;;; Don G, James O, Ryan B & Leon S all get these last two reports...
+;;;
+;;;	
+;;;	c_subj = 'Sales Reports'
+;;;	c_subj = 'test end of month reports'
+;;;
+;;;	for i from 1 thru maxman
+;;;		begin
+;;;		a2 = sal_man(i), 'XX'
+;;;		rptrpt = 'slsrpt' + a2 + '.pdf'
+;;;		tl = %trim(rptdir)
+;;;		xcall a_slsrpt (row, wdate, splfil, sal_man(i) )
+;;;		xcall mkpdf (splfil,rptdir(1,tl))
+;;;
+;;;		rptrp2 = 'emster-' + a2 + '.pdf'
+;;;		tl2 = %trim(rptdi2)
+;;;		xcall a_emster (row, wdate, splfi2, sal_man(i) )
+;;;		xcall mkpdf (splfi2,rptdi2(1,tl2))
+;;;
+;;;		using sal_man(i) select
+;;;		(1),	c_mail = 'LeonS@smcduct.com'
+;;;		(4),	c_mail = 'donG@smcduct.com'
+;;;		(16),	c_mail = 'RyanB@smcduct.com'
+;;;		(25),	c_mail = 'JamesO@smcduct.com'
+;;;		endusing
+;;;
+;;;	;;;	c_mail = 'WOOD@smcduct.com'
+;;;		xcall xmail (c_mail, c_subj, rptdir(1,tl), rptdi2(1,tl2) )
+;;;		end
+;;;; 3-26-09 these reports created and mailed from AUTOME...
+;------------------------------------------------------------------
+;
+
+endoff,
+	XCALL PGCHN ('AR:ARSFMN',1)
+	stop
+	end
+

@@ -1,0 +1,19 @@
+;edit.ar
+.subroutine edit
+	spfil	,a
+
+
+record edit_string
+		,a7,	'notepad'
+		,a1
+	path	,a100
+
+record	vars
+	len	,d3
+	string	,a100	
+proc
+	path = spfil
+	
+	xcall spawn (edit_string(1, %trim(edit_string) ) )
+	return
+

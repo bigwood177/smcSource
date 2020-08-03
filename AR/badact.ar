@@ -1,0 +1,136 @@
+;badact.ar
+;
+; check ardist for zero account numbers
+;
+record	ardist
+	.include 'def:rd008a.def'
+;
+record	hdr1
+	,a*,	'  ACCT #       DATE CUST #   DOC #     AMOUNT   TAX'
+
+RECORD TITLE
+		,A*,	'CHECK A/R DISTRIBUTION FOR ZERO ACCOUNT NUMBERS'
+
+RECORD HDR2
+		,A8,	'CATEGORY'
+		,A3
+		,A6,	'ACCT-#'
+RECORD	PRINT
+	HDR	,A*, 'NO HDR'
+	LEG	,A*, 'NO LEGEND'
+	LINCNT	,D2,	60
+	SPLFIL	,A14
+	LPONSW	,D1
+	LPARG	,D1
+	RPTNUM	,D3
+	PRTTYP	,A1
+	PGCNT	,D6,	000000
+	PLINE	,A80
+	PRTCTL	,D3, 080
+	LPSW	,D2
+
+record	dis
+	ii	,d6
+
+record	vars
+	i	,d6
+	xdate	,d8
+	chn008	,d2
+	opnok	,d1
+	read	,d1,0
+	lokctl	,d1
+	switch	,d1
+	v	,d1
+;
+proc
+	xcall terid (V)
+	xcall outpt (1,1,2,'CHECK A/R DISTRIBUTION FOR ZERO ACCOUNT NUMBERS',1)
+;
+	call opens
+	if (.not. opnok) goto endoff
+;
+	clear ii
+	find (chn008, ardist, ^first) [err=loop]
+	reads (chn008, ardist, eof)	;skip header
+loop,
+	incr ii
+	if (ii/1000*1000 .eq. ii) xcall outpt (1,70,0,dis,1)
+
+	reads (chn008, ardist, eof)
+	if (ardist .eq. ']]]]]]') goto eof
+	if (adsact .ne. 0) goto loop
+
+	xdate(1,4) = adsdat(5,8)
+	xdate(5,8) = adsdat(1,4)
+
+	pline (1,7) = adsact, 'ZXXX-XXX'
+	pline (10,19) = xdate, 'ZX/XX/XXXX'
+	pline (21,26) = adscus, 'ZZZZZX'
+	pline (29,34) = adsdoc, 'ZZZZZX'
+	pline (36,46) = adsamt,	'ZZZ,ZZX.XX-'
+	pline (49,51) = adstfl
+	using adstyp select
+	(0),	pline (53,80) = 'Debit to A/R'
+	(1),	pline (53,80) = 'Income (Sales)'
+	(2),	pline (53,80) = 'Other Charges'
+	(3),	pline (53,80) = 'Sales Tax'
+	(4),	pline (53,80) = 'Freight'
+	(5),	pline (53,80) = 'Finance Charges'
+	(6),	pline (53,80) = 'Cash'
+	(7),	pline (53,80) = 'Cust Disc/Allowance'
+	(8),	pline (53,80) = 'Credit to A/R'
+	(9),	pline (53,80) = 'Non-A/R Cash'
+	endusing
+
+	call print
+
+
+	goto loop
+
+
+	
+eof,
+	IF (LPONSW.EQ.1) XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+
+endoff,
+	call close
+	xcall flags (7000000)
+	stop
+
+PRINT,
+	IF (LPONSW.EQ.0) CALL PRNTON
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,HDR,HDR,
+&			LEG,' ',' ',1,80,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+;-------------------------------------------------
+PRNTON,
+	SPLFIL (5,6) = 'EL'
+	LPSW = 1	; PRINT, SPOOL OR DISPLAY
+	XCALL LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GOTO ENDOFF
+	LPONSW = 1
+	RETURN
+;---------------------------------------------
+
+opens,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	clear opnok
+	switch = 5
+	xcall files (1,'I', 08, switch)	;ardist
+	if (switch .eq. 9) return
+	chn008 = 1
+	opnok = 1
+	return
+;---------------------------------------
+
+close,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if (chn008) close chn008
+	return
+;--------------------------------------
+;  ACCT #       DATE CUST #   DOC #     AMOUNT   TAX
+;XXXX-XXX MM/DD/YYYY ZZZZZX  ZZZZZX ZZZ,ZZX.XX-  AAA
+;1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6
+
+end

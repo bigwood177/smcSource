@@ -1,0 +1,80 @@
+subroutine c_note	
+	cust	,d
+	o_flag	,d	;1=return if no file
+;
+record	cust_string
+		,a*,	'cust: '
+	o_cust	,d6
+
+record	edit_string
+		,a*,	'notepad'
+		,a1
+	path	,a100
+
+record	n_path
+		,a*,	'\\server-dc01\smc\data\c_Notes\'
+	n_cust	,a6
+		,a1,	'.'
+	n_ext	,a3			;;;>'.txt'
+
+record	vars
+	flag	,d1
+	p	,d6
+	ln	,d6
+	chn	,d3
+
+	stat	,d1
+;
+.proc
+	clear path
+	if (%passed(o_flag))
+	then flag = o_flag
+	else clear flag
+
+	n_cust = cust, 'XXXXXX'
+	xcall who(n_ext)
+;;;	if (n_ext .eq. 'DLH') n_ext = 'SMC'	;bad debts
+
+	using n_ext select
+	('DLH'),	n_ext = 'SMC'		;bad debts
+	('ROC'),	n_ext = 'SMC'		;Rockford
+	endusing
+
+	path = n_path
+
+; find an open channel...
+	for chn from  1 thru 999
+		begin
+		xcall chnopn (chn,stat)
+		if (stat .eq. 0) exitloop
+		end
+	if (chn .gt. 900) xreturn
+
+	ln = %trim(path)
+
+; if the file does not already exist, create it
+	open (chn, i, path(1,ln)) [err=no_file]
+	goto f_edit
+
+no_file,
+	if (flag) xreturn		;file does not exist - return.
+
+	open (chn, o ,path(1,ln) )
+;-----------------------------------------
+; ".LOG" causes date/time stamp to be appended
+;  every time notepad opens a file...
+;;;	writes(chn,'.LOG')
+;-----------------------------------------
+
+	o_cust = cust
+	writes (chn, cust_string)
+
+
+f_edit,
+	close chn
+	xcall spawn (edit_string(1, %trim(edit_string)))
+	xreturn
+		
+.end
+
+

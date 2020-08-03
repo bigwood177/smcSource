@@ -1,0 +1,174 @@
+;new666.ar
+;	ytd sales for current and prior year.
+;
+;ems666.ar
+;lst666.dbl
+;  CUSLST / AR 
+;
+; 	5-21-18: ssq convert cusmas to isam
+;
+record	new6
+	n6_cusno	,d6
+	n6_name		,a30
+	n6_ly		,d10
+	n6_ytd		,d10
+
+record	ordhdr
+	.include 'def:rd044a.def'
+
+RECORD CUSMAS	
+	.INCLUDE 'DEF:RD001A.DEF'
+;;;RECORD CUSIDX		
+;;;	.INCLUDE 'DEF:RD002A.DEF'
+
+RECORD DEVICE
+	PHYDEV	,A3
+		,A8
+
+record	channel
+	chn001	,d2
+	chn002	,d2
+	chn044	,d2
+
+RECORD	VARS
+	lyear	,a4
+	thisyr	,a4
+	opnok	,d1
+	lysls	,d10
+	tab	,a1
+	xdate	,d8
+	yr	,d2
+	LN	,D5
+	redfil	,a14
+	A6	,A6
+	CUSCNT	,D5
+	ENTRY	,A2
+	INXCTL	,D1
+	PLINE	,A132
+	LINCNT	,D2,	60
+	LPARG	,D1
+	LPSW	,D1
+	PGCNT	,D3
+	RPTNUM	,D3
+	PRTTYP	,A1
+	savman	,d2,	25
+	SPLFIL	,A30
+	SWITCH	,D1,	1
+	V	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	LOKCTL	,D1
+PROC
+	XCALL TERID (V)
+
+	call opens
+	if (.not. opnok) goto endoff
+
+;========================================================
+	pline (1,6) = 'Cust #'
+	pline (7,36) = 'Name'
+	pline (43,46) = lyear
+	pline (53,56) = thisyr
+	writes (14, pline)
+
+;;;	LOKCTL = 1
+;;;	XCALL IOS (2,CUSIDX,READ,LOKCTL)
+;;;	IF (LOKCTL.EQ.2) GO TO EOF
+	READ (1, CUSMAS, ^FIRST) [ERR=EOF]	;HEADER
+PROCES,
+	LOKCTL = 1
+	XCALL IOS (1,CUSMAS,READ,LOKCTL)
+	IF (LOKCTL.EQ.2) GO TO EOF
+	IF (NAME .EQ. ']]]DEL') GOTO PROCES
+;;;	IF (IRC001 .LE. 0) GOTO PROCES
+;;;	LOKCTL = 1
+;;;	XCALL IO (1,CUSMAS,IRC001,READ,LOKCTL)
+	A6 = CRDLMT
+	IF (.NOT. %INSTR(1,A6,'6') ) GOTO PROCES
+
+
+	call get_lys			;get last years sales
+
+	clear new6
+	n6_cusno = cusno
+	n6_name = name
+	n6_ly = lysls
+	n6_ytd = salytd
+	writes (14, new6)
+
+	GO TO PROCES
+
+get_lys,	;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Get Last Years Sales
+		;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear lysls
+	find (3, ordhdr, cusno, krf=1) [err=cloop]
+cloop,
+	reads (3, ordhdr, c_eof)
+	if (ocusno .ne. cusno) return
+	lysls = lysls + osale
+	goto cloop
+c_eof,
+	return
+;-----------------------------------------
+EOF,
+	if (chn001) close chn001
+;;;	if (chn002) close chn002
+	if (chn044) close chn044
+	close 14
+	xcall pgchn ('ar:n6xel',1)
+
+endoff,
+	xcall flags (7000000)
+	stop
+END,
+	XCALL PGCHN ('AR:cusmnu',1)
+
+
+opens,
+	clear opnok
+;;;	SWITCH = 5
+;;;	XCALL FILES (2,'I',02,SWITCH)		;FILE # 02 -- CUSIDX FILE
+;;;	IF (SWITCH.EQ.9) return
+;;;	chn002 = 2
+	
+	SWITCH = 5
+	XCALL FILES (1,'SI',01,SWITCH)		;FILE # 01 -- CUSMAS FILE
+	IF (SWITCH.EQ.9) return
+	chn001 = 1
+
+	xcall rdat8 (xdate)
+	thisyr = xdate(1,4), 'XXXX'
+	lyear = xdate(1,4)-1, 'XXXX'
+	yr = xdate(3,4) - 1
+
+	xcall ffile (44, redfil, switch)
+
+	redfil(5,10) = 'SLHH00'
+	redfil(9,10) = yr,	'XX'
+	redfil(14,14) = 'm'			;ism
+	
+	open (3,si,redfil)
+	chn044 = 3	
+
+	LPSW = 1
+	
+	xcall ascii (9,tab)
+
+	USING SAVMAN SELECT
+	(1),	SPLFIL = 'C:\SMC\SPOOL\LEON.TXT'
+	(3),	SPLFIL = 'C:\SMC\SPOOL\LOU.TXT'
+	(4),	SPLFIL = 'C:\SMC\SPOOL\DON.TXT'
+	(25),	SPLFIL = 'C:\SMC\SPOOL\JAMES.TXT'
+	(),	SPLFIL = 'C:\SMC\SPOOL\DUMMY.TXT'
+	ENDUSING
+;;;	OPEN(14,O,SPLFIL)
+	open (14,o,'spl:new666.ddf')
+
+	opnok = 1
+	return
+;--------------------------------------------------------
+END
+
+
+

@@ -1,0 +1,40 @@
+;stnote.ar
+;
+;	maintain statement notes
+;
+;n1.dbl
+;
+;	print n1.txt
+;
+;
+record	n_file
+		,a*,	'\\serverSBS\smc\data\tst\stm_notes\n'
+	n_num	,a2	
+		,a*,	'.txt'
+;
+
+record	vars
+	entry	,a30
+	inxctl	,d1
+	num	,d2
+	v	,d1
+
+proc
+	xcall terid(v)
+displa,
+	xcall outpt (1,1,2,'STATMENT NOTE MAINTENANCE',1)
+	xcall outpt (4,4,0,'NOTE #',1)
+	xcall input (4, 13, 02, 00, '#E', entry, inxctl,1)
+	goto (displa, endoff), inxctl
+	num = entry(1,2)
+	if (num .le. 0) goto displa
+
+	n_num = num, 'XX'
+	xcall edit (n_file)
+	goto displa
+
+endoff,
+	stop
+	end
+
+

@@ -1,0 +1,1354 @@
+;LSTSTM.AR
+;
+;	Laser statements
+;	
+;	10-23-2013 added email
+; 	5-21-18: ssq convert cusmas to isam
+;	8-22-18: ssq convert aropen to isam
+;	1-23-19: ssq problem in chkbal on last cust in aropen...
+
+
+;  using smtp functions from SynPsgSystem.elb
+;  mset.bat sets up required logicals.
+;
+
+; ssq: ------------- required for synergy email --------------
+; must run mset.bat for following import statements to work...
+
+import SynPSG.System
+import SynPSG.System.IO
+import SynPSG.System.Net
+import SynPSG.System.Net.Mail
+import SynPSG.System.Net.Mime
+import SynPSG.System.Net.Sockets
+import SynPSG.System.Security
+
+external function
+	sig	,a
+
+record	smtp_defines
+;;;	server	,a*,	'192.168.1.13'
+	server	,a*,	'192.168.1.4'
+	domain	,a*,	'smcduct.com'
+	sender	,a*,	'AccountsReceivable@SMCduct.com'
+	senderName,	a*,	'Sheet Metal Connectors'
+
+record
+        mailClient     ,@SMTPClient
+        mailMsg        ,@MailMessage
+        mailAtt        ,@Attachment
+	myContentType	,string
+        attachment  ,a80        ;Attachment name
+	filename    ,a256       ;attachment filename
+	fName       ,a256       ;name part of filename
+        fExt        ,a256       ;extension part of filename
+        chan        ,i4         ;channel
+        port        ,i4         ;port
+	mycredents, @SynPSG.System.NetworkCredential
+; ssq: ------------- required for synergy email --------------
+
+
+	.include 'def:hpsub.def'
+
+record	salman
+	thnku	,a20
+	s_name 	,a20
+	s_title 	,a20
+	d_ph	,a15
+	d_fax 	,a15
+	d_em 	,a30
+
+;-- 5-25-15 for emailed statements report...
+RECORD	ECUST
+	E_CUST	,D6
+	E_NAME	,A25
+	E_BAL	,D10
+
+RECORD HDR1
+		,A*,	'CUST # NAME                           BALANCE'
+
+RECORD TITLE
+		,A*,	'CUSTOMER STATEMENTS EMAILED'
+RECORD
+	CUSCNT	,D5
+	WRKFIL	,A14
+	CHNWRK	,D2
+	PRTCTL	,D3
+
+;- 5-25-15 for emailed statements report...
+
+record	new_mail
+	n_from	,a80	;from
+	n_toN	,a40
+	n_toA	,a500
+	n_cc	,10a100
+	n_subj	,a30	;subject
+	n_body	,a1000	;body
+	n_img	,a100	;path to image
+	n_sig	,a600	;Dianna's signature
+	n_att1	,a100	;attachment 1
+	n_att2	,a9	;attachment 2
+	n_att3	,a9	;attachment 3
+	n_att4	,a9	;attachment 4
+
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+record	coptbl
+	.include 'def:rd182a.def'
+
+record	ara
+	notes	,4a40
+
+RECORD AROPEN		; 
+		.INCLUDE 'DEF:RD003A.DEF'
+RECORD ,X		; 
+		.INCLUDE 'DEF:RD003B.DEF'
+RECORD AROPN2		; 
+		.INCLUDE 'DEF:RD003F.DEF'
+RECORD CUSMAS		; 
+		.INCLUDE 'DEF:RD001A.DEF'
+RECORD CUSCTL	,X	; 
+		.INCLUDE 'DEF:RD001B.DEF'
+;;;RECORD CUSIDX		; 
+;;;		.INCLUDE 'DEF:RD002A.DEF'
+
+RECORD	EJECT
+	E_CHAR	,A1		;<ESC>
+		,A4,	"&l0H"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+RECORD	S_COMPR		;SPECIAL COMPRESSION FOR STATEMENTS
+	S_CHAR	,A1	;SUPPLIED BY LPON.AR
+		,A4,	'&k4S'
+
+RECORD	HEADINGS
+	,A*,'   DATE  CODE   REF     CHARGES     CREDITS      BALANCE'
+
+RECORD
+	CL1	,A*,	'SMC Rockford             Sheet Metal Connectors, Inc   Standard Metal Products'
+	CL2	,A*,	'5601 Sandy Hollow Rd     5850 Main Street NE           PO BOX 32610'
+	CL3	,A*,	'Rockford IL 61108        Minneapolis MN 55432-5439     Fridley MN 55482'
+	CL4	,A*,	'ph  815-874-4600         ph  763-872-0000              ph  763-983-7173'
+	CL5	,A*,	'fax 815-874-9979         fax 763-872-1100              fax 763-785-6977'
+	CL6	,A*,	'                         Toll Free 800-328-1966'
+
+RECORD PBUF
+		,A12		;SSQ 6-26-07
+	PLINE	,A100
+RECORD PBUF2
+	PLINE2	,A100
+
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+RECORD FCHYMD
+	FCHYY	,D2
+	FCHMM	,D2
+	FCHDD	,D2
+RECORD AGEYMD
+	AGEYY	,D2
+	AGEMM	,D2
+	AGEDD	,D2
+
+record	nvars
+	savcus	,d6
+	cc_cnt	,d3
+	status	,d1
+	trans	,a100
+	pdffil	,a100
+	t1	,d6			;T1
+	tl	,d6			;TL
+	tlen	,d6
+	nbl	,d3, 600		;length of n_body	
+	len	,d6
+	lens	,d6
+	lenp	,d6
+
+RECORD	VARS
+	SAVRFA	,A6
+	CUSRFA	,A6
+	RFA2	,A6
+	CUSRF2	,A6
+	ON_R2	,D1
+	A6		,A6
+	mprint	,d1	;1=print even if customer is "email"
+	PASS	,D1	;First pass is printed, 2nd pass is email
+	f_rec	,d6	;save bsmid for pass 2
+	opnok	,d1
+	CHN182	,D2
+	CHN001	,D2
+	CHN002	,D2
+	CHN003	,D2
+
+	b_row	,d3	;start row for message
+	LINMAX	,D2,	55
+	PAGE1	,D1	;1=FIRST PAGE FOR NEW CUST
+	P_PORTRAIT	,D1,	2	;special form for laser statements
+	KEY	,A6
+	BSEND	,D5
+	BSMID	,D5
+	SRCCTL	,D1
+	ENTRY	,A30
+	INXCTL  ,D1
+	CNGCTL	,D1
+	DMY	,D2
+	DMY1	,D2
+	WHATNO	,D2
+	AROCNT	,D5
+	ARCTL	,D5
+	ARCTL2	,D5
+	ARCTL3	,D5
+	ARCTL4	,D5
+	AGDAMT	,4D9
+	LOC	,D2
+	SAVAMT	,A13
+	BAL	,D9
+	CRMASK	,A14,	'ZZZZ,ZZZ.XX CR'
+	DOCDT2	,D6
+	BLANKS	,A25
+	ALL	,A6,	'ALL   '
+	DTMASK	,A8,	'XX/XX/XX'
+	ENDNO	,D6
+	ENDSW	,D1
+	LNFEED	,D2
+	LINCNT	,D2
+	LPSW	,D1
+	PGCNT	,D3
+	RPTNUM	,D3
+	PRTTYP	,A1
+	SPLFIL	,A14
+	LSTCUS	,D6
+	LSTAPL	,D6
+	APLSTR	,D5
+	SKPCUS	,D6
+	MASK	,A12,	'ZZZZ,ZZZ.XX-'
+	SAVLIN	,A100		;SSQ 12-7-01
+	CRDTOT	,D8
+	I	,D6
+	TODAA	,A10
+	TODAY	,D8
+	TDATE	,D6
+	NODAYS	,D6
+	STMDTE	,D8
+	STRTNO	,D6
+	BRACKS	,A6,	']]]]]]'
+	ORGREC	,D5
+	RECNO	,D5,	00001
+	CNTFLG	,D1
+	SWITCH	,D1,	1
+	PRLBAL	,D9
+	PRLCTL	,D5
+	LSTSW	,D1,	0
+	PRLCUS	,D6
+	V	,D1
+	MASK10	,A10	,'[[,[[[.XX]'
+	DASWIT	,D1
+	ZROFLG	,A1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	LOKCTL	,D1
+	OPTION	,D1
+	DECMAL	,D10
+PROC
+	XCALL TERID (V)
+	XCALL RDATE(TDATE)
+	XCALL DATE8(TDATE, D_OUT, TODAY, TODAA, D_SW)
+
+	PASS = 1	;FIRST PASS IS PRINTED
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+OPEN,
+	LSTSW =
+	ENDSW =
+	ARCTL = 1
+	IF (PASS .EQ. 2) 
+		BEGIN
+		CLEAR CUSCNT, LSTCUS, LSTAPL
+		CALL SET_EMAIL
+		CALL MAKE_WRKFIL	;create and open isam work file
+		GOTO PROCES
+		END
+
+	XCALL OUTPT (2,1,2,'\',1)
+
+BEGIN,
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPEN,1,READ,LOKCTL)
+;;;	AROCNT = REC003
+	ARCTL = 1
+CLRDTA,
+	STRTNO =
+	ENDNO =
+	XCALL OUTPT (2,15,2,'\',V)
+SDATE,
+	XCALL OUTPT (5,20,0,'PLEASE ENTER STATEMENT DATE',V)
+	CTL = '05,49,08,00,DE'
+	CALL INPUT
+	GO TO (CLRDTA,FINI), INXCTL			;5-26-16
+;;;	GO TO (CLRDTA,ENDOFF), INXCTL
+	STMDTE = ENTRY (1,8)
+	IF (STMDTE.EQ.0) STMDTE = TODAY
+	XCALL DATE8(STMDTE, D_OUT, D_OUTR, D_FMT, D_SW)
+	XCALL OUTPT (5,49,0,D_FMT,V)
+
+STRTNO,
+	RECNO = 1
+	LSTCUS =
+	ENDSW =
+	XCALL OUTPT (6,20,0,'PLEASE ENTER STARTING CUSTOMER #',V)
+	
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPEN,1,READ,LOKCTL)
+
+	CTL = '06,54,06,00,#E'
+	CALL INPUT
+	GO TO (STRTNO,CLRDTA), INXCTL
+	IF (ENTRY.EQ.ALL.OR.ENTRY.EQ.BLANKS) GO TO PRTALL
+	STRTNO = ENTRY (1,6)
+	
+	
+;;;	KEY = STRTNO, 'XXXXXX'
+;;;	BSEND = ORG003
+;;;	XCALL SERCH (3,AROPEN,KEY,16,21,BSEND,BSMID,SRCCTL,1,8,13,0,0,0,0)
+;;;	GO TO (NOFIND), SRCCTL
+;;;	f_rec = bsmid		;ssq: 1-14-15
+
+	GO TO ENDNO
+NOFIND,
+	XCALL MESAG ('STARTING CUST # NOT ON FILE',1)
+	GO TO STRTNO
+ENDNO,
+	XCALL OUTPT (7,20,0,'PLEASE ENTER ENDING CUSTOMER #',V)
+	CTL = '07,54,06,00,# '
+	CALL INPUT
+	GO TO (CLRDTA), INXCTL
+	ENDNO = ENTRY (1,6)
+	IF (ENDNO.EQ.0)
+	BEGIN
+	  ENDNO = STRTNO
+	  DECMAL = ENDNO
+	  CALL DSPNUM
+	END
+	IF (ENDNO.LT.STRTNO) GO TO ENDNO
+	CNGCTL = 2
+	GO TO ZEROQ
+PRTALL,
+	XCALL OUTPT (6,54,0,ALL,V)
+	STRTNO =
+	ENDNO = 999999
+	CNGCTL = 2
+ZEROQ,
+	XCALL OUTPT (8,20,0,'PRINT ZERO AND CR STATEMENTS? <N>',V)
+	CTL = '08,54,01,00,YN'
+	CALL INPUT
+	ZROFLG = ENTRY (1,1)
+MPRINT,
+	XCALL OUTPT (10,20,0,'PRINT FOR EMAIL CUSTOMERS? <N>',V)
+	CTL = '10,54,01,00,YN'
+	CALL INPUT
+	MPRINT = INXCTL
+
+	GO TO ANYCNG
+
+PROCES,
+	USING PASS SELECT
+	(1),	BEGIN
+		LPSW = 5	;SPECIAL FORMS
+		XCALL AR_LPON (LPSW, SPLFIL)
+		IF (LPSW.EQ.0) GO TO EXIT
+		xcall hp (14, hpDOTS, 0)
+		xcall hp (14, hpFONT, hpPORT)
+		END
+	ENDUSING
+
+
+	XCALL WATE (2,V)
+	IF (ENDNO.EQ.999999) 
+	THEN	FIND (3, AROPEN, ^FIRST) [ERR=RDARO]
+	ELSE	FIND (3, AROPEN, STRTNO) [ERR=RDARO]
+	
+	ON_R2 = 0
+	
+;;;	IF (STRTNO.EQ.0.AND.ENDNO.EQ.999999) GO TO RDARO
+;;;	ARCTL = f_rec		;ssq: 1-14-15
+;;;;;;	ARCTL = BSMID
+;;;FNDFST,
+;;;	ARCTL = ARCTL - 1
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPEN,ARCTL,READ,LOKCTL)
+;;;	IF (ACUSNO.EQ.STRTNO) GO TO FNDFST
+
+RDARO,
+;;;	INCR ARCTL
+;;;	IF (ARCTL.GT.AROCNT) GO TO LSTREC
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPEN,ARCTL,READ,LOKCTL)
+
+	READS (3, AROPEN, LSTREC, GETRFA:SAVRFA)
+	
+	IF (ADOCDT.EQ.0) GO TO RDARO
+	IF (ACUSNO.LT.STRTNO) GO TO RDARO
+	IF (ACUSNO.GT.ENDNO) GO TO LSTREC
+	IF (ADOCDT .GT. STMDTE) GOTO RDARO
+
+
+	IF (ACUSNO.NE.LSTCUS.AND.ZROFLG.EQ.'N') CALL CHKBAL
+	IF (ACUSNO.GT.ENDNO.OR.LSTSW.EQ.1) GO TO LSTREC
+	IF (ACUSNO.NE.LSTCUS) CALL NEWCUS
+	IF (AAPLNO.NE.LSTAPL) CALL NEWAPL
+	IF (STMFLG.EQ.2.AND.ACUSNO.EQ.SKPCUS) GO TO RDARO
+
+	USING PASS SELECT
+	(1),	IF (STMFLG.EQ.3) GOTO RDARO	;SKIP EMAIL CUSTOMERS
+	(2),	IF (STMFLG.NE.3) GOTO RDARO	;ONLY EMAIL CUSTOMERS
+	ENDUSING
+
+	XCALL DATE8(ADOCDT, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE (2,9) = D_OUT, DTMASK
+
+	IF (ADOCTP.EQ.1) PLINE (11,11) = 'I'
+	IF (ADOCTP.EQ.2) PLINE (11,11) = 'P'
+	IF (ADOCTP.EQ.3) PLINE (11,12) = 'CR'
+	IF (ADOCTP.EQ.4) PLINE (11,12) = 'FC'
+	IF (ADOCTP.EQ.5) PLINE (11,12) = 'DR'
+	IF (ADOCTP.EQ.6) PLINE (11,12) = 'CC'	;12-06-10
+	PLINE (14,19) = ADOCNO
+
+	GO TO (DEBIT,DOCTP2,CREDIT,DEBIT,DEBIT,debit), ADOCTP
+DEBIT,
+	PLINE (21,31) = AAMT + AOTHER, MASK
+	BAL = BAL + AAMT + AOTHER
+	GO TO BALNCE
+DOCTP2,
+	RFA2 = 
+	read (33, AROPN2, RFA:SAVRFA) [ERR=D2_LOOP]
+D2_LOOP,
+	XCALL IOS (33, AROPN2, READ, LOKCTL)
+	
+;;;	ARCTL4 = ARCTL + 1
+;;;	IF (ARCTL4.GT.AROCNT) GO TO PRTTP2
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPN2,ARCTL4,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO PRTTP2		;12-3-18 otherwise an endless loop
+	IF (MDOCDT.EQ.0) GO TO DOCT22
+	IF (MCUSNO.NE.ACUSNO) GO TO PRTTP2
+	IF (MDOCNO.NE.ADOCNO) GO TO PRTTP2
+	IF (MDOCTP.NE.2) GO TO PRTTP2
+	if (maplno.ne.aaplno) goto prttp2	;2-29-16 per dianna
+	AAMT = AAMT + MAMT
+	AOTHER = AOTHER + MOTHER
+DOCT22,
+	XCALL GETRFA(33,RFA2)
+	GOTO D2_LOOP
+;;;	GO TO DOCTP2
+PRTTP2,
+	PLINE (33,44) = AAMT, MASK
+	BAL = BAL - AAMT
+	CALL BUFBAL
+	CALL PRINT1
+	IF (AOTHER.EQ.0)
+		BEGIN
+		IF (RFA2.NE.A6) READ (3, AROPEN, RFA:RFA2)
+		GO TO RDARO
+		END
+		
+	XCALL DATE8(ADOCDT, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE (2,9) = D_OUT, DTMASK
+	PLINE (11,12) = 'DA'
+	PLINE (14,19) = ADOCNO
+	PLINE (36,44) = AOTHER, MASK
+	
+	BAL = BAL - AOTHER
+	IF (RFA2.NE.A6) READ (3, AROPEN, RFA:RFA2)
+	GO TO BALNCE
+CREDIT,
+	PLINE (33,44) = AAMT + AOTHER, MASK
+
+	BAL = BAL - AAMT - AOTHER
+BALNCE,
+	CALL BUFBAL
+	CALL PRINT1
+	GO TO RDARO
+BUFBAL,
+	IF (BAL.LT.0) GO TO CRBAL
+	PLINE (46,57) = BAL, MASK
+	RETURN
+CRBAL,
+	PLINE (46,59) = BAL, CRMASK
+	RETURN
+PRINT1,
+	IF (LINCNT.GE.LINMAX) CALL CONTD
+PRINT,
+	incr lincnt
+	xcall HP (14, hpPOS, lincnt, 1, 0, pbuf)
+	clear pbuf
+
+	RETURN
+
+msg_prt,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; print text in message area, bottom of statement
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	xcall HP (14, hpPOS, b_row, 1, 0, pbuf)
+	clear pbuf
+	incr b_row
+	return
+;--------------------------------------------------------
+
+NEWCUS,
+	savcus = lstcus		;3-9-15 ssq moved here
+
+	IF (LSTCUS.EQ.0.OR.STMFLG.EQ.2) GO TO FSTCUS
+
+	IF (PASS.EQ.1 .AND. STMFLG.EQ.3) GOTO FSTCUS	;skip email
+	IF (PASS.EQ.2 .AND. STMFLG.NE.3) GOTO FSTCUS	;skip printed
+
+
+	IF (LINCNT+11.GE.LINMAX)
+	  	BEGIN
+		LNFEED = LINMAX - LINCNT - 1
+		IF (LNFEED.GT.0) LINCNT = LINCNT + LNFEED
+		CALL CONTD
+		END
+
+
+	IF (AGDAMT(3).GT.0.OR.AGDAMT(4).GT.0)
+	then	BEGIN
+		if (lincnt+16 .gt. linmax)
+			begin
+			lnfeed = linmax - lincnt  - 1
+			if (lnfeed.gt.0) lincnt = lincnt + lnfeed
+			call contd
+			end
+		lincnt = linmax -16
+		PLINE = '         **************************************** '
+		CALL PRINT
+		PLINE = '         *              PAST DUE!               * '
+		CALL PRINT
+		PLINE = '         *       We would appreciate your       * '
+		CALL PRINT
+		PLINE = '         *           payment TODAY!             *  '
+		CALL PRINT
+		PLINE = '         ****************************************   '
+		CALL PRINT
+		END
+
+	else	lincnt = linmax - 10 - 1	;get to bottom of page
+
+	lincnt = lincnt + 3
+
+	CALL BUFBAL
+
+	CALL PRINT
+	incr lincnt
+	PLINE (6,12) = 'CURRENT'
+	PLINE (19,28) = '30-60-DAYS'
+	PLINE (33,42) = '60-90-DAYS'
+	PLINE (47,58) = 'OVER-90-DAYS'
+	CALL PRINT
+	SAVAMT =
+	I =
+AGELP,
+	INCR I
+	IF (I.GT.4) GO TO AGEPRT
+	SAVAMT = AGDAMT (I), MASK
+
+	
+	IF (AGDAMT(I).LT.0) SAVAMT = AGDAMT (I), CRMASK
+
+	LOC = 2 + 15*(I-1)
+	PLINE (LOC,LOC + 12) = SAVAMT
+	GO TO AGELP
+AGEPRT,
+	CALL PRINT
+	incr lincnt
+	pbuf(5,80) = 'Please remit all payments to:'
+		     ;123456789012345678901234567890
+	call print
+
+	call print
+	pbuf(5,80) = 'Sheet Metal Connectors, Inc'
+	b_row = lincnt
+
+	call print
+	pbuf(5,80) = '5850 Main Street NE'
+	call print
+	pbuf(5,80) = 'Minneapolis MN 55432-5439'
+	call print
+;-------------------------------------------
+; message area at bottom of statement...
+	xcall hp (14, hpFONT, hpBOLD)
+
+	pbuf(40,80) = notes(1)
+	call msg_prt
+	pbuf(40,80) = notes(2)
+	call msg_prt
+	pbuf(40,80) = notes(3)
+	call msg_prt
+	pbuf(40,80) = notes(4)
+	call msg_prt
+
+	xcall hp (14, hpFONT, hpMEDIUM)
+
+; page eject...
+
+	XCALL ASCII(27,E_CHAR)
+	WRITES (14,EJECT)	;PAGE EJECT			
+
+	IF (PASS .EQ. 2) CALL SEND_EMAIL
+
+	BAL =
+FSTCUS,
+	IF (ENDSW.EQ.1) RETURN
+	
+	XCALL ISIO (1, CUSMAS, ACUSNO, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0)
+	THEN	GOTO MACHED
+	ELSE	GOTO NOMACH
+	
+;;;	BSEND = ORGREC
+;;;	KEY = ACUSNO, 'XXXXXX'
+;;;	XCALL SERCH (2,CUSIDX,KEY,1,6,BSEND,BSMID,SRCCTL,4,7,11,0,0,0,0)
+;;;	GO TO (MACHED,NOMACH), SRCCTL + 1
+
+MACHED,
+	PAGE1 = 1	;1st page for new cust
+;;;	LOKCTL = 1
+;;;	XCALL IO (1,CUSMAS,IRC001,READ,LOKCTL)
+
+;;;	IF (STMFLG.NE.2) GO TO PRTNAM
+	IF (STMFLG.EQ.3 .AND. MPRINT.EQ.1) STMFLG = 1		;11-22-16 PRINT EMAIL CUST
+
+	USING PASS SELECT
+	(2),	if (stmflg.eq.3)	;only if email ...
+		BEGIN
+		SPLFIL(1,4) = 'SPL:'
+		SPLFIL(5,10) = ACUSNO,'XXXXXX'
+		SPLFIL(11,14) = '.SPL'
+		OPEN (14,O,SPLFIL)	;NEW SPOOL FILE FOR EACH CUSTOMER
+
+		xcall hp (14, hpDOTS, 0)
+		xcall hp (14, hpFONT, hpPORT)
+		END
+	ENDUSING
+
+	USING PASS SELECT
+	(1),	IF (STMFLG.EQ.1) GOTO PRTNAM
+	(2),	IF (STMFLG.EQ.3) GOTO PRTNAM
+	ENDUSING
+
+	SKPCUS = ACUSNO
+	RETURN
+
+NOMACH,
+	CUSMAS =
+PRTNAM,
+
+	PLINE =
+
+	lincnt = 1
+	IF (PAGE1) CALL PAGE_1		;Print company info on 1st page
+
+	pline = acusno ,'ZZZZZX' [LEFT]
+	IF (CNTFLG) PLINE = LSTCUS,	'ZZZZZX' [LEFT]
+
+	call print
+
+	PLINE = NAME
+	pline(50,54) = 'DATE:'
+	XCALL DATE8(STMDTE, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE (56,65) = D_FMT
+	CALL PRINT
+
+	PLINE = ADD1
+	CALL PRINT
+	if (add2 .ne. blanks)
+		begin
+		pline = add2
+		call print
+		end
+
+
+	PLINE = CITY
+	PLINE (16,17) = STATE
+	PLINE (19,28) = ZIP
+	call print
+
+	lincnt = lincnt + 3
+	xcall hp (14, hpFONT, hpBOLD)
+	PLINE = HEADINGS
+	CALL PRINT
+	pline = '----------------------------------------------------------'
+	call print
+
+	xcall hp (14, hpFONT, hpMEDIUM)
+
+	LSTCUS = ACUSNO
+	IF (CNTFLG.EQ.0) CALL AGENXT
+
+	CLEAR PLINE
+
+	CALL PRINT
+	RETURN
+CONTD,
+	incr lincnt
+
+	SAVLIN = PLINE
+	PLINE =
+	PLINE (46,59) = 'CONTINUED'
+	CALL PRINT
+
+; page eject...
+
+	XCALL ASCII(27,E_CHAR)
+	WRITES (14,EJECT)	;PAGE EJECT			
+
+	CNTFLG = 1
+	CALL PRTNAM
+	CNTFLG = 0
+	PLINE = SAVLIN
+	RETURN
+AGENXT,
+;;;	AGDAMT (1,36) =
+	for i from 1 thru 4 agdamt(i) =
+	CRDTOT =
+	LSTCUS = ACUSNO
+;;;	ARCTL2 = ARCTL - 1
+	FIND (3, AROPEN, RFA:SAVRFA)
+	ON_R2 = 1
+AGERD,
+;;;	INCR ARCTL2
+;;;	IF (ARCTL2.GT.AROCNT) GO TO ENDAGE
+
+	READS (3, AROPEN, ENDAGE, GETRFA:RFA2)
+;;;	LOKCTL = 1
+;;;	XCALL IOS (3, AROPEN, READ, LOKCTL)
+;;;	IF (LOKCTL .NE. 0) GOTO ENDAGE
+	
+;;;	XCALL IO (3,AROPEN,ARCTL2,READ,LOKCTL)
+
+	IF (ADOCDT.EQ.0) GO TO AGERD
+	IF (ACUSNO.NE.LSTCUS) GO TO ENDAGE
+	IF (AAPLNO.NE.LSTAPL) CALL NEWAPL
+	IF (ADOCDT .GT. STMDTE) GOTO AGERD
+
+	GO TO (DAYS,AGECR,AGECR,DAYS,AGEDR,days), ADOCTP	;12-06-10
+	GO TO AGERD
+NEWAPL,
+	LSTAPL = AAPLNO
+;;;	APLSTR = ARCTL2
+	USING ON_R2 SELECT
+	(0),	CUSRFA = SAVRFA
+	(1),	CUSRFA = RFA2
+	ENDUSING
+	
+	RETURN
+DAYS,
+;;;	OFF ERROR
+	XCALL BDAT8 (STMDTE,ADOCDT,DMY,DMY1,NODAYS)
+	IF (STMDTE.LT.ADOCDT) NODAYS = NODAYS *(-1)
+	IF (DASWIT) RETURN
+	IF (NODAYS.GT.90) GO TO OVER90
+	IF (NODAYS.GT.60) GO TO OVER60
+	IF (NODAYS.GT.30) GO TO OVER30
+CURRNT,
+	AGDAMT(1) = AGDAMT(1) + AAMT + AOTHER
+	GO TO AGERD
+OVER30,
+	AGDAMT(2) = AGDAMT(2) + AAMT + AOTHER
+	GO TO AGERD
+OVER60,
+	AGDAMT(3) = AGDAMT(3) + AAMT + AOTHER
+	GO TO AGERD
+OVER90,
+	AGDAMT(4) = AGDAMT(4) + AAMT + AOTHER
+	GO TO AGERD
+AGECR,
+	IF (BALMTH.EQ.'B') GO TO ADDCR
+	AAMT = AAMT * (-1)
+	AOTHER = AOTHER * (-1)
+AGEDR,
+	IF (AAPLNO.EQ.0.OR.BALMTH.EQ.'B') GO TO DAYS
+;;;	ARCTL3 = APLSTR - 1
+	FIND (33, AROPN2, RFA:CUSRFA)
+
+FNDINV,
+;;;	INCR ARCTL3
+	LOKCTL = 1
+	XCALL IOS (33, AROPN2, READ, LOKCTL)
+	
+;;;	XCALL IO (3,AROPN2,ARCTL3,READ,LOKCTL)
+;;;	IF (ARCTL3.EQ.ARCTL2) GO TO FNDINV
+	IF (MCUSNO.NE.ACUSNO) GO TO DAYS
+	IF (MAPLNO.NE.AAPLNO) GO TO DAYS
+	IF (MDOCNO.NE.AAPLNO) GO TO FNDINV
+	IF (MDOCTP.NE.1.AND.MDOCTP.NE.4.and.mdoctp.ne.6) GO TO FNDINV
+	IF (MDOCDT.EQ.0) GO TO FNDINV
+	ADOCDT = MDOCDT
+	GO TO DAYS
+ADDCR,
+	CRDTOT = CRDTOT + AAMT + AOTHER
+	GO TO AGERD
+ENDAGE,
+;;;	IF (BALMTH.EQ.'B') CALL ADJUST
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPEN,ARCTL,READ,LOKCTL)
+
+	READ (3, AROPEN, RFA:SAVRFA)
+	ON_R2 = 0
+	RETURN
+ADJUST,
+	I = 5
+ADJ1,
+	I = I - 1
+	IF (I.EQ.0) GO TO TSTOCR
+	IF (CRDTOT.GT.AGDAMT(I)) GO TO SET0
+	AGDAMT (I) = AGDAMT (I) - CRDTOT
+	RETURN
+SET0,
+	CRDTOT = CRDTOT - AGDAMT(I)
+	AGDAMT (I) =
+	GO TO ADJ1
+TSTOCR,
+	IF (CRDTOT.GT.0) AGDAMT (1) = (-1) * CRDTOT
+	RETURN
+SKIPIT,
+;;;	IF (ARCTL2.GT.AROCNT) GO TO ENDOFF
+;;;	ARCTL = ARCTL2
+	GO TO AGENXT
+;*******************************************************************************
+EXIT,
+	CALL CLOSE 
+
+	XCALL PGCHN ('AR:ARMENU',1)
+;*******************************************************************************
+
+PAGE_1,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; Print company info on first page of statements
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+	if (.not. %chopen(14) )
+		begin
+		v = 1
+		end
+
+	xcall hp (14, hpFONT, hp6CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 12, 0, 'Statement of Account')
+
+	lincnt = lincnt + 2
+
+	xcall hp (14, hpFONT, hp12CPI+hpMEDIUM)
+	xcall HP (14, hpPOS, lincnt, 1, 0, 'SMC Rockford')
+	xcall HP (14, hpPOS, lincnt, 62, 0, 'Standard Metal Products')
+
+	xcall hp (14, hpFONT, hp10CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 22, 0, 'Sheet Metal Connectors, Inc')
+	
+	incr lincnt
+	xcall hp (14, hpFONT, hp12CPI+hpMEDIUM)
+	xcall HP (14, hpPOS, lincnt, 1, 0, '5601 Sandy Hollow Road')
+	xcall HP (14, hpPOS, lincnt, 62, 0, '7301 Northland Drive N')
+
+	xcall hp (14, hpFONT, hp10CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 22, 0, '5850 Main Street NE')
+	
+	incr lincnt
+	xcall hp (14, hpFONT, hp12CPI+hpMEDIUM)
+	xcall HP (14, hpPOS, lincnt, 1, 0, 'Rockford IL 61108')
+	xcall HP (14, hpPOS, lincnt, 62, 0, 'MInneapolis MN 55428')
+
+	xcall hp (14, hpFONT, hp10CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 22, 0, 'Minneapolis MN 55432-5439')
+	
+	incr lincnt
+	xcall hp (14, hpFONT, hp12CPI+hpMEDIUM)
+	xcall HP (14, hpPOS, lincnt, 1, 0, 'ph  815-874-4600')
+	xcall HP (14, hpPOS, lincnt, 62, 0, 'ph  763-783-7173')
+
+	xcall hp (14, hpFONT, hp10CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 22, 0, 'ph  763-572-0000')
+	
+	incr lincnt
+	xcall hp (14, hpFONT, hp12CPI+hpMEDIUM)
+	xcall HP (14, hpPOS, lincnt, 1, 0, 'fax 815-874-9979')
+	xcall HP (14, hpPOS, lincnt, 62, 0, 'fax 763-785-6977')
+
+	xcall hp (14, hpFONT, hp10CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 22, 0, 'fax 763-572-1100')
+	
+	incr lincnt
+	xcall hp (14, hpFONT, hp10CPI+hpBOLD)
+	xcall HP (14, hpPOS, lincnt, 22, 0, 'Toll Free 800-328-1966')
+	
+	xcall hp (14, hpFONT, hp12CPI+hpMEDIUM)
+
+	lincnt = lincnt + 1
+	CLEAR PAGE1
+
+	RETURN
+;SMC Rockford             Sheet Metal Connectors, Inc   Standard Metal Products
+;12345678901234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6         7
+;5601 Sandy Hollow Rd     5850 Main Street NE           7301 Northland Drive N
+;Rockford IL 61108        Minneapolis MN 55432-5439     Fridley MN 55482
+;
+;ph  815-874-4600         ph  763-872-0000              ph  763-983-7173
+;fax 815-874-9979         fax 763-872-1100              fax 763-785-6977
+;
+;12345678901234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6         7
+;------------------------------------------------------------
+
+LSTREC,
+	ENDSW = 1
+	CALL NEWCUS
+
+;;;	IF (LSTCUS.EQ.0) XCALL MESAG
+;;;&		('NO CUSTOMERS FOUND MEETING GIVEN CRITERIA',2)
+
+ENDOFF,
+	IF (PASS .EQ. 1)
+		BEGIN
+		pgcnt = -9			;6-5-98 ssq no form feed
+		XCALL AR_LPOFF (LPSW,SPLFIL,PGCNT)
+		END
+
+	INCR PASS			;PASS 2 = EMAIL
+	IF (PASS .GT. 2)
+		BEGIN
+		IF (CUSCNT.GT.0) CALL ECUST_report	;PRINT EMAILED STATEMENT REPORT
+		PASS = 1		;START OVER
+		END
+
+;;;	IF (PASS .GT. 2) PASS = 1	;START OVER
+	CLOSE 14
+	
+	IF (PASS .EQ. 2) GOTO OPEN
+	PASS = 1
+
+	IF (STRTNO.NE.0) GO TO OPEN
+FINI,					;ADDED 5-26-16
+	CALL CLOSE
+END,
+	XCALL PGCHN ('AR:ARMENU',1)
+;*******************************************************************************
+INPUT,
+	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,V)
+	RETURN
+ANYCNG,
+	XCALL ANYCN (CNGCTL,WHATNO)
+	GO TO (PROCES,CLRDTA,CLRDTA), CNGCTL + 1
+	GO TO PROCES
+CHKBAL,
+;;;	PRLCTL = ARCTL
+	PRLCUS = ACUSNO
+	IF (ADOCTP.EQ.1.OR.ADOCTP.GE.4) PRLBAL = AAMT + AOTHER
+	IF (ADOCTP.EQ.2.OR.ADOCTP.EQ.3) PRLBAL = - AAMT - AOTHER
+CHKRTN,
+;;;	INCR PRLCTL
+;;;	IF (PRLCTL.GT.AROCNT) GO TO ENDCHK
+	LOKCTL = 1
+	XCALL IOS (3, AROPEN, READ, LOKCTL)
+	
+;;;	XCALL IO (3,AROPEN,PRLCTL,READ,LOKCTL)
+;;;	if (lokctl .ne. 0) return			;11-12-18
+	if (lokctl .ne. 0) goto endchk			;1-23-19
+	IF (ACUSNO.NE.PRLCUS) GO TO ENDCHK
+	IF (ADOCDT .GT. STMDTE) GOTO CHKRTN
+
+	IF (ADOCTP.EQ.1.OR.ADOCTP.GE.4) PRLBAL = PRLBAL + AAMT + AOTHER
+	IF (ADOCTP.EQ.2.OR.ADOCTP.EQ.3) PRLBAL = PRLBAL - AAMT - AOTHER
+	GO TO CHKRTN
+ENDCHK,
+;;;	IF ((PRLCTL.GT.AROCNT.OR.ACUSNO.GT.ENDNO).AND.PRLBAL.LE.0) LSTSW = 1	;removed 11-12-18
+;;;	IF (PRLBAL.LE.0.AND.ACUSNO.LE.ENDNO.AND.PRLCTL.LE.AROCNT) GO TO NXTBAL	;removed 11-12-18
+;;;	LOKCTL = 1
+;;;	XCALL IO (3,AROPEN,ARCTL,READ,LOKCTL)
+
+	READ (3, AROPEN, RFA:SAVRFA)
+	RETURN
+NXTBAL,
+;;;	ARCTL = PRLCTL
+	GO TO CHKBAL
+DSPNUM,
+	OPTION = 1
+	XCALL DSPLY (MAX,ROW,COL,DECMAL,OPTION,V)
+	RETURN
+
+MAKE_WRKFIL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	try
+	begin
+		CLOSE 22
+		xcall delet (wrkfil)
+	end
+
+	catch (ex, @Exception)
+		begin
+		status = 0
+		end
+
+	endtry
+
+	
+
+
+	WRKFIL = 'SMC:STMWRK.ISM'
+	XCALL ISAMC (WRKFIL,41,1,'START=1, LENGTH=6, NODUPS, ASCEND')
+	OPEN (22, su,'SMC:STMWRK.ISM')
+	CHNWRK = 22
+
+	RETURN
+;--------------------------------------------------------------------------
+
+SET_EMAIL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    ;; new stuff for credentials...
+
+	mycredents = new SynPSG.system.NetworkCredential()
+    mycredents.Username="accountsreceivable"  
+    mycredents.Password="$MCar5900"
+
+;;;	mycredents.Username="accountsreceivable"
+;;;	mycredents.Password="smcduct"
+;;;	mycredents.Password="dddlllhhh"
+	mycredents.Domain = "smcduct.com"
+    
+    ;; put default values here
+	port = 25
+	attachment = ''
+	n_from = 'AccountsReceivable@SMCduct.com'
+	mailClient = new SMTPClient(server, port)
+
+
+	RETURN
+;-----------------------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (33,'SI',03,SWITCH)		;33 FOR ARMACH
+
+	SWITCH = 1
+	XCALL FILES (3,'SI',03,SWITCH)		;FILE # 03 -- AROPEN FILE
+	IF (SWITCH.EQ.9) RETURN
+	CHN003 = 3
+
+	SWITCH = 1
+	XCALL FILES (1,'SI',01,SWITCH)		;FILE # 01 -- CUSMAS FILE
+	IF (SWITCH.EQ.9) RETURN
+	CHN001 = 1
+
+
+	switch = 5
+	xcall filec ('SMC',17,'SI',182,switch)
+	if (switch .eq. 9) return
+	chn182 = 17
+
+	for i from 1 thru 4 clear notes(i)
+
+	clear coptbl
+	tblcod = 'SN'
+	find (chn182, coptbl, tbl_key) [err=no_tbl]
+no_tbl,
+	for i from 1 thru 4
+		begin
+		xcall ios (chn182, coptbl, read, lokctl)
+		if (tblcod .ne. 'SN') goto done_sn
+		notes(i) = sn_note
+		end
+done_sn,
+	opnok = 1
+
+	return
+;-----------------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (CHN001) XCALL FILES (CHN001, 'SI', 001, 4)
+;;;	IF (CHN002) XCALL FILES (CHN002, 'I', 002, 4)
+	IF (CHN003) XCALL FILES (CHN003, 'SI', 003, 4)
+	CLOSE 33
+	IF (CHN182) CLOSE CHN182
+
+	return
+;-----------------------------------------------------------
+SEND_EMAIL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	
+	if (agdamt(3).gt.0 .or. agdamt(4).gt.0)
+		begin
+
+		INCR CUSCNT
+
+		E_CUST = SAVCUS
+		E_NAME = NAME
+		E_BAL = BAL
+		STORE (CHNWRK, ECUST, E_CUST)
+		end
+
+	close 14
+	
+;;;	savcus = lstcus
+
+	clear n_toA
+	for i from 1 thru 10 clear n_cc(i)
+
+	t1 = 1
+
+	clear tbl_key
+	tblcod= 'EC'
+	EC_cust = savcus
+	EC_PRIM = 1
+	find (chn182, coptbl, tbl_key) [err=e_loop]
+e_loop,
+	reads (chn182, coptbl, e_eof)
+	if (ec_cust .ne. savcus) goto e_eof
+	if (.not. %instr(1,ec_email,'@') )
+	then	call bad_email
+	else	n_toA = ec_email
+;;;	else	n_toA(t1,tlen) = ec_email
+
+;-
+	cc_cnt = 0
+e_loop2,
+	reads (chn182, coptbl, e_eof)
+	if (ec_cust .ne. savcus) goto e_eof
+	if (.not. %instr(1,ec_email,'@') )
+	then	call bad_email
+	else	begin
+		if (cc_cnt.lt.10)
+		  begin
+		  incr cc_cnt
+		  n_cc(cc_cnt) = ec_email
+		  end
+		end
+
+	goto e_loop2
+;-
+
+e_eof,
+	t1 = %trim(n_toA)
+	if (t1 .lt. 3) return		;bad email address
+
+	xcall getlog ('spl', trans, len)
+
+	trans (len+1, len+11) = '\' + splfil(5,14)
+	pdffil = trans
+	len = %trim (pdffil)
+	len = len - 2
+	pdffil(len, len+2) = 'pdf'
+
+	lens = %trim(trans)
+	lenp = %trim(pdffil)
+	XCALL MKPDF (trans(1,lens), PDFFIL(1,lenp) )
+
+	call make_html		;5-25-16
+
+
+	
+	tl = %trim(n_toA)
+
+
+        mailAtt = ^NULL
+
+	mailMsg = new MailMessage 
+&		(%atrim(sender), %atrim(n_toA),%atrim(n_subj), %atrim(n_body))
+
+	for i from 1 thru cc_cnt
+		begin
+		mailMsg.CC.Add(%atrim(n_cc(i)))
+		end
+
+	mailMsg.IsBodyHtml = 1
+
+	myContentType = 'application/octet-stream'
+
+	parse(pdffil,,,,, fName, fExt,, filename)
+	mailAtt = new Attachment(%atrim(filename), new ContentType(myContentType))
+	mailAtt.Name = %atrim(fName) + %atrim(fExt)
+	mailMsg.Attachments.Add(mailAtt)
+
+	clear status
+;;;goto debug
+
+	try
+	begin
+		mailClient.Send (mailMsg, myCredents)
+	end
+
+	catch (ex, @Exception)
+		begin
+		status = 1
+		end
+
+	endtry
+
+	if (status) call not_sent
+;;;debug,
+	clear mailMsg, mailAtt
+
+
+	xcall delet (trans(1,lens) )
+	xcall delet (pdffil(1,lenp) )
+	xcall delet (splfil)
+
+	RETURN
+;-----------------------------------------------------------
+
+make_html,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; 5-25-16
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	n_subj = 'Statement from SMC attached...'
+
+
+	n_body = '<html>'
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + 'We appreciate your business! ' + '<br><br>'
+
+	tl = %trim (n_body)
+
+
+	n_body = n_body(1,tl+1) + '<p class=MsoNormal><b><span style='
+	tl = %trim (n_body)
+
+;--------------------------
+	thnku = 'Thank you'
+	name = 'Chris Vang'
+	title = 'Accounts Receivable'
+	d_em = 'accountsreceivable@smcduct.com'
+
+	n_body = n_body(1,tl+1) + %sig(thnku, name, title, d_ph, d_fax, d_em)
+;--------------------------
+;;;	thnku = 'Thank you'
+;;;	s_name = 'Dianna Hanson'
+;;;	s_title = 'Credit Manager'
+;;;	d_ph = '763.123.1234'
+;;;	d_fax = '763.456.4567'
+;;;	d_em = 'diannah@smcduct.com'
+;;;
+;;;	n_body = n_body(1,tl+1) + %sig(thnku, s_name, s_title, d_ph, d_fax, d_em)
+
+
+	return
+;--------------------------------------------------------------------------
+
+;old code, "return" above prevents is from executing...
+
+	n_body = n_body(1,tl+1) + "''" + 'font-family:'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + ' "Arial" , "sans-serif";color:#548DD4'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + "'>"
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br><br><br><br>Dianna Hanson'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Credit Manager'
+
+	tl = %trim (n_body)
+
+	n_body = n_body(1,tl+1) + 
+&		'<BR><IMG SRC="""\\serversbs\smc\wrk\smcL.bmp"><br>'
+	
+	
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>5850 Main Street N.E.'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Minneapolis, MN 55432-5439'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Direct Phone: (763) 586-7171'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Phone: (763) 572-0000'
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Fax: (763) 572-1100'
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>www.smcduct.com'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<o:p></o:p></span></b></p> '
+
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '</html>'
+;------------------------------------------------------------
+not_sent,
+;;;	writes (chnerr, email)
+	return
+;--------------------------------------------------
+
+bad_email,
+	return
+;--------------------------------------------------
+
+ECUST_report,	;PRINT CUSTOMERS EMAILED STATEMENTS
+;
+
+
+;  CUSPRT / AR 
+;
+;
+
+;CUST # NAME                           BALANCE
+;ZZZZZX AAAAAAAAAAAAAAAAAAAAAAAAA Z,ZZZ,ZZX.XX-
+;12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6         7
+
+
+
+
+	CLOSE CHNWRK
+	OPEN (22,SI,WRKFIL)
+	
+	PGCNT = 0
+	LINCNT = 66
+	LPSW = 5	;SPECIAL FORMS
+	XCALL AR_LPON (LPSW, SPLFIL)
+	IF (LPSW.EQ.0) GO TO EXIT
+
+LOOP,
+	READS (22, ECUST, EOF)
+
+	PLINE(1,6) = E_CUST,	'ZZZZZX'
+	PLINE(8,32) = E_NAME
+	PLINE(34,46) = E_BAL,	'Z,ZZZ,ZZX.XX-'
+
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,'NO HDR','NO HDR',
+&		'NO LEGEND','NO LEGEND',' ',0,080,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	GOTO LOOP
+
+EOF,
+	CLOSE 22
+	xcall delet (wrkfil)
+
+	XCALL AR_LPOFF (lpsw, splfil, pgcnt)
+	RETURN
+;-------------------------------------------------------------------------------------------
+
+END
+
+
+
+

@@ -1,0 +1,80 @@
+;SNTRW.AR	e-mail trwtap file to experian
+subroutine	sntrw
+	tdate	,d
+
+;
+; VB source for active-X control is in:
+;	\\Server01\Wood\SMC\vb_source\email2
+;
+;	xemail.ocx is the control created.  It must be either
+;	copied (win95) or registered(win98) in the users
+;	windows\system directory.
+;
+
+.INCLUDE 'DBLDIR:ACTIVEX.DEF'
+
+.define		AX_HEIGHT,	450
+.define		AX_WIDTH,	430
+
+record	subj
+	,	a*, "875767, Sheet Metal Connectors Inc, "
+	s_date	,a8
+
+record	vars
+	axwid	,i4
+	axid	,i4
+	mladdr	,a30		;e-mail address's
+	rtffil	,a50		;path of attachment
+
+.proc
+
+	rtffil = 'c:\documents and settings\diannah\c875767.txt'
+
+;;;	mladdr = 'bis.data@experian.com'
+	mladdr = 'data@forius.com'
+	s_date = tdate,	'XX/XX/XX'
+;debug:
+;;;	subj = "875767, Sheet Metal Connectors Inc, 10/31/02"
+;;;	mladdr = "wood@smcduct.com"
+;;;	mladdr = "diannah@smcduct.com"
+
+; Create container and load control...
+	axwid = %ax_create(50, 50, AX_WIDTH, AX_HEIGHT)
+	axid = %ax_load(axwid, "xmal2.email2", 0, 0, AX_WIDTH, AX_HEIGHT)
+
+; Bind events...
+	xcall ax_bind(axid, "cmdMail", "cmdMail")
+
+; Process control...
+	xcall process_control 
+&	(axwid, axid, rtffil, mladdr, subj)
+
+	xcall win_stop(1)
+	xreturn
+.end
+
+.subroutine process_control
+	a_axwid		,n	;id of container
+	a_axid		,n	;id of control
+	rtffil		,a	;path of attachment
+	ema1		,a	;e-mail address 1
+	subj		,a	;e-mail subject 
+.proc
+	xcall ax_show(a_axwid)
+	xcall ax_call(a_axid, "GetPassedData", rtffil, ema1, subj)
+	xcall ax_hide(a_axwid)
+	xreturn
+.end
+
+.subroutine cmdMail
+	a_axid	,n
+
+record
+	alpha	,a20
+
+.proc
+	xcall win_stop(1)
+	xreturn
+.end
+
+

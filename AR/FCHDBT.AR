@@ -1,0 +1,311 @@
+;fchdbt.ar
+;
+; 5-15-18: ssq convert cusmas to isam
+; 8-14-18: ssq convert aropen to isam
+;	
+;	apply finance charges
+;
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+	.INCLUDE 'WND:WINDOWS.DEF'
+
+
+
+RECORD	POP
+	.INCLUDE 'DEF:POPF.DEF'
+
+RECORD	WN_NAME
+		,A5,	'FINCH'
+	WN_TNMBR,D4
+
+RECORD	WARS
+	WND_1	,D4
+	W_ID	,D4
+
+RECORD	CUSMAS
+	.INCLUDE 'DEF:RD001A.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD001B.DEF'
+
+
+RECORD	SALES
+	.INCLUDE 'DEF:RD004A.DEF'
+RECORD	SLSCTL
+	.INCLUDE 'DEF:RD004B.DEF'
+
+RECORD	aropen
+	.INCLUDE 'DEF:rd003a.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD003B.DEF'
+
+
+RECORD	CHANNEL
+	CHN001	,D2
+	CHN002	,D2
+	CHN003	,D2
+	CHN004	,D2
+
+RECORD	B_DATA
+	B_CUST	,D6
+	B_DOC	,D6
+		,A68
+
+RECORD	VARS
+	ORGCUS	,D5
+	STAT	,D1
+	COMPA	,D8
+	COMPB	,D8
+	TOTAMT	,D8
+	XCUST	,D6
+	OPNOK	,D1
+	ENTRY	,A30
+	INXCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	LOKCTL	,D1
+	XDATE	,D8
+	SAVRFA	,A6
+	BSMID	,D5
+	BSEND	,D5
+	SRCCTL	,D1
+	KEY	,A6
+	OPT	,D1
+	CLCTL	,D1
+	I	,D6
+	SWITCH	,D1
+	V	,D1
+;
+PROC
+	XCALL TERID(V)
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	CALL INIT_WINDOW
+DISPLA,
+	XCALL W_DISP(WND_1,WD_POS,1,1,'FINANCE CHARGES')
+	XCALL W_DISP(WND_1,WD_POS,4,4,'CUSTOMER #')
+	XCALL WINPT (WND_1,4,15,06,00,'#E',ENTRY,INXCTL)
+	GOTO (DISPLA,ENDOFF),INXCTL
+	XCUST = ENTRY(1,6)
+
+	CALL GET_FCH
+NEXT_POP,
+	if (%ttsts) xcall w_disp (wnd_1, wd_reads, entry)
+
+	IF (NUMARA .LE. 0) GOTO DISPLA
+	DLINE = '  CUST #  DOC #       DATE   FCH AMOUNT'
+	XCALL POPF (POP, TOTAMT)	
+
+	CALL MAKE_SALES
+
+	GOTO DISPLA
+;===================================================================
+ENDOFF,
+	CALL CLOSE
+	XCALL FLAGS (7000000)	;suppress program termination message
+	STOP
+;=========================================================
+;=========================================================
+
+GET_FCH,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR NUMARA, I
+	
+;;;	KEY = XCUST,	'XXXXXX'
+;;;	XCALL SERCH (CHN003,AROPEN,KEY,16,21,BSEND,BSMID,SRCCTL,4,8,13,1,6,0,0)
+;;;	GO TO (EXIT_FCH), SRCCTL
+;;;	bsmid = bsmid - 1
+;;;	if (bsmid .le. 1) goto exit_fch
+;;;	xcall io (chn003, aropen, bsmid, read, lokctl)
+
+	FIND (CHN003, AROPEN, XCUST) [ERR=FCH_LOOP]
+	
+FCH_LOOP,
+	XCALL IOS (CHN003, AROPEN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EXIT_FCH
+;;;	READS (chn003, aropen, EXIT_FCH)
+	IF (ACUSNO .NE. XCUST) GOTO EXIT_FCH
+	IF (ADOCDT .EQ. 0) GOTO FCH_LOOP	;DELETED
+	IF (ADOCTP .NE. 4) GOTO FCH_LOOP
+
+	DLINE(1,6) = ACUSNO,	'ZZZZZX'
+	DLINE(8,13) = ADOCNO,	'XXXXXX'
+
+	XDATE(1,4) = ADOCDT(5,8)
+	XDATE(5,8) = ADOCDT(1,4)
+	DLINE(15,24)=XDATE,	'XX/XX/XXXX'
+
+	DLINE(28,37) = AAMT,	'ZZZ,ZZX.XX'
+
+;CUST #  DOC #       DATE   FCH AMOUNT
+;XXXXXX XXXXXX XX/XX/XXXX   ZZZ,ZZX.XX
+;12345678901234567890123456789012345678901234567890
+;         1         2         3         4         5
+
+	INCR I
+	PARRY(I)=DLINE
+	PARAMT(I) = AAMT
+	IF(I.LT.MAXARA) GOTO FCH_LOOP
+
+EXIT_FCH,
+	NUMARA = I
+
+;	BUBBLE SORT ACCREC ARRAY
+;
+	FOR I FROM 1 THRU MAXARA
+	  BEGIN
+	  DLINE = PARRY(I)
+	  B_CUST = DLINE(1,6)
+	  B_DOC = DLINE(8,13)
+	  IF (B_CUST.EQ.0) GOTO DONE_BS
+
+	  COMPA = B_DOC
+	  DLINE = PARRY(I+1)
+	  B_CUST = DLINE(1,6)
+	  B_DOC = DLINE(8,13)
+	  IF (B_CUST.EQ.0) GOTO DONE_BS
+	  COMPB = B_DOC
+
+	  IF (COMPA.GT.COMPB)
+	    BEGIN
+	    PARRY(I+1) = PARRY(I)
+	    PARRY(I) = DLINE
+	    I = I - 2
+	    IF (I.LT.0) I = 0
+	    END
+
+	  END
+
+DONE_BS,
+
+	RETURN
+;------------------------------------------------------
+
+MAKE_SALES,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;;CREATE FIN CHG CREDITS
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	FOR I FROM 1 THRU NUMARA
+		BEGIN
+		IF(PFLAGS(I).EQ.1)
+			BEGIN
+			CLEAR SALES
+			DLINE = PARRY(I)
+			B_CUST = DLINE(1,6)
+			B_DOC = DLINE(8,13)
+			SDOCNO = B_CUST
+			SDOCTP = 3
+			SDOCDT = 20081231
+			SCUSNO = B_CUST
+			if (scusno .ne. cusno) CALL GET_CUST
+
+			SNAME = NAME
+			SSLMAN = SLSMAN
+			STAXFL = TAXFLG
+			SSLAMT = PARAMT(I)
+			SAPLNO = B_DOC
+			SARACT = SARAC		;DEFAULT A/R ACCOUNT
+			SDACTS(1) = SFCHAC	;DEFAULT FIN. CHG. ACCT
+			SDAMTS(1) = SSLAMT
+			CALL WRITE_SALES
+			clear parry(i)
+			clear paramt(i)
+			clear pflags(i)
+			END
+
+		END
+	RETURN
+;-----------------------------------------------------------------
+WRITE_SALES,
+	LOKCTL = 1
+	XCALL IO (CHN004, SLSCTL, 1, READ, LOKCTL)
+	INCR REC004
+	LOKCTL = 1
+	XCALL IO (CHN004, SLSCTL, 1, WRITE, LOKCTL)
+
+	XCALL IO (CHN004, SALES, REC004, WRITE, LOKCTL)
+
+	RETURN
+;-----------------------------------------------------------------
+
+GET_CUST,
+
+	XCALL ISIO (1, CUSMAS, SCUSNO, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) CLEAR CUSMAS
+	
+
+	RETURN
+;-----------------------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SWITCH = 1
+	XCALL FILES (1, 'SI', 01, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN001 = 1
+
+
+	xcall files (3, 'SI', 03, switch)
+	if (switch .eq. 9) return
+	chn003 = 3
+
+	SWITCH = 1
+	XCALL FILES (4, 'U',04, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN004 = 4
+
+;;;	xcall io (chn003, aropen, 1, read, lokctl)
+;;;	bsend = org003
+
+	XCALL IO (CHN004, SLSCTL, 1, READ, LOKCTL)
+
+
+	OPNOK=1
+	RETURN
+;------------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (CHN001) XCALL FILES (CHN001, 'I', 01, 4)
+;;;	IF (CHN002) XCALL FILES (CHN002, 'I', 02, 4)
+	IF (CHN003) XCALL FILES (CHN003, 'SI', 03, 4)
+	IF (CHN004) XCALL FILES (CHN004, 'U', 04, 4)
+
+	RETURN
+;------------------------------------------------------
+
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SET UP SCREEN 1 WINDOW
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+
+	XCALL TNMBR (WN_TNMBR)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (.NOT. WND_1)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,0,0)
+		END
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	W_ID = WND_1
+
+;; POP info...
+
+	MAXARA = 20		;9-19-97 NOT MORE THAN 1 FULL WINDOW
+	PLEN = 37
+	NUMROW = 18
+	WX = 4
+	WY = 1
+	POP_WID(1,5) = "FXPOP"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "OUT OF STOCK"
+	RETURN
+;--------------------------------------------------
+
+;CUST #  DOC #       DATE   FCH AMOUNT
+;XXXXXX XXXXXX XX/XX/XXXX   ZZZ,ZZX.XX
+;12345678901234567890123456789012345678901234567890
+;         1         2         3         4         5
+

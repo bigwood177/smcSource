@@ -1,0 +1,142 @@
+;chk333.ar
+;chk333.dbl
+
+; 5-15-18: ssq convert cusmas to isam
+
+record	cusmas
+	.include 'def:rd001a.def'
+;
+;;;record	cusidx
+;;;	.include 'def:rd002a.def'
+
+RECORD TITLE
+		,A*,	'CUSTOMER CREDIT LIMIT CODE PRINT-OUT'
+RECORD HDR1
+		,A*,	'CUST # NAME                      CRDLMT'
+
+RECORD	print
+	HDR2	,A6,	'NO HDR'
+	LINCNT	,D2,	60
+	SPLFIL	,A14
+	LPONSW	,D1
+	LPARG	,D1
+	RPTNUM	,D3
+	PRTTYP	,A1
+	PGCNT	,D6,	000000
+	PLINE	,A132
+	PRTCTL	,D3
+	CNGCTL	,D1
+	WHATNO	,D1
+	LPSW	,D2
+
+record	dis
+	ii	,d6
+
+record	channel
+	chn001	,d2
+	chn002	,d2
+
+record	vars
+	opnok	,d1
+	entry	,a30
+	inxctl	,d1
+	read	,d1,0
+	lokctl	,d1
+	code	,a1
+	a6	,a6
+	a20	,a20
+	tot	,d12
+	switch	,d1
+	v	,d1
+;
+proc
+	xcall terid(v)
+	xcall outpt (1,1,2,'Customer Credit Limit Code',1)
+
+	call opens
+	if (.not. opnok) goto endoff
+displa,
+	xcall outpt (4,4,1,'Credit Code To Search:',1)
+	xcall input (4,29,01,01,'AE',entry,inxctl,1)
+	goto (displa,endoff),inxctl
+	code = entry(1,1)
+
+	ii = 1
+loop,
+	incr ii
+	if (ii/100*100 .eq. ii) display(15,$scr_pos(1,70),dis)
+;;;	reads (2, cusidx, eof)
+;;;	if (cusidx .eq. ']]]]]]') goto loop
+;;;	if (irc001 .eq. 0) goto loop
+;;;	xcall io (1, cusmas, irc001, read, lokctl)
+	xcall ios (1, cusmas, read, lokctl)
+	if (lokctl .ne. 0) goto eof	
+;;;	if (cusmas .eq. ']]]]]]') goto loop
+	if (name .eq. ']]]DEL') goto loop
+	a6 = crdlmt,	'XXXXXX'
+	if (.not. %instr(1,a6,code) ) goto loop
+
+	pline (1,6) = cusno
+	pline (8,32) = name
+	pline (34,39) = crdlmt,	'XXXXXX'
+	call print
+
+;CUST # NAME                      CRDLMT
+;XXXXXX AAAAAAAAAAAAAAAAAAAAAAAAA XXXXXX
+;1234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6
+	goto loop
+
+PRINT,
+	IF (LPONSW.EQ.0) CALL PRNTON
+	PRTCTL = 70
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,HDR2,'NO HDR3',
+&			'NO LEGEND',' ',' ',1,132,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+PRNTON,
+	SPLFIL (5,6) = 'EL'
+	LPSW = 1	; PRINT, SPOOL OR DISPLAY
+	XCALL AR_LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) CALL CLOSE
+	IF (LPSW.EQ.0) XCALL PGCHN ('CP:CPMENU',1)
+	LPARG = 2
+	IF (LPSW.EQ.2) LPARG = 4
+	XCALL WATE (LPARG,V)
+	LPONSW = 1
+	RETURN
+;************************************************************************
+
+
+opens,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear opnok
+	switch = 5
+	xcall files (1, 'SI', 001, switch)
+	if (switch .eq. 9) return
+	chn001 = 1
+
+;;;	switch = 5
+;;;	xcall files (2, 'I', 002, switch)
+;;;	if (switch .eq. 9) return
+;;;	chn002 = 2
+
+	opnok = 1
+	return
+;--------------------------------------------------
+
+close,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	if (chn001) close chn001
+;;;	if (chn002) close chn002
+
+	return
+;--------------------------------------------------
+eof,
+
+	IF (LPONSW.EQ.1) XCALL AR_LPOFF (LPSW,SPLFIL,PGCNT)
+endoff,
+	call close
+	xcall pgchn ('ar:cusmnu',1)
+	stop
+	end
+
+
+

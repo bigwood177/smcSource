@@ -1,0 +1,5 @@
+-d selmal \
+ar:arlib.elb ut:util.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb
+
+
+

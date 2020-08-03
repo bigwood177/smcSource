@@ -1,0 +1,63 @@
+5-15-18 no longer needed
+;  CUSCNT / AR 
+;
+;
+;		::PCPYAR.DEF::
+;******************************************************************************
+;		ACCOUNTS RECEIVABLE 
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;******************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;		PROGRAM TO UPDATE SORTED RECORD COUNTER AFTER
+;		A SORT & TURN OFF FILE PROTECTION
+;
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD CUSCTL		; 
+		.INCLUDE 'DEF:RD001B.DEF'
+RECORD
+	PROGNM	,A9
+	V	,D1
+	MSGCTL	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	LOKCTL	,D1
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'UPDATE COUNTER',1)
+	XCALL FILES (1,'U',1,5)			;FILE # 01 -- CUSMAS FILE
+	LOKCTL = 1
+	XCALL IO (1,CUSCTL,1,READ,LOKCTL)
+	ORG001 = REC001
+	LOKCTL = 1
+	XCALL IO (1,CUSCTL,1,WRITE,LOKCTL)
+	CLOSE 1
+	XCALL FILES (2,'U',02,4)		;FILE # 02 -- CUSIDX FILE
+	MSGCTL = 1
+	XCALL SNMSG (PROGNM,MSGCTL)
+	IF (MSGCTL.EQ.9) PROGNM = 'AR:ARMENU'
+	MSGCTL = 4
+	XCALL SNMSG (PROGNM,MSGCTL)
+	XCALL PGCHN (PROGNM,1)
+END

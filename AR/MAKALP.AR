@@ -1,0 +1,93 @@
+;5-21-18 don't need this w/ isam cusmas
+
+;MAKALP.AR
+;MAKALP2.DBL
+;
+RECORD	CUSALP
+	.INCLUDE 'DEF:RD166A.DEF'
+
+RECORD	CUSMAS
+	.INCLUDE 'DEF:RD001A.DEF'
+
+RECORD	DIS
+	I	,D6
+		,a2
+	J	,d5
+
+RECORD	VARS
+	BLANKS	,A20
+	XNAME	,A25
+	X	,D2
+	Y	,D2
+	A1	,A1
+	STAT	,D1
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (1,1,2,'POPULATE "CUSALP"',1)
+	xcall files (1,'SI',01,SWITCH)
+;;;	OPEN (1,I,'SMC:CUSMAS.SMC')
+
+	XCALL FILES (2,'SU',166,SWITCH)
+;;;	OPEN (2,SU,'SMC:CUSALP.SMM')
+	xcall outpt (2,1,1,'clear file',1)
+cl_loop,
+	READS (2,CUSALP,EOF_CL) 
+;;;	DELETE (2,A_NAME)
+	DELETE (2,A_SORT)
+	GOTO CL_LOOP
+EOF_CL,
+	xcall outpt (2,1,1,'rebuild index',1)
+
+	READS (1,CUSMAS,EOF)
+	I = 1
+LOOP,
+	INCR I
+	IF (I/100*100 .EQ. I) XCALL OUTPT (1,60,1,DIS,1)
+	READS (1,CUSMAS,EOF)
+	IF (CUSMAS .EQ. ']]]]]]') GOTO EOF
+	IF (NAME .EQ. ']]]DEL') GOTO LOOP
+
+	IF (ESORNA .EQ. BLANKS)
+	THEN	XNAME = NAME
+	ELSE	XNAME = ESORNA
+
+	CLEAR X,Y
+
+	FOR X FROM 1 THRU 25
+		BEGIN
+		A1=NAME(X,X)
+		IF ((A1.GE.'1'.AND.A1.LE.'9') .OR. (A1.GE.'A'.AND.A1.LE.'Z'))
+			BEGIN
+			INCR Y
+			XNAME(Y,Y)=A1
+			END
+		END
+	incr y
+	if (y.lt.25) xname(y,25) = 
+
+	read (2,cusalp, Xname) [err=mak_record]
+	if (a_cusno .eq. cusno) goto loop
+
+mak_record,
+	incr j
+	A_NAME = NAME
+	A_SORT = XNAME
+	A_CUSNO = CUSNO
+	A_ADD1 = ADD1
+	A_ADD2 = ADD2
+	A_CITY = CITY
+	A_STATE = STATE
+	A_ZIP = ZIP
+	STORE (2,CUSALP,A_NAME) ;[err=loop]
+	GOTO LOOP
+EOF,
+	CLOSE 1
+	CLOSE 2
+	XCALL PGCHN ('AR:CUSMNU',1)
+	STOP
+	END
+
+

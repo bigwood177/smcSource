@@ -1,0 +1,149 @@
+SUBROUTINE LPON; (LPSW,SPLFIL)  ;SMC VERSION
+;
+; A/R version.
+			;
+	LPSW			,D
+	SPLFIL			,A
+	P_COMPRESS		,A	;OPTIONAL PCL CODE IF NOT DEFAULT
+	P_FORMS			,D	;FORM TYPES (SEE BELOW)
+	P_SPECIAL		,D	;OPTIONAL -NOT USED-
+
+;		Form Types:
+;		0 - Landscape (default)
+;		1 - Portrait  (default if Q_DESC=PORTRAIT)
+;		2 - Portrait - elite (for laster statements)
+
+
+RECORD	QUE_NAME
+	.INCLUDE 'QUE_NAME.DEF'
+
+record	nxtnum
+	seed	,d7
+	
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    'S'
+	splnum	,d7
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+RECORD	COMP14
+	ESC_11	,A1		;<ESC>
+		,a4,	"&l1O"	;landscape mode
+	ESC_12	,A1		;<ESC>
+		,A4,	"&l8D"	;vertical spacing, 8 lines/inch
+	ESC_13	,A1		;<ESC>
+		,A8,	"(s13.00H"	;pitch 14 CPI
+
+RECORD	PR_COMP			;PORTRAIT, FOR LASER STATEMENTS
+	ESC_02	,A1
+		,A4,	"&l4E"	;top margin 4 lines
+	ESC_03	,A1
+		,A4,	"&k4S"	;elite
+RECORD	L8100
+	ESC_01	,A1
+		,A4,	"&l8C"	;8 lines/inch
+RECORD	TMPLT
+	TT	,D1
+		,A1,	'.'
+	TNAME	,A20
+
+	
+RECORD	VARS
+	FORMS		,D1
+	ESC	,A1
+	COMPRESSED	,D1
+	LANDSCAPE	,D1
+	SPECIAL		,D1
+	ESC_SEQ	,A50
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OPT	,D1
+	I	,D5
+
+PROC
+
+	OPEN (14, I, 'AR:QUE_NAME.DDF')
+DISPLA,
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (9,20,0,'REPORT DESTINATION',1)
+	FOR TT FROM 1 THRU 5
+		BEGIN
+		READS (14, QUE_NAME, EOQ)
+		IF (Q_DESC .EQ. '***END***') GOTO EOQ
+		TNAME = Q_DESC
+		XCALL OUTPT (TT+9, 25, 0, TMPLT, 1)
+		END
+EOQ,
+ASK,
+	XCALL INPUT (9,40,01,00,'#E',ENTRY,INXCTL,1)
+	GOTO (DISPLA,SPL_ERR),INXCTL
+	OPT = ENTRY(1,1)
+	IF (OPT .EQ. 0)
+		BEGIN
+		OPT = 1
+		XCALL OUTPT (9,40,0,'1',1)
+		END
+	IF (OPT.LT.1 .OR. OPT.GE.TT) GOTO ASK
+
+ANYCNG,
+	CNGCTL = 2
+	XCALL ANYCN (CNGCTL,WHATNO)
+	GOTO (ASK),CNGCTL
+
+PROCES,
+	READ (14, QUE_NAME, OPT)
+	CLOSE 14
+
+
+	FORMS = 0			;DEFAULT TO LANDSCAPE
+	IF (Q_DESC .EQ. 'Local Portrait') FORMS = 1
+	IF (%PASSED(P_FORMS))	FORMS = P_FORMS
+
+
+;;; Create a unique file name and open for output
+	OPEN (14,U,'SPL:SPLNUM.DDF')
+	READ (14,NXTNUM,1)
+	INCR SEED
+	WRITE (14,NXTNUM,1)
+	CLOSE 14
+
+	splnum = seed
+	s_name(1,1) = 'S'	
+	onerror spl_err
+	open (14,o,s_filnam)            ;print output file
+	offerror
+
+	s_name(1,1) = OPT,'X'           ;save the printer # selected
+	splfil = s_name                 
+
+	IF (Q_NAME .EQ. 'EDIT') GOTO RETURN
+	XCALL ASCII(27, ESC)
+	ESC_11 = ESC
+	ESC_12 = ESC
+	ESC_13 = ESC	
+	ESC_01 = ESC	
+	ESC_02 = ESC	
+	ESC_03 = ESC	
+
+	IF (Q_DESC .EQ. 'LaserJet 8100') DISPLAY (14, L8100)
+
+	USING FORMS SELECT
+	(0),	WRITES (14, COMP14)	;LANDSCAPE
+	(2),	WRITES(14, PR_COMP)	;LASER STATEMENTS
+	ENDUSING
+
+
+RETURN,
+	LPSW = 1
+	RETURN
+
+spl_err,
+	offerror
+	lpsw = 0		;error or <end>
+	RETURN
+END

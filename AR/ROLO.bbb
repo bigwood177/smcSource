@@ -1,0 +1,4 @@
+dbl -d -l -- rolo.ar
+dblink -d rolo rxpop con2 cont cp:cspop cp:cplib.elb ut:roldx ut:util.elb wnd:tklib.elb
+REM dblink -d rolo rxpop serch ut:roldx ut:util.elb wnd:tklib.elb
+

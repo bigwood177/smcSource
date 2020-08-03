@@ -1,0 +1,198 @@
+;malbcc.ar
+;
+;	create malbcc.tab 
+; 	5-21-18: ssq convert cusmas to isam
+;
+record	cusmas
+	.include 'def:rd001a.def'
+;
+record	emailc
+	.include 'def:Rd084a.def'
+;
+record	out
+	o_cust	,d6
+	o_tab	,a1
+	buf	,a963
+;
+record	channel
+	chn001	,d2
+	chn084	,d2
+	chnwrk	,d2
+
+record	dis
+	ii	,d6
+
+record	vars
+	opnok	,d1
+	state_ok	,d1
+	row	,d2
+	beg	,d6
+	en	,d6
+	A6	,a6
+	tab	,a1
+	len	,d6
+	entry	,a30
+	inxctl	,d1
+	cngctl	,d1
+	whatno	,d2
+	states	,10A2
+	distr	,a1
+	i	,d6
+	switch	,d1
+	v	,d1
+	
+;
+proc
+	xcall terid(v)
+	xcall outpt (1,1,2, 'Customer Email Spreadsheet',1)
+
+	call opens
+	if (.not. opnok) goto endoff
+	xcall ascii (9, tab)
+	o_tab = tab
+	clear buf
+
+	len = 963
+displa,
+	xcall outpt (1,1,2, 'Customer Email Spreadsheet',1)
+	clear cngctl
+	for i from 1 thru 10 clear states(i)
+
+	xcall outpt (2,4,0, 'Enter upto 10 states:',1)
+	xcall outpt ( 4,4,0, ' 1. ',1)
+	xcall outpt ( 5,4,0, ' 2. ',1)
+	xcall outpt ( 6,4,0, ' 3. ',1)
+	xcall outpt ( 7,4,0, ' 4. ',1)
+	xcall outpt ( 8,4,0, ' 5. ',1)
+	xcall outpt ( 9,4,0, ' 6. ',1)
+	xcall outpt (10,4,0, ' 7. ',1)
+	xcall outpt (11,4,0, ' 8. ',1)
+	xcall outpt (12,4,0, ' 9. ',1)
+	xcall outpt (12,4,0, '10. ',1)
+	xcall outpt (14,4,0, '11. Include distributors?',1)
+
+	beg = 1
+	en = 10
+states,
+	row = 3
+	for i from beg thru en
+		begin
+		xcall input (row+i, 8, 02, 00, 'AE', entry, inxctl, 1)
+		if (i.eq.1 .and. inxctl.eq.2) goto endoff
+		goto (displa,done_st),inxctl
+		states(i) = entry(1,2)
+		goto (anycng),cngctl
+		end
+done_st,
+	goto (anycng),cngctl
+distr,
+	xcall input (14, 33, 01, 00, 'YN', entry, inxctl, 1)
+	distr = entry(1,1)
+
+anycng,
+	xcall anycn (cngctl, whatno)
+	goto (proces, cngbr), cngctl + 1
+cngbr,
+	goto (statex, distr), whatno
+	goto anycng
+statex,
+	beg = whatno
+	en = whatno
+	goto states
+
+proces,
+	state_ok = 1		;6-15-16
+	ii = 1
+	reads (chn001, cusmas, eof)
+loop,
+	incr ii
+	if (ii/200*200 .eq. ii) display (15,$scr_pos(1,70),dis)
+	reads (chn001, cusmas, eof)
+;;;	if (cusmas .eq. ']]]]]]') goto eof
+	if (name .eq. ']]]DEL') goto loop
+	a6 = crdlmt, 'XXXXXX'
+	if (distr .eq. 'N' .and. %instr(1, a6, '6') ) goto loop
+;;;	call chk_state
+	if (.not. state_ok) goto loop
+
+	call get_mail
+	
+	goto loop
+eof,
+	close chnwrk
+
+
+endoff,
+	call close
+	stop
+;===================================================
+
+get_mail,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	clear buf
+	o_cust = cusno
+	clear emailc
+
+	e_cust = cusno
+	e_nbr =
+
+	find (chn084, emailc, e_key) [err=gm_loop]
+gm_loop,
+	reads (chn084, emailc, gm_eof)
+	if (e_cust .ne. cusno) return
+	if (.not. %instr (1, e_mail, '@')  ) goto gm_loop
+
+	xcall tabd (buf, len, name, tab)
+	xcall tabd (buf, len, e_fnam, tab)
+	xcall tabd (buf, len, state, tab)	
+	xcall tabd (buf, len, e_mail, tab)
+
+	writes (chnwrk, out(1, %trim(out) ) )
+	clear buf
+
+	goto gm_loop
+gm_eof,
+	return
+;---------------------------------------------------
+
+chk_state,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	state_ok = 1		;assume a match
+	for i from 1 thru 6
+		begin
+		if (state .eq. states(i) ) return
+		end
+
+	clear state_ok
+	return
+;---------------------------------------------------
+
+opens,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear opnok
+
+	switch = 5
+	xcall files (1, 'SI', 001, switch)
+	if (switch .eq. 9) return
+
+	chn001 = 1
+
+	switch = 5
+	xcall files (84, 'SI', 084, switch)
+	if (switch .eq. 9) return
+	chn084 = 84
+
+
+	open (2, O, 'spl:malbcc.xls')
+	chnwrk = 2
+
+	opnok = 1
+	return
+;---------------------------------------------------
+
+close,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if (chn001) close chn001
+	if (chn084) close chn084
+
+	return
+;---------------------------------------------------

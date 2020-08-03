@@ -1,0 +1,342 @@
+;  CSHEDT / AR 
+;
+;
+; 10-01-09 ssq: remove calamt calact
+
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+RECORD CASH		; 
+		.INCLUDE 'DEF:RD006A.DEF'
+RECORD ,X		; 
+		.INCLUDE 'DEF:RD006B.DEF'
+RECORD TITLE
+		,A23,	'CASH RECEIPTS EDIT LIST'
+RECORD HDR1
+		,A32,	'------------CUSTOMER------------'
+		,A1
+		,A6,	'CHK-NO'
+		,A3
+		,A7,	'RECEIPT'
+		,A1
+		,A8,	'AR-CASH?'
+		,A1
+		,A8,	'APPLY-TO'
+		,A2
+		,A8,	'AMT-PAID'
+		,A3
+		,A8,	'DISCOUNT'
+		,A2
+	DSCACT	,A8,	'DSC-ACCT'
+		,A1
+		,A9;;;>,	'ALLOWANCE'
+		,A2
+	ALLACT	,A8;;;>,	'ALL-ACCT'
+		,A2
+		,A10,	'TOT-CREDIT'
+RECORD HDR2
+		,A2
+		,A2,	'NO'
+		,A3
+		,A4,	'NAME'
+		,A21
+	CASHAC	,A9,	'CASH-ACCT'
+		,A2
+		,A4,	'DATE'
+		,A4
+	ACTNUM	,A6,	'ACCT-#'
+	
+RECORD	ARAYS
+	CDATES	,30A10
+	AMRCD	,30D10
+	DISAL	,30D10
+	CIDX	,D6
+	CMAX	,D6
+	
+RECORD	VARS
+	savdat	,a10
+	savamt	,d10
+	savdis	,d10
+	i	,d6
+	j	,d6
+
+	blanks	,a10
+	MASK	,A12,	'Z,ZZZ,ZZZ.XX'
+	MASK2	,A13,	'Z,ZZZ,ZZZ.XX-'
+	CMASK	,A6,	'ZZZZZX'
+	CHKTOT	,D8
+	CHKDSC	,D7
+	CHKALW	,D7
+	DTMASK	,A8,	'XX/XX/XX'
+	ACTMSK	,A8,	'XXXX-XXX'
+	DSTFLG	,A1
+	NUMENT	,D4
+	TAMRCD	,D9
+	TDISAL	,D8
+;;;	TALLOW	,D8
+	LCHKNO	,D6
+	LCUSNO	,D6
+	LRCTDT	,D8
+	LINCNT	,D2,	60
+	LPARG	,D1
+	LPSW	,D1
+	PGCNT	,D6,	000000
+	PLINE	,A132
+	PRNTSW	,D1
+	PRTTYP	,A1
+	PRTCTL	,D3
+	RPTNUM	,D3
+	SPLFIL	,A14
+	SVCSHA	,D7
+	SVARAC	,D7
+	SVARCS	,A1
+	SVAPLY	,D6
+	RDCNT	,D5
+	ITMCNT	,D3
+	TOTREC	,D5
+	BRACKS	,A6,	']]]]]]'
+	SWITCH	,D1
+	V	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	LOKCTL	,D1
+PROC
+	XCALL TERID (V)
+	LCHKNO = -1
+	XCALL OUTPT (2,1,1,'EDIT LIST',1)
+	XCALL FILES (6,'U',6,5)
+	LOKCTL = 1
+	XCALL IO (6,CASH,1,READ,LOKCTL)
+	DSTFLG = CDETDS
+	ORG006 = REC006
+	LOKCTL = 1
+	XCALL IO (6,CASH,1,WRITE,LOKCTL)
+	XCALL FILES (6,'U',06,4)
+	SWITCH = 1
+	XCALL FILES (6,'I',06,SWITCH)
+	IF (SWITCH.EQ.9) XCALL PGCHN ('AR:CSHENT',1)
+	TOTREC = REC006
+	RDCNT = 1
+	for cidx from 1 thru 30 
+	      begin
+		clear cdates(cidx)
+		clear amrcd(cidx)
+		clear disal(cidx)
+	      end
+	    clear cidx
+	clear cmax	
+	
+	IF (DSTFLG.EQ.'Y') GO TO READ
+	DSCACT =
+	ALLACT =
+	CASHAC =
+	ACTNUM =
+READ,
+	INCR RDCNT
+	IF (RDCNT.GT.TOTREC) GO TO EOF
+	LOKCTL = 1
+	XCALL IO (6,CASH,RDCNT,READ,LOKCTL)
+	IF (CNAME.EQ.'000000') GO TO READ
+	IF (CCHKNO.NE.LCHKNO.OR.CCUSNO.NE.LCUSNO.OR.CRCTDT.NE.LRCTDT)
+&		CALL SUBTOT
+	INCR ITMCNT
+	CHKTOT = CHKTOT + CAMRCD
+	CHKDSC = CHKDSC + CDISAL
+	CHKALW = CHKALW ;;;>+ CALAMT
+	IF (ITMCNT.GT.1) GO TO SKIP1
+	SVCSHA = CSHACT
+	SVARAC = CARACT
+	SVARCS = CARCSH
+	SVAPLY = CAPLNO
+	PLINE (1,6) = CCUSNO, CMASK
+	PLINE (8,32) = CNAME
+	PLINE (34,39) = CCHKNO, CMASK
+	XCALL DATE8(CRCTDT, D_OUT, D_OUTR, D_FMT, D_SW)
+	
+	PLINE (41,51) = D_FMT
+	PLINE (54,54) = CARCSH
+SKIP1,
+	for cidx from 1 thru 30
+	       begin
+		 if (d_fmt .eq. cdates(cidx) )
+		   begin
+		     amrcd(cidx) = amrcd(cidx) + camrcd
+		     disal(cidx) = disal(cidx) + cdisal
+		     exitloop
+		   end
+		 if (cdates(cidx) .eq. blanks)
+		    begin
+		      cdates(cidx) = d_fmt
+		      amrcd(cidx) = camrcd
+		      disal(cidx) = cdisal
+		      incr cmax
+		      exitloop
+		    end
+		end
+
+	
+	IF (ITMCNT.EQ.2.AND.DSTFLG.EQ.'Y') PLINE (33,40) = CSHACT, ACTMSK
+	IF (CARCSH.EQ.'N') GO TO SKPAPL
+	PLINE (61,66) = CAPLNO, CMASK
+	IF (CAPLNO.EQ.0) PLINE (61,66) = 'OPN-CR'
+	IF (CAPLNO.EQ.-1) PLINE (61,66) = 'BAL-FW'
+SKPAPL,
+	PLINE (68,78) = CAMRCD, MASK2
+
+	PLINE (121,131) = CAMRCD + CDISAL, MASK2
+;;;	PLINE (121,131) = CAMRCD + CDISAL + CALAMT, MASK2
+	PLINE (80,89) = CDISAL, MASK2
+;;;	PLINE (100,109) = CALAMT, MASK2
+	IF (DSTFLG.NE.'Y') GO TO SKIP2
+	IF (CDISAL.NE.0) PLINE (91,98) = CDSACT, ACTMSK
+;;;	IF (CALAMT.NE.0) PLINE (111,118) = CALACT, ACTMSK
+SKIP2,
+	TAMRCD = TAMRCD + CAMRCD
+	TDISAL = TDISAL + CDISAL
+;;;	TALLOW = TALLOW ;;;>+ CALAMT
+	CALL PRINT
+	GO TO READ
+PRINT,
+	IF (PRNTSW.EQ.0) CALL LPON
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,HDR2,'NO HDR',
+&		'NO LEGEND',' ',' ',0,132,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+LPON,
+	LPSW = 1
+	SPLFIL (5,6) = 'AG'
+	XCALL AR_LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GO TO ENDOFF
+	LPARG = 2
+	IF (LPSW.EQ.2) LPARG = 4
+	XCALL WATE (LPARG,V)
+	PRNTSW = 1
+	RETURN
+LPOFF,
+	XCALL AR_LPOFF (LPSW,SPLFIL,PGCNT)
+	PGCNT =
+	LINCNT = 60
+	PRNTSW = 0
+	RETURN
+SUBTOT,
+	INCR NUMENT
+	IF (LCHKNO.EQ.-1) GO TO NOSKIP
+	IF (ITMCNT.GT.1.OR.DSTFLG.NE.'Y') GO TO SUB1
+	IF (CHKTOT.GT.0) PLINE (33,40) = SVCSHA, ACTMSK
+	IF (SVARCS.EQ.'N'.OR.SVAPLY.EQ.-1) PLINE (51,58) = SVARAC, ACTMSK
+	CALL PRINT
+SUB1,
+	IF (ITMCNT.GT.1) CALL CHKTTL
+	XCALL LINFD (1)
+	INCR LINCNT
+NOSKIP,
+	LCHKNO = CCHKNO
+	LCUSNO = CCUSNO
+	LRCTDT = CRCTDT
+	CHKTOT =
+	CHKDSC =
+	CHKALW =
+	ITMCNT =
+;;;	IF (DSTFLG.EQ.'Y'.AND.LINCNT.GE.59) LINCNT = 60
+	IF (DSTFLG.EQ.'Y'.AND.LINCNT.GE.58) LINCNT = 60
+	RETURN
+CHKTTL,
+	XCALL LINFD (1)
+	PLINE (54,66) = 'CHECK TOTALS:'
+	PLINE (68,78) = CHKTOT, MASK2
+	PLINE (80,89) = CHKDSC, MASK2
+	PLINE (100,109) = CHKALW, MASK2
+	PLINE (121,131) = CHKTOT + CHKDSC + CHKALW, MASK2
+	CALL PRINT
+	INCR LINCNT
+	RETURN
+EOF,
+	IF (PRNTSW.EQ.0) XCALL MESAG ('CASH TRANSACTION FILE IS EMPTY',2)
+	IF (PRNTSW.EQ.0) GO TO ENDOFF
+	IF (ITMCNT.GT.1.OR.DSTFLG.NE.'Y') GO TO EOF1
+	IF (CHKTOT.GT.0) PLINE (33,40) = SVCSHA, ACTMSK
+	PLINE (51,58) = SVARAC, ACTMSK
+	CALL PRINT
+EOF1,
+	IF (ITMCNT.GT.1) CALL CHKTTL
+	XCALL LINFD (2)
+	PLINE (1,5) = NUMENT, 'Z,ZZX'
+	PLINE (8,13) = 'CHECKS'
+	PLINE (54,66) = 'GRAND TOTALS:'
+	PLINE (66,78) = TAMRCD, MASK2
+	PLINE (79,89) = TDISAL, MASK2
+;;;	PLINE (99,109) = TALLOW, MASK2
+
+;;;	PLINE (119,131) = TAMRCD + TDISAL + TALLOW, MASK2
+	PLINE (119,131) = TAMRCD + TDISAL, MASK2
+	CALL PRINT
+	
+	call bubble_sort
+
+	if (cdates(2) .ne. blanks) 
+	  begin	    
+            lincnt = 66
+            for cidx from 1 thru 30
+              begin
+                if (cdates(cidx) .ne. '   ')
+                  begin
+                    PLINE (54,66) = cdates(cidx)
+                    PLINE (68,78) = amrcd(cidx), MASK2
+                    PLINE (80,89) = disal(cidx), MASK2
+                    PLINE (121,131) = amrcd(cidx) + disal(cidx), MASK2
+                    call print
+                  end
+             end
+	     xcall fill ('_', pline(68,77))
+	     xcall fill ('_', pline(80,88))
+	     call print
+
+	     pline (54,66) = 'Total:'
+	     pline (68,78) = tamrcd, mask2
+	     pline (80,89) = tdisal, mask2
+	     call print
+	end
+
+	XCALL AR_LPOFF (LPSW,SPLFIL,PGCNT)
+	goto endoff
+
+bubble_sort,
+
+;	BUBBLE SORT ACCREC ARRAY
+;
+	FOR J FROM 1 THRU cmax
+	 BEGIN
+	  FOR I FROM 1 THRU cmax - 1
+	   BEGIN
+	    IF (CDATES(I).GT.CDATES(I+1))
+	      BEGIN
+	    	SAVDAT = CDATES(I+1)
+		savamt = amrcd(I+1)
+		savdis = disal(I+1)
+
+		cdates(i+1) = cdates(i)
+		amrcd(i+1) = amrcd(i)
+		disal(i+1) = disal(i)
+
+		cdates(i) = savdat
+		amrcd(i) = savamt
+		disal(i) = savdis
+		
+	      END
+	   END
+	 END
+
+	RETURN
+;--------------------------------------------------------
+
+
+
+ENDOFF,
+	XCALL FILES (6,'I',06,4)		;FILE # 06 -- CASH00 FILE
+	XCALL PGCHN ('AR:CSHENT',1)
+END

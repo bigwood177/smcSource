@@ -1,0 +1,61 @@
+SUBROUTINE LPOFF ;(LPSW,SLPFIL,PGCNT)	;smc version
+; use this version as of 3-30-98, .smc no longer updated.
+;
+	LPSW	,D
+	SPLFIL	,A
+	PGCNT	,D
+
+
+RECORD	QUE_NAME
+	.INCLUDE 'QUE_NAME.DEF'
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+
+RECORD	VARS
+	LN	,D2
+	ENTRY	,A1
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	ROW	,D2
+	I	,D3
+	OPT	,D1
+
+PROC
+	IF (LPSW.EQ.0) RETURN
+	CLOSE 14
+
+	s_name = splfil         ;restore printer output file name
+	OPT = s_name(1,1)      ;printer number
+	s_name(1,1) = 's'       ;always first char of printer output file name
+
+	
+	OPEN (14, I, 'AR:QUE_NAME.DDF')
+	READ (14, QUE_NAME, OPT) [ERR=BAD_QUE]
+	CLOSE 14
+
+	USING Q_NAME SELECT
+	("LOCAL"),	LPQUE(S_FILNAM, DELETE)
+	("EDIT"),	BEGIN
+			XCALL SPEDIT (s_filnam)
+			XCALL DELET (s_filnam)
+			END
+	(),		LPQUE(S_FILNAM, LPNUM:Q_NAME(1,%TRIM(Q_NAME)), DELETE)
+	ENDUSING
+
+	LPSW =
+	RETURN
+
+BAD_QUE,
+	XCALL MESAG ('Error reading que_name file',1)
+	RETURN
+END

@@ -1,0 +1,37 @@
+;SNTRW.AR	e-mail trwtap file to experian
+; 7-7-15 now use mail.man
+
+subroutine	sntrw
+	tdate	,d
+
+;
+
+record	subj
+	,	a*, "875767, Sheet Metal Connectors Inc, "
+	s_date	,a8
+
+record	vars
+	c_body	,a20
+	send	,d1,1
+	mladdr	,a30		;e-mail address's
+	rtffil	,a50		;path of attachment
+
+.proc
+
+;;;	rtffil = 'c:\documents and settings\diannah\c875767.txt'
+	rtffil = 'c:\smc\spool\c875767.txt'
+
+;;;	mladdr = 'bis.data@experian.com'
+	mladdr = 'data@forius.com'
+	s_date = tdate,	'XX/XX/XX'
+;debug:
+;;;	subj = "875767, Sheet Metal Connectors Inc, 10/31/02"
+;;;	mladdr = "wood@smcduct.com"
+
+	xcall mail (mladdr,subj,c_body,rtffil,,,,,,,send)
+	
+	xreturn
+
+.end
+
+

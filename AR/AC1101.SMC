@@ -1,0 +1,49 @@
+RUN DATE: 25-JAN-98   TIME: 01:22 PM                   SHEET METAL CONNECTORS                         TERM #11   SEQ #001   PAGE 001
+
+S A L E S   J O U R N A L                                                                           
+
+   DOCUMENT TYPES:   1 = SALE (INVOICE)   3 = CR MEMO   4 = FINANCE CHARGE   5 = DEBIT MEMO
+
+CUST-#  NAME                       DOC-#   TYP APPLY-TO   SALE-AMT    OTH-CHGS   SALES-TAX    FREIGHT     TOTAL-AMT     
+                                  DOC-DATE      SLSMN       COST       ACCT-#      ACCT-#     ACCT-#      AR-ACCT-#     TAX CODE
+
+
+   100  CUSTOMER 100                  100   1      100      100.00         .00         .00        .00        100.00    * WARNING *
+                                  01/25/98        10         25.00                                         1000-000    *NO TXCODE*
+
+           SALES DISTRIBUTIONS:  1000-000  GENERAL ACCOUNT                      100.00
+
+
+   100  CUSTOMER 100                  100   1      100      100.00         .00        6.50        .00        106.50    * WARNING *
+                                  01/25/98        10         50.00                0000-000                 1000-000    *NO TXCODE*
+
+           SALES DISTRIBUTIONS:  1000-000  GENERAL ACCOUNT                      100.00
+
+
+RUN DATE: 25-JAN-98   TIME: 01:22 PM                       SALES JOURNAL                              TERM #11   SEQ #001   PAGE 002
+
+                                                          SALE-AMT    OTH-CHGS   SALES-TAX    FREIGHT     TOTAL-AMT     
+                                                            COST                                                                
+
+
+                             TAXED SALES SUB TOTALS:        100.00         .00        6.50        .00        106.50          .00
+                                                             50.00
+
+                         NON-TAXED SALES SUB TOTALS:        100.00         .00         .00        .00        100.00          .00
+                                                             25.00
+
+                                 CR MEMO SUB TOTALS:           .00         .00         .00        .00           .00          .00
+                                                               .00
+
+                          FINANCE CHARGE SUB TOTALS:           .00         .00         .00        .00           .00          .00
+                                                               .00
+
+                                 DR MEMO SUB TOTALS:           .00         .00         .00        .00           .00          .00
+                                                               .00
+
+
+
+
+   2 ENTRIES                           GRAND TOTALS:        200.00         .00        6.50        .00        206.50          .00
+                                                             75.00
+

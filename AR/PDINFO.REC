@@ -1,0 +1,7 @@
+;PDINFO.REC (80 bytes)
+; Price Duct info
+;
+	PD_CUST	,D6
+	PD_DATE	,D8	;ANNIVERARY DATE
+	PD_CONT	,A30	;CONTACT NAME
+		,A36	;FILLER

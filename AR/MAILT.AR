@@ -1,0 +1,110 @@
+;MAILT.AR
+;
+;		AUTHOR: SHERWOOD S. QUIRING
+;		DATE  : 4-DEC-1996
+;
+;		CREATE ASCII FILE FOR DIRECT MAILINGS
+; 	5-21-18: ssq convert cusmas to isam
+;
+RECORD	CUSMAS
+	.INCLUDE 'DEF:RD001A.DEF'
+
+RECORD	BUF
+		,A106
+RECORD	DIS
+	II	,D5
+;
+RECORD	VARS
+	ENTRY	,A30
+	INXCTL	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	TAB	,A1
+	P	,D6
+	SWITCH	,D1
+	V	,D1
+;
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (1,1,2,'CREATE "C:\MAIL1.TAB"',1)
+	SWITCH = 5
+	XCALL FILES (1,'SI',001,SWITCH)
+	IF (SWITCH .EQ. 9) XCALL PGCHN ('AR:MAIL0',1)
+	XCALL OUTPT (5,5,0,'CREATE MAIL1.TAB ?',1)
+	XCALL INPUT (5,25,01,01,'YN',ENTRY,INXCTL,1)
+	GOTO (PROCES,ENDOFF),INXCTL
+PROCES,
+	XCALL ASCII(9,TAB)
+	OPEN (2,O,'C:\MAIL1.TAB')
+	OPEN (3,O,'C:\MAILR.TAB')
+
+	READS(1,CUSMAS,EOF)		;HEADER
+	CLEAR II
+LOOP,
+	INCR II
+	IF (II/200*200 .EQ. II) XCALL OUTPT (1,70,1,DIS,1)
+	XCALL IOS (1,CUSMAS,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+;;;	IF (CUSMAS .EQ. ']]]]]]') GOTO EOF
+	IF (CUSCD .EQ. '99') GOTO LOOP
+	IF (NAME .EQ. ']]]DEL') GOTO LOOP	;SSQ 11-4-98
+;;;	if (cusno .ne. 15950) goto loop
+
+;;;	WRITES (2,CUSMAS(1,104) )
+	CALL TAB_DEL
+
+	WRITES(2,BUF(1,%TRIM(BUF)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF (SLSMAN .EQ. 50)
+;;;	THEN	WRITES(3,BUF(1,%TRIM(BUF)))
+;;;	ELSE	WRITES(2,BUF(1,%TRIM(BUF)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	GOTO LOOP
+
+TAB_DEL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;;Delimit fields w/ tabs
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	BUF(1,6)=CUSNO,	'XXXXXX'
+	P=7
+	BUF(P,P)=TAB
+	INCR P
+	BUF(P,104)=NAME
+	P=%TRIM(BUF)
+	INCR P
+	BUF(P,P)=TAB
+	INCR P
+	BUF(P,104)=ADD1
+	P=%TRIM(BUF)
+	INCR P
+	BUF(P,P)=TAB
+	INCR P
+	BUF(P,104)=ADD2
+	P=%TRIM(BUF)
+	INCR P
+	BUF(P,P)=TAB
+	INCR P
+	BUF(P,104)=CITY
+	P=%TRIM(BUF)
+	INCR P
+	BUF(P,P)=TAB
+	INCR P
+	BUF(P,104)=STATE
+	P=%TRIM(BUF)
+	INCR P
+	BUF(P,P)=TAB
+	INCR P
+	BUF(P,104)=ZIP
+
+	RETURN
+;---------------------------------------------
+
+ENDOFF,
+EOF,
+	CLOSE 1
+	CLOSE 2
+	CLOSE 3
+
+	XCALL PGCHN ('AR:MAIL0',1)
+	END

@@ -1,0 +1,671 @@
+;arrec.ar
+;
+;	build A/R Reconsilitaion data from ARDIST
+;
+record	arrec
+	b_bal	,d10	;beginning balance
+	sales	,d10
+	frght	,d10
+	stax	,d10
+	finchg	,d10
+	misc	,d10
+	bdebt	,d10
+	cash	,d10
+	rocsmc	,d10
+	roccat	,d10
+	rocphd	,d10
+	catsmc	,d10
+	catroc	,d10
+	catphd	,d10
+	smccat	,d10
+	smcroc	,d10
+	smcphd	,d10
+	phdsmc	,d10
+	phdroc	,d10
+	phdcat	,d10
+;
+RECORD	OUT
+	O_OORDNO	,D6
+	O_OSALE		,D10
+	O_AAMT		,D10
+
+RECORD	ORDHDR
+	.INCLUDE 'DEF:RD044A.DEF'
+
+RECORD	ORDLIN
+	.INCLUDE 'DEF:RD045A.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD045D.DEF'
+
+RECORD ARDIST
+	.INCLUDE 'DEF:RD008A.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD008B.DEF'
+
+RECORD	VTOT
+	DSALES	,4D10
+	DSLTAX	,4D10
+	DFRGHT	,4D10
+	DFNCHG	,4D10
+	DCCRD	,D10
+	DCASH	,D10
+	DDISC	,D10
+
+RECORD	TOTALS
+	S_SALES		,D10	;SMC SALES BY MONTH - EXCLUDING 63340
+	SR_SALES	,D10	;SMC SALES TO ROCKFORD (63340)
+	SC_SALES	,D10	;SMC SALES TO SMP (68780)
+	SP_SALES	,D10	;SMC SALES TO PHD (68781)
+
+	R_SALES		,D10	;ROCKFORD SALES
+	RS_SALES	,D10	;ROCKFORD SALES TO SMC (65545)
+	RC_SALES	,D10	;ROCKFORD SALES TO SMP (68780)
+	RP_SALES	,D10	;ROCKFORD SALES TO PHD (68781)
+
+	C_SALES		,D10	;SMP SALES
+	CS_SALES	,D10	;SMP SALES TO SMC (65545)
+	CR_SALES	,D10	;SMP SALES TO ROC (63340)
+	CP_SALES	,D10	;SMP SALES TO PHD (68781)
+
+	P_SALES		,D10	;PHD SALES
+	PS_SALES	,D10	;PHD SALES TO SMC (65545)
+	PR_SALES	,D10	;PHD SALES TO ROC (63340)
+	PP_SALES	,D10	;PHD SALES TO SMP (68780)
+
+RECORD TITLE
+		,A*,	'A/R RECONCILLIATION'
+RECORD HDR1
+		,A2
+		,A4,	'PROD'
+		,A5
+		,A5,	'SALES'
+		,A4
+		,A16,	'ACCT DESCRIPTION'
+RECORD HDR2
+		,A8,	'CATEGORY'
+		,A3
+		,A6,	'ACCT-#'
+
+
+RECORD	PRINT
+	LINCNT	,D2,	60
+	SPLFIL	,A14,	'SPL:SARREC.SPL'
+	LPONSW	,D1
+	LPARG	,D1
+	RPTNUM	,D3
+	PRTTYP	,A1
+	PGCNT	,D6,	000000
+	PLINE	,A132
+	PRTCTL	,D3
+	LPSW	,D2
+
+
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+RECORD	DIS
+	II	,D5
+		,A3,	' / '
+	IIREC	,D5
+
+
+;------------------------------
+RECORD
+	WDATE	,D8
+RECORD,X
+	WCC	,D2
+	WYY	,D2
+	WMM	,D2
+	WDD	,D2
+;------------------------------
+
+RECORD
+		,A10,	'JANUARY   '
+		,A10,	'FEBRUARY  '
+		,A10,	'MARCH     '
+		,A10,	'APRIL     '
+		,A10,	'MAY       '
+		,A10,	'JUNE      '
+		,A10,	'JULY      '
+		,A10,	'AUGUST    '
+		,A10,	'SEPTEMBER '
+		,A10,	'OCTOBER   '
+		,A10,	'NOVEMBER  '
+		,A10,	'DECEMBER  '
+RECORD,X
+	MONTH	,12A10
+
+RECORD	CHANNEL
+	CHNSLN	,D2	;SLHLIN.SMC
+	CHNSHD	,D2	;SLHHDR.SMC
+	CHNRLN	,D2	;SLHLIN.ROC
+	CHNRHD	,D2	;SLHHDR.ROC
+	CHNCLN	,D2	;SLHLIN.CAT
+	CHNCHD	,D2	;SLHHDR.CAT
+	CHNPLN	,D2	;SLHLIN.PHD
+	CHNPHD	,D2	;SLHHDR.PHD
+	CHN182	,D2
+
+
+RECORD	VARS
+	INVTOT	,D10
+	CHNLIN	,D2
+	CHNHDR	,D2
+	I	,D6
+	OPNOK	,D1
+	AMT	,D10
+	SMC	,D10
+	TOTAL1	,D10
+	TOTAL2	,D10
+	SMCSMC	,D10
+	SMCFRT	,D10
+	TITCMP	,A3		;COMPANY CODE FOR TITLE
+	CMPCNT	,D1		;1=SMC, 2=ROC, 3=CAT
+	CURCMP	,A3		;CURRENT COMPANY (SMC, ROC, CAT, PHD)
+	ARFILE	,A14		;???:ARDIST.???
+	CMPCOD	,A3
+	ROCK	,D1		;1=IS ROCKFORD
+	CNGCTL	,D1
+	WHATNO	,D2
+	WRKFIL	,A14
+	CLPER	,D6	;CCYYMM
+	CURM	,D2
+	MN	,D2
+	ALPER	,A7	;MM/CCYY
+	ORG01	,D5
+	ORG07	,D5
+	SRCCTL	,D1
+	KEY	,A6
+	KEY2	,A7
+	BSMID	,D5
+	V	,D1
+	SWITCH	,D1
+	INXCTL	,D1
+	ENTRY	,A20
+	BLANKS	,A10
+	ALPHA	,A10
+	LOKCTL	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	STORE	,D1,	2
+	SELECT	,D1
+	TODAY	,D8
+	TDATE	,D6
+	TODAA	,A10
+	DTMASK	,A8,	'XX/XX/XX'
+	DLMASK	,A13,	'Z,ZZZ,ZZZ.XX-'	
+	NUMASK	,A6,	'ZZZZZX'
+	ACMASK	,A8,	'XXXX-XXX'
+	DASH	,A13,	'-------------'
+
+PROC
+	XCALL TERID (V)
+
+	XCALL RDATE (TDATE)
+	XCALL WHO (CMPCOD)
+	ARFILE = 'DEV:ARDIST.EXT'
+
+;debug code
+;;;	XCALL ISAMC ('SSQREC', 26, 1, 'START=1, LENGTH=6, NODUPS, ASCEND')
+;;;	OPEN (33, SU, 'SSQREC')
+
+	XCALL DATE8(TDATE, D_OUT, TODAY, D_FMT, D_SW)
+
+MENU,
+	CLEAR CNGCTL
+	XCALL OUTPT (1,1,2,'A/R RECONCILLIATION',1)
+
+	XCALL OUTPT (4,3,0,'1. PERIOD',1)
+	XCALL OUTPT (6,3,0,'2. BEGINNING BAL:',1)
+	XCALL OUTPT (8,3,0,'3. MISC & BANK CHGS:',1)
+	XCALL OUTPT(10,3,0,'4. BAD DEBTS:',1)
+
+PER,
+	XCALL INPUT (4,15,08,00,'DE',ENTRY,INXCTL,1)
+	GOTO (MENU, ENDOFF), INXCTL
+	WDATE = ENTRY(1,8)
+	GOTO (ANYCN), CNGCTL
+BAL,
+	XCALL INPUT (6,26,10,00,'$E',ENTRY,INXCTL,1)
+	GOTO (MENU), INXCTL
+	B_BAL = ENTRY(1,10)
+	GOTO (ANYCN),CNGCTL
+
+MISC,
+	XCALL INPUT (8,26,10,00,'$ ',ENTRY,INXCTL,1)
+	GOTO (MENU),INXCTL
+	MISC = ENTRY(1,10)
+	GOTO (ANYCN),CNGCTL
+BDEBT,
+	XCALL INPUT (10,26,10,00,'$ ',ENTRY,INXCTL,1)
+	GOTO (MENU),INXCTL
+	BDEBT = ENTRY(1,10)
+	GOTO (ANYCN),CNGCTL	
+ANYCN,
+	XCALL ANYCN (CNGCTL, WHATNO)
+	GOTO (PROCES,CNGBR),CNGCTL+1
+CNGBR,
+	GOTO (PER,BAL,MISC,BDEBT), WHATNO
+	GOTO ANYCN
+
+PROCES,
+	CLPER = WDATE(1,6)		;CCYYMM
+	CURM = CLPER(5,6)
+
+	ALPER(1,2) = CLPER(5,6)
+	ALPER(3,3) = '/'
+	ALPER(4,7) = CLPER(1,4)
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	CALL DLYSLS		;SALES AND CASH
+
+	GOTO ENDOFF
+
+
+
+DLYSLS,		;3-COMPANIES COMBINED
+
+;;;	open (22,o,'test.dat')
+	CLEAR CMPCNT			;PROCESS EACH COMPANY
+
+	for i from 1 thru 4
+		begin
+		clear dsales(i), dsltax(i), dfrght(i), dfnchg(i)
+		end
+DLYSLS_C,
+	CALL OPN008
+	IF (SWITCH.EQ.9) GOTO MENU
+
+	LOKCTL = 1
+	XCALL IOS (8,ARDIST,READ,LOKCTL)
+	ii = 1
+	iirec = rec008
+RL1,
+	incr ii
+	if (ii/1000*1000 .eq. ii) xcall outpt (1,65,1,dis,1)
+	LOKCTL = 1
+	XCALL IOS (8,ARDIST,READ,LOKCTL)
+	IF (ARDIST.EQ.']]]]]]]]]]') GOTO EOFR
+
+	IF (ADSDAT(1,6) .NE. CLPER) GOTO RL1
+
+	USING ADSCUS SELECT
+	(63340),	GOTO RL1	;ROCKFORD
+	(68781),	GOTO RL1	;thermoduct 4-3-20
+	(68780),	GOTO RL1	;SMP 5-20-20
+	(65545),	GOTO RL1	;SMC 5-20-20
+;;;	(68780),	GOTO RL1	;SMP
+	ENDUSING
+
+	USING ADSTYP SELECT
+	(1),	DSALES(cmpcnt) = DSALES(cmpcnt) + ADSAMT
+	(3),	DSLTAX(cmpcnt) = DSLTAX(cmpcnt) + ADSAMT
+	(4),	DFRGHT(cmpcnt) = DFRGHT(cmpcnt) + ADSAMT
+	(5),	DFNCHG(cmpcnt) = DFNCHG(cmpcnt) + ADSAMT
+	(6),	;IF (CMPCNT.EQ.1)
+		  ;BEGIN
+		  ;IF(ADSCUS.NE.68780)	;6-8-15 ssq
+		    ;BEGIN
+		    IF(ADSTFL.EQ.'CRD')
+		    THEN DCCRD = DCCRD + ADSAMT
+		    ELSE DCASH = DCASH + ADSAMT
+		    ;END
+		  ;END 
+	(7),	DDISC = DDISC + ADSAMT
+	ENDUSING
+
+
+;;;	if (adstyp.ge.1 .and. adstyp.le.5) writes (22,ardist)
+	GOTO RL1
+
+
+EOFR,
+	CLOSE 8
+	close 22
+	IF (CMPCNT .LE. 3) GOTO DLYSLS_C
+
+	CLEAR SALES
+
+	for i from 1 thru 3
+		BEGIN
+		SALES = SALES + DSALES(i)
+		FRGHT = FRGHT + DFRGHT(i)
+		STAX = STAX + DSLTAX(i)
+	;;;	SALES = SALES + DSALES(i) + DSLTAX(i) + DFRGHT(i)
+		END
+
+
+	FINCHG = DFNCHG
+	CASH = DCCRD + DCASH + DDISC
+
+
+	OPEN (8,O,'ARREC.DAT')
+	WRITES (8,PLINE)
+	CLOSE 8
+
+;;;;;;;;;;;;;;;;;;;;;;;;;; INTER-COMPANY-SALES ;;;;;;;;;;;;;;;;;;;;;
+
+	CMPCNT = 0
+
+	CHNLIN = CHNSLN		;SMC
+	CHNHDR = CHNSHD		;SMC
+	call inter_company
+
+	CHNLIN = CHNRLN		;ROC
+	CHNHDR = CHNRHD		;ROC
+	call inter_company
+
+	CHNLIN = CHNCLN		;CAT
+	CHNHDR = CHNCHD		;CAT
+	call inter_company
+
+	CHNLIN = CHNPLN		;PHD
+	CHNHDR = CHNPHD		;PHD
+	call inter_company
+
+	GOTO PRINT_OUT
+
+INTER_COMPANY,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	INCR CMPCNT
+
+	CLEAR DIS(6,13)
+	CLEAR II
+	FIND (CHNHDR, ORDHDR, ^FIRST) [ERR=LOOP]
+LOOP,
+	INCR II
+	if (ii/1000*1000 .eq. ii) xcall outpt (2,65,1,dis,1)
+	READS (CHNHDR, ORDHDR, EOF)
+	MN = OINVDT(5,6)
+	IF (MN .NE. CURM) GOTO LOOP	;ONLY CURRENT MONTH
+	if (ocusno .eq. 63340) call debug
+
+	INVTOT = OSALE+OMISC+OTAX(1)+OTAX(2)+OTAX(3)+OFRGHT
+	USING CMPCNT SELECT
+	(1),	USING OCUSNO SELECT			;SMC
+		(63340), SMCROC = SMCROC + INVTOT	;TO ROC
+		(68780), SMCCAT = SMCCAT + INVTOT	;TO CAT
+		(68781), SMCPHD = SMCPHD + INVTOT	;TO PHD
+		ENDUSING
+	(2),	USING OCUSNO SELECT			;ROC
+		(65545), ROCSMC = ROCSMC + INVTOT	;TO SMC
+		(68780), ROCCAT = ROCCAT + INVTOT	;TO CAT
+		(68781), ROCPHD = ROCPHD + INVTOT	;TO PHD
+		ENDUSING
+	(3),	USING OCUSNO SELECT			;CAT
+		(63340), CATROC = CATROC + INVTOT	;TO ROC
+		(65545), CATSMC = CATSMC + INVTOT	;TO SMC
+		(68781), CATPHD = CATPHD + INVTOT	;TO PHD
+		ENDUSING
+	(4),	USING OCUSNO SELECT			;SMC
+		(63340), PHDROC = PHDROC + INVTOT	;TO ROC
+		(68780), PHDCAT = PHDCAT + INVTOT	;TO CAT
+		(68781), PHDSMC = PHDSMC + INVTOT	;TO SMC
+		ENDUSING
+	ENDUSING
+
+
+; debug code
+;;;	if (cmpcnt.eq.2 .and. ocusno.eq.65545)	;roc to smc
+;;;		begin
+;;;		CLEAR OUT
+;;;		O_OORDNO = OORDNO
+;;;		O_OSALE = OSALE
+;;;		STORE (33, OUT, O_OORDNO)
+;;;		end
+
+	GOTO LOOP
+
+EOF,
+	RETURN
+;---------------------------------------------------------------------
+debug,
+	i = 1
+	return
+
+PRINT_OUT,
+	I = CURM-1
+	IF (I .LE. 0) I = 12
+	PLINE (1,10) = MONTH(I)
+	PLINE (19,20) = 'AR'
+	PLINE (39,52) = B_BAL,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	CALL PRINT
+
+	PLINE (1,10) = MONTH(CURM)
+	PLINE (18,22) = 'Sales'
+	PLINE (39,52) = SALES,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (16,25) = 'Freight'
+	PLINE (39,52) = FRGHT,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (16,25) = 'Sales Tax'
+	PLINE (39,52) = STAX,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (16,25) = 'Fin. Chgs.'
+	PLINE (39,52) = FINCHG,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (13,28) = 'Misc & bank chgs'
+	PLINE (39,52) = MISC,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (13,28) = '   Bad Debts'
+	PLINE (39,52) = BDEBT,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (39,52) = '=============='
+	CALL PRINT
+
+	TOTAL1 = SALES+FINCHG+MISC+BDEBT+FRGHT+STAX
+	PLINE (39,52) = TOTAL1, '$$,$$$.$$X.XX'
+	CALL PRINT
+	CALL PRINT
+
+
+	PLINE (39,52) = '=============='
+	CALL PRINT
+	TOTAL1 = TOTAL1 + B_BAL
+	PLINE (39,52) = TOTAL1, '$$,$$$,$$X.XX'
+	CALL PRINT
+	CALL PRINT
+
+	PLINE (1,10) = MONTH(CURM)
+	PLINE (18,26) = 'Cash & CC'
+	PLINE (39,52) = CASH,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (30,36) = 'SMC/ROC'
+	PLINE (39,52) = SMCROC,	'$$,$$$,$$X.XX'
+;;;	pline (55,65) = smcfrt,	'$$$,$$$.XX'
+	CALL PRINT
+
+	PLINE (30,36) = 'SMC/SMP'
+	PLINE (39,52) = SMCCAT,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (30,36) = 'SMC/PHD'
+	PLINE (39,52) = SMCPHD,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (30,36) = 'ROC/SMC'
+	PLINE (39,52) = ROCSMC,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	PLINE (30,36) = 'ROC/SMP'
+	PLINE (39,52) = ROCCAT,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	PLINE (30,36) = 'ROC/PHD'
+	PLINE (39,52) = ROCPHD,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (30,36) = 'SMP/SMC'
+	PLINE (39,52) = CATSMC,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	PLINE (30,36) = 'SMP/ROC'
+	PLINE (39,52) = CATROC,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	PLINE (30,36) = 'SMP/PHD'
+	PLINE (39,52) = CATPHD,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (30,36) = 'PHD/SMC'
+	PLINE (39,52) = PHDSMC,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	PLINE (30,36) = 'PHD/ROC'
+	PLINE (39,52) = PHDROC,	'$$,$$$,$$X.XX'
+	CALL PRINT
+	PLINE (30,36) = 'PHD/SMP'
+	PLINE (39,52) = PHDCAT,	'$$,$$$,$$X.XX'
+	CALL PRINT
+
+	PLINE (39,52) = '=============='
+	CALL PRINT
+
+	TOTAL2 = SMCROC+SMCCAT+SMCPHD+ROCSMC+ROCCAT+ROCPHD+CATROC+CATPHD+CATSMC+PHDROC+PHDCAT+PHDSMC
+	PLINE (39,52) = TOTAL2,	'$$,$$$,$$X.XX'
+	PLINE (55,59) = 'Total'
+	CALL PRINT
+	CALL PRINT
+
+
+	PLINE (39,52) = '=============='
+	CALL PRINT
+	TOTAL2 = TOTAL2 + CASH
+	PLINE (39,52) = TOTAL2,	'$$,$$$,$$X.XX'
+	PLINE (55,80) = 'Total  Cash + Inter'
+	CALL PRINT
+	CALL PRINT
+
+
+	PLINE (39,52) = '=============='
+	CALL PRINT
+	PLINE (39,52) = (TOTAL1-TOTAL2),	'$$,$$$,$$X.XX'
+	PLINE (55,80) = 'Grand Total'
+	CALL PRINT
+
+
+	IF (LPONSW.EQ.1) XCALL AR_LPOFF(LPSW,SPLFIL,PGCNT)
+
+
+;===================================================================
+
+ENDOFF,
+	call close
+	xcall pgchn ('ar:arsfmn',1)
+	STOP
+
+
+
+;------------------------------------------------------------
+LINES,
+	clear smc, smcroc, smccat, smcsmc, smcphd
+
+	AMT = OSALE ;;;>- OTAX(1) - OTAX(2) - OTAX(3) - OFRGHT
+
+	USING OCUSNO SELECT
+	(68780),	SMCCAT = AMT	;SALES TO CAT
+	(63340),	SMCROC = AMT	;SALES TO ROC
+	(68781),	SMCPHD = AMT	;SALES TO PHD
+	(65545),	begin
+			SMCSMC = AMT+OFRGHT	;SALES TO SMC
+			SMCfrt = OFRGHT	;SALES TO SMC
+			end
+;;;	(65545),	SMCSMC = AMT	;SALES TO SMC
+	(),		SMC = AMT
+	ENDUSING
+
+
+	RETURN
+;---------------------------------------------------
+
+PRINT,
+	IF (LPONSW.EQ.0) CALL PRNTON
+	PRTCTL = 80
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,HDR2,'NO HDR3',
+&			'NO LEGEND',' ',' ',0,132,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+PRNTON,
+	SPLFIL (5,6) = 'EL'
+	LPSW = 1	; PRINT, SPOOL OR DISPLAY
+	XCALL AR_LPON (LPSW,SPLFIL)
+	LPONSW = 1
+	RETURN
+;--------------------------------------------------------
+
+OPN008,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	INCR CMPCNT
+	USING CMPCNT SELECT
+	(1),	TITCMP = 'SMC'
+	(2),	TITCMP = 'ROC'
+	(3),	TITCMP = 'CAT'
+	(4),	TITCMP = 'PHD'
+	ENDUSING
+
+	ARFILE(1,3) = TITCMP
+	ARFILE(12,14) = TITCMP
+
+	OPEN (8, 'I', ARFILE)
+	RETURN
+;--------------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR OPNOK
+
+	OPEN (4, SI, 'SMC:SLHHDR.SMM')
+	CHNSHD = 4
+
+	OPEN (5, SI, 'SMC:SLHLIN.SMM')
+	CHNSLN = 5
+
+	OPEN (24,SI, 'ROC:SLHHDR.ROM')
+	CHNRHD = 24
+
+	OPEN (25,SI, 'ROC:SLHLIN.ROM')
+	CHNRLN = 25
+
+	OPEN (34,SI, 'CAT:SLHHDR.CAM')
+	CHNCHD = 34
+
+	OPEN (35,SI, 'CAT:SLHLIN.CAM')
+	CHNCLN = 35
+
+	OPEN (44,SI, 'PHD:SLHHDR.PHM')
+	CHNpHD = 44
+
+	OPEN (45,SI, 'PHD:SLHLIN.PHM')
+	CHNpLN = 45
+
+
+	OPNOK = 1
+
+	RETURN
+;-------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;debug	CLOSE 33
+	IF (CHNSHD) CLOSE CHNSHD
+	IF (CHNSLN) CLOSE CHNSLN
+	IF (CHNRHD) CLOSE CHNRHD
+	IF (CHNRLN) CLOSE CHNRLN
+	IF (CHNCHD) CLOSE CHNRHD
+	IF (CHNCLN) CLOSE CHNRLN
+
+	RETURN
+;-------------------------------------------------
+END
+
+

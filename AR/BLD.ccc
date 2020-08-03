@@ -1,0 +1,3 @@
+dbl /obj=OBJ:^1.TMP/r:debug SRC:^1.^2
+dblink /output=EXE:^1 OBJ:^1.TMP UT:util/olb
+

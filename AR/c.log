@@ -1,0 +1,498 @@
+
+O:\SOURCE\AR>call mset.bat 
+
+O:\SOURCE\AR>set obj=\\server-dc01\smc\source\mail\SynPsg.System\obj 
+
+O:\SOURCE\AR>rem set exe=\\server-dc01\smc\source\mail\SynPsg.System\exe 
+
+O:\SOURCE\AR>set synexpdir=\server-dc01\smc\source\mail\SynPsg.System\hdr 
+
+O:\SOURCE\AR>set synimpdir=\server-dc01\smc\source\mail\SynPsg.System\hdr 
+
+O:\SOURCE\AR>dbl -d -l -- ACMCC2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ACMCCR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ACMCS2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ACMCSH.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ACMSLS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ACTINQ.ar 
+
+O:\SOURCE\AR>dbl -d -l -- APLYCR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARACNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARALST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARAMNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARFILS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARMENU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- AROCNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- aroctl.ar 
+
+O:\SOURCE\AR>dbl -d -l -- arrec.ar 
+
+O:\SOURCE\AR>dbl -d -l -- arsfmn.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARSPOL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARTBAL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARTBL2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARTBL3.ar 
+
+O:\SOURCE\AR>dbl -d -l -- artblc.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARTCNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARTMNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ARTPRT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- artro2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- artro3.ar 
+
+O:\SOURCE\AR>dbl -d -l -- artroc.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ATMCNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ATMMNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ATMPRT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- aumail.ar 
+
+O:\SOURCE\AR>dbl -d -l -- autoia.ar 
+
+O:\SOURCE\AR>dbl -d -l -- autome.ar 
+
+O:\SOURCE\AR>dbl -d -l -- autost.ar 
+
+O:\SOURCE\AR>dbl -d -l -- BLDARO.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ccradd.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRCNG.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRDAT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRDEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRDST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCREDT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRENT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRFCM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRJNL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CCRPRP.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ccrsum.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CLIST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- clrccr.ar 
+
+O:\SOURCE\AR>dbl -d -l -- clrcsh.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CLRMAR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- clrsls.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CLRYAR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- COMPUR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- COMRPT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- crdlsr.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHADD.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHCNG.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHDAT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHDEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- cshdst.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHEDT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHENT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- cshfcm.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHJNL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHPRP.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CSHSUM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CUSCNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CUSLST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- cusmnt.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CUSMNU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CUSOR2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- cuspr2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CUSPRT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- CUSSEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- DELLST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- DISRPT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- DLIST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- DSCMNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- DSTSUM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ems666.ar 
+
+O:\SOURCE\AR>dbl -d -l -- emster.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FCHDBT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FCHDEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FCHRPT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FCMMNU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FILLBL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FINCHG.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FNCMNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- fndcus.ar 
+
+O:\SOURCE\AR>dbl -d -l -- frtmnt.ar 
+
+O:\SOURCE\AR>dbl -d -l -- FRTRPT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- INARGL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- initar.ar 
+
+O:\SOURCE\AR>dbl -d -l -- JOBCUS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- LABEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- LASSTM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- LL8100.ar 
+
+O:\SOURCE\AR>dbl -d -l -- LSRFIL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- LSRMNU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- lsrnew.ar 
+
+O:\SOURCE\AR>dbl -d -l -- lsrnot.ar 
+
+O:\SOURCE\AR>dbl -d -l -- lsrnt2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- lsrst2.ar 
+    13         import SynPSG.System
+%DBL-E-IMPORT, Namespace SynPSG.System not found
+    14         import SynPSG.System.IO
+%DBL-E-IMPORT, Namespace SynPSG.System.IO not found
+    15         import SynPSG.System.Net
+%DBL-E-IMPORT, Namespace SynPSG.System.Net not found
+    16         import SynPSG.System.Net.Mail
+%DBL-E-IMPORT, Namespace SynPSG.System.Net.Mail not found
+    17         import SynPSG.System.Net.Mime
+%DBL-E-IMPORT, Namespace SynPSG.System.Net.Mime not found
+    18         import SynPSG.System.Net.Sockets
+%DBL-E-IMPORT, Namespace SynPSG.System.Net.Sockets not found
+    19         import SynPSG.System.Security
+%DBL-E-IMPORT, Namespace SynPSG.System.Security not found
+    28                 mailClient     ,@SMTPClient
+%DBL-E-NVTF, Cannot resolve type for field mailClient
+    29                 mailMsg        ,@MailMessage
+%DBL-E-NVTF, Cannot resolve type for field mailMsg
+    30                 mailAtt        ,@Attachment
+%DBL-E-NVTF, Cannot resolve type for field mailAtt
+    38                 mycredents, @SynPSG.System.NetworkCredential
+%DBL-E-NVTF, Cannot resolve type for field mycredents
+    1008               mycredents = new SynPSG.system.NetworkCredential()
+%DBL-E-NFND, SynPSG.system.NetworkCredential() not found
+    1009               mycredents.Username="accountsreceivable"
+%DBL-E-NFND, mycredents.Username not found
+    1010               mycredents.Password="smcduct"
+%DBL-E-NFND, mycredents.Password not found
+    1012               mycredents.Domain = "smcduct.com"
+%DBL-E-NFND, mycredents.Domain not found
+    1018               mailClient = new SMTPClient(server, port)
+%DBL-E-NFND, SMTPClient() not found
+    1249               mailAtt = ^NULL
+%DBL-E-TYPMISMCH, Type mismatch between unresolved and null
+    1251               mailMsg = new MailMessage 
+    1252       &               (%atrim(sender), %atrim(n_toA),%atrim(n_subj), %atrim(n_body))
+%DBL-E-NFND, MailMessage() not found
+    1256                       mailMsg.CC.Add(%atrim(n_cc(i)))
+%DBL-E-NFND, mailMsg.CC.Add() not found
+    1259               mailMsg.IsBodyHtml = 1
+%DBL-E-NFND, mailMsg.IsBodyHtml not found
+%DBL-W-ERRCNT, Too many errors
+
+O:\SOURCE\AR>dbl -d -l -- LSRSTM.ar 
+    15         import SynPSG.System
+%DBL-E-IMPORT, Namespace SynPSG.System not found
+    16         import SynPSG.System.IO
+%DBL-E-IMPORT, Namespace SynPSG.System.IO not found
+    17         import SynPSG.System.Net
+%DBL-E-IMPORT, Namespace SynPSG.System.Net not found
+    18         import SynPSG.System.Net.Mail
+%DBL-E-IMPORT, Namespace SynPSG.System.Net.Mail not found
+    19         import SynPSG.System.Net.Mime
+%DBL-E-IMPORT, Namespace SynPSG.System.Net.Mime not found
+    20         import SynPSG.System.Net.Sockets
+%DBL-E-IMPORT, Namespace SynPSG.System.Net.Sockets not found
+    21         import SynPSG.System.Security
+%DBL-E-IMPORT, Namespace SynPSG.System.Security not found
+    30                 mailClient     ,@SMTPClient
+%DBL-E-NVTF, Cannot resolve type for field mailClient
+    31                 mailMsg        ,@MailMessage
+%DBL-E-NVTF, Cannot resolve type for field mailMsg
+    32                 mailAtt        ,@Attachment
+%DBL-E-NVTF, Cannot resolve type for field mailAtt
+    40                 mycredents, @SynPSG.System.NetworkCredential
+%DBL-E-NVTF, Cannot resolve type for field mycredents
+    875                mycredents = new SynPSG.system.NetworkCredential()
+%DBL-E-NFND, SynPSG.system.NetworkCredential() not found
+    876                mycredents.Username="accountsreceivable"
+%DBL-E-NFND, mycredents.Username not found
+    877                mycredents.Password="smcduct"
+%DBL-E-NFND, mycredents.Password not found
+    879                mycredents.Domain = "smcduct.com"
+%DBL-E-NFND, mycredents.Domain not found
+    885                mailClient = new SMTPClient(server, port)
+%DBL-E-NFND, SMTPClient() not found
+    1063               mailAtt = ^NULL
+%DBL-E-TYPMISMCH, Type mismatch between unresolved and null
+    1065               mailMsg = new MailMessage 
+    1066       &               (%atrim(sender), %atrim(n_toA),%atrim(n_subj), %atrim(n_body))
+%DBL-E-NFND, MailMessage() not found
+    1070                       mailMsg.CC.Add(%atrim(n_cc(i)))
+%DBL-E-NFND, mailMsg.CC.Add() not found
+    1073               mailMsg.IsBodyHtml = 1
+%DBL-E-NFND, mailMsg.IsBodyHtml not found
+%DBL-W-ERRCNT, Too many errors
+
+O:\SOURCE\AR>dbl -d -l -- lsrx.ar 
+
+O:\SOURCE\AR>dbl -d -l -- lst666.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MAIL0.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MAIL1.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MAIL2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MAIL3.ar 
+
+O:\SOURCE\AR>dbl -d -l -- maillb.ar 
+
+O:\SOURCE\AR>dbl -d -l -- mails.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MAILT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MAKALP.ar 
+
+O:\SOURCE\AR>dbl -d -l -- makcct.ar 
+
+O:\SOURCE\AR>dbl -d -l -- makica.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MLMENU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- MONEND.ar 
+
+O:\SOURCE\AR>dbl -d -l -- monrpt.ar 
+
+O:\SOURCE\AR>dbl -d -l -- newsta.ar 
+
+O:\SOURCE\AR>dbl -d -l -- newter.ar 
+
+O:\SOURCE\AR>dbl -d -l -- oldlsr.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ORGARA.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ORGARO.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ORGATM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ORGATX.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ORGCUS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PRGMNU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PRTOCR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PSTCCR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PSTCOM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PSTCSH.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PSTDST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PSTFCH.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PSTSLS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PURGE.ar 
+
+O:\SOURCE\AR>dbl -d -l -- PURGEC.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ROLMNT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- rolo.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ROLPRT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SACTYP.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SACUST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SALANL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SALBLD.ar 
+
+O:\SOURCE\AR>dbl -d -l -- salmnt.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SALPRT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SASCTR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SASEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SASLMN.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SASTAT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- selmal.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SELRPT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSADD.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSCNG.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSDEL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- slsdst.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSEDT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSENT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- slserr.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSFCM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- slsjnl.ar 
+
+O:\SOURCE\AR>dbl -d -l -- slsjnr.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSPRP.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SLSSUM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- slssur.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTARA.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTARO.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTATM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTATX.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTCID.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTCLS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTCSH.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTDST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTSLS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SRTZIP.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STCCR2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STCSH2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STCSLA.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STCSLB.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STCSLC.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STCSLD.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STMENT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSACT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSACU.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSASM.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSAST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSCTR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSLS2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- STSLSA.ar 
+
+O:\SOURCE\AR>dbl -d -l -- SYNCAR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- taxia.ar 
+
+O:\SOURCE\AR>dbl -d -l -- TAXLST.ar 
+
+O:\SOURCE\AR>dbl -d -l -- taxst2.ar 
+
+O:\SOURCE\AR>dbl -d -l -- TAXSTT.ar 
+
+O:\SOURCE\AR>dbl -d -l -- trwtap.ar 
+
+O:\SOURCE\AR>dbl -d -l -- unprcc.ar 
+
+O:\SOURCE\AR>dbl -d -l -- UNPRCS.ar 
+
+O:\SOURCE\AR>dbl -d -l -- UNPRSL.ar 
+
+O:\SOURCE\AR>dbl -d -l -- updfcm.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ZIPLAB.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ZIPLSR.ar 
+
+O:\SOURCE\AR>dbl -d -l -- ZIPRDX.ar 

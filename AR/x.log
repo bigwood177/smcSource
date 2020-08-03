@@ -1,0 +1,900 @@
+
+O:\SOURCE\AR>call ACMCC2 
+
+O:\SOURCE\AR>dblink -d ACMCC2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ACMCCR 
+
+O:\SOURCE\AR>dblink -d ACMCCR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ACMCS2 
+
+O:\SOURCE\AR>dblink -d ACMCS2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ACMCSH 
+
+O:\SOURCE\AR>dblink -d ACMCSH ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ACMSLS 
+
+O:\SOURCE\AR>dblink -d ACMSLS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ACTINQ 
+
+O:\SOURCE\AR>dblink -d ACTINQ ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call APLYCR 
+
+O:\SOURCE\AR>dblink -d APLYCR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARACNT 
+
+O:\SOURCE\AR>dblink -d ARACNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARALST 
+
+O:\SOURCE\AR>dblink -d ARALST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARAMNT 
+
+O:\SOURCE\AR>dblink -d ARAMNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARFILS 
+
+O:\SOURCE\AR>dblink -d ARFILS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARMENU 
+
+O:\SOURCE\AR>dblink -d ARMENU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call AROCNT 
+
+O:\SOURCE\AR>dblink -d AROCNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call aroctl 
+
+O:\SOURCE\AR>dblink -d aroctl ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call arrec 
+
+O:\SOURCE\AR>dblink -d arrec ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call arsfmn 
+
+O:\SOURCE\AR>dblink -d arsfmn ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARSPOL 
+
+O:\SOURCE\AR>dblink -d ARSPOL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARTBAL 
+
+O:\SOURCE\AR>dblink -T  0<artbal.cmd 
+DBLink> -d artbal \
+DBLink> mkpdf \
+DBLink> xmail \
+DBLink> lpon \
+DBLink> lpoff \
+DBLink> dbldir:axlib.elb ar:arlib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+DBLink> 
+
+O:\SOURCE\AR>call ARTBL2 
+
+O:\SOURCE\AR>dblink -d ARTBL2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARTBL3 
+
+O:\SOURCE\AR>dblink -d ARTBL3 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call artblc 
+
+O:\SOURCE\AR>dblink -d artblc ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARTCNT 
+
+O:\SOURCE\AR>dblink -d ARTCNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARTMNT 
+
+O:\SOURCE\AR>dblink -d ARTMNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ARTPRT 
+
+O:\SOURCE\AR>dblink -d ARTPRT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call artro2 
+
+O:\SOURCE\AR>dblink -d artro2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call artro3 
+
+O:\SOURCE\AR>dblink -d artro3 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call artroc 
+
+O:\SOURCE\AR>dblink -d artroc ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ATMCNT 
+
+O:\SOURCE\AR>dblink -d ATMCNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ATMMNT 
+
+O:\SOURCE\AR>dblink -d ATMMNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ATMPRT 
+
+O:\SOURCE\AR>dblink -d ATMPRT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call aumail 
+
+O:\SOURCE\AR>dblink -T  0<aumail.cmd 
+DBLink> -d aumail a_smcroc \
+DBLink> a_artbl2 \
+DBLink> a_newsta \
+DBLink> a_slsrpt \
+DBLink> a_emster \
+DBLink> dbldir:axlib.elb ar:arlib.elb ut:w7lib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\AR>call autoia 
+
+O:\SOURCE\AR>dblink -d autoia ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call autome 
+
+O:\SOURCE\AR>dblink -T  0<autome.cmd 
+DBLink> -d autome \
+DBLink> a_artbal \
+DBLink> a_artbl2 \
+DBLink> a_disrpt \
+DBLink> a_emster \
+DBLink> a_newsta \
+DBLink> a_slsrpt \
+DBLink> a_slsroc \
+DBLink> a_smcroc \
+DBLink> a_taxstt \
+DBLink> a_emstr2 \
+DBLink> mail \
+DBLink> dbldir:axlib.elb ar:arlib.elb ut:w7lib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\AR>call autost 
+
+O:\SOURCE\AR>dblink -d autost mkpdf ar:arlib.elb ut:util.elb dbldir:axlib.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call BLDARO 
+
+O:\SOURCE\AR>dblink -d BLDARO ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ccradd 
+
+O:\SOURCE\AR>dbl -d -l -- ccradd.ar 
+
+O:\SOURCE\AR>dblink -d ccradd selnv ar3 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRCNG 
+
+O:\SOURCE\AR>dblink -d CCRCNG ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRDAT 
+
+O:\SOURCE\AR>dblink -d CCRDAT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRDEL 
+
+O:\SOURCE\AR>dblink -d CCRDEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRDST 
+
+O:\SOURCE\AR>dblink -d CCRDST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCREDT 
+
+O:\SOURCE\AR>dblink -d CCREDT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRENT 
+
+O:\SOURCE\AR>dblink -d CCRENT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRFCM 
+
+O:\SOURCE\AR>dblink -d CCRFCM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CCRJNL 
+
+O:\SOURCE\AR>dblink -d ccrjnl jnl ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call CCRPRP 
+
+O:\SOURCE\AR>dblink -d CCRPRP ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ccrsum 
+
+O:\SOURCE\AR>dblink -d ccrsum jnl lp44 ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call CLIST 
+
+O:\SOURCE\AR>dblink -d CLIST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call clrccr 
+
+O:\SOURCE\AR>dblink -d clrccr ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call clrcsh 
+
+O:\SOURCE\AR>dblink -d clrcsh ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CLRMAR 
+
+O:\SOURCE\AR>dblink -d CLRMAR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call clrsls 
+
+O:\SOURCE\AR>dblink -d clrsls ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CLRYAR 
+
+O:\SOURCE\AR>dblink -d CLRYAR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call COMPUR 
+
+O:\SOURCE\AR>dblink -d COMPUR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call COMRPT 
+
+O:\SOURCE\AR>dblink -d COMRPT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call crdlsr 
+
+O:\SOURCE\AR>dblink -d crdlsr ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHADD 
+
+O:\SOURCE\AR>dbl -d -l -- cshadd.ar 
+
+O:\SOURCE\AR>dblink -d cshadd selnv ar3 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHCNG 
+
+O:\SOURCE\AR>dblink -d CSHCNG ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHDAT 
+
+O:\SOURCE\AR>dblink -d CSHDAT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHDEL 
+
+O:\SOURCE\AR>dblink -d CSHDEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call cshdst 
+
+O:\SOURCE\AR>dblink -d cshdst ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHEDT 
+
+O:\SOURCE\AR>dblink -d CSHEDT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHENT 
+
+O:\SOURCE\AR>dblink -d CSHENT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call cshfcm 
+
+O:\SOURCE\AR>dblink -d cshfcm ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHJNL 
+
+O:\SOURCE\AR>dblink -d cshjnl jnl ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call CSHPRP 
+
+O:\SOURCE\AR>dblink -d CSHPRP ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CSHSUM 
+
+O:\SOURCE\AR>dblink -d cshsum jnl lp44 ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call CUSCNT 
+
+O:\SOURCE\AR>dblink -d CUSCNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CUSLST 
+
+O:\SOURCE\AR>dblink -d CUSLST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call cusmnt 
+
+O:\SOURCE\AR>dblink -d cusmnt dcprt lpon2 em2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CUSMNU 
+
+O:\SOURCE\AR>dblink -d CUSMNU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CUSOR2 
+
+O:\SOURCE\AR>dblink -d CUSOR2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call cuspr2 
+
+O:\SOURCE\AR>dblink -d cuspr2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CUSPRT 
+
+O:\SOURCE\AR>dblink -d CUSPRT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call CUSSEL 
+
+O:\SOURCE\AR>dblink -d CUSSEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call DELLST 
+
+O:\SOURCE\AR>dblink -d DELLST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call DISRPT 
+
+O:\SOURCE\AR>dblink -d DISRPT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call DLIST 
+
+O:\SOURCE\AR>dblink -d DLIST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call DSCMNT 
+
+O:\SOURCE\AR>dblink -d DSCMNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call DSTSUM 
+
+O:\SOURCE\AR>dblink -d DSTSUM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ems666 
+
+O:\SOURCE\AR>dbl -d -l -- ems666.ar 
+
+O:\SOURCE\AR>DBL -T -X -d -l -- sndem.ar 
+
+O:\SOURCE\AR>dblink -d ems666 sndem ar:arlib.elb DBLDIR:AXLIB.ELB TK:TKLIB.ELB UT:UTIL.ELB 
+
+O:\SOURCE\AR>call emster 
+
+O:\SOURCE\AR>dbl -d -l -- emster.ar 
+
+O:\SOURCE\AR>DBL -T -X -d -l -- sndem.ar 
+
+O:\SOURCE\AR>dblink -d emster sndem ar:arlib.elb DBLDIR:AXLIB.ELB TK:TKLIB.ELB UT:UTIL.ELB 
+
+O:\SOURCE\AR>call FCHDBT 
+
+O:\SOURCE\AR>dblink -d fchdbt popf ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FCHDEL 
+
+O:\SOURCE\AR>dblink -d FCHDEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FCHRPT 
+
+O:\SOURCE\AR>dblink -d FCHRPT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FCMMNU 
+
+O:\SOURCE\AR>dblink -d FCMMNU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FILLBL 
+
+O:\SOURCE\AR>dblink -d FILLBL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FINCHG 
+
+O:\SOURCE\AR>dblink -d FINCHG ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FNCMNT 
+
+O:\SOURCE\AR>dblink -d FNCMNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call fndcus 
+
+O:\SOURCE\AR>dblink -d fndcus ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call frtmnt 
+
+O:\SOURCE\AR>dblink -d frtmnt ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call FRTRPT 
+
+O:\SOURCE\AR>dblink -d FRTRPT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call INARGL 
+
+O:\SOURCE\AR>dblink -d INARGL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call initar 
+
+O:\SOURCE\AR>dblink -d initar ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call JOBCUS 
+
+O:\SOURCE\AR>dblink -d JOBCUS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call LABEL 
+
+O:\SOURCE\AR>dblink -d LABEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call LASSTM 
+
+O:\SOURCE\AR>dblink -d LASSTM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call LL8100 
+
+O:\SOURCE\AR>dblink -d LL8100 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call LSRFIL 
+
+O:\SOURCE\AR>dblink -d LSRFIL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call LSRMNU 
+
+O:\SOURCE\AR>dblink -d LSRMNU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call lsrnew 
+
+O:\SOURCE\AR>dblink -d lsrnew ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call lsrnot 
+
+O:\SOURCE\AR>dblink -d lsrnot ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call lsrnt2 
+
+O:\SOURCE\AR>dblink -d lsrnt2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call lsrst2 
+
+O:\SOURCE\AR>dblink -T  0<lsrst2.cmd 
+DBLink> -d lsrst2 l2cus \
+DBLink> ar:arlib.elb ut:util.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\AR>call LSRSTM 
+
+O:\SOURCE\AR>dblink -T  0<lsrstm.cmd 
+DBLink> -d lsrstm \
+DBLink> ar:arlib.elb ut:util.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\AR>call lsrx 
+
+O:\SOURCE\AR>dblink -d lsrx ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call lst666 
+
+O:\SOURCE\AR>dblink -d lst666 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call lstcrd 
+
+O:\SOURCE\AR>dblink -d lstcrd ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MAIL0 
+
+O:\SOURCE\AR>dblink -d MAIL0 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MAIL1 
+
+O:\SOURCE\AR>dblink -d MAIL1 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MAIL2 
+
+O:\SOURCE\AR>dblink -d MAIL2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MAIL3 
+
+O:\SOURCE\AR>dblink -d MAIL3 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call maillb 
+
+O:\SOURCE\AR>dblink -d maillb ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call mails 
+
+O:\SOURCE\AR>dblink -d mails ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MAILT 
+
+O:\SOURCE\AR>dblink -d MAILT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MAKALP 
+
+O:\SOURCE\AR>dblink -d MAKALP ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call makcct 
+
+O:\SOURCE\AR>dblink -d makcct ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call makica 
+
+O:\SOURCE\AR>dblink -d makica ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MLMENU 
+
+O:\SOURCE\AR>dblink -d MLMENU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call MONEND 
+
+O:\SOURCE\AR>dblink -d MONEND ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call monrpt 
+
+O:\SOURCE\AR>dblink -d monrpt ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call newsta 
+
+O:\SOURCE\AR>dblink -d newsta ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call newter 
+
+O:\SOURCE\AR>dblink -d newter ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call oldlsr 
+
+O:\SOURCE\AR>dblink -d oldlsr ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ORGARA 
+
+O:\SOURCE\AR>dblink -d ORGARA ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ORGARO 
+
+O:\SOURCE\AR>dblink -d ORGARO ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ORGATM 
+
+O:\SOURCE\AR>dblink -d ORGATM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ORGATX 
+
+O:\SOURCE\AR>dblink -d ORGATX ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ORGCUS 
+
+O:\SOURCE\AR>dblink -d ORGCUS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PRGMNU 
+
+O:\SOURCE\AR>dblink -d PRGMNU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PRTOCR 
+
+O:\SOURCE\AR>dblink -d PRTOCR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PSTCCR 
+
+O:\SOURCE\AR>dbl -d -l -- pstccr.ar 
+
+O:\SOURCE\AR>dblink -d pstccr chkf ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PSTCOM 
+
+O:\SOURCE\AR>dblink -d PSTCOM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PSTCSH 
+
+O:\SOURCE\AR>dbl -d -l -- pstcsh.ar 
+
+O:\SOURCE\AR>dblink -d pstcsh chkf ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PSTDST 
+
+O:\SOURCE\AR>dblink -d PSTDST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PSTFCH 
+
+O:\SOURCE\AR>dblink -d PSTFCH ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PSTSLS 
+
+O:\SOURCE\AR>dbl -d -l -- pstsls.ar 
+
+O:\SOURCE\AR>dblink -d pstsls chkf ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PURGE 
+
+O:\SOURCE\AR>dblink -d PURGE ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call PURGEC 
+
+O:\SOURCE\AR>dblink -d PURGEC ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ROLMNT 
+
+O:\SOURCE\AR>dblink -d ROLMNT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+%DBLINK-F-XUNDEF, Undefined XCALL references:
+	ROLDX in module MAIN$ROLMNT
+
+O:\SOURCE\AR>call rolo 
+
+O:\SOURCE\AR>dbl -d -l -- rolo.ar 
+
+O:\SOURCE\AR>dblink -d rolo rxpop con2 cont cp:cspop cp:cplib.elb ut:roldx ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>REM dblink -d rolo rxpop serch ut:roldx ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ROLPRT 
+
+O:\SOURCE\AR>dblink -d ROLPRT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SACTYP 
+
+O:\SOURCE\AR>dblink -d SACTYP ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SACUST 
+
+O:\SOURCE\AR>dblink -d SACUST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SALANL 
+
+O:\SOURCE\AR>dblink -d SALANL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SALBLD 
+
+O:\SOURCE\AR>dblink -d SALBLD ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call salmnt 
+
+O:\SOURCE\AR>dblink -d salmnt ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SALPRT 
+
+O:\SOURCE\AR>dblink -d SALPRT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SASCTR 
+
+O:\SOURCE\AR>dblink -d SASCTR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SASEL 
+
+O:\SOURCE\AR>dblink -d SASEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SASLMN 
+
+O:\SOURCE\AR>dblink -d SASLMN ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SASTAT 
+
+O:\SOURCE\AR>dblink -d SASTAT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call selmal 
+
+O:\SOURCE\AR>dblink -T  0<selmal.cmd 
+DBLink> -d selmal mail x7mail \
+DBLink> w7lib.elb ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb
+DBLink> 
+
+O:\SOURCE\AR>call SELRPT 
+
+O:\SOURCE\AR>dblink -T  0<selrpt.cmd 
+DBLink> -d selrpt \
+DBLink> mkpdf \
+DBLink> xmail \
+DBLink> lpon \
+DBLink> lpoff \
+DBLink> dbldir:axlib.elb ar:arlib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+DBLink> 
+
+O:\SOURCE\AR>call SLSADD 
+
+O:\SOURCE\AR>dblink -T  0<slsadd.cmd 
+DBLink> -d slsadd ar2 w_msg \
+DBLink> ar:arlib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\AR>call SLSCNG 
+
+O:\SOURCE\AR>dblink -T  0<slscng.cmd 
+DBLink> -d slscng ar2 w_msg \
+DBLink> ar:arlib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+DBLink> 
+
+O:\SOURCE\AR>call SLSDEL 
+
+O:\SOURCE\AR>dblink -d SLSDEL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call slsdst 
+
+O:\SOURCE\AR>dblink -d slsdst ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SLSEDT 
+
+O:\SOURCE\AR>dblink -d SLSEDT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SLSENT 
+
+O:\SOURCE\AR>dblink -d slsent tmenu ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call slserr 
+
+O:\SOURCE\AR>dblink -d slserr ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SLSFCM 
+
+O:\SOURCE\AR>dblink -d SLSFCM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call slsjnl 
+
+O:\SOURCE\AR>dblink -d slsjnl jnl ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call slsjnr 
+
+O:\SOURCE\AR>dblink -d slsjnr jnl ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call SLSPRP 
+
+O:\SOURCE\AR>dblink -d SLSPRP ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SLSSUM 
+
+O:\SOURCE\AR>dblink -d slssum jnl ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call slssur 
+
+O:\SOURCE\AR>dbl -d -l -- slssur.ar 
+
+O:\SOURCE\AR>dblink -d slssur jnl ar:arlib.elb ut:util.elb wnd:tklib.elb dbldir:axlib.elb 
+
+O:\SOURCE\AR>call SRTARA 
+
+O:\SOURCE\AR>dblink -d SRTARA ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTARO 
+
+O:\SOURCE\AR>dblink -d SRTARO ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTATM 
+
+O:\SOURCE\AR>dblink -d SRTATM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTATX 
+
+O:\SOURCE\AR>dblink -d SRTATX ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTCID 
+
+O:\SOURCE\AR>dblink -d SRTCID ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTCLS 
+
+O:\SOURCE\AR>dblink -d SRTCLS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTCSH 
+
+O:\SOURCE\AR>dblink -d SRTCSH ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTDST 
+
+O:\SOURCE\AR>dblink -d SRTDST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTSLS 
+
+O:\SOURCE\AR>dblink -d SRTSLS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SRTZIP 
+
+O:\SOURCE\AR>dblink -d SRTZIP ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STCCR2 
+
+O:\SOURCE\AR>dblink -d STCCR2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STCSH2 
+
+O:\SOURCE\AR>dblink -d STCSH2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STCSLA 
+
+O:\SOURCE\AR>dblink -d STCSLA ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STCSLB 
+
+O:\SOURCE\AR>dblink -d STCSLB ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STCSLC 
+
+O:\SOURCE\AR>dblink -d STCSLC ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STCSLD 
+
+O:\SOURCE\AR>dblink -d STCSLD ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STMENT 
+
+O:\SOURCE\AR>dblink -d STMENT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSACT 
+
+O:\SOURCE\AR>dblink -d STSACT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSACU 
+
+O:\SOURCE\AR>dblink -d STSACU ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSASM 
+
+O:\SOURCE\AR>dblink -d STSASM ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSAST 
+
+O:\SOURCE\AR>dblink -d STSAST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSCTR 
+
+O:\SOURCE\AR>dblink -d STSCTR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSLS2 
+
+O:\SOURCE\AR>dblink -d STSLS2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call STSLSA 
+
+O:\SOURCE\AR>dblink -d STSLSA ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call SYNCAR 
+
+O:\SOURCE\AR>dblink -d SYNCAR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call taxia 
+
+O:\SOURCE\AR>dblink -d taxia ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call TAXLST 
+
+O:\SOURCE\AR>dblink -d TAXLST ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call taxst2 
+
+O:\SOURCE\AR>dblink -d taxst2 ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call TAXSTT 
+
+O:\SOURCE\AR>dblink -d TAXSTT ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call trwtap 
+
+O:\SOURCE\AR>dbl -d -l -- trwtap.ar 
+
+O:\SOURCE\AR>rem DBL -T -X -d -l -- sntrw.ar 
+
+O:\SOURCE\AR>dblink -d trwtap sntrw ar:arlib.elb UT:UTIL.ELB ut:w7lib.elb DBLDIR:AXLIB.ELB TK:TKLIB.ELB  
+
+O:\SOURCE\AR>call unprcc 
+
+O:\SOURCE\AR>dblink -d unprcc ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call UNPRCS 
+
+O:\SOURCE\AR>dblink -d UNPRCS ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call UNPRSL 
+
+O:\SOURCE\AR>dblink -d UNPRSL ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call updfcm 
+
+O:\SOURCE\AR>dblink -d updfcm ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ZIPLAB 
+
+O:\SOURCE\AR>dblink -d ZIPLAB ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ZIPLSR 
+
+O:\SOURCE\AR>dblink -d ZIPLSR ar:arlib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\AR>call ZIPRDX 
+
+O:\SOURCE\AR>dblink -d ZIPRDX ar:arlib.elb ut:util.elb wnd:tklib.elb 

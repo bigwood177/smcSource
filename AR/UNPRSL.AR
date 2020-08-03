@@ -1,0 +1,50 @@
+;  UNPRSL / AR 
+;
+;
+;		::PCPYAR.DEF::
+;******************************************************************************
+;		ACCOUNTS RECEIVABLE 
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;******************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;		ROUTINE TO TURN OFF FILE PROTECTION AT END OF POSTING STREAM
+;		A/R SALES ENTRY JOB STREAM
+;
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD
+	V	,D1
+PROC
+	XCALL TERID (V)
+	XCALL FILES (1,'I',01,4)		;FILE # 01 -- CUSMAS FILE
+	XCALL FILES (2,'I',02,4)		;FILE # 02 -- CUSIDX FILE
+	XCALL FILES (3,'I',03,4)		;FILE # 03 -- AROPEN FILE
+	XCALL FILES (4,'I',04,4)		;FILE # 04 -- SALES0 FILE
+	XCALL FILES (5,'I',05,4)		;FILE # 05 -- SLSDST FILE
+	XCALL FILES (7,'I',07,4)		;FILE # 07 -- ARACCT FILE
+	XCALL FILES (8,'I',08,4)		;FILE # 08 -- ARDIST FILE
+	XCALL FILES (10,'I',50,4)		;FILE # 50 -- COMDUE FILE
+	XCALL MESAG ('SALES TRANSACTION POSTING COMPLETED',2)
+	XCALL PGCHN ('AR:SLSENT',1)
+END

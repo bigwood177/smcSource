@@ -1,0 +1,56 @@
+subroutine	mkpdf
+	rtfil1	,a	;spool file
+	rtfil2	,a	;pdf file
+;
+; need path...
+;;;	rtfil1 = 'c:\smc\spool\inv.spl'
+;;;	rtfil2 = 'c:\smc\spool\inv.pdf'
+
+
+.INCLUDE 'DBLDIR:ACTIVEX.DEF'
+
+.define		AX_HEIGHT,	450
+.define		AX_WIDTH,	430
+
+record	vars
+	axwid	,i4
+	axid	,i4
+
+.proc
+
+
+; Create container and load control...
+	axwid = %ax_create(50, 50, AX_WIDTH, AX_HEIGHT)
+
+	axid = %ax_load(axwid, "Pcl2pdfDevLib.pcl2pdfdevlibctrl.1", 0, 0, AX_WIDTH, AX_HEIGHT)
+
+; Bind events...
+;;;	no events to bind
+
+; Process control...
+	xcall process_control 
+&	(axwid, axid, rtfil1, rtfil2)
+
+	xcall win_stop(1)
+	xreturn
+
+
+.end
+
+.subroutine process_control
+	a_axwid		,n	;id of container
+	a_axid		,n	;id of control
+	rtfil1		,a	;path of source file
+	rtfil2		,a	;path of target file
+
+.proc
+	xcall ax_show(a_axwid)
+	xcall ax_call(a_axid, "ConvertPcl2pdf", rtfil1, rtfil2)
+
+	xcall ax_hide(a_axwid)
+
+	xreturn
+.end
+
+
+

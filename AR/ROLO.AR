@@ -1,0 +1,324 @@
+;rolo.ar (copied from .dbl 4-20-06 ssq)
+;	calls roldx.cp
+;	SUB-SET OF ROLMNT.AR
+;	NOT REQUIRED TO BE LOGGED INTO SECURITY SYSTEM.
+
+;	11/12/01 ssq:	skips every 21st record.
+;	10/28/03 ssq:	now required to be logged in...
+; 	5-21-18: ssq convert cusmas to isam
+
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+
+	.define	update		,1
+
+	.include 'wnd:tools.def'
+	.INCLUDE 'DEF:WINDOWS.DEF'
+
+RECORD	CUSMAS
+	.INCLUDE 'DEF:RD001A.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD001B.DEF'
+
+;;;RECORD	CUSIDX
+;;;	.INCLUDE 'DEF:RD002A.DEF'
+
+RECORD	POPAR
+	.INCLUDE 'DEF:RXPOP.DEF'
+
+RECORD	CUSALP
+		.INCLUDE 'DEF:RD166A.DEF'
+
+RECORD	CHANNEL
+	CHN001	,D2
+	CHN002	,D2
+	CHN166	,D2
+
+RECORD	WN_NAME
+		,A5,	'ROLMN'
+	WN_TNMBR,D4
+
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+
+RECORD	VARS
+	ship	,d4
+	xnbr	,d4
+	CMPCOD	,A3
+	redfil	,a14
+	A_NODATE	,I4
+	A_RESET		,I4
+	col_1	,i4
+	col_2	,i4
+	R_TYPE	,D1,0
+	rx	,d2
+	ry	,d2
+	TSTAT	,D1
+	START_NAME	,A25
+	F_KEY	,D3
+	I	,D5
+	OPNOK	,D1
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D1
+	SRCCTL	,D1
+	KEY	,A6
+	BSEND	,D5
+	BSMID	,D5
+	READ	,D1,0
+	WRITE	,D1,1
+	LOKCTL	,D1
+	ACUST	,A6
+	DCUST	,D6
+	SAVCST	,D6
+	WND_1	,D4
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	OPEN (15,I,'TT:')
+
+	XCALL WHO(CMPCOD)
+
+	CALL INIT_WINDOW
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+
+;====================================================
+DISPLA,
+	XCALL W_DISP(WND_1,WD_POS,23,2,WD_CLR,WDC_EOL,'<PF1> = ALPHA LOOK-UP')
+	XCALL W_DISP(WND_1,WD_POS,1,1,"CUST #",WD_CLR,WDC_EOL)
+	XCALL W_UPDT
+
+	XCALL WINPT (WND_1,1,8,06,00,'#E',ENTRY,INXCTL,F_KEY)
+;-
+	GOTO (DISPLA,ENDOFF),INXCTL
+	IF (F_KEY .EQ. F_01)
+		BEGIN
+		CALL ALPHA_LOOKUP
+		XCALL W_DISP(WND_1,WD_POS,21,1,WD_CLR,WDC_EOL)
+		GOTO (DISPLA,DISPLA),INXCTL
+		XCALL W_DISP(WND_1,WD_POS,1,8,ENTRY(1,6) )
+		END
+
+	XCALL W_DISP(WND_1,WD_POS,21,1,WD_CLR,WDC_EOL)
+;-
+	DCUST = ENTRY(1,6)
+	IF (DCUST .EQ. 0)
+		BEGIN
+		DCUST = SAVCST
+		ENTRY(1,6) = DCUST,	'ZZZZZX' [LEFT]
+		XCALL W_DISP(WND_1,WD_POS,1,8,ENTRY(1,6) )
+		END
+		
+	XCALL ISIO (CHN001, CUSMAS, DCUST, READ, LOKCTL)
+	IF (LOKCTL .NE. 0)
+		BEGIN
+		xcall olmsg (wnd_1, 24, 'Customer not on file',1)
+		GOTO DISPLA
+		END
+	
+;;;	KEY = DCUST,'XXXXXX'
+;;;	XCALL SERCH (chn002,CUSIDX,KEY,1,6,BSEND,BSMID,SRCCTL,4,7,11,0,0,0,0)
+;;;	IF (SRCCTL .OR. IRC001.LE.0)
+;;;		BEGIN
+;;;		xcall olmsg (wnd_1, 24, 'Customer not on file',1)
+;;;	;;;	XCALL MESAG ('CUSTOMER NOT ON FILE',1)
+;;;		GOTO DISPLA
+;;;		END
+;;;	READ (CHN001,CUSMAS,IRC001)
+
+	SAVCST = DCUST
+
+	XCALL W_DISP(WND_1,WD_POS,1,16,NAME)
+
+	XCALL ar_con2 (dcust, ship, xnbr)
+	if (xnbr .le. 0)
+		begin
+		xcall olmsg (wnd_1, 24, 'No Emails',1)
+		end
+
+	xcall roldx (cusmas,update,rx,ry,R_TYPE)
+	GOTO DISPLA
+
+
+ENDOFF,
+	CALL CLOSE
+	XCALL FLAGS (7000000)
+	xcall u_finish
+	STOP
+;====================================================
+;====================================================
+
+ALPHA_LOOKUP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; ALPHA CUSTOMER LOOK-UP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_DISP(WND_1,WD_POS,21,2,WD_CLR,WDC_EOL,'CUST NAME:')
+	XCALL WINPT(WND_1,21,13,25,00,'AE',ENTRY,INXCTL)
+;;	CTL = '23,13,25,00,AE'
+;;	CALL INPUT
+	GOTO (ALPHA_RETURN,ALPHA_RETURN),INXCTL
+	START_NAME = ENTRY(1,25)
+	FIND (CHN001, CUSMAS, START_NAME, KRF:1) [ERR=MORE_NAMES]
+	
+;;;	FIND (CHN166,CUSALP,START_NAME) [ERR=MORE_NAMES]
+	CLEAR LOKCTL
+MORE_NAMES,
+	CALL GET_NAMES
+	XCALL TTSTS(TSTAT)
+	IF (TSTAT) XCALL W_DISP(WND_1,WD_READS,ENTRY)
+	IF (NUMARA .GT. 0)
+	THEN	BEGIN
+		DLINE = '  CUST #  NAME'
+		XCALL RXPOP (POPAR)
+		END
+	ELSE	BEGIN
+		xcall olmsg (wnd_1, 24, 'No More Names',1)
+	;;;	XCALL MESAG ('NO MORE NAMES',1)
+		INXCTL = 2
+		RETURN
+		END
+
+	CASE P_ACTION OF
+	BEGINCASE
+	0:	INXCTL = 2		;<END>
+	1:	BEGIN
+		DLINE = PARRY(PI)
+		ENTRY = DLINE(1,6)
+		CLEAR INXCTL		
+		END
+	4:	GOTO MORE_NAMES
+	ENDCASE
+ALPHA_RETURN,
+	RETURN
+;------------------------------------------------
+
+GET_NAMES,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; GET NEXT maxara NAMES FROM CUSALP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR I
+;;;	READS (CHN166,CUSALP,GN_EOF)
+GN_LOOP,
+	READS (CHN001,CUSMAS,GN_EOF)
+	CLEAR DLINE
+	DLINE(1,6) = CUSNO,	'ZZZZZZ' [LEFT]
+	DLINE(8,32) =NAME
+	INCR I
+	PARRY(I) = DLINE
+	
+	DLINE (1,25) = ADD1
+	DLINE (26,46) = ADD2
+	DLINE (47,61) = CITY
+	DLINE (63,64) = STATE
+	DLINE (66,75) = ZIP
+	P_ADD(I) = DLINE
+	IF (I .LT. MAXARA) GOTO GN_LOOP
+
+
+GN_EOF,
+	NUMARA = I
+	IF (I.EQ.0 .OR. I.EQ.MAXARA) RETURN
+	
+	FOR I FROM NUMARA+1 THRU MAXARA	CLEAR PARRY(I)
+	RETURN
+;------------------------------------------------
+
+OPENS,
+	CLEAR OPNOK
+	xcall ffile(1,redfil,switch)
+	redfil(14,14) = 'm'
+	USING CMPCOD SELECT
+	('SMC','ROC','CAT'),	xcall u_open (chn001,"i:i","smc:cusmas.smm",,,switch)
+	(),		xcall u_open (chn001,"i:i",redfil,,,switch)
+;;;	('SMC','ROC','CAT'),	xcall u_open (chn001,"i:r","smc:cusmas.smc",,,switch)
+;;;	(),		xcall u_open (chn001,"i:r",redfil,,,switch)
+	ENDUSING
+
+	if (switch) return
+
+	xcall ffile(2,redfil,switch)
+	redfil(14,14) = 'm'
+
+;;;	USING CMPCOD SELECT
+;;;	('SMC','ROC','CAT'),	xcall u_open (chn002,"i:r","smc:cusidx.smc",,,switch)
+;;;	(),		xcall u_open (chn002,"i:r",redfil,,,switch)
+;;;	ENDUSING
+
+	if (switch) return
+
+;;;	xcall ffile(166,redfil,switch)
+;;;	redfil(14,14) = 'm'
+
+;;;	USING CMPCOD SELECT
+;;;	('SMC','ROC','CAT'),	xcall u_open (chn166,"i:i","smc:cusalp.smm",,,switch)
+;;;	(),		xcall u_open (chn166,"i:i",redfil,,,switch)
+;;;	ENDUSING
+
+	if (switch) return
+
+;;;	READ (chn001,CUSMAS,1) [ERR=BAD_OPEN]
+;;;	BSEND = ORG001
+
+	OPNOK = 1
+BAD_OPEN,
+	RETURN
+;------------------------------------------------------
+
+CLOSE,
+	IF (CHN001) xcall u_close (chn001)
+;;;	IF (CHN002) xcall u_close (chn002)
+;;;	IF (CHN166) xcall u_close (chn166)
+
+	RETURN
+;------------------------------------------------------
+
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL TNMBR (WN_TNMBR)
+	xcall u_start("lib:smc_wnd",,,,,,,15)
+	XCALL USR_ENTRST(A_NODATE, A_RESET)			;5-12-99
+
+;;;	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (WND_1.EQ.0)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,24,80)
+		END
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	xcall u_logwnd(wnd_1)
+	xcall e_sect("Rolodex",D_CAPTION)
+	xcall m_ldcol(col_1, g_utlib, "general")
+	xcall m_ldcol(col_2, g_utlib, "edit")
+
+	rx = 3
+	ry = 5
+;; POP info...
+
+;;;	MAXARA = 20
+	MAXARA = 10	;ssq 10-30-03
+	PLEN = 34
+	NUMROW = 10
+	WX = 8
+	WY = 7
+	POP_WID(1,5) = "RXPOP"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "CUSTOMER NAMES"
+	RETURN
+;-----------------------------------------------------------------
+.END
+
+.subroutine	USR_ENTRST
+	a_nodate	,n
+	a_reset		,n
+.proc
+	clear a_reset
+	xreturn
+.end
+
+

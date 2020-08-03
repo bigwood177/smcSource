@@ -1,0 +1,86 @@
+!*****************************************************************************
+!  LSTDEF.AR
+!
+!  List of record definitions sent with source distribution
+!  A/R Release 7.0 RT-11 DIBOL
+!
+!*****************************************************************************
+! CMP001.DEF
+! DEV001.DEF
+! MES001.DEF
+! RD001A.DEF
+! RD001B.DEF
+! RD001C.DEF
+! RD001S.DEF
+! RD001W.DEF	!USED IN COP ONLY
+! RD002A.DEF
+! RD002B.DEF
+! RD002S.DEF
+! RD003A.DEF
+! RD003B.DEF
+! RD003C.DEF
+! RD003D.DEF
+! RD003F.DEF
+! RD003G.DEF
+! RD003S.DEF
+! RD004A.DEF
+! RD004B.DEF
+! RD004C.DEF
+! RD004E.DEF
+! RD004S.DEF
+! RD005A.DEF
+! RD005B.DEF
+! RD005C.DEF
+! RD005E.DEF
+! RD005S.DEF
+! RD006A.DEF
+! RD006B.DEF
+! RD006C.DEF
+! RD006D.DEF
+! RD006F.DEF
+! RD006S.DEF
+! RD007A.DEF
+! RD007B.DEF
+! RD007C.DEF
+! RD007D.DEF
+! RD007S.DEF
+! RD008A.DEF
+! RD008B.DEF
+! RD008D.DEF
+! RD008S.DEF
+! RD009A.DEF
+! RD009B.DEF
+! RD009S.DEF
+! RD050A.DEF
+! RD050B.DEF
+! RD050C.DEF
+! RD050D.DEF
+! RD050S.DEF
+! RD054A.DEF
+! RD054C.DEF
+! RD054S.DEF
+! RD068A.DEF
+! RD068S.DEF
+! RD097A.DEF
+! RD097S.DEF
+! RD135A.DEF
+! RD135B.DEF
+! RD169A.DEF
+! RD169B.DEF
+! RD169C.DEF
+! RD169D.DEF
+! RD169E.DEF
+! RD169S.DEF
+! RD170A.DEF
+! RD170B.DEF
+! RD170C.DEF
+! RD170D.DEF
+! RD170S.DEF
+! RD173A.DEF
+! RD173S.DEF
+! SPL001.DEF
+! SPL002.DEF
+! SPL003.DEF
+!*****************************************************************************
+!  END OF LSTDEF.AR
+!*****************************************************************************

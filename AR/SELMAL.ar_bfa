@@ -1,0 +1,670 @@
+;SELMAL.AR
+;EMAIL VERSION OF SELRPT
+; SELRPT / AR
+;
+;	<C> 1991 DIGITAL COMPUTER SOFTWARE, INC.
+;
+; must run mset.bat for following import statements to work...
+import SynPSG.System
+import SynPSG.System.IO
+import SynPSG.System.Net
+import SynPSG.System.Net.Mail
+import SynPSG.System.Net.Mime
+import SynPSG.System.Net.Sockets
+import SynPSG.System.Security
+
+record	smtp_defines
+	server	,a*,	'192.168.1.13'
+	domain	,a*,	'smcduct.com'
+	sender	,a*,	'diannah@SMCduct.com'
+	senderName,	a*,	'Sheet Metal Connectors'
+
+record
+        mailClient     ,@SMTPClient
+        mailMsg        ,@MailMessage
+        mailAtt        ,@Attachment
+	myContentType	,string
+        attachment  ,a80        ;Attachment name
+	filename    ,a256       ;attachment filename
+	fName       ,a256       ;name part of filename
+        fExt        ,a256       ;extension part of filename
+        chan        ,i4         ;channel
+        port        ,i4         ;port
+	mycredents, @SynPSG.System.NetworkCredential
+
+
+record	new
+	n_from	,a80	;from
+	n_toN	,a40
+	n_toA	,a500
+	n_cc	,10a100
+	n_subj	,a30	;subject
+	n_body	,a3072	;body
+	n_img	,a100	;path to image
+	n_sig	,a600	;Dianna's signature
+	n_att1	,a100	;attachment 1
+	n_att2	,a9	;attachment 2
+	n_att3	,a9	;attachment 3
+	n_att4	,a9	;attachment 4
+
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+RECORD	COPTBL
+		.INCLUDE 'DEF:RD182A.DEF'
+RECORD CUSMAS
+		.INCLUDE 'DEF:RD001A.DEF'
+RECORD TMPIDX
+		.INCLUDE 'DEF:RD068B.DEF'
+RECORD	,X
+		.INCLUDE 'DEF:RD068C.DEF'
+RECORD AROCTL
+		.INCLUDE 'DEF:RD003B.DEF'
+RECORD AROPEN
+		.INCLUDE 'DEF:RD003A.DEF'
+
+RECORD ARMACH		; 
+		.INCLUDE 'DEF:RD003F.DEF'
+RECORD PARAM
+	SCUS	,D6
+	ECUS	,D6
+	SSTA	,A2
+	ESTA	,A2
+	SZIP	,A3
+	EZIP	,A3
+	SORTOR	,A1
+	RPTSEL	,A1
+	YTDSLS	,D1
+	ODACT	,D3	
+	AGEDAT	,D8
+	NUMCOP	,D2
+	CUSLIS	,D1
+	XFIN	,D1	;1 = EXCLUDE FINANCE CHARGES
+	XAMT	,D8	;AMOUNT OVER
+
+RECORD
+	LETL1	,A48,	'Your account with us shows a past-due balance in'
+	LETL2	,A50,	'the amount of $XXX,XXX.XX.  We must have immediate'
+	LETL3	,A54,	'payment.  Any future orders may be held until the past'
+	LETL4	,A28,	'due balance is paid in full.'
+	LETL5	,A44,	'  DOC  #    TYP       DATE           AMOUNT '
+	LETL6	,A51,	'Thank you for your prompt attention to this matter.'
+	LETL7	,A16,	'Dianna L. Hanson'
+	LETL8	,A14,	'Credit Manager'
+	LETL9	,A25,	'Direct Phone 763-586-7171'
+	LETL10	,A19,	'diannah@smcduct.com'
+;-
+
+RECORD	RBUF
+	RLINE	,A55
+
+record	channel
+	chn182	,d2
+	chnerr	,d2
+	
+record	arrays
+	a_doc	,40a6
+	a_typ	,40a3
+	a_dat	,40a10
+	a_amt	,40a11
+	a_max	,d2,	40
+	ai	,d3	;index
+
+record	mail_vars
+	c_body	,a2048
+	c_mail	,a100
+	tl	,d6
+	tl_end	,d4,	2048
+
+RECORD	VARS
+	a11	,a11
+	sps	,a24,	'&nbsp;&nbsp;&nbsp;&nbsp;'
+	status	,d6
+	disp	,d1	,2
+	wrkamt	,d10
+;;;	xamt	,d10
+	PASS1	,D1
+	LTRAMT	,D8
+	I	,D3
+	HROW	,D3		;HORIZ ROW OFFSET
+	VCOL	,D3		;VERTICAL COL OFFSET
+	RI	,D3		;ROLODEX INDEX
+	YESNO	,2A1,	'Y','N'
+	MASK	,A11,	'ZZZ,ZZZ.XX-'
+	MASKL	,A14,	'ZZ,ZZZ,ZZZ.XX-'
+	MASKL2	,A13,	'ZZZZZ,ZZZ.XX-'
+	V	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	LOKCTL	,D1
+	SWITCH	,D1
+	INXCTL	,D1
+	LINCNT	,D2,	60
+	LINES	,D2
+	PGCNT	,D5,	0
+	PLINE	,A132
+	DASHES	,A50,	'--------------------------------------------------'
+	UNDERL	,A30,	'_______________ ______________'
+	LPSW	,D2
+	RPTNUM	,D3
+	TYPSW	,A1
+	SPLFIL	,A14
+	RECNO	,D5
+	RECAR	,D5
+	TODAY	,D8
+	TDATE	,D6
+	TODAA	,A10
+	MSGCTL	,D1
+	PHMASK	,A14,	'(ZZZ) XXX-XXXX'
+	DTMASK	,A8,	'XX/XX/XX'
+	DLMASK	,A11,	'ZZZ,ZZZ.XX-'
+	P3PAGE	,D1
+	COUNT	,D2
+	OPTION	,D1
+	BLANKS	,A25
+	DMY	,D2
+	DMY1	,D2
+	NODAYS	,D6
+	CNT	,D5
+	AGEDTE	,D8
+	DOCBAL	,D8
+	STRAPL	,D5
+	LSTAPL	,D6
+	SRCCTL	,D1
+	KEY	,A6
+	BSMID	,D5
+	ENTRY	,A10
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'\',1)
+	XCALL RDATE (TDATE)
+	XCALL DATE8(TDATE, D_OUT, TODAY, TODAA, D_SW)
+;;;	XCALL ASCII (27, E_CHAR)
+
+	MSGCTL = 1			;READ MSG
+	XCALL SNMSG (PARAM,MSGCTL)
+	IF (MSGCTL.EQ.9) 
+	BEGIN
+	  XCALL MESAG ('NO MESSAGE RECEIVED, MUST RESTART FROM MENU',2)
+	  GOTO ABORT
+	END
+
+	COUNT =
+OPEN1,
+	SWITCH = 1
+	XCALL FILES (8,'I',68,SWITCH)
+	IF (SWITCH.NE.9) GOTO OPEN2
+	GOTO ABORT
+OPEN2,
+	XCALL FILES (1,'I',01,SWITCH)
+	IF (SWITCH.NE.9) GOTO OPEN3
+	CALL CLOSE1
+	GOTO ABORT
+OPEN3,
+	switch = 5
+	xcall files (17,'SI', 182, switch)
+	chn182 = 17
+
+
+
+;------------------------------------------------------
+    ;; new stuff for credentials...
+    mycredents = new SynPSG.system.NetworkCredential()
+    mycredents.Username="accountsreceivable"
+    mycredents.Password="smcduct"
+    mycredents.Domain = "smcduct.com"
+    
+    ;; put default values here
+    port = 25
+    attachment = ''
+
+	n_from = 'diannah@SMCduct.com'
+
+	mailClient = new SMTPClient(server, port)
+
+
+;------------------------------------------------------
+OPENLP,
+	GOTO RDHDR
+CLOSES,
+
+	close chn182
+CLOSE3,
+	XCALL FILES (5,'I',135,4)
+CLOSE2,
+	XCALL FILES (1,'I',001,4)
+CLOSE1,
+	XCALL FILES (8,'I',68,4)
+	RETURN
+ENDOFF,
+	  CLOSE 3
+	  CLOSE 4
+	CALL CLOSES
+ABORT,
+	XCALL PGCHN ('AR:ARMENU',1)
+
+RDHDR,
+
+	  XCALL FILES (3,'I',03,5)	;FILE 03 - AROPEN
+	  LOKCTL = 1
+	  XCALL IO (3,AROCTL,1,READ,LOKCTL)
+
+	RECNO = 1
+	XCALL WATE (2,2)
+RDLOOP,
+	INCR RECNO
+	LOKCTL = 1
+	XCALL IO (8,TMPIDX,RECNO,READ,LOKCTL)
+	IF (TMPIDX.EQ.']]]]]]]]]]')GOTO ENDOFF
+	IF (TRC001.NE.0) THEN
+	BEGIN
+	  LOKCTL = 1
+	  XCALL IO (1,CUSMAS,TRC001,READ,LOKCTL)
+	  call get_email
+	END
+	ELSE CUSMAS =
+	XCALL DATE8(AGEDAT, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE (11,20) = D_FMT
+
+	n_subj = 'Your account is past due...'
+
+
+	n_body = '<html>'
+
+	if (c_mail.eq.'**')
+		begin
+	;;;	c_mail = 'wood@smcduct.com'
+		c_mail = 'diannah@SMCduct.com'
+		tl = %trim(n_body)
+		clear pline
+		pline(1,15) = 'Customer number'
+		pline (17,22) = tcusno, 'ZZZZXX'
+		pline (24,132) = 'had a bad email address'
+		n_body = n_body(1,tl+1) + pline + '<br><br>'
+		end
+
+	clear pline
+	tl = %trim(n_body)
+	pline (11,40) = 'Accounts Payable,'
+	n_body = n_body(1,tl+1) + pline + '<br><br>'
+
+;;;	tl = %trim(n_body)
+;;;	pline (11,40) = name
+;;;	n_body = n_body(1,tl+1) + pline + '<br><br>'
+
+
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + letl1 + '<br><br>'
+
+	PASS1 = 0
+	CALL PASS1
+	LETL2(16,25) = LTRAMT, DLMASK(1,10)	;5-10-10
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + letl2 + '<br><br>'
+
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + letl3 + '<br><br>'
+
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + letl4 + '<br><br>'
+
+;;;	tl = %trim(n_body)
+;;;	n_body = n_body(1,tl+1) + letl5 + '<br>'
+
+
+PASS1,
+	clear ltramt
+	INCR PASS1		;do this once to get correct total
+	RECAR =
+	KEY = TCUSNO, 'XXXXXX'
+	XCALL SERCH (3,AROPEN,KEY,16,21,ORG003,BSMID,SRCCTL,1,8,13,0,0,0,0)
+	GO TO (ENDLET), SRCCTL
+	OPEN (13,O,'TMPIDX.DDF')
+WRLP,
+	LOKCTL = 1
+	IF (XFIN.EQ.1 .AND. ADOCTP.EQ.4)GOTO WRLP_SKIP
+	XCALL IOS (13,AROPEN,WRITE,LOKCTL)
+WRLP_SKIP,
+	LOKCTL = 1
+	XCALL IOS (3,AROPEN,READ,LOKCTL)
+	IF (ACUSNO.EQ.TCUSNO) GOTO WRLP
+	AROPEN = ']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	LOKCTL = 1
+	XCALL IOS (13,AROPEN,WRITE,LOKCTL)
+	CLOSE 13
+	SORT (INPUT='TMPIDX.DDF',RECORD=AROPEN,KEY=(AAPLNO,ADOCDT,ADOCTP,ADOCNO))
+	OPEN (13,U,'TMPIDX.DDF')
+	LSTAPL = -1
+	DOCBAL =
+	RECAR =
+	STRAPL =
+MATLP,
+	INCR RECAR
+	LOKCTL = 1
+	XCALL IO (13,AROPEN,RECAR,READ,LOKCTL)
+MATLP2,
+	IF (AAPLNO.EQ.LSTAPL.OR.LSTAPL.EQ.-1)
+	BEGIN
+	  IF (LSTAPL.EQ.-1) STRAPL = RECAR
+	  IF (ADOCTP.EQ.1.OR.ADOCTP.EQ.4.OR.ADOCTP.EQ.5) 
+&		DOCBAL = DOCBAL + AAMT + AOTHER
+	  IF (ADOCTP.EQ.2.OR.ADOCTP.EQ.3) 
+&		DOCBAL = DOCBAL - AAMT - AOTHER
+	  LSTAPL = AAPLNO
+	  GOTO MATLP
+	END
+	IF (DOCBAL.EQ.0)
+	DO BEGIN
+	  LOKCTL = 1
+	  XCALL IO (13,ARMACH,STRAPL,READ,LOKCTL)
+	  MDOCDT =
+	  LOKCTL = 1
+	  XCALL IO (13,ARMACH,STRAPL,WRITE,LOKCTL)
+	  INCR STRAPL
+	END UNTIL (STRAPL.EQ.RECAR)
+	LSTAPL = AAPLNO
+	STRAPL = RECAR
+	DOCBAL =
+	IF (AROPEN.NE.']]]]]]]]]]') GOTO MATLP2
+
+	CLOSE 13
+	OPEN (13,I,'TMPIDX.DDF')
+	OPEN (4,I,'TMPIDX.DDF')
+	RECAR = 
+	ARMACH = 
+	ai =
+DTLLP,
+	INCR RECAR
+	LOKCTL = 1
+	XCALL IO (13,AROPEN,RECAR,READ,LOKCTL)
+	IF (AROPEN.EQ.']]]]]') GOTO ENDLET
+	IF (ADOCDT.EQ.0) GOTO DTLLP
+	IF (ACUSNO.NE.TCUSNO) GOTO ENDLET
+	AGEDTE = ADOCDT
+	IF (ADOCTP.EQ.2.OR.ADOCTP.EQ.3.OR.ADOCTP.EQ.5)
+		BEGIN
+		CNT =
+		CALL MACHAR
+		END
+
+	XCALL BDAT8 (TODAY,AGEDTE,DMY,DMY1,NODAYS)
+	IF (NODAYS.LE.ODACT) GOTO DTLLP
+
+	incr ai
+	a_doc(ai) = adocno, 'ZZZZZX'
+
+	USING ADOCTP SELECT
+	(1),	a_typ(ai) = 'INV' 
+	(2),	a_typ(ai) = 'CHK'
+	(3),	a_typ(ai) = 'CR'
+	(4),	a_typ(ai) = 'FCH'
+	(5),	a_typ(ai) = 'DR'
+	ENDUSING
+
+	XCALL DATE8(ADOCDT, D_OUT, D_OUTR, D_FMT, D_SW)
+
+	a_dat(ai) = D_FMT
+	
+	wrkamt = aamt+aother
+	if (adoctp.eq.2.or.adoctp.eq.3) wrkamt = -wrkamt
+	a11 = wrkamt, dlmask
+	a_amt(ai) = a11
+
+
+	ltramt = ltramt + wrkamt
+
+;;;	if (pass1 .gt. 1) 
+;;;		begin
+;;;		tl = %trim(n_body)
+;;;		n_body = n_body(1,tl+1) + pline(1,%trim(pline)) + '<br>'
+;;;		end
+
+	GOTO DTLLP
+
+ENDLET,
+	if (pass1 .eq. 1) 
+		begin
+		close 4
+		close 13
+		return
+		end
+
+
+;	email here --
+; table of aropen detail:
+
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + '<table border =   "1"> <tr>'
+
+	tl = %trim(n_body)
+n_body = n_body(1,tl+1) + '<th>Doc#</th> <th>Typ</th> <th>Date</th> <th>Amount</th> '
+	
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + '</tr>'
+
+;data rows:
+	for i from 1 thru ai
+		begin
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '<tr>'
+
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '<td>'
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + a_doc(i)
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '</td>'
+
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '<td>'
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + a_typ(i)
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '</td>'
+
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '<td>'
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + a_dat(i)
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '</td>'
+
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '<td>'
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + a_amt(i)
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '</td>'
+
+
+		tl = %trim(n_body)
+		n_body = n_body(1,tl+1) + '</tr>'
+		end
+
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + '</table>'
+
+; set up a table for the past due invoice info...
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br><br>' + letl6 + '<br><br>'
+
+	tl = %trim(n_body)
+	n_body = n_body(1,tl+1) + '<p class=MsoNormal><b><span style='
+	tl = %trim (n_body)
+
+	n_body = n_body(1,tl+1) + "''" + 'font-family:'
+;;;	n_body = n_body(1,tl+1) + "'font-family:"
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + ' "Arial" , "sans-serif";color:#548DD4'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + "'>"
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br><br><br><br>Dianna Hanson'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Credit Manager'
+
+	tl = %trim (n_body)
+
+	n_body = n_body(1,tl+1) + 
+&		'<BR><IMG SRC="""\\serversbs\smc\wrk\smcL.bmp"><br>'
+	
+	
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>5850 Main Street N.E.'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Minneapolis, MN 55432-5439'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Direct Phone: (763) 586-7171'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Phone: (763) 572-0000'
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>Fax: (763) 572-1100'
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<br>www.smcduct.com'
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '<o:p></o:p></span></b></p> '
+
+
+	tl = %trim (n_body)
+	n_body = n_body(1,tl+1) + '</html>'
+	
+;;;	n_toa = 'wood@smcduct.com'
+	n_toa = c_mail
+	tl = %trim(n_toA)
+
+
+
+        mailAtt = ^NULL
+
+	mailMsg = new MailMessage 
+&		(%atrim(sender), %atrim(n_toA),%atrim(n_subj), %atrim(n_body))
+
+;;;	for i from 1 thru cc_cnt
+;;;		begin
+;;;		mailMsg.CC.Add(%atrim(n_cc(i)))
+;;;		end
+
+	mailMsg.IsBodyHtml = 1
+
+	myContentType = 'application/octet-stream'
+
+;;;	parse(pdffil,,,,, fName, fExt,, filename)
+;;;	mailAtt = new Attachment(%atrim(filename), new ContentType(myContentType))
+;;;	mailAtt.Name = %atrim(fName) + %atrim(fExt)
+;;;	mailMsg.Attachments.Add(mailAtt)
+
+	clear status
+
+	try
+	begin
+		mailClient.Send (mailMsg, myCredents)
+	end
+
+	catch (ex, @Exception)
+		begin
+		writes (chnerr, "mailit error:" + ex.Message)
+		status = 1
+		end
+
+	endtry
+
+	if (status) call not_sent
+
+	clear mailMsg, mailAtt
+
+;	email here --
+
+	CLOSE 13
+	CLOSE 4
+	ai = 
+
+	GOTO RDLOOP
+
+
+get_email,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	c_mail = '**'
+	clear tbl_key
+	tblcod= 'EC'
+	EC_cust = cusno
+	EC_PRIM = 1
+	find (chn182, coptbl, tbl_key) [err=e_loop]
+e_loop,
+	reads (chn182, coptbl, e_eof)
+	if (ec_cust .ne. cusno) goto e_eof
+	if (.not. %instr(1,ec_email,'@') )
+	then	begin
+		disp = 2	;diaplay
+		c_mail = '**'
+		end
+	else	begin
+		disp = 1
+		c_mail = ec_email
+		end
+e_eof,
+	return
+;-----------------------------------------------------
+
+
+NXTPAG,
+;;;	XCALL LINFD (1)
+;;;	INCR LINES
+;;;	PLINE (11,70) = '*** continued ***'
+;;;	CALL PRINT
+;;;	XCALL LINFD (0)
+;;;	LINES =
+;;;	INCR PGCNT
+;;;	XCALL LINFD (14)
+;;;	LINES = LINES + 14
+
+	XCALL DATE8(AGEDAT, D_OUT, D_OUTR, D_FMT, D_SW)
+;;;	PLINE (11,20) = D_FMT
+;;;
+;;;	CALL PRINT
+;;;	PLINE (11,70) = NAME
+;;;	PLINE (64,68) = 'page '
+;;;	pline (69,70) = PGCNT
+;;;	CALL PRINT
+;;;	XCALL LINFD (3)
+;;;	LINES = LINES + 3
+;;;	PLINE (11,70) = LETL5
+;;;	CALL PRINT
+	RETURN
+MACHAR,					;FINDS APPLY-TO DOC & AGES BY THAT DATE
+	IF (AAPLNO.EQ.0) RETURN
+	INCR CNT
+	IF (CNT.EQ.RECAR) GO TO MACHAR
+	LOKCTL = 1
+	XCALL IO (4,ARMACH,CNT,READ,LOKCTL)
+	IF (ARMACH.EQ.']]]]]]') RETURN
+	IF (MDOCDT.EQ.0) GOTO MACHAR
+	IF (ACUSNO.NE.MCUSNO) RETURN
+	IF (MAPLNO.GT.AAPLNO) RETURN
+	IF (AAPLNO.NE.MDOCNO) GO TO MACHAR
+	IF (MDOCTP.NE.1.AND.MDOCTP.NE.4) GO TO MACHAR
+	IF (MDOCDT.EQ.0) GO TO MACHAR
+	AGEDTE = MDOCDT
+	RETURN
+PRINT,
+
+
+	RETURN
+
+not_sent,
+	return
+END
+

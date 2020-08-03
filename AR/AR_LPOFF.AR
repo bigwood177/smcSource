@@ -1,0 +1,89 @@
+SUBROUTINE AR_LPOFF ;(LPSW,SLPFIL,PGCNT)	;smc version
+; use this version as of 3-30-98, .smc no longer updated.
+;
+	LPSW		,D
+	SPLFIL		,A
+	PGCNT		,D
+	P_COPIES	,D		;OPTIONAL - # OF COPIES
+
+RECORD	EJECT
+	E_CHAR	,A1
+		,A4,	'&l0H'
+
+RECORD	RESET
+	R_CHAR	,A1
+		,A1,	'E'
+
+RECORD	QUE_NAME
+	.INCLUDE 'def:QUE_NAME.DEF'
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+
+RECORD	VARS
+	LN	,D2
+	ENTRY	,A1
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	ROW	,D2
+	I	,D3
+	OPT	,D1
+	COPIES	,D1
+
+PROC
+	XCALL ASCII (27, E_CHAR)
+	R_CHAR = E_CHAR
+
+	IF(%PASSED(P_COPIES))
+	THEN	COPIES = P_COPIES
+	ELSE	COPIES = 1
+
+	IF (LPSW.EQ.0) RETURN
+;;;	CLOSE 14
+
+	s_name = splfil         ;restore printer output file name
+	OPT = s_name(1,1)      ;printer number
+	s_name(1,1) = 's'       ;always first char of printer output file name
+
+	
+	OPEN (11, I, 'AR:QUE_NAME.DDF')
+	READ (11, QUE_NAME, OPT) [ERR=BAD_QUE]
+	CLOSE 11
+
+	USING Q_NAME SELECT
+	("LOCAL"),	BEGIN
+			WRITES (14, EJECT)	;SSQ 1-06-04 PAGE EJECT
+			WRITES (14, RESET)	;SSQ 2-5-04
+			CLOSE 14
+			LPQUE(S_FILNAM, COPIES:COPIES, DELETE)
+			END
+	("EDIT"),	BEGIN
+			CLOSE 14
+			XCALL SPEDIT (s_filnam)
+			XCALL DELET (s_filnam)
+			END
+	(),	
+			BEGIN
+			WRITES (14, EJECT)	;SSQ 1-06-04 PAGE EJECT
+			WRITES (14, RESET)	;SSQ 2-5-04
+			CLOSE 14		;ssq 2-5-04 was above writes
+LPQUE(S_FILNAM, LPNUM:Q_NAME(1,%TRIM(Q_NAME)), COPIES:COPIES, DELETE)
+			END
+	ENDUSING
+
+	LPSW =
+	RETURN
+
+BAD_QUE,
+	XCALL MESAG ('Error reading que_name file',1)
+	RETURN
+END

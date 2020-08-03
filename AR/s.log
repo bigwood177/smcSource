@@ -1,0 +1,56 @@
+
+O:\SOURCE\AR>dbl -d -l -- ALPOP.AR 
+
+O:\SOURCE\AR>dbl -d -l -- AR1.AR 
+
+O:\SOURCE\AR>dbl -d -l -- AR2.AR 
+
+O:\SOURCE\AR>dbl -d -l -- AR2D.AR 
+
+O:\SOURCE\AR>dbl -d -l -- AR3.AR 
+
+O:\SOURCE\AR>dbl -d -l -- bdat8.y2k 
+
+O:\SOURCE\AR>dbl -d -l -- CHKF.AR 
+
+O:\SOURCE\AR>dbl -d -l -- CUSAL.AR 
+
+O:\SOURCE\AR>dbl -d -l -- CUSNT.AR 
+
+O:\SOURCE\AR>dbl -d -l -- C_NOTE.AR 
+
+O:\SOURCE\AR>dbl -d -l -- DCPRT.AR 
+
+O:\SOURCE\AR>dbl -d -l -- GETBL.AR 
+
+O:\SOURCE\AR>dbl -d -l -- JNL.AR 
+
+O:\SOURCE\AR>dbl -d -l -- LP44.AR 
+
+O:\SOURCE\AR>dbl -d -l -- LPOFF.AR 
+
+O:\SOURCE\AR>dbl -d -l -- LPON.AR 
+
+O:\SOURCE\AR>dbl -d -l -- LPON2.AR 
+
+O:\SOURCE\AR>dbl -d -l -- POP2.AR 
+
+O:\SOURCE\AR>dbl -d -l -- POP3.AR 
+
+O:\SOURCE\AR>dbl -d -l -- POPF.AR 
+
+O:\SOURCE\AR>dbl -d -l -- RXPOP.AR 
+
+O:\SOURCE\AR>dbl -d -l -- SELNV.AR 
+
+O:\SOURCE\AR>dbl -T -X -- SNDEM.AR 
+
+O:\SOURCE\AR>dbl -d -l -- SNTRW.AR 
+
+O:\SOURCE\AR>dbl -d -l -- TAXIA.AR 
+
+O:\SOURCE\AR>dbl -d -l -- TMENU.AR 
+
+O:\SOURCE\AR>dbl -d -l -- W_MSG.AR 
+
+O:\SOURCE\AR>dbl -d -l -- input.y2k 

@@ -1,0 +1,76 @@
+;CSHFCM.AR
+;
+;	UPDATE FREIGHT CLAIM FILE (FRTCLM.ISM)
+;
+RECORD	CASH
+	.INCLUDE 'DEF:RD006A.DEF'
+
+RECORD	FRTCLM
+	.INCLUDE 'DEF:RD023A.DEF'
+
+RECORD	CHANNEL
+	CHN006	,D2
+	CHN023	,D2
+
+RECORD	VARS
+	OPNOK	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	SWITCH	,D1
+	V	,D1
+PROC
+	XCALL TERID(V)
+	XCALL OUTPT (2,1,2,'UPDATE FREIGHT CLAIMS HISTORY',1)
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+LOOP,
+	LOKCTL = 1
+	XCALL IOS (CHN006,CASH,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO ENDOFF
+	IF (CASH .EQ. ']]]]]]') GOTO ENDOFF
+	IF (CNAME .EQ. '000000') GOTO LOOP
+
+	IF (CCUSNO .EQ. 999000) CALL FRTCLM
+
+	GOTO LOOP
+
+ENDOFF,
+	CALL CLOSE
+	XCALL PGCHN ('AR:CSHJNL',1)
+;========================================================
+
+FRTCLM,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	LOKCTL = 1
+	XCALL ISIO (CHN023,FRTCLM,CAPLNO,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) RETURN
+	FC_DATPD = CRCTDT
+	FC_AMTPD = CAMRCD
+	FC_FLAG = 'C'		;CASH
+	LOKCTL = 1
+	XCALL ISIO (CHN023,FRTCLM,CAPLNO,WRITE,LOKCTL)
+	RETURN
+;-------------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+	
+	SWITCH = 5
+	XCALL FILES (1,'I',006,SWITCH)		;CASH
+	IF (SWITCH .EQ. 9) RETURN
+	CHN006 = 1
+
+	SWITCH = 5
+	XCALL FILES (2,'SU',023,SWITCH)		;FRTCLM
+	IF (SWITCH .EQ. 9) RETURN
+	CHN023 = 2
+
+	OPNOK = 1
+	RETURN
+;-----------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN006) CLOSE CHN006
+	IF (CHN023) CLOSE CHN023
+	RETURN
+;-----------------------------------------

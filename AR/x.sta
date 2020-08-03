@@ -1,0 +1,33 @@
+The record length for this file is 501 characters.  There are 6 keys.
+There are currently 9768 records in this ISAM file.
+
+Primary key   is OORDNO         
+The key is 6 characters long, starting at position 1 within the record,
+and is ordered in ascending sequence with no duplicates allowed. 
+This key may not be modified by WRITE.
+
+1st alternate is OCUSNO         
+The key is 6 characters long, starting at position 19 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+
+2nd alternate is OCUSNM         
+The key is 25 characters long, starting at position 25 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+
+3rd alternate is OPONO          
+The key is 10 characters long, starting at position 174 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+
+  4th alternate is OJOBNO         
+The key is 10 characters long, starting at position 184 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+
+  5th alternate is OKEYDT         
+The key is 8 characters long, starting at position 417 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may be modified by WRITE.
+

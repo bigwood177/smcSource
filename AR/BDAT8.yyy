@@ -1,0 +1,96 @@
+SUBROUTINE BDAT8
+;
+;	NOTES:	This subroutine will compute the day of the week for a
+;		given date and the number of days between the two dates,
+;		for any dates from March 1, 1700 to February 28, 2100.
+;		The subroutine works by assigning the number 1 to March 1,
+;		1700, and a corresponding number to each succeeding day.  When
+;		computing a day of the week, 1 = Sunday, 2 = Monday, etc.
+;
+;		THE BASIC FORMULA FOR THE NUMBER "N" ASSIGNED TO A DATE IS
+;		AS FOLLOWS:
+;
+;		N(m,d,y)=[365.25 g(y,m)]+[30.6 f(m)]+D-621049
+;
+;		WHERE
+;
+;		g(y,m) = "y" unless "m" equals 1 or 2, then g(y,m) equals "y"-1
+;		and
+;
+;		f(m) = m+1 unless m equals 1 or 2, then f(m) is m+13
+;
+;
+DATE1	,D	;FORMAT CCYYMMDD
+DATE2	,D	;   "     "
+WKDY1	,D	;DAY OF THE WEEK FOR DATE1
+WKDY2	,D	; "  "   "    "   "  DATE2
+NUMDAY	,D	;NUMBER OF DAYS BETWEEN DATE1 AND DATE2 (ABSOLUTE VALUE)
+
+RECORD MMDDYY
+	C	,D2
+	Y	,D2
+	M	,D2
+	D	,D2
+RECORD,X
+	YY	,D4
+
+RECORD EXTRCT
+	DECMAL	,D18
+RECORD	,X
+		,A14
+	FRAC	,D4	;FRACTIONAL VALUE OF "DECMAL"
+RECORD
+	DAY	,D12
+	FM	,D12	;FUNCTION F(M)
+	GYM	,D12	;FUNCTION G(Y,M)
+	ILEGAL	,D1
+	MONTH	,12D2,	31,28,31,30,31,30,31,31,30,31,30,31
+	N	,D12
+	N1	,D12
+	N2	,D12
+	YEAR	,D4
+PROC
+	WKDY1 = 0
+	WKDY2 = 0
+	NUMDAY = 0
+	MMDDYY = DATE1
+	CALL CHECK
+	IF (ILEGAL) RETURN
+	CALL CALC
+	N1 = N
+	WKDY1 = DAY + 1
+	MMDDYY = DATE2
+	CALL CHECK
+	IF (ILEGAL) RETURN
+	CALL CALC
+	N2 = N
+	WKDY2 = DAY + 1
+	NUMDAY = N2 - N1
+	IF (NUMDAY .LT. 0) NUMDAY = -1 * NUMDAY
+	RETURN
+CALC,
+;;;	YEAR = Y + 1900
+	YEAR = YY		;Y2K CHANGE
+
+	IF (Y .LT. 50) YEAR = YEAR + 100
+	GYM = YEAR		;VALUE OF YEAR PASSED
+	IF (M .EQ. 1 .OR. M .EQ. 2) GYM = YEAR - 1
+	FM = M + 1		;VALUE OF MONTH PASSED
+	IF (M .EQ. 1 .OR. M .EQ. 2) FM = M + 13
+	N = ((36525 * GYM) / 100 ) + ((306 * FM) / 10 ) + D - 621049
+	DECMAL = (N * 10000) / 7
+	DAY = ((FRAC * 7) / 1000)#1
+	RETURN
+CHECK,
+	ILEGAL = 0
+	IF (M .LT. 1 .OR. M .GT. 12) GO TO CHKBAD
+	MONTH(2) = 28
+	IF (((Y / 4) * 4) .EQ. Y) MONTH(2) = 29		;LEAP YEAR
+	IF (D .LT. 1 .OR. D .GT. MONTH(M)) GO TO CHKBAD
+	RETURN
+CHKBAD,
+	ILEGAL = 1
+	RETURN
+
+END
+

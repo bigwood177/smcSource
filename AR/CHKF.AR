@@ -1,0 +1,47 @@
+subroutine chkf		;check file in use...
+	filnam	,a	;file that's in use
+;
+record	buf
+		,a512
+
+record	batfil
+		,a*,	'synxfmon -n server-dc01 |find /i "'
+	filen	,a6
+		,a*,	'" >chkf.dat'
+
+record	vars
+	ln	,d6
+	a12	,a12
+	rdymsg	,a30
+
+proc
+	xcall fill ('*', a12)
+
+	filen = filnam
+	open (88, O, 'chkf.bat')
+	writes (88, batfil)
+	close 88
+	
+check,
+	xcall spawn ('chkf.bat')
+	
+	onerror no_dat
+	open (88, I, 'chkf.dat')
+	reads (88,buf,no_dat)
+
+	a12 = buf(5,16)
+	ln = %instr(1, a12, ':')
+	if (ln .gt. 1) ln = ln - 1
+
+	rdymsg = 'tell '+ a12(1,ln) + ' to back out...'
+	xcall mesag (rdymsg,1)
+	
+	close 88
+	xcall delet ('chkf.dat')	
+	goto check
+
+no_dat,
+	close 88
+	xcall mesag ('all clear!',1)
+	xreturn
+

@@ -1,0 +1,220 @@
+;monrpt.ar
+;
+;	lpque auto month end reports.
+;
+;*******************************************************************************
+;
+; Title:        TestWinDir.dbl
+;
+; Description:  Test program for WinDir function
+;
+; Author:       Steve Ives, Synergex Professional Services Group
+;
+; Date:         19th August 2005
+;
+; Availability: Windows only
+;
+; Disclaimer:   This code is provided "as is" and without guarantee or warranty
+;               of any kind.  You may use the code freely, so long as this code
+;               header and disclaimer remains unchanged. In doing so you accept
+;               that neither the author or Synergex accept any responsibility
+;               for any damage or loss which may result from the use of the code
+;
+;*******************************************************************************
+
+.main monrpt
+
+.include "def:WinDir.def"
+
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+
+.INCLUDE 'WND:WINDOWS.DEF'
+
+RECORD	POP
+	.INCLUDE 'DEF:POP1.DEF'
+
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+RECORD	WN_NAME
+		,A5,	'MONEN'
+	WN_TNMBR,D4
+
+RECORD	WVARS
+	WND_1	,D4
+	W1_NAME	,A6
+
+record
+		,a3,	'JAN'
+		,a3,	'FEB'
+		,a3,	'MAR'
+		,a3,	'APR'
+		,a3,	'MAY'
+		,a3,	'JUN'
+		,a3,	'JUL'
+		,a3,	'AUG'
+		,a3,	'SEP'
+		,a3,	'OCT'
+		,a3,	'NOV'
+		,a3,	'DEC'
+record,x
+	mon	,12a3
+
+record	vars
+	tstat		,d1
+	tt			,i4		;Terminal channel
+	entry		,a30
+	inxctl		,d1
+	mn		,d1
+	results		,i4		;Memory handle containing data retuirned from WinDir
+	rescount	,i4		;Number of files returned in memory handle
+	count		,i4		;Loop counter
+	char		,a1		;Input character
+	filespec	,a80	;INput file spec
+	dirnam		,a*,	'\\serversbs\smc\reports\smc\'
+	filnam		,a3	;filname
+	tl	,d4
+
+record output			;Output buffer for screen display
+	name		,a40
+				,a1
+	size		,a20
+				,a2
+	ar			,a1
+	ro			,a1
+	hi			,a1
+	sy			,a1
+
+.proc
+
+	open(tt=15,o,"tt:")
+	xcall flags(7004020,1)
+
+	call init_window
+
+displa,
+	xcall w_disp (wnd_1, wd_clear, 'Print Month End Reports')
+	xcall w_disp (wnd_1, wd_pos, 8,4, 'Month (1-12):')
+	xcall winpt (wnd_1,8,21,02,01,'#E',entry,inxctl)
+	goto (displa, endoff),inxctl
+	mn = entry(1,1)
+	filnam = mon(mn)
+	filespec = dirnam + filnam + '\*'
+	xcall w_disp (wnd_1, wd_pos, 8, 23, filnam)
+
+	xcall ttsts(tstat)
+	if (tstat) xcall w_disp(wnd_1,wd_reads,entry)
+
+	if (filespec) 
+		begin		;Get directory listing
+		if (!%WinDir(filespec,results,rescount,WINDIR$LOWERCASE,WINDIR$SORT_SIZE)) then
+			writes(tt,"No files found!")
+		else	begin
+			;Any matching files?
+			if (!rescount) 
+			then	writes(tt,"No files found!")
+			else	begin
+				call got_files
+				;Display summary
+				;writes(tt,"")
+				;writes(tt,%string(rescount) + " files found!")
+				
+				;Release the dynamic memory returned from WinDir
+				results = %mem_proc(DM_FREE,results)
+			end
+		end
+
+		;Wait for a key press
+		;display(tt,13,10,"Press a key: ")
+		;accept(tt,char)
+
+		goto displa	
+	end
+endoff,
+	close tt
+	xcall flags (7000000)
+	stop
+;================================================================
+
+got_files,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;Iterate through the results and display them
+	for count from 1 thru rescount
+		begin
+		dline = WINDIR$FILENAME(results,count)
+		parry(count) = dline
+		end
+	if (count .le. 0) return
+
+	incr count
+	parry(count) = 'Print All Reports'
+	numara = count
+
+	dline = 'Month End Reports'
+	xcall pop1(pop)
+	if (p_action .eq. 1)
+		begin
+		dline = parry(pi)
+
+		filespec = dirnam
+		tl = %trim(filespec) + 1
+		filespec(tl,80) = dline	
+		using dline select
+		('Print All Reports'),	call print_all
+		(),	lpque (filespec)
+		endusing
+
+		end
+	return
+;------------------------------------------------------------------
+
+print_all,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; print all reports in directory
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	for pi from 1 thru rescount
+		begin
+		dline = parry(pi)
+		if (dline .ne. '  ')
+			begin
+			filespec = dirnam
+			tl = %trim(filespec) + 1
+			filespec(tl,80) = dline	
+		;;;	lpque (filespec)
+			end
+		end
+
+	return
+;------------------------------------------------------------------
+
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+	XCALL TNMBR (WN_TNMBR)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (.NOT. WND_1)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,24,78)
+		END
+	XCALL W_BRDR(WND_1,WB_TITLE,'Month End Reports',WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+
+	MAXARA = 20
+	PLEN = 36
+	NUMROW = 20
+	WX = 
+	WY = 40
+	POP_WID = 'CC_TBL'
+	POP_TITLE = 'Month End'
+		
+	RETURN
+;-------------------------------------------------------------------
+
+.end
+
+;*******************************************************************************
+.include "WinDir.dbl"
+;*******************************************************************************
+
+

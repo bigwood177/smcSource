@@ -1,0 +1,250 @@
+;FILLBL.AR
+;		Author: Sherwood S. Quiring
+;		Date  : 15-Jan-1999
+;
+;		Header label for customer files.
+;
+RECORD CUSMAS
+		.INCLUDE 'DEF:RD001A.DEF'
+RECORD TMPIDX
+	.INCLUDE 'DEF:RD068B.DEF'
+
+RECORD
+	STRTNO	,A3
+	ENDNO	,A3
+
+RECORD	PBUF
+		,A1
+	SIDE1	,A29
+		,A5
+	SIDE2	,A29
+		,A5
+	SIDE3	,A29
+		,A5
+	SIDE4	,A29
+		,A4
+RECORD	BUFFER
+	CUST_1	,6A29
+	CUST_2	,6A29
+	CUST_3	,6A29
+	CUST_4	,6A29
+	S_LINE	,6A29
+
+RECORD	VARS
+	OPT	,D1
+	I	,D2
+	TOGGLE	,D1
+	V	,D1
+	READ	,D1,0
+	LOKCTL	,D1
+	SWITCH	,D1
+	LINCNT	,D2
+	PGCNT	,D5
+	PLINE	,A29
+	LPSW	,D2
+	RPTNUM	,D3
+	TYPSW	,A1
+	SPLFIL	,A14
+	RECNO	,D5
+	ZIPSEL	,A3
+	ENTRY	,A3
+	INXCTL	,D1
+	SRCCTL	,D1
+	ORG068	,D5
+	BSMID	,D5
+	STXCTL	,D1
+	KEY	,A3
+.PROC
+	XCALL TERID (V)
+ZIPSEL,
+	XCALL OUTPT (3,1,2,'\',1)
+OPEN1,
+	SWITCH = 1
+	XCALL FILES (1,'SI',01,SWITCH)
+	IF (SWITCH.NE.9) GOTO OPEN2
+	GOTO ABORT
+OPEN2,
+	SWITCH = 5
+	XCALL FILES (3,'I',68,SWITCH)
+	IF (SWITCH.NE.9) GOTO OPENLP
+	CALL CLOSE1
+	GOTO ABORT
+OPENLP,
+	XCALL LPONX (LPSW, SPLFIL)
+	GOTO RDHDR
+
+CLOSES,
+	PGCNT = -1
+	XCALL AR_LPOFF (LPSW,SPLFIL,PGCNT)
+CLOSE2,
+	XCALL FILES (3,'I',68,4)
+CLOSE1,
+	XCALL FILES (1,'SI',01,4)
+	RETURN
+
+;;;;;
+RDHDR,
+	LOKCTL = 1
+	XCALL IO (3,TMPIDX,1,READ,LOKCTL)
+	ORG068 = TRC001
+	RECNO = 1
+	XCALL OUTPT (2,1,2,'\',V)
+
+	RECNO = 1
+	TOGGLE = 1
+RDLOOP,
+	INCR RECNO
+	LOKCTL = 1
+	XCALL IO (3,TMPIDX,RECNO,READ,LOKCTL)
+	IF (TMPIDX.EQ.']]]]]]]]]]')GOTO EOF
+	LOKCTL = 1
+	XCALL ISIO (1,CUSMAS,TCUSNO,READ,LOKCTL)
+	USING TOGGLE SELECT
+	(1),	BEGIN
+		CALL SET_LINE
+		FOR I FROM 1 THRU 6 CUST_1(I) = S_LINE(I)
+		END
+	(2),	BEGIN
+		CALL SET_LINE
+		FOR I FROM 1 THRU 6 CUST_2(I) = S_LINE(I)
+		END
+	(3),	BEGIN
+		CALL SET_LINE
+		FOR I FROM 1 THRU 6 CUST_3(I) = S_LINE(I)
+		END
+	(4),	BEGIN
+		CALL SET_LINE
+		FOR I FROM 1 THRU 6 CUST_4(I) = S_LINE(I)
+		CALL PRINT_LASER_LABEL
+		TOGGLE = 1
+		END
+
+	ENDUSING
+
+	GOTO RDLOOP
+
+;====================================================
+SET_LINE,	;;;;;;;;;;;;;;;;;;;;;;;
+		;;; FORMAT A LABEL
+		;;;;;;;;;;;;;;;;;;;;;;;
+	INCR TOGGLE
+
+	CLEAR PLINE	
+	PLINE(23,28) = CUSNO,'ZZZZZX'
+	S_LINE(1) = PLINE
+	S_LINE(2) = NAME
+	S_LINE(3) = ADD1
+	PLINE(1,14) = CITY
+	PLINE(16,17) = STATE
+	PLINE(19,29) = ZIP
+	IF (ADD2 .NE. '    ')
+	THEN	BEGIN
+		S_LINE(4) = ADD2
+		S_LINE(5) = PLINE
+		END
+	ELSE	BEGIN
+		S_LINE(4) = PLINE
+		S_LINE(5) = 
+		END
+	S_LINE(6) =
+	RETURN
+;--------------------------------------------------
+
+PRINT_LASER_LABEL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+			;;; Format and print the label
+			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	FOR I FROM 1 THRU 6
+		BEGIN
+		SIDE1 = CUST_1(I)
+		SIDE2 = CUST_2(I)
+		SIDE3 = CUST_3(I)
+		SIDE4 = CUST_4(I)
+		CALL PRINT
+		END
+	RETURN
+;------------------------------------------------------
+
+PRINT,
+	LINCNT =
+	XCALL LPOUT (LINCNT,PGCNT,PBUF,'NO TITLE',
+&	'NO HDR',' ',' ','NO LEGEND',' ',' ',0,136,136,0,LPSW,RPTNUM,TYPSW)
+	RETURN
+
+EOF,
+;;;	GOTO RDHDR
+ENDOFF,
+	CALL CLOSES
+ABORT,
+	XCALL PGCHN ('AR:ARMENU',1)
+	STOP
+.END
+
+;-----------------------------------------
+
+.SUBROUTINE LPONX
+	LPSW	,D
+	SPLFIL	,A
+
+;;;.INCLUDE 'DEF:HPSUB.DEF'
+
+record  s_filnam
+		,a4,    'spl:'
+	f_letr	,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record  time
+	hh      ,a2
+	mm      ,a2
+	ss      ,a2
+
+RECORD	COMPRES
+	C_CHAR	,A1		;<ESC>
+		,A4,	"&k2S"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+	ESC_8	,A1
+;;;		,A4,	"&l8D"	;vertical spacing, 8 lines/inch
+		,A5,	"&l12D"
+
+;
+;-----------------------------------------
+RECORD	VARS
+	OPT	,D1
+
+;;;LPON,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; HARD-CODED VERSION FOR 12 LINE/INCH SPACING
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.PROC
+	OPT = 2
+
+	;;; Create a unique file name and open for output
+	xcall tnmbr (fter)
+	xcall time (time)
+	ftime(1,2) = hh
+	ftime(3,4) = mm
+
+	f_letr = "s"
+	onerror spl_err
+	open (14,o,s_filnam)            ;print output file
+	offerror
+
+	s_name(1,1) = OPT,'X'           ;save the printer # selected
+	splfil = s_name                 
+
+	
+	XCALL ASCII(27,C_CHAR)
+	ESC_8 = C_CHAR
+	WRITES (14,COMPRES)
+
+	LPSW = 2
+	RETURN
+
+spl_err,
+	offerror
+	lpsw = 0		;error or <end>
+	RETURN
+.END

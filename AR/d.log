@@ -1,0 +1,124 @@
+
+O:\SOURCE\AR>call bld pstcom ar 
+
+O:\SOURCE\AR>dbl pstcom.ar 
+
+O:\SOURCE\AR>dblink -o ar:pstcom pstcom ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld stsls2 ar 
+
+O:\SOURCE\AR>dbl stsls2.ar 
+
+O:\SOURCE\AR>dblink -o ar:stsls2 stsls2 ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld pstsls ar 
+
+O:\SOURCE\AR>dbl pstsls.ar 
+
+O:\SOURCE\AR>dblink -o ar:pstsls pstsls ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld stslsa ar 
+
+O:\SOURCE\AR>dbl stslsa.ar 
+
+O:\SOURCE\AR>dblink -o ar:stslsa stslsa ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld acmsls ar 
+
+O:\SOURCE\AR>dbl acmsls.ar 
+
+O:\SOURCE\AR>dblink -o ar:acmsls acmsls ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld srtsls ar 
+
+O:\SOURCE\AR>dbl srtsls.ar 
+
+O:\SOURCE\AR>dblink -o ar:srtsls srtsls ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld clrsls ar 
+
+O:\SOURCE\AR>dbl clrsls.ar 
+
+O:\SOURCE\AR>dblink -o ar:clrsls clrsls ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld initar ar 
+
+O:\SOURCE\AR>dbl initar.ar 
+
+O:\SOURCE\AR>dblink -o ar:initar initar ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slsent ar 
+
+O:\SOURCE\AR>dbl slsent.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsent slsent ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld inargl ar 
+
+O:\SOURCE\AR>dbl inargl.ar 
+
+O:\SOURCE\AR>dblink -o ar:inargl inargl ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slsadd ar 
+
+O:\SOURCE\AR>dbl slsadd.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsadd slsadd ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-XUNDEF, Undefined XCALL references:
+	WANFK in module MAIN$SLSADD
+	W_MSG in module MAIN$SLSADD
+
+O:\SOURCE\AR>call bld slsdel ar 
+
+O:\SOURCE\AR>dbl slsdel.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsdel slsdel ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slscng ar 
+
+O:\SOURCE\AR>dbl slscng.ar 
+
+O:\SOURCE\AR>dblink -o ar:slscng slscng ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+%DBLINK-F-XUNDEF, Undefined XCALL references:
+	WANFK in module MAIN$SLSCNG
+	W_MSG in module MAIN$SLSCNG
+
+O:\SOURCE\AR>call bld slsedt ar 
+
+O:\SOURCE\AR>dbl slsedt.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsedt slsedt ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slsjnl ar 
+
+O:\SOURCE\AR>dbl slsjnl.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsjnl slsjnl ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slsjnr ar 
+
+O:\SOURCE\AR>dbl slsjnr.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsjnr slsjnr ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slsprp ar 
+
+O:\SOURCE\AR>dbl slsprp.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsprp slsprp ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld slsfcm ar 
+
+O:\SOURCE\AR>dbl slsfcm.ar 
+
+O:\SOURCE\AR>dblink -o ar:slsfcm slsfcm ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 
+
+O:\SOURCE\AR>call bld cnv004 ar 
+
+O:\SOURCE\AR>dbl cnv004.ar 
+%DBL-F-OPENIN, Cannot open:  cnv004.ar
+%DBL-E-NOOBJ, No object file created
+
+Errors:         1
+
+O:\SOURCE\AR>dblink -o ar:cnv004 cnv004 ar:arlib.elb UT:UTIL.ELB wnd:TKLIB.ELB 

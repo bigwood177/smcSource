@@ -1,0 +1,197 @@
+;sig.man - email signature
+
+.function sig
+	thankYou,a
+	name	,a
+	title	,a
+	d_ph	,a
+	d_fax	,a
+	email	,a
+;
+record	vars
+	sp	,d1	;sometimes you need an extra space...
+	tl	,d6
+	body	,a1600
+	bl	,d6, 01600
+	text	,a100
+;
+
+proc
+	sp = 1
+	body =
+	text = '<span style=' + "''" + "'font-family:" + '"Arial","sans-serif"'
+	call add_to_body
+	text =  "'>"
+	call add_to_body
+	text = thankYou
+	call add_to_body
+	text = '</span>'
+	call add_to_body
+	text = '<br>'
+	call add_to_body
+	text = '<b>'
+	call add_to_body
+	sp = 1
+	text = '<span style=' 
+	call add_to_body
+	text = "''" + "'font-size:12.0pt;font-family:" + '"Times New Roman"' + "'>"
+	call add_to_body
+	text = name
+	call add_to_body
+	text = '</span>'
+	call add_to_body
+	text = '</b>'
+	call add_to_body
+
+
+	text = '<span style=' 
+	call add_to_body
+	text = "''" + "'font-size:12.0pt;font-family:" + '"Calibri"' + "'>"
+	call add_to_body
+	sp = 2		;leave a space after name
+	text = title
+	call add_to_body
+	sp = 1
+	text = '</span>'
+	call add_to_body
+;;;	text = '</p>'
+;;;	call add_to_body
+
+	text = '<br>'
+	call add_to_body
+
+	text = '<b>'
+	call add_to_body
+
+
+	text = '<span style='
+	call add_to_body
+	text = "''" + "'font-family:"
+	call add_to_body
+	text = '"Times New Roman","serif";color:blue'
+	call add_to_body
+	text = "'>"
+	call add_to_body
+
+	text = 'Sheet Metal Connectors, Inc.'
+	call add_to_body
+
+	text = '</span>'
+	call add_to_body
+	text = '</b>'
+	call add_to_body
+;;;	text = '</p>'
+;;;	call add_to_body
+
+	text = '<br><i>'
+	call add_to_body
+
+	text = '<span style='
+	call add_to_body
+	text = "''" + "'font-family:"
+	call add_to_body
+	text = '"Times New Roman","serif";color:blue'
+	call add_to_body
+	text = "'>"
+	call add_to_body
+
+
+	text = '&#8220;Fabrication That Performs&#8221;'
+	call add_to_body
+	text = '</span>'
+	call add_to_body
+	text = '</i>'	;...</p>'
+	call add_to_body
+
+
+	text = '<br>'
+	call add_to_body
+	text = '<span style='
+	call add_to_body
+	text = "''" + "'font-family:"
+	call add_to_body
+	text = '"Times New Roman","serif"'
+	call add_to_body
+
+	text = "'>"
+	call add_to_body
+
+	text = '763-572-0000 | 800-328-1966 | ' + d_ph + ' | ' + d_fax
+	call add_to_body
+
+	text = '</span>'
+	call add_to_body
+
+;;;	text = '</p>'
+;;;	call add_to_body
+
+
+	text = '<br>'
+	call add_to_body
+	text = '<span style='
+	call add_to_body
+	text = "''" + "'font-family:"
+	call add_to_body
+	text = '"Times New Roman","serif"'
+	call add_to_body
+	text = "'>"
+
+	call add_to_body
+	text = '<a href='
+	call add_to_body
+;;;	text = '""' + 'http://www.smcduct.com/' + '""'
+	text = '"""http://www.smcduct.com/"'
+	call add_to_body
+	text = '>'
+	call add_to_body
+	text = '<span style='
+	call add_to_body
+	text = "''" + "'color:blue'>"
+	call add_to_body
+	text = 'www.smcduct.com'
+	call add_to_body
+	text = '</span>'
+	call add_to_body
+
+	text = '</a>'
+	call add_to_body
+
+
+	text = ' | <a href='
+	call add_to_body
+;;;	text = '""' + 'mailto:'
+	text = '"""mailto:'
+	call add_to_body
+	text = email 
+	call add_to_body
+	text =  '">'
+	call add_to_body
+
+
+	text = '<span style='
+	call add_to_body
+	text = "''" + "'color:blue'>"
+	call add_to_body
+	text= email
+	call add_to_body
+	text = '</span>'
+	call add_to_body
+	text = '</a>'
+	call add_to_body
+
+	text = '</span> '
+	call add_to_body
+
+
+;;;	text = '</html>'
+;;;	call add_to_body
+
+	freturn body
+
+add_to_body,
+	body(%trim(body)+sp, bl) = text
+	return
+
+.end
+
+

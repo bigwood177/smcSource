@@ -1,0 +1,17 @@
+dbl -d -l -- AR1.ar
+dbl -d -l -- AR2.ar
+dbl -d -l -- AR3.ar
+dbl -d -l -- GETBL.ar
+dbl -d -l -- SELNV.ar
+dbl -d -l -- CUSNT.ar
+dbl -d -l -- RXPOP.ar
+dbl -d -l -- ALPOP.ar
+dbl -d -l -- POP2.ar
+dbl -d -l -- CUSAL.ar
+dbl -d -l -- x_inpt.wnd
+dbl -d -l -- ADDTE.y2k
+dbl -d -l -- LPON.ar
+dbl -d -l -- LPOFF.ar
+dbl -d -l -- DCPRT.ar
+dbl -T -X sndem.ar
+
