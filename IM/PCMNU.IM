@@ -1,0 +1,52 @@
+SUBROUTINE PCMNU
+;
+;  PCMNU / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;		APPLICATION SELECTION FOR PURCHASE PROGRAMS
+;
+	MENUID	,A
+	SELECT	,D
+	V	,D
+RECORD
+	ENTRY	,A3
+	INXCTL	,D1
+PROC (1)
+	XCALL OUTPT (1,1,2,MENUID,V)
+	XCALL OUTPT (5,20,0,'PLEASE SELECT APPLICATION',V)
+	XCALL OUTPT (6,25,0,'1. ON-ORDER ENTRY & EDITING',V)
+	XCALL OUTPT (7,25,0,'2. PRINT ITEMS ORDERED BY VENDOR',V)
+	XCALL OUTPT (8,25,0,'3. PRINT ITEMS ORDERED BY ITEM',V)
+	XCALL OUTPT (9,25,0,'4. PURGE FILE THROUGH A DATE',V)
+INPUT,
+	XCALL INPUT (5,47,1,1,'#E',ENTRY,INXCTL,V)
+	GO TO (END), INXCTL-1
+	SELECT = ENTRY(1,1)
+	IF (SELECT.LT.1.OR.SELECT.GT.4) GO TO INPUT
+	RETURN
+END,
+	SELECT=
+	RETURN
+
+END

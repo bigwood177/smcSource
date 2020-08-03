@@ -1,0 +1,84 @@
+;  CLRYOE / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;		CLEARS ITEM MASTER OF YEAR-TO-DATE FIGURES
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD ITMMAS		;
+		.INCLUDE 'DEF:RD041A.DEF'
+RECORD
+	RECCNT	,D5,00002
+	ENTRY	,A2
+	INXCTL	,D1
+	SWITCH	,D1
+	V	,D1
+	READ	,D1	,0
+	WRITE	,D1	,1
+	LOKCTL	,D1
+PROC (1)
+	XCALL TERID (V)
+	SWITCH = 3
+	XCALL FILES (1,'U',41,SWITCH)
+	IF (SWITCH.EQ.9) GO TO END
+	SWITCH = 1
+	XCALL FILES (2,'I',42,SWITCH)		;FILE # 42 -- ITMIDX FILE
+	IF (SWITCH.EQ.9) GO TO END1
+	SWITCH = 5
+	XCALL FILES (1,'U',41,SWITCH)
+	IF (SWITCH.EQ.9) GO TO EOF
+	XCALL OUTPT (1,1,2,'CLEAR ITEM YEAR-TO-DATE FIELDS ONLY',V)
+	XCALL OUTPT (6,17,0,'ARE YOU SURE YOU WANT TO CLEAR THESE FIELDS ?',V)
+	XCALL OUTPT (10,1,0,
+&	'PLEASE NOTE: The MONTH-TO-DATE fields are NOT cleared here.',V)
+	XCALL OUTPT (11,14,0,
+&	'MONTH-TO-DATE fields MUST also be cleared at this time.',V)
+	XCALL INPUT (6,64,1,1,'YN',ENTRY,INXCTL,V)
+	GO TO (EOF), INXCTL-1
+	XCALL WATE (4,V)
+READ1,
+	LOKCTL = 1
+	XCALL IO (1,ITMMAS,RECCNT,READ,LOKCTL)
+	IF (ITMMAS(1,6).EQ.']]]]]]') GO TO EOF
+	QTYYTD =
+	USEYTD =
+	SLSYTD =
+	CSTYTD =
+	LOKCTL = 1
+	XCALL IO (1,ITMMAS,RECCNT,WRITE,LOKCTL)
+	INCR RECCNT
+	GO TO READ1
+EOF,
+	XCALL FILES (2,'I',42,4)
+END1,
+	XCALL FILES (1,'U',41,4)
+END,
+	XCALL PGCHN ('CP:SPCFUN',1)
+
+END

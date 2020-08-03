@@ -1,0 +1,258 @@
+;RINTAG.IM
+;
+; PRINT BARCODE LABELS FOR THE ENTIRE INVENTORY FILE.
+;
+RECORD	RINVMS
+	.INCLUDE 'DEF:RD131A.DEF'
+
+RECORD	VENMAS
+	.INCLUDE 'DEF:RD011A.DEF'
+
+	.INCLUDE 'DEF:RAWARA.DEF'
+
+record	channel
+	chn011	,d3
+	CHN132	,D3	;RINVMS.ISM
+	chnwrk	,d3	;channel for batch file
+
+record	data
+		,a2048	
+record	dis
+	ii	,d6
+
+record	vars
+	batfil	,a10,	'rintag.bat'
+	UNAME	,A25
+	ATAG	,A6
+	a2	,a2
+	a3	,a3
+	a6	,a6
+	MAT	,A3
+	STSZ	,D6
+	ENSZ	,D6
+	STDAT	,D8
+	ENDAT	,D8
+	tl	,d6
+	ln	,d4
+	cl	,a255
+	len	,d8,	00001024
+	siz	,d8
+	i	,d6
+	opnok	,d1
+	inxctl	,d1
+	lokctl	,d1
+	cngctl	,d1
+	read	,d1,0
+	cmpcod	,a3
+	Xdate	,d8
+	tab	,a1
+	field	,a512
+	entry	,a30
+	whatno	,d2
+	switch	,d1
+	v	,d1
+
+;
+proc
+	xcall terid (V)
+	v = 1
+
+	xcall outpt (1,1,2,'PRINT INVENTORY TAGS',1)
+
+	call opens
+	if (.not. opnok) goto endoff
+
+;;;	xcall cmdln(cl)
+;;;	display(15,$scr_pos(2,1),cl)
+;;;	reads (15,entry)
+
+	clear data
+	xcall ascii(9,tab)
+
+displa,
+	clear cngctl
+	xcall outpt (1,1,2,'PRINT INVENTORY TAGS',1)
+	XCALL OUTPT ( 6,4,0,'1. START DATE',1)
+	XCALL OUTPT ( 8,4,0,'2. END DATE',1)
+	XCALL OUTPT (10,4,0,'3. START SIZE',1)
+	XCALL OUTPT (12,4,0,'4. END SIZE',1)
+
+
+stdat,
+	xcall input (6,21,06,00,'DE',entry, inxctl,1)
+	goto (displa,endoff),inxctl
+	stdat = entry(1,8)
+	if (stdat .eq. 0)
+		begin
+		endat = 99999999
+		xcall outpt (6,21,1,'ALL',1)
+		xcall outpt (8,21,1,' ',1)
+		goto (anycng),cngctl
+		goto stsz
+		end
+
+	goto (anycng),cngctl
+endat,
+	xcall input (8,21,06,00,'DE',entry,inxctl,1)
+	goto (displa,endoff),inxctl
+	endat = entry(1,8)
+	if (endat .eq. 0)
+		begin
+		endat = stdat
+		xdate(1,4) = endat(5,8)
+		xdate(5,8) = endat(1,4)
+		entry(1,10) = xdate,'ZX/XX/XX' [LEFT]
+		xcall outpt (8,21,1,entry(1,10),1)
+		end
+	goto (anycng),cngctl
+
+stsz,
+	xcall input (10,21,06,00,'# ',entry,inxctl,1)
+	goto (displa),inxctl
+	stsz = entry(1,6)
+	if (stsz .eq. 0)
+		begin
+		ensz = 999999
+		xcall outpt (10,21,1,'ALL',1)
+		xcall outpt (12,21,1,' ',1)
+		goto anycng
+		end
+	entry(1,6) = stsz,	'ZX.XXX'
+	xcall outpt (10,21,1,entry(1,6),1)
+	goto (anycng),cngctl
+
+ensz,
+	xcall input (12,21,06,00,'# ',entry,inxctl,1)
+	goto (displa),inxctl
+	ensz = entry(1,6)
+	if (ensz .eq. 0)
+		begin
+		ensz = stsz
+		end
+	entry(1,6) = ensz, 'ZX.XXX' [left]
+	xcall outpt (12,21,1,entry(1,6),1)
+
+anycng,
+	xcall anycn(cngctl, whatno)
+	goto (proces, cngbr),cngctl+1
+cngbr,
+	goto (stdat, endat, stsz, ensz), whatno
+	goto anycng
+
+proces,
+	clear ii
+	find (chn132, rinvms, ^first, krf:1) [err=eof]
+loop,
+	incr ii
+	if (ii/250*250 .eq. ii) xcall outpt (1,70,0,dis,1)
+
+	xcall ios (chn132, rinvms, read, lokctl)
+	if (lokctl .ne. 0) goto eof
+	
+	if (rmdat .lt. stdat) goto loop
+	if (rmdat .gt. endat) goto loop
+
+	if (rmwid .lt. stsz) goto loop
+	if (rmwid .gt. ensz) goto loop
+
+	xcall isio (chn011, venmas, rmven, read, lokctl)
+	if (lokctl .ne. 0) name = rmven			;pre-conversion data
+
+	clear data
+
+	field = 'LABEL'
+	call tab_d
+
+	using rmloc select
+	(1 thru 4),	field = company(rmloc)
+	(),		field = 'Minneapolis'
+	endusing
+	call tab_d
+
+	ATAG = rmtag,	'XXXXXX'
+	field = ATAG 
+	call tab_d
+
+;;;	a2 = rmga,	'XX'
+	a6 = rmwid,	'ZZX.XXX' [left]
+	field = rmmat + '-' + rmga + '-' + a6
+	call tab_d
+
+	field = rmdec, '.XXX' [left]
+	call tab_d
+
+	field = rmwgt,	'ZZZZZZ' [left]
+	call tab_d
+
+	field = name
+	call tab_d
+
+	xdate(1,4) = rmdat(5,8)
+	xdate(5,8) = rmdat(1,4)
+	field = xdate,	'ZX/XX/XXXX' [left]
+	call tab_d
+
+	field = rmnote
+	call tab_d
+
+	ATAG = rmtag,	'XXXXXX'
+	field = 'T~' + ATAG 
+	call tab_d
+
+
+	tl = %trim(data)
+	writes (chnwrk,data(1,tl) )
+	
+	goto loop
+
+eof,
+	writes (chnwrk, 'END')
+	close chnwrk
+
+	xcall shell (0, batfil)
+
+
+endoff,
+	call close 
+	xcall pgchn ('im:imsfmn',1)
+
+;================================================
+
+
+tab_d,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	xcall tabd (data, len, field, tab)
+	return
+;------------------------------------------------
+
+
+opens,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear opnok
+
+	switch = 5
+	xcall files (2,'SI', 132, SWITCH)	;132 = RINVMS
+	if (switch .eq. 9) return
+	chn132 = 2
+
+	switch = 5
+	xcall filec ('SMC',3, 'SI', 011, switch)	;11 = venmas
+	if (switch .eq. 9) return
+	chn011 = 3
+
+	xcall delet ('spl:rmlab.txt')
+	open (1, o, 'spl:rmlab.txt')
+	chnwrk = 1
+
+	opnok = 1
+	return
+;------------------------------------------------
+close,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	if (chn132) close chn132
+	if (chn011) close chn011
+	return
+;------------------------------------------------
+
+	end
+
+
+

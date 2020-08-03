@@ -1,0 +1,58 @@
+;  TRXCNT / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD DUMREC	;
+		.INCLUDE 'DEF:RD043B.DEF'
+RECORD
+	LOKCTL	,D1
+	MSGCTL	,D1
+	NXTPRG	,A9
+	READ	,D1,	0
+	V	,D1
+	WRITE	,D1,	1
+PROC 
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'UPDATE ORGANIZED COUNT',1)
+	XCALL FILES (3,'U',043,5)
+	LOKCTL = 1
+	XCALL IO (3,DUMREC,1,READ,LOKCTL)
+	ORG043 = REC043
+	LOKCTL = 1
+	XCALL IO (3,DUMREC,1,WRITE,LOKCTL)
+	CLOSE 3
+	MSGCTL = 1
+	XCALL SNMSG (NXTPRG,MSGCTL)
+	IF (MSGCTL.EQ.9) NXTPRG = 'IM:IMMENU'
+	IF (NXTPRG.EQ.'IM:RECEDT') XCALL FILES (3,'U',043,4)
+	MSGCTL = 4
+	XCALL SNMSG (NXTPRG,MSGCTL)
+	XCALL PGCHN (NXTPRG,1)
+END

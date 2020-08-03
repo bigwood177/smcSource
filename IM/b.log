@@ -1,0 +1,92 @@
+
+O:\SOURCE\IM>CALL immenu.bat 
+
+O:\SOURCE\IM>dblink -d immenu im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL INITIM.bat 
+
+O:\SOURCE\IM>dblink -d INITIM im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL INVCNT.bat 
+
+O:\SOURCE\IM>dblink -d INVCNT im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL INVINQ.bat 
+
+O:\SOURCE\IM>dblink -d INVINQ im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL invmnt.bat 
+
+O:\SOURCE\IM>dblink -d invmnt im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL INVPRT.bat 
+
+O:\SOURCE\IM>dblink -d INVPRT im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL ORGINV.bat 
+
+O:\SOURCE\IM>dblink -d ORGINV im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL PURUHS.bat 
+
+O:\SOURCE\IM>dblink -d PURUHS im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL SRTINV.bat 
+
+O:\SOURCE\IM>dblink -d SRTINV im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL SRTTID.bat 
+
+O:\SOURCE\IM>dblink -d SRTTID im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL SRTUHS.bat 
+
+O:\SOURCE\IM>dblink -d SRTUHS im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL SRTUSG.bat 
+
+O:\SOURCE\IM>dblink -d SRTUSG im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL STKST1.bat 
+
+O:\SOURCE\IM>dblink -d STKST1 im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL STKSTS.bat 
+
+O:\SOURCE\IM>dblink -d STKSTS im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL TRXCNT.bat 
+
+O:\SOURCE\IM>dblink -d TRXCNT im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGCLR.bat 
+
+O:\SOURCE\IM>dblink -d USGCLR im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGCNT.bat 
+
+O:\SOURCE\IM>dblink -d USGCNT im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGEDT.bat 
+
+O:\SOURCE\IM>dblink -d USGEDT im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGENT.bat 
+
+O:\SOURCE\IM>dblink -d USGENT im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGHS1.bat 
+
+O:\SOURCE\IM>dblink -d USGHS1 im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGHS2.bat 
+
+O:\SOURCE\IM>dblink -d USGHS2 im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL USGPRP.bat 
+
+O:\SOURCE\IM>dblink -d USGPRP im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                
+
+O:\SOURCE\IM>CALL usgpst.bat 
+
+O:\SOURCE\IM>dblink -d usgpst im:imlib.elb ut:util.elb ut:w7lib.elb ut:SynPsgSystem.elb wnd:tklib.elb dbldir:axlib.elb                                                                                                

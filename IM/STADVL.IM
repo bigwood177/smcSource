@@ -1,0 +1,51 @@
+;  STADVL / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SORT SELECTED INVENTORY FILE PRIOR TO PURCHASING
+;		ADVICE REPORT BY LOCATION
+;
+INPUT:SELINV
+OUTPUT:SELINV
+RECORD:			; ::CRD056A.DEF::
+		; SELECTED INVENTORY ITEMS (STATUS REPORTING) "RD056A.DEF"
+		; (WORK FILE)
+		;	RECORD SIZE	= 033
+		;	DEVICE #	= 056
+		;	FILE NAME	= "SELINV"
+		;
+	SEL041	,D5	; SELECTED RECORD ADDRESS IN THE ITEM MASTER
+	SMULTV	,D1	; MULTIPLE VENDOR FLAG
+	SRTLOC	,A2	; SORTING LOCATION
+	SRTFAC	,D5	; SORTING FACTOR
+	QTYOH	,D6	; QUANTITY ON HAND (XXX,XXX)
+	QTYCM	,D6	; QUANTITY COMMITTED (XXX,XXX)
+	QTYOO	,D6	; QUANTITY ON ORDER (XXX,XXX)
+	R	,A1	; REORDER LEVEL FLAG
+	O	,A1	; OUT-OF-STOCK FLAG
+;:
+KEYS:SRTLOC
+SYSTEM:
+PAD:]
+END:

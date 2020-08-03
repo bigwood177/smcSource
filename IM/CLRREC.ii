@@ -1,0 +1,64 @@
+;  CLRREC / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;		CLEARS INVTRX TO ONE CONTROL RECORD
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD INVTRX		;
+		.INCLUDE 'DEF:RD043B.DEF'
+RECORD BRACKS		;
+		.INCLUDE 'DEF:RD043C.DEF'
+RECORD
+	SWITCH	,D1
+	WRTCNT	,D5,	00001
+	V	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	LOKCTL	,D1
+PROC (1)
+	XCALL TERID (V)
+	XCALL WATE (4,V)
+	XCALL OUTPT (2,1,1,'CLEAR TRANSACTION FILE',1)
+	XCALL FILES (3,'U',43,5)		;FILE # 43 -- INVTRX FILE
+	LOKCTL = 1
+	XCALL IO (3,INVTRX,1,READ,LOKCTL)
+RITE,
+	INCR WRTCNT
+	LOKCTL = 1
+	XCALL IO (3,BRACKS,WRTCNT,WRITE,LOKCTL)
+	IF (WRTCNT.LT.REC043) GO TO RITE
+	REC043 = 1
+	ORG043 = 1
+	DEL043 = 0
+	LOKCTL = 1
+	XCALL IO (3,INVTRX,1,WRITE,LOKCTL)
+	XCALL FILES (3,'U',43,4)		;FILE # 43 -- INVTRX FILE
+	XCALL PGCHN ('IM:IMMENU',1)
+END

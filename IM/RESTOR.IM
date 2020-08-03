@@ -1,0 +1,20 @@
+;*****************************************************************************
+; RESTOR.IM
+;
+;	COMMAND FILE TO RESTORE THE MCBA SAMPLE DATA FILES FOR I/M 
+;	TO THEIR "AS SHIPPED" STATE.  
+;
+;*****************************************************************************
+.ENABLE GLOBAL
+.ENABLE SUBSTITUTION
+.DISABLE SUFFIX
+;
+;	Please enter the name of the device to which you wish to restore
+.ASKS [0:4:"SMP:"] DEV 	your sample data files [SMP]
+ASSIGN 'DEV' OUT
+;
+COPY/NOPROTECTION IN:INVTAG.MC OUT:INVTAG.MCB
+COPY/NOPROTECTION IN:INVTRX.MC OUT:INVTRX.MCB
+COPY/NOPROTECTION IN:ITMIDX.MC OUT:ITMIDX.MCB
+COPY/NOPROTECTION IN:ITMMAS.MC OUT:ITMMAS.MCB
+COPY/NOPROTECTION IN:PURCHS.MC OUT:PURCHS.MCB

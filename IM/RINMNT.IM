@@ -1,0 +1,709 @@
+; RINMNT.IM (CREATED 10-25-17)
+
+; INVMNT / IM
+;
+;	RAW MATERIALS INVENTORY MAINTENANCE
+;
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+	.INCLUDE 'WND:WINDOWS.DEF'
+
+	.INCLUDE 'DEF:RAWARA.DEF'		;VALUES
+
+RECORD RINVMS
+	.INCLUDE 'DEF:RD131A.DEF'
+
+RECORD	VENMAS
+	.INCLUDE 'DEF:RD011A.DEF'
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+
+RECORD	POP1
+	.INCLUDE 'DEF:POP1.DEF'
+
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+RECORD	W_VARS
+	A_WID	,A6,	'INVWIN'
+	A_TITLE	,A*,	'INVENTORY ENTRY AND EDITING'
+	W_ID	,D4
+	X	,D2
+	Y	,D2
+	WND_1	,D4
+
+RECORD TITLE
+		,A*,	'RAW MATERIAL INVENTORY'
+RECORD HDR1
+		,A*,	'     TAG# SUPPLIER   COATING  DEC-THK   GA  SIZE  SCALE-WT   LOC      PO    COST'
+		,A*,	'         EXT-COST  PRDCAT'
+RECORD	PRINT
+	LINCNT	,D2,	60
+	SPLFIL	,A14
+	LPONSW	,D1
+	LPARG	,D1
+	RPTNUM	,D3
+	PRTTYP	,A1
+	PGCNT	,D6,	000000
+	PLINE	,A132
+	PRTCTL	,D3,	132
+	LPSW	,D2
+
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+
+
+RECORD	CHANNELS
+	CHN011	,D2
+	CHN131	,D2
+	CHN132	,D2
+	CHN182	,D2
+	CHNWRK	,D2
+
+RECORD	TOTALS
+	TAGCNT	,D6
+	TOTQTY 	,D8
+	TOTCST	,D12
+	EXTCST	,D10
+
+record	data
+		,a2048	
+RECORD	VARS
+	UNAME	,A25
+	ATAG	,A6
+	A6	,A6
+	XDATE	,D8
+	batfil	,a11		;;;>,	'rinta2.bat'
+	len	,d8,	00001024
+	ln	,d6
+	tl	,d6
+	FIELD	,A512
+	TAB	,A1
+	D3	,D3
+	MASK	,A11	,'ZZZ,ZZZ,ZZX'
+	DTMASK	,A8	,'XX/XX/XX'
+	DP4MSK	,A15	,'Z,ZZZ,ZZZ.XXXX-'
+	OPNOK	,D1
+	PGM	,D2
+	DISP	,D1,1	;DISPLAY POP-UP WINDOW
+	REMOVE	,D1,2	;REMOVE POP-UP WINDOW
+	RFA	,A6
+	XTAG	,D6
+	SELECT	,D1	;1=ADD, 2=CHANGE
+	I	,D6
+	MSGCTL	,D1
+	V	,D1
+	SWITCH	,D1
+	DECMAL	,D10
+	OPTION	,D1
+	ENTRY	,A30
+	INXCTL	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	STORE	,D1,2
+	KTAGNO	,D6
+	KEY	,A6
+	CNGCTL	,D1
+	WHATNO	,D2
+	TODAA	,D6
+	TODAY	,D8
+	BLANKS	,A10
+PROC
+	XCALL TERID (V)
+	V = 1
+
+	UNAME = %GU_NAME
+	UPCASE UNAME
+
+	CALL INIT_WINDOW
+
+	XCALL W_DISP (WND_1, WD_CLEAR)
+	XCALL W_DISP (WND_1, WD_POS,1,1,'RAW MATERIALS INVENTORY ENTRY')
+	XCALL RDATE (TODAA)
+	XCALL DATE8(TODAA, D_OUT, TODAY, D_FMT, D_SW)
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	clear coptbl
+	tblcod = 'ZB'
+	zb_usr = uname
+	xcall isio (chn182, coptbl, tbl_key, read, lokctl)
+	if (lokctl .ne. 0)
+		begin
+		xcall mesag ('ZEBRA PRINTER NOT SET UP FOR THIS USER',1)
+		goto endoff
+		end
+
+	batfil = zb_prt +'.bat'
+
+	clear data
+	xcall ascii(9,tab)
+
+
+MENU,
+	XCALL W_DISP (WND_1, WD_CLEAR)
+	XCALL W_DISP (WND_1, WD_POS,1,1,'RAW MATERIALS INVENTORY MAINTENANCE')
+	XCALL W_DISP (WND_1, WD_POS,3,9,'PLEASE SELECT APPLICATION')
+	XCALL W_DISP (WND_1, WD_POS,5,15,'1. INVENTORY MAINTENANCE')
+	XCALL W_DISP (WND_1, WD_POS,6,15,'2. PRINT INVENTORY')
+
+MINPUT,
+	XCALL WINPT (WND_1, 3,36,1,1,'#E',ENTRY,INXCTL)
+	GOTO (MINPUT,ENDOFF), INXCTL
+	PGM = ENTRY(1,1)
+	GOTO (DISPLA,LIST),PGM
+	GOTO MINPUT
+
+;
+DISPLA,
+	INXCTL =
+	CNGCTL =
+	XCALL W_DISP (WND_1, WD_CLEAR)
+
+	XCALL W_DISP (WND_1, WD_POS, 4,4,'1. TAG NUMBER ')
+	XCALL W_DISP (WND_1, WD_POS, 6,4,'2. DATE ')
+	XCALL W_DISP (WND_1, WD_POS, 8,4,'3. VENDOR ')
+	XCALL W_DISP (WND_1, WD_POS,10,4,'4. LOCATION ')
+	XCALL W_DISP (WND_1, WD_POS,12,4,'5. MATERIAL ')
+	XCALL W_DISP (WND_1, WD_POS,14,4,'6. WEIGHT ')
+	XCALL W_DISP (WND_1, WD_POS,16,4,'7. DECIMAL THICK ')
+	XCALL W_DISP (WND_1, WD_POS,18,4,'8. NOTES ')
+	XCALL W_DISP (WND_1, WD_POS,20,4,'9. COST ')
+	XCALL W_DISP (WND_1, WD_POS,22,3,'10. PRD CAT')
+
+
+RMTAG,
+	XCALL WINPT (WND_1,4,23,06,01,'#E',ENTRY,INXCTL)
+	GOTO (DISPLA, ENDOFF),INXCTL
+	XTAG = ENTRY(1,6)
+	XCALL ISIO (CHN131, RINVMS, XTAG, READ, LOKCTL)
+	IF (LOKCTL.NE.0)
+		BEGIN	
+		XCALL WNMSG (WND_1,24,'TAG NUMBER NOT FOUND',1)
+		GO TO DISPLA
+		END
+	SELECT = 2
+	GOTO DSPREC
+
+RMDAT,
+	XCALL WINPT (WND_1,6,23,08,00,'D ',ENTRY,INXCTL)
+	GOTO (DISPLA),INXCTL
+	IF (ENTRY .EQ. BLANKS)
+	BEGIN
+	  ENTRY(1,8) = TODAY
+	  XCALL DATE8(TODAY, D_OUT, D_OUTR, D_FMT, D_SW)
+	  XCALL W_DISP (WND_1, wd_pos, 6, 23,  D_FMT)
+	END
+
+	RMDAT = ENTRY(1,8)
+	GOTO (ANYCNG),CNGCTL
+RMVEN,
+	WX = 8
+	CALL POP
+	XCALL WINPT (WND_1,8,23,02,00,'# ',ENTRY,INXCTL)
+	GOTO (DISPLA),INXCTL
+	PI = ENTRY(1,2)
+	IF (PI.LT.1 .OR. PI.GT.NUMARA) GOTO RMVEN
+
+	CALL R_POP
+
+	READ (CHN011, VENMAS, RFA:PARRFA(PI) )
+	RMVEN = VENNO
+	XCALL W_DISP (WND_1, WD_POS, 8, 30, NAME)
+	GOTO (ANYCNG), CNGCTL
+
+RMLOC,
+	WX = 10
+	CALL POP
+	XCALL WINPT (WND_1, 10,23,01,00,'# ',ENTRY,INXCTL)
+	GOTO (DISPLA), INXCTL
+	PI = ENTRY(1,1)
+	IF (PI .LE. 0) PI = 1		;DEFAULT TO MPLS
+	IF (PI .GT. 4) GOTO RMLOC
+	RMLOC = PI
+
+	CALL R_POP
+
+	XCALL W_DISP (WND_1, WD_POS, 10, 30, COMPANY(PI) )
+	GOTO (ANYCNG), CNGCTL
+
+RMMAT,
+	WX = 12
+	CALL POP
+	XCALL WINPT (WND_1, 12, 23, 02, 00, '# ',ENTRY, INXCTL)
+	GOTO (DISPLA),INXCTL
+	PI = ENTRY(1,2)
+	IF (PI.LT.1 .OR. PI.GT.NUMARA) GOTO RMMAT
+	CALL R_POP
+
+	DLINE = PARRY(PI)
+	RMMAT = DLINE(15,17)
+
+	XCALL W_DISP (WND_1, WD_POS, 12, 23, RMMAT )
+
+RMGA,
+	XCALL W_DISP (WND_1, WD_POS, 12,26, '-')
+	XCALL WINPT (WND_1, 12, 27,03,02, '# ', ENTRY, INXCTL)
+	GOTO (DISPLA),INXCTL
+	D3 = ENTRY(1,3)
+	IF (RMMAT .EQ. 'AL')
+	THEN	RMGA = D3, 'XXX'
+	ELSE	BEGIN
+		IF (D3/2*2.NE.D3) GOTO RMGA
+		RMGA = D3, 'ZXX' [LEFT]
+		END
+
+;;;	RMGA = ENTRY(1,2)
+;;;	USING RMGA SELECT
+;;;	(18,20,22,24,28), NOP
+;;;	(),		  GOTO RMGA
+;;;	ENDUSING
+RMWID,
+	XCALL W_DISP (WND_1, WD_POS, 12,30, '-')
+	XCALL WINPT (WND_1, 12,31,05,03, '# ', ENTRY, INXCTL)
+	GOTO (DISPLA),INXCTL
+	RMWID = ENTRY(1,5)
+	ENTRY(1,6) = RMWID, 'ZZ.XXX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 12,31, ENTRY(1,6) )
+	GOTO (ANYCNG), CNGCTL
+RMWGT,
+	XCALL WINPT (WND_1, 14, 23, 06,00, '#E',ENTRY, INXCTL)
+	GOTO (DISPLA),INXCTL
+	RMWGT = ENTRY(1,6)
+	GOTO (ANYCNG),CNGCTL
+RMDEC,
+	XCALL WINPT (WND_1, 16, 23, 03, 01, '# ', ENTRY, INXCTL)
+	GOTO (DISPLA), INXCTL
+	RMDEC = ENTRY(1,3)
+	ENTRY(1,4) = RMDEC, '.ZZX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 16,23, ENTRY(1,4))
+	GOTO (ANYCNG),CNGCTL
+RMNOTE,
+	XCALL WINPT (WND_1, 18, 23, 30, 0, 'A ',ENTRY, INXCTL)
+	GOTO (DISPLA),INXCTL
+	RMNOTE = ENTRY(1,30)
+	GOTO (ANYCNG), CNGCTL
+
+RMCOST,
+	XCALL WINPT (WND_1, 20, 23, 08, 00, '# ', ENTRY, INXCTL)
+	GOTO (DISPLA), INXCTL
+	RMCOST = ENTRY(1,8)
+	ENTRY(1,9) = RMCOST, 'ZZZX.XXXX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 20, 23, ENTRY(1,9) )
+	GOTO (ANYCNG), CNGCTL
+RMCAT,
+	XCALL WINPT (WND_1, 22, 23, 02, 00, 'AE', ENTRY, INXCTL)
+	GOTO (DISPLA), INXCTL
+	RMCAT = ENTRY(1,2)
+
+	GOTO ANYCNG
+POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	FOR I FROM 1 THRU MAXARA
+		BEGIN
+		CLEAR PARRY(I)
+		CLEAR PARRFA(I)
+		CLEAR PFLAGS(I)
+		END
+
+
+	PI = 0
+
+	USING WX SELECT
+	(8),	CALL GET_VEN
+	(10),	CALL GET_LOC
+	(12),	CALL GET_MAT
+	ENDUSING
+
+	XCALL POPD(POP1,DISP)	;DISPLAY LIST OF OPTIONS
+	RETURN
+;-----------------------------------------------------------
+
+GET_VEN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	POP_TITLE = "VENDORS"
+	V_RMV = 1
+	FIND (CHN011, VENMAS, V_RMV, KRF:2) [ERR=GV_LOOP]
+GV_LOOP,
+	READS (CHN011, VENMAS, , GETRFA:RFA) [ERR=GV_EOF]
+	IF (VENNO .LT. '0001') GOTO GV_LOOP	;SKIP HEADER
+	IF (V_RMV .LT. 1) GOTO GV_EOF
+	INCR PI
+	DLINE = NAME
+	PARRY(PI) = DLINE
+	PARRFA(PI) = RFA
+
+	IF (PI .LT. MAXARA) GOTO GV_LOOP
+GV_EOF,
+	NUMARA = PI
+	RETURN
+;--------------------------------------------------------
+
+GET_LOC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	POP_TITLE = "LOCATIONS"
+
+	FOR PI FROM 1 THRU C_MAX PARRY(PI) = COMPANY(PI)
+	NUMARA = C_MAX
+	RETURN
+;---------------------------------------------------------
+GET_MAT,
+
+	POP_TITLE = "MATERIALS"
+
+	CLEAR TBL_KEY
+	TBLCOD = 'R1'
+	FIND (CHN182, COPTBL, TBL_KEY)[ERR=GM_LOOP]
+GM_LOOP,
+	XCALL IOS (CHN182, COPTBL, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO GM_EOF
+	IF (TBLCOD .NE. 'R1') GOTO GM_EOF
+
+	INCR PI
+	DLINE = R1_DESC
+	DLINE(15,17) = R1_COD
+	PARRY(PI) = DLINE
+	GOTO GM_LOOP
+GM_EOF,
+	NUMARA = PI
+
+	RETURN
+;---------------------------------------------------------
+LIST,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; PRINT
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	find (CHN131, RINVMS, ^FIRST) [ERR=L_EOF]	;header
+LLOOP,
+	READS (CHN131, RINVMS, L_EOF)
+	XCALL ISIO (CHN011, VENMAS, RMVEN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) NAME = RMVEN
+	
+;;;	PLINE(1,2) = RI,	'ZX'
+	PLINE(4,9) = RMTAG,	'ZZZZZX'
+	PLINE(11,20) = NAME
+	PLINE(22,25) = RMMAT
+	PLINE(33,37) = RMDEC,	'X.ZZX'
+	PLINE(40,42) = RMGA
+	PLINE(44,49) = RMWID, 'ZX.XXX'
+	PLINE(52,57) = RMWGT,	'ZZZZZX'
+	PLINE(60,63) = COMPANY(RMLOC)
+	PLINE(66,71) = RMPO,	'ZZZZZX'
+	PLINE(73,79) = RMCOST,	'ZX.XXXX'
+	EXTCST = RMWGT * RMCOST
+	PLINE (85,97) = EXTCST,DP4MSK
+
+	PLINE (100,101) = RMCAT
+	
+	CALL PRINT
+
+	INCR TAGCNT
+	TOTQTY = TOTQTY + RMWGT
+	TOTCST = TOTCST + EXTCST
+
+	GOTO LLOOP
+L_EOF,
+
+	XCALL LINFD (2)
+	PLINE (1,7) = TAGCNT,MASK
+	PLINE (11,35) = 'TAGS ON FILE - SUBTOTAL: '
+	PLINE (46,57) = TOTQTY,MASK
+	PLINE (83,97) = TOTCST,DP4MSK
+	CALL PRINT
+
+	IF (LPONSW.EQ.1) XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+	LPONSW = 0
+	LINCNT = 60
+	PGCNT =
+
+	GOTO MENU
+
+PRINT,
+	IF (LPONSW.EQ.0) CALL PRNTON
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,'NO HDR','NO HDR3',
+&			'NO LEGEND',' ',' ',1,080,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+PRNTON,
+	SPLFIL (5,6) = 'EL'
+	LPSW = 1	; PRINT, SPOOL OR DISPLAY
+	XCALL LPOw (wnd_1,LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GOTO ENDOFF
+	LPONSW = 1
+	RETURN
+;************************************************************************
+
+;---------------------------------------------------------
+PRICE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; INPUT PRICE
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	RETURN
+;---------------------------------------------------------
+R_POP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL POPD(POP1, REMOVE)	;REMOVE LAST POP-UP WINDOW
+	RETURN
+;--------------------------------------------------------
+
+DSPREC,
+	ENTRY(1,6) = RMTAG, 'ZZZZZX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 4, 23, ENTRY(1,6) )
+
+	XCALL DATE8(RMDAT, D_OUT, D_OUTR, D_FMT, D_SW)
+	XCALL W_DISP (WND_1, WD_POS,6, 23,  D_FMT)
+
+	LOKCTL = 1
+	XCALL ISIO (CHN011, VENMAS, RMVEN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) NAME = RMVEN
+	XCALL W_DISP (WND_1, WD_POS, 8,30, NAME)
+
+	XCALL W_DISP (WND_1, WD_POS, 10, 30, COMPANY(RMLOC) )
+
+	XCALL W_DISP (WND_1, WD_POS, 12, 23, RMMAT )
+	XCALL W_DISP (WND_1, WD_POS, 12,26, '-')
+
+	XCALL W_DISP (WND_1, WD_POS, 12,27,RMGA )
+	XCALL W_DISP (WND_1, WD_POS, 12,30, '-')
+	ENTRY(1,6) = RMWID, 'ZZ.XXX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 12,31, ENTRY(1,6) )
+
+	
+	ENTRY(1,7) = RMWGT, 'ZZZ,ZZX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 14, 23, ENTRY(1,7) )
+
+	ENTRY(1,4) = RMDEC, '.ZZX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 16, 23, ENTRY(1,4) )
+
+	XCALL W_DISP (WND_1, WD_POS,18,23,RMNOTE)
+
+	ENTRY(1,9) = RMCOST, 'ZZZX.XXXX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS, 20, 23, ENTRY(1,9) )
+
+	XCALL W_DISP (WND_1, WD_POS, 20, 36, 'PO: ')
+	ENTRY(1,6) = RMPO,	'ZZZZZZ'
+	XCALL W_DISP (WND_1, WD_POS, 20, 40, ENTRY(1,6) )
+
+	XCALL W_DISP (WND_1, WD_POS, 22, 23, RMCAT)
+
+ANYCNG,
+;;;	XCALL WANCN (WND_1, 24, CNGCTL,WHATNO)
+	XCALL W_DISP(WND_1, WD_POS, 24, 1, 'FIELD TO CHANGE:     "P" = PRINT')
+	XCALL WINPT (wnd_1, 24,19,02,00,'A ',ENTRY,INXCTL)
+	IF (ENTRY(1,1) .EQ. 'P')
+		BEGIN
+		CALL PRINT_LABEL
+		GOTO ANYCNG
+		END
+	
+	ONERROR ANYCNG
+	WHATNO = ENTRY(1,2)
+	OFFERROR
+
+	IF (WHATNO .EQ. 0)
+	THEN	CNGCTL = 0
+	ELSE	CNGCTL = 1
+
+	GOTO (PROCES, CNGBR), CNGCTL+1
+
+CNGBR,
+	GOTO (RMTAG,RMDAT,RMVEN,RMLOC,RMMAT,RMWGT,RMDEC,RMNOTE,RMCOST,RMCAT), WHATNO
+	GOTO ANYCNG
+
+PROCES,
+	USING SELECT SELECT
+	(1),	NOP		;NO ADDS HERE!
+		;store (chn131, RINVMS, rmtag)
+
+	(2),	XCALL ISIO (CHN131, RINVMS, RMTAG, WRITE, LOKCTL)
+	ENDUSING
+
+	GOTO DISPLA
+
+
+;----------------------------------------------------------
+
+	GOTO DISPLA
+
+ENDOFF,
+	CALL CLOSE
+	XCALL PGCHN ('IM:IMMENU',1)
+;=========================================================================
+
+NOFIND,
+	XCALL WNMSG (WND_1, 24,'TAG NUMBER NOT FOUND',1)
+	GO TO DISPLA
+NODUPS,
+	XCALL WNMSG (WND_1, 24,'TAG NUMBER ALREADY ON FILE',1)
+	GO TO DISPLA
+INPUT,
+	XCALL WINPT (WND_1,ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL)
+	RETURN
+DSP4DP,
+	ENTRY = DECMAL,	'ZZZ,ZZX.XXXX' [LEFT]
+	XCALL W_DISP (WND_1, WD_POS,ROW,COL,ENTRY)
+	RETURN
+	OPTION = 7
+	GO TO CALDSP
+DSP3DP,
+	OPTION = 4
+	GO TO CALDSP
+DSPDTE,
+	OPTION = 2
+	GOTO CALDSP
+DSPNUM,
+	OPTION = 1
+CALDSP,
+	XCALL WDSPL (WND_1,MAX,ROW,COL,DECMAL,OPTION)
+	RETURN
+
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	OPNOK = 0
+
+	SWITCH = 5
+	XCALL FILES (1, 'SU', 132, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN131 = 1
+
+
+	SWITCH = 5
+	XCALL FILEc ('SMC',3, 'SI', 011, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN011 = 3
+
+	SWITCH = 5
+	XCALL FILEc ('SMC',17, 'SI', 182, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN182 = 17
+
+	OPNOK = 1
+	RETURN
+;------------------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN011) CLOSE CHN011
+	IF (CHN182) CLOSE CHN182
+	IF (CHN131) CLOSE CHN131
+	IF (CHN132) CLOSE CHN132
+
+	RETURN
+;------------------------------------------------------------
+
+PRINT_LABEL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	xcall delet ('spl:rmlab.txt')
+	open (9, o, 'spl:rmlab.txt')
+
+	chnwrk = 9
+
+	xcall isio (chn011, venmas, rmven, read, lokctl)
+	if (lokctl .ne. 0) name = rmven			;pre-conversion data
+
+	clear data
+
+	field = 'LABEL'
+	call tab_d
+
+	using rmloc select
+	(1 thru 4),	field = company(rmloc)
+	(),		field = 'Minneapolis'
+	endusing
+	call tab_d
+
+	ATAG = rmtag,	'XXXXXX'
+	field = ATAG 
+	call tab_d
+
+;;;	a2 = rmga,	'XX'
+	a6 = rmwid,	'ZZX.XXX' [left]
+	field = rmmat + '-' + rmga + '-' + a6
+	call tab_d
+
+	field = rmdec, '.XXX' [left]
+	call tab_d
+
+	field = rmwgt,	'ZZZZZZ' [left]
+	call tab_d
+
+	field = name
+	call tab_d
+
+	xdate(1,4) = rmdat(5,8)
+	xdate(5,8) = rmdat(1,4)
+	field = xdate,	'ZX/XX/XXXX' [left]
+	call tab_d
+
+	field = rmnote
+	call tab_d
+
+	ATAG = rmtag,	'XXXXXX'
+	field = 'T' + ATAG + 'T'
+	call tab_d
+
+
+	tl = %trim(data)
+	writes (chnwrk,data(1,tl) )
+	
+	writes (chnwrk, 'END')
+	close chnwrk
+
+	xcall shell (0, batfil)
+
+
+	RETURN
+;------------------------------------------------
+
+tab_d,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	xcall tabd (data, len, field, tab)
+	return
+;------------------------------------------------
+;------------------------------------------------------------
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; place window...
+	X = 
+	Y = 
+
+	CLEAR W_ID
+
+	XCALL W_PROC(WP_FIND,W_ID,A_WID)
+	IF (.NOT. W_ID) XCALL W_PROC(WP_CREATE,W_ID,A_WID,0,0)
+
+	XCALL W_BRDR(W_ID,WB_TITLE,A_TITLE,WB_TPOS,WBT_TOP,WBT_CENTER)
+	XCALL W_PROC(WP_PLACE,W_ID,X,Y)
+	XCALL W_DISP(W_ID,WD_CLEAR)
+
+	WND_1 = W_ID
+;;;	RETURN
+;; POP info...
+
+	MAXARA = 10		;9-19-97 NOT MORE THAN 1 FULL WINDOW
+	PLEN = 35
+	NUMROW = 10
+	WX = 8
+	WY = 31
+	POP_WID(1,5) = "INPOP"
+	POP_TITLE = ""
+	RETURN
+;-------------------------------------------------------------------
+
+END

@@ -1,0 +1,76 @@
+;  PRSSRT / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SET UP SORT MESAGES FOR PRODUCT STRUCTURE FILE WHILE IN
+;		THE MIDDLE OF THE RE-ORG FOR I/M
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD DUMPRS		;
+		.INCLUDE 'DEF:RD091B.DEF'
+RECORD SNDMSG
+	PRGNAM	,A9,'BM:PRSCNT'
+	RCNT	,D5
+	OCNT	,D5
+		,D3,	091
+RECORD NXTMSG
+	MSGPRG	,A9,'IM:RBPRST'
+RECORD
+	SWITCH	,D1
+	V	,D1
+	READ	,D1	,0
+	WRITE	,D1	,1
+	LOKCTL	,D1
+
+PROC (1)
+	XCALL TERID (V)
+	XCALL WATE (4,V)
+	XCALL OUTPT (2,01,1,'SET UP SORTS FOR RE-ORG',V)
+
+	SWITCH = 5
+	XCALL FILES (1,'U',091,SWITCH)		;FILE # 091 -- PRDSTR FILE
+	IF (SWITCH.EQ.9) GO TO INU091
+
+	LOKCTL = 1
+	XCALL IO (1,DUMPRS,1,READ,LOKCTL)
+	RCNT = REC091
+	OCNT = ORG091
+	WUFLAG =
+	LOKCTL = 1
+	XCALL IO (1,DUMPRS,1,WRITE,LOKCTL)
+	CLOSE 1
+	SWITCH = 5
+	XCALL SNMSG (SNDMSG,SWITCH)
+	SWITCH = 2
+	XCALL SNMSG (NXTMSG,SWITCH)
+	XCALL PGCHN ('BM:SRTPRS',1)
+INU091,
+	XCALL PGCHN ('IM:IMMENU',1)
+END

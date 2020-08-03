@@ -1,0 +1,62 @@
+;  SRTREC / IM 
+;
+;
+;		::PCPYIM.DEF::
+;*****************************************************************************
+;		INVENTORY MANAGEMENT  
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;*****************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+INPUT:INVTRX
+WORK:3
+OUTPUT:INVTRX
+RECORD:			; ::CRD043D.DEF::
+				;I/M RECEIVINGS TRANSACTION FILE "RD043D.DEF"
+				;	RECORD SIZE=116
+				;	DEVICE FILE#=043
+				;
+				;	SORT RECORD DEFINITION
+				;
+	RITMNO	,A15		; ITEM NUMBER
+	TRXTYP	,A1		; TRANSACTION TYPE
+				; 0 = RECEIVING
+				; 1 = TRANSFER
+				; 2 = ISSUE
+	RDESCR	,A30		; DESCRIPTION
+	LOCTO	,A2		; DESTINATION LOCATION
+	LOCFRM	,A2		; SOURCE LOCATION
+	NEWLOC	,D1		; NEW LOCATION FLAG
+				; 1 = NEW TO-LOC
+				; 2 = NEW FROM-LOC
+				; 3 = NEW LOCATION FOR BOTH
+	TOOONH	,D6		; QUANTITY ON HAND AT DESTINATION
+	TOOONO	,D6		; QUANTITY ON ORDER AT DESTINATION
+	FROONH	,D6		; QUANTITY ON HAND AT SOURCE
+	FROONO	,D6		; QUANTITY ON ORDER AT SOURCE
+	OLDAVG	,D9		; OLD AVERAGE COST
+	QTYRCD	,D5		; QUANTITY RECEIVED
+	NEWCST	,D8		; NEW ITEM COST
+	NEWAVG	,D9		; NEW AVERAGE COST
+	PONUM	,A9		; PURCHASE ORDER NUMBER (OR ORDER REF NO.)
+	ORDCMP	,A1		; COMPLETED FLAG (Y = COMPLETE N = NOT COMP.)
+;:
+KEYS:TRXTYP,RITMNO,QTYRCD
+PAD:]
+SYSTEM:
+END:

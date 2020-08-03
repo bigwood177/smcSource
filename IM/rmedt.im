@@ -1,0 +1,131 @@
+subroutine rmedt	;print receipts edit list
+;;;	chn131	,d
+	w_id	,d	;optional window id
+	curlod	,d	;current load number
+
+
+	.INCLUDE 'DEF:RAWARA.DEF'
+
+RECORD	RINTRX
+	.INCLUDE 'DEF:RD131A.DEF'
+
+RECORD	VENMAS
+	.INCLUDE 'DEF:RD011A.DEF'
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD TITLE
+		,A*,	'SMC '
+	T_COMP	,A4
+		,A1
+		,A*,	'RECEIVING EDIT'
+		,A1
+		,A*,	'LOAD: '
+	T_LOAD	,D2
+
+RECORD HDR1
+		,A*,	'     TAG# SUPPLIER   COATING  DEC-THK   GA   SIZE SCALE-WT  LOC      PO    COST'
+RECORD	PRINT
+	LINCNT	,D2,	60
+	SPLFIL	,A14
+	LPONSW	,D1
+	LPARG	,D1
+	RPTNUM	,D3
+	PRTTYP	,A1
+	PGCNT	,D6,	000000
+	PLINE	,A80
+	PRTCTL	,D3,	080
+	LPSW	,D2
+
+record	VARS
+	CHN131	,D2
+	win	,d4
+	read	,d1,0
+	lokctl	,d1
+	CHN011	,D4
+	CHN182	,D2,	17
+	SWITCH	,D1
+
+proc
+	chn011 = 0
+	open (chn011=0, si, 'smc:venmas.smm')
+
+	CHN131 = CHN011 + 1
+	SWITCH = 5
+	XCALL FILES (CHN131,'SI',131,SWITCH)
+
+	win = 0
+	if (%passed(w_id) ) win = w_id
+	T_LOAD = CURLOD
+
+LIST,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; PRINT RECEIVING EDIT
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	read (CHN131, RINTRX, ^FIRST) [ERR=L_EOF]	;header
+LLOOP,
+	READS (CHN131, RINTRX, L_EOF)
+	IF (CURLOD.NE.0 .AND. RMLOAD.NE.CURLOD) GOTO LLOOP	;0 = ALL
+	XCALL ISIO (CHN011, VENMAS, RMVEN, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) NAME = '** NOT ON FILE **'
+	
+	PLINE(1,2) = RMLOAD,	'ZX'
+	PLINE(4,9) = RMTAG,	'ZZZZZX'
+	PLINE(11,20) = NAME
+	PLINE(22,25) = RMMAT
+	PLINE(33,37) = RMDEC,	'X.ZZX'
+	PLINE(40,42) = RMGA
+	PLINE(44,49) = RMWID, 'ZX.XXX'
+	PLINE(53,58) = RMWGT,	'ZZZZZX'
+	PLINE(60,63) = COMPANY(RMLOC)
+	PLINE(66,71) = RMPO,	'ZZZZZX'
+	PLINE(73,79) = RMCOST,	'ZX.XXXX'
+	
+	CALL PRINT
+
+	GOTO LLOOP
+L_EOF,
+;;;	IF (LPONSW.EQ.1) XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+
+	IF (LPONSW.ne.1) GOTO ENDOFF
+
+	CLEAR TBL_KEY
+	TBLCOD = 'ZE'
+	XCALL ISIO (CHN182, COPTBL, TBL_KEY, READ, LOKCTL)
+	IF (LOKCTL .NE. 0)
+	THEN	XCALL LPOFF (LPSW,SPLFIL,PGCNT)		;LOCAL
+	ELSE	BEGIN
+		IF (SPLFIL(1,1).NE.'4') SPLFIL(1,1) = '6'		;USE QUE NAME FROM TABLE
+		XCALL LPOFF (LPSW,SPLFIL,PGCNT,ZE_PRT)
+		END
+	LPONSW = 0
+	LINCNT = 60
+	PGCNT =
+
+	GOTO ENDOFF
+;--------------------------------------------------------------------
+;---------------------------------------------------------------------
+PRINT,
+	IF (LPONSW.EQ.0) CALL PRNTON
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,'NO HDR','NO HDR3',
+&			'NO LEGEND',' ',' ',1,080,PRTCTL,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+PRNTON,
+	SPLFIL (5,6) = 'EL'
+	LPSW = 1	; PRINT, SPOOL OR DISPLAY
+	if (win)
+	then	XCALL LPOw (win,LPSW,SPLFIL)	
+	else	XCALL LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GOTO ENDOFF
+
+	LPONSW = 1
+
+	RETURN
+;************************************************************************
+ENDOFF,
+	CLOSE CHN011
+
+	xreturn
+	end
+
