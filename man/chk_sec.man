@@ -1,0 +1,52 @@
+.function chk_sec
+	pkg,	a		;package
+	menu,	a		;menu name (armenu)
+	pgm,	d1		;menu selection
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+record	sec_mnu
+	.include 'def:sec_mnu.def'
+	
+record	coptbl
+	.include 'def:rd182a.def'
+	
+record	vars
+	auth	,d1		;1=OK, 0=not authorized for this selection
+	login	,a15
+	read	,d1,0
+	lokctl	,d1
+	chn182	,d4
+	chnsec	,d4
+	
+	
+.proc
+
+	auth = 0				;assume not authorized
+	
+	open (chn182=0, si, 'smc:coptbl.smm')
+	open (chnsec=0, si, 'ut:sec_mnu.ism')
+	
+	login = %gu_name
+	upcase login
+	
+	clear coptbl
+	tblcod = 'US'
+	us_login = login
+	xcall isio (chn182, coptbl, tbl_key, read, lokctl)
+	if (lokctl .ne. 0) goto endoff
+	
+	sm_grp = US_grp
+	sm_pkg = pkg
+	sm_menu = menu
+	sm_pg1 = pgm
+	
+	find (chnsec, sec_mnu, sec_key) [err=endoff]
+	auth = 1		;ok
+	
+endoff,
+	freturn auth
+	
+.end
+	

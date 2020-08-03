@@ -1,0 +1,14 @@
+.subroutine beep
+;	16-Sep-1998 ssq: this routine supplied by
+;	Synergex to provide same functionality as
+;	"display (15,7)".
+
+.define MB_OK                       ^x(00000000)
+.align
+record
+    	dll	,i8
+.proc
+	xcall dll_subr(dll=%dll_open("user32"), "MessageBeep", MB_OK)
+	xcall dll_close(dll)
+	xreturn
+.end

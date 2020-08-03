@@ -1,0 +1,75 @@
+SUBROUTINE MOUNT ;(NAME,DEVICE)
+;
+;  MOUNT / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		ROUTINE TO DISPLAY "PLEASE MOUNT" MESSAGE
+;		& CONTINUE WHEN OPERATOR TYPES "DONE"
+; 
+	NAME	,A	; PAPER, DISK, ETC. TO BE MOUNTED
+	DEVICE	,A	; DEVICE IT IS TO BE MOUNTED ON
+RECORD  MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD  MESCTL ,X
+			.INCLUDE 'DEF:MES002.DEF'
+RECORD
+	DSPLY1	,A13,'PLEASE MOUNT '
+	DSPLY2	,A4,' ON '
+	DSPLY3	,A25,'(ENTER "DONE" WHEN READY)'
+	ENTRY	,A5	; PARAMETERS
+	INXCTL	,D1	; FOR INPUT
+	V	,D1
+	SYTTNO  ,D3
+	MCTTNO  ,D2
+	TTNOSW	,D1
+	PRTTMP  ,D1
+	TERMNO	,D2
+PROC
+	XCALL TTNO (SYTTNO,MCTTNO,TTNOSW)
+	TERMNO = MCTTNO + 2
+	OPEN (11,U,'UT:MESARA.DDF')
+	ON ERROR RDERR
+RDERR,
+	READ (11,MESARA,TERMNO)
+	OFF ERROR
+	PRTTMP=CURPTR
+	IF(NAME.NE.'REGULAR PAPER') GO TO PROCNT
+	IF (PRTTMP.LE.0) GOTO PROCNT
+	READ (11,MESCTL,1)
+	SPCFRM(PRTTMP)=0
+	FRMTRM(PRTTMP)=0
+	WRITE (11,MESCTL,1)
+PROCNT,
+	CLOSE 11
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (12,20,0,DSPLY1,1)
+	DISPLAY (15,NAME,DSPLY2,DEVICE)
+	XCALL OUTPT (16,20,0,DSPLY3,1)
+INPUT,
+	XCALL INPUT (14,20,4,4,'A ',ENTRY,INXCTL,1)
+	IF (ENTRY.EQ.'DONE') RETURN
+	GO TO INPUT
+END

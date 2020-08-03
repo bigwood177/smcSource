@@ -1,0 +1,61 @@
+;mail.man - general purpose routine to automate outlook for win7 and XP
+
+subroutine mail
+	recpt	,a
+	subj	,a
+	body	,a
+	pat1	,a
+	pat2	,a
+	pat3	,a
+	pat4	,a
+	pat5	,a
+	pat6	,a
+	pat7	,a
+	sndflg	,d	;1=send, 2-display
+
+record	attachments
+	at1	,a100
+	at2	,a100
+	at3	,a100
+	at4	,a100
+	at5	,a100
+	at6	,a100
+	at7	,a100
+
+
+record	vars
+	a2	,a2
+	Windows7,d2,	22
+	system	,d2	;22 = windows 7
+	machine	,d3	;101 = 32bit, 104 = 64 bit
+
+proc
+	xcall envrn (system, machine)
+
+	set at1,at2,at3,at4,at5,at6,at7 = '~'
+
+
+	if (%passed(pat1) ) at1 = pat1
+	if (%passed(pat2) ) at2 = pat2
+	if (%passed(pat3) ) at3 = pat3
+	if (%passed(pat4) ) at4 = pat4
+	if (%passed(pat5) ) at5 = pat5
+	if (%passed(pat6) ) at6 = pat6
+	if (%passed(pat7) ) at7 = pat7
+
+	if (at1 .eq. a2) at1 = '~'
+	if (at2 .eq. a2) at2 = '~'
+	if (at3 .eq. a2) at3 = '~'
+	if (at4 .eq. a2) at4 = '~'
+	if (at5 .eq. a2) at5 = '~'
+	if (at6 .eq. a2) at6 = '~'
+	if (at7 .eq. a2) at7 = '~'
+
+
+	using system select
+	(Windows7),	xcall x7mail(recpt,subj,body,at1,at2,at3,at4,at5,at6,at7,sndflg)
+	(),		xcall xmail (recpt,subj,body,at1,at2,at3,at4,at5,at6,at7,sndflg)
+	endusing
+
+	xreturn
+end

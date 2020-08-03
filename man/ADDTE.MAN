@@ -1,0 +1,76 @@
+SUBROUTINE ADDTE
+;
+;  ADDTE / MAN
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;
+
+	 INVDAT   ,D			; Invoice Date
+	 DAYSDU	  ,D			; Due Days (from customer's terms code)
+	 DUDATE	  ,D			; Invoice Due Date
+
+RECORD DATFLD
+	WKDAMN	,D2	
+	WKDADA	,D2
+	WKDAYR	,D2
+RECORD
+	MONVAL	,12D3	,000,031,059,090,120,151,181,212,243,273,304,334
+	TOTDAY	,D5
+	DAYIDX	,D2
+	REMDAY	,D3
+	DAYFLD	,D5
+
+PROC
+	TOTDAY =
+	DATFLD = INVDAT
+	TOTDAY = WKDAYR * 365
+	TOTDAY = TOTDAY + MONVAL(WKDAMN) + WKDADA + DAYSDU
+	WKDAYR = (TOTDAY/365) #0
+	DAYFLD = WKDAYR * 365
+	REMDAY = TOTDAY - DAYFLD
+	IF (REMDAY.LE.0) GO TO ELSE
+	DAYIDX = 12
+LOOP,
+	IF (REMDAY.GT.MONVAL(DAYIDX)) GO TO FINLOP
+	DAYIDX = DAYIDX - 1
+	GO TO LOOP
+FINLOP,
+	WKDAMN = DAYIDX
+	GO TO FINISH
+ELSE,
+	DAYIDX = 12
+	WKDAMN = 12
+FINISH,
+	IF (REMDAY.LE.0) GO TO ELSE2
+	WKDADA = REMDAY-MONVAL(DAYIDX)
+	GO TO DONE
+ELSE2,
+	WKDADA = 31
+	WKDAYR = WKDAYR - 1
+DONE,
+	DUDATE = DATFLD
+	RETURN
+END

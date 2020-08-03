@@ -1,0 +1,38 @@
+SUBROUTINE TTNO; (SYTTNO,MCTTNO,TTNOSW)
+;
+;   TTNO / MAN 
+;
+;
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+	SYTTNO	,D
+	MCTTNO	,D
+	TTNOSW	,D
+RECORD
+	TERMNO	,D2
+PROC
+	XCALL TNMBR (TERMNO)
+	MCTTNO = TERMNO
+	SYTTNO = TERMNO
+	RETURN
+END

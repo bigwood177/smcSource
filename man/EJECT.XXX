@@ -1,0 +1,4 @@
+RECORD	EJECT
+	E_CHAR	,A1		;<ESC>
+		,A4,	"&l0H"	;pitch mode = 2 = 16.5-16.7 (compressed)
+

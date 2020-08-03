@@ -1,0 +1,30 @@
+;spedit.man
+.subroutine spedit
+	spfil	,a
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record edit_string
+		,a7,	'notepad'
+		,a1
+	path	,a100
+record	vars
+	len	,d3
+	string	,a100	
+proc
+	s_filnam = spfil
+	XCALL GETLOG ("SPL",string,LEN)
+
+	path = string(1,len) + "\" + s_name
+	
+	xcall spawn (edit_string(1, %trim(edit_string) ) )
+	return
+

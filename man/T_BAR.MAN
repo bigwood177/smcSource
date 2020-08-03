@@ -1,0 +1,53 @@
+subroutine t_bar
+;
+; display company name on title bar
+;
+	.include 'wnd:tools.def'
+
+RECORD	MESARA
+	.INCLUDE 'DEF:MES001.DEF'
+
+RECORD	COPTBL
+	.INCLUDE 'DEF:RD182A.DEF'
+
+RECORD	VARS
+	CHN182	,D2
+	READ	,D1,0
+	LOKCTL	,D1
+	TERMNO	,D3
+	SYTTNO	,D3
+	MCTTNO	,D2
+	TTNOSW	,D1
+	SWITCH	,D1
+;
+PROC
+
+;get the company code...
+	OPEN (11,I,'UT:MESARA.DDF')
+	XCALL TTNO (SYTTNO,MCTTNO,TTNOSW)
+	TERMNO = MCTTNO
+	TERMNO = TERMNO + 2
+	READ (11,MESARA,TERMNO)
+	CLOSE 11
+
+;get the company info...
+	SWITCH = 5
+	XCALL FILES (10,'SI',182,SWITCH)
+	CHN182 = 10
+	CLEAR TBL_KEY
+	TBLCOD = 'CO'
+	C1_CODE = CMPCOD
+	C1_REC = 1
+	XCALL ISIO (CHN182,COPTBL,TBL_KEY,READ,LOKCTL)
+	CLOSE CHN182
+
+	IF (LOKCTL .NE. 0) RETURN
+
+;-
+	xcall u_start(,,,,,,,35)
+	xcall e_sect(C1_NAME,D_CAPTION)
+	xcall u_finish
+;-
+	RETURN
+	END
+

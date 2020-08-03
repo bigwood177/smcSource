@@ -1,0 +1,144 @@
+SUBROUTINE OFILE ; (CHANEL,FILNUM,BLOCKS,RECSIZ,SWITCH)
+;
+;  OFILE / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SUBROUTINE TO OPEN A FILE FOR OUTPUT WITH A
+;		SPECIFIED BLOCK SIZE
+;
+;		NOTE: Access privilege to OFILE is 'I' or 'U'. It is
+;		assumed that the access code is checked from FILES, since
+;		all files opened using OFILE should be previously protected.
+;
+;
+	CHANEL	,D		;CHANNEL TO OPEN OR CLOSE FILE ON
+	FILNUM	,D		;RECORD NUMBER ON DEVICE FILE
+	BLOCKS	,D		;SIZE OF OUTPUT FILE DESIRED
+	RECSIZ	,D		;LENGTH OF RECORDS TO BE WRITTEN
+				;NOT USED IN RT11/TSX BUT REQUIRED FOR SOURCE
+	SWITCH	,D		;INCOMING CODES:  NONE
+				;OUTGOING CODES:  0 - OPENED SUCCESSFULLY
+				;		  1 - OPEN FAILED (NO SPACE)
+				;		  9 - FILE NOT AVAILABLE
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD SECURE
+			.INCLUDE 'DEF:SEC001.DEF'
+RECORD,X
+			.INCLUDE 'DEF:SEC002.DEF'
+RECORD DEVICE
+			.INCLUDE 'DEF:DEV001.DEF'
+RECORD REDFIL
+	REDDEV	,A3
+		,A1	,':'
+	RDFILE	,A6
+		,A1	,'.'
+	REDEXT	,A3
+		,A1,	'['
+	SIZE	,D5
+		,A1,	']'
+RECORD
+	AERR	,A2
+	BLANKS	,A200
+	ERR	,D2
+	FILBL	,A21
+	LINE	,D5
+	LNGTH	,D2
+	SYSTEM	,D1
+	SUB	,D2
+	TCHAR	,D3
+	TERMNO	,D2
+	SYTTNO	,D3
+	MCTTNO	,D2
+	TTNOSW	,D1
+PROC
+	IF (WACCES.NE.BLANKS .AND. CMPPOS.NE.0) GO TO BEGIN
+	CLOSE 11
+	OPEN (11,I,'UT:MESARA.DDF')
+
+;;;	XCALL ENVRN (SYSTEM)
+	system = 0	;envrn.man conflicts w/ synergy envrn
+	IF (SYSTEM.GT.1) SYSTEM = 1	;MAINTAIN TSX+ = 1
+	XCALL TTNO (SYTTNO,MCTTNO,TTNOSW)
+	TERMNO = MCTTNO
+	TERMNO = TERMNO + 2
+	READ (11,MESARA,TERMNO)
+	CLOSE 11
+	IF (SECREC.LE.0) GO TO UNAVBL
+	OPEN (11,I,'UT:SECURE.DDF')
+	READ (11,SECURE,SECREC)
+BEGIN,
+	IF (ACCESS(FILNUM).EQ.' ') GO TO UNAVBL
+	CLOSE 11
+	OPEN (11,I,'UT:DEVICE.DDF')
+	ON ERROR REDDEV
+REDDEV,
+	READ (11,DEVICE,FILNUM)
+	OFF ERROR
+	REDDEV = DEVNAM (CMPPOS)
+	RDFILE = FILNAM
+	REDEXT = CMPCOD
+	SIZE = BLOCKS
+	CALL SQUEZ
+	ON ERROR NOROOM
+	OPEN (CHANEL,O,FILBL)
+	OFF ERROR
+	SWITCH =
+	GO TO EXIT
+;*****************SQUEEZE OUT SPACES FROM FILE SPECIFICATION **********
+SQUEZ,
+	SUB =
+	LNGTH =
+	FILBL =
+LOOP,
+	IF (SUB.GE.21) RETURN
+	INCR SUB
+	IF (REDFIL(SUB,SUB).EQ.' ') GO TO LOOP
+	INCR LNGTH
+	FILBL (LNGTH,LNGTH) = REDFIL (SUB,SUB)
+	GO TO LOOP
+UNAVBL,
+	SWITCH = 9
+	GO TO EXIT
+;***************************************************************************
+NOROOM,
+	SWITCH = 1
+	XCALL ERROR (ERR,LINE)
+	AERR = ERR
+	XCALL OUTPT (24,1,1,'?OFILE-FILE "',1)
+	DISPLAY (15,REDFIL,'" ERROR # ',AERR,' - PRESS RETURN')
+	CALL ACPTCR
+EXIT,
+	CLOSE 11
+	RETURN			;RETURN TO CALLING PROGRAM
+ACPTCR,
+	XCALL FLAGS (00001000,1)
+	ACCEPT (15,TCHAR)
+	IF (TCHAR.NE.13) GO TO ACPTCR
+	IF (SYSTEM.NE.1) ACCEPT (15,TCHAR)
+	XCALL FLAGS (00001000,0)
+	RETURN
+END

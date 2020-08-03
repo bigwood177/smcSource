@@ -1,0 +1,6 @@
+;	Dummy field used to force the use of the MCBA DIBOL sort for 
+;	those cases where unusual file structure causes vendor-supplied
+;	macro sorts to not be able to function correctly
+
+RECORD 
+	MCBSRT	,D1

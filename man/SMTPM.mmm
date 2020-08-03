@@ -1,0 +1,510 @@
+;*****************************************************************************
+;
+; Title:        SmtpMail.dbl
+;
+; Description:  Sends an SMTP e-mail message
+;
+; Author:       Galen Carpenter (Synergex Development)
+; Date:         3rd Dec 2002
+;
+; Updated by:   Steve Ives (Synergex Professional Services Group)
+; Date:         1st June 2006
+;
+; Updated by:   William Hawkins (Synergex Professional Services Group)
+; Date:         6th October 2008
+;
+;*****************************************************************************
+;
+; This code is supplied as seen and without warranty or support, and is used
+; at your own risk. Neither the author or Synergex accept any responsability
+; for any loss or damage which may result from the use of this code.
+;
+;*****************************************************************************
+;
+; Uncomment the following line of code to enable BASE64 encoding.
+.define USE_BASE64_ENCRYPTION
+;
+;*****************************************************************************
+;
+.define SMERR_SUCCESS       1
+.define SMERR_BADSERVER     2   ;Invalid server name or address
+.define SMERR_NORELAY       3   ;Mail server can't relay
+.define SMERR_NETPROB       4   ;Failed to connect to SMTP server
+.define SMERR_TOLIST        5   ;No recipient address provided
+.define SMERR_CCLIST        6
+.define SMERR_BODYFILE      7   ;Failed to open body file
+.define SMERR_SENDADDR      8
+.define SMERR_SERVERFAIL    9   ;Invalid response from SMTP server
+.define SMERR_BADLIST       10
+.define SMERR_ATTACHFILE    11  ;Failed to open attachment file
+.define SMERR_BCCLIST       12
+;
+;*****************************************************************************
+
+function SmtpM ,^val		;shorten from smtpMail
+
+
+req in  a_server        ,a      ;SMTP server name or ip address
+req in  a_domain        ,a      ;Senders domain name
+req in  a_sender        ,a      ;Senders e-mail address
+opt in  a_sender_name   ,a      ;Senders name
+opt in  a_replyto       ,a      ;Senders reply to email address
+req in  a_tolist        ,a      ;Recipient list (comma delimited)
+opt in  a_cclist        ,a      ;CC list (comma delimited)
+opt in  a_subject       ,a      ;Subject text
+opt in  a_bodyarray     ,[*]a   ;Body text array
+opt in  a_bodyfile      ,a      ;File containing body text
+opt in  a_attachfile    ,a      ;Attachment file name (array)
+opt in  a_encodetype    ,n      ;Attachment file type (0-text,1-encode base64)
+endparams
+
+
+.include 'DBLDIR:synsock.def'
+
+external function
+    get_smtp_line   ,^val
+    send_rcpt_list  ,^val
+    synsock         ,^val
+    localUMTOffset  ,^val
+
+literal
+    dayname         ,[7]a3  ,'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+    monthname       ,[12]a3 ,'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    &                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+
+.define MIME_BOUNDARY   '=_NextPart_'+%hex(%jbno)
+
+record	varatt
+	attch_array	,10a80		;alway an array of 10 X 80
+
+record
+	dbg	,d2,	22	;chan for debug
+    ii		    ,d2
+    att_passed	    ,d1 ; 1 = attached file array passed
+    sd              ,i4 ; socket descriptor
+    rc              ,i4 ; storage for reply code from server
+    inaddr          ,i4 ; internet address for server - needed by connect
+    err             ,i4
+    chan            ,i4 ; channel to open bodyfile
+    count           ,i4 ; Loop counter
+    hoursOffset     ,i4 ; hours (plus or minus) from UMT
+    line_buf        ,a255
+    data_buf        ,a28500 ; Equates to 500 SMTP lines (57 bytes before conversion to Base64, 76 bytes + CRLF after conversion)
+    fname           ,a255
+    fextension      ,a40
+    umtOffset       ,a5
+    group dt
+        year        ,a4
+        month       ,d2
+        day         ,a2
+        hour        ,a2
+        minute      ,a2
+        seconds     ,a2
+        milli       ,a6
+    endgroup
+
+.proc
+;;;	open (dbg,o,'debug.dat')
+
+    ;Open a socket
+    err = %ss_socket(sd,SS_SOCK_STREAM)
+
+    ;Assume we've been given a server name and attempt to lookup IP address
+    if (err=%ss_gethostbyname(a_server,inaddr))
+    begin
+        ;It failed, maybe we were given an IP address?
+        if (err=%ss_inet_addr(a_server,inaddr))
+        begin
+            ;No, it's not valid
+            freturn(SMERR_BADSERVER)
+        end
+    end
+
+    ;Connect socket to SMTP server (port 25)
+    if (err=%ss_connect(sd,25,inaddr))
+        freturn(SMERR_NETPROB)
+
+    ;Get initial response from the server
+    if (%get_smtp_line(sd)!=220)
+    begin
+        xcall ss_close(sd)
+        freturn(SMERR_SERVERFAIL)
+    end
+
+    ;Service is available, now tell the server the senders domain
+.ifdef USE_EHLO
+    xcall ss_sendbuf(sd,'EHLO '+%atrim(a_domain)+%char(13)+%char(10))
+    do
+    begin
+        rc=%get_smtp_line(sd,line_buf)
+        call check_rc
+    end
+    until (line_buf(4:1)==' ')
+.else
+    xcall ss_sendbuf(sd,'HELO '+%atrim(a_domain)+%char(13)+%char(10))
+    rc=%get_smtp_line(sd)
+    call check_rc
+.endc
+
+    ;Tell the server about the sender
+    xcall ss_sendbuf(sd,'MAIL FROM:<'+%atrim(a_sender)+'>'+%char(13)+%char(10))
+    rc=%get_smtp_line(sd)
+    call check_rc
+
+    ;Send recipient list
+    rc = %send_rcpt_list(sd, a_tolist)
+    if (rc!=SMERR_SUCCESS)
+    begin
+        if (rc!=SMERR_SUCCESS)
+        begin
+            xcall ss_close(sd)
+            using rc select
+            (SMERR_BADLIST),
+                freturn(SMERR_TOLIST)
+            (),
+                freturn(SMERR_SERVERFAIL)
+            endusing
+        end
+    end
+
+    ;Send cc list
+    if (^passed(a_cclist)&&a_cclist)
+    begin
+        rc=%send_rcpt_list(sd,a_cclist)
+        if (rc!=SMERR_SUCCESS)
+        begin
+            xcall ss_close(sd)
+            using rc select
+            (SMERR_BADLIST),
+                freturn(SMERR_CCLIST)
+            (),
+                freturn(SMERR_SERVERFAIL)
+            endusing
+        end
+    end
+
+    ;Successfully sent cc list, now send DATA command
+    xcall ss_sendbuf(sd,'DATA'+%char(13)+%char(10))
+    if (%get_smtp_line(sd)!=354)
+    begin
+        xcall ss_close(sd)
+        freturn(SMERR_SERVERFAIL)
+    end
+
+    ;Send header
+    dt = %datetime
+    hoursOffset = %localUMTOffset()
+    if (hoursOffset < 0) then
+    UMToffset = %string(hoursOffset,'-XXXX')
+    else
+    UMToffset = %string(hoursOffset,'+XXXX')
+    xcall put_data_line(sd, 'X-Mailer: Synergy DBL')
+    xcall put_data_line(sd,'Date: '+dayname[%wkday]+', '
+    &                   +dt.day +' '+monthname[dt.month]+' '+dt.year+' '
+    &                   +dt.hour+':'+dt.minute+':'+dt.seconds+' '+umtOffset)
+
+    ;Sender
+    if (^passed(a_sender_name)&&a_sender_name) then
+        xcall put_data_line(sd,'From: "'+%atrim(a_sender_name)+'" <'+%atrim(a_sender)+'>')
+    else
+        xcall put_data_line(sd,'From: '+%atrim(a_sender))
+
+    ;Reciptient
+    xcall put_data_line(sd,'To: '+%atrim(a_tolist))
+
+    ;Subject
+    if (^passed(a_subject)&&a_subject)
+        xcall put_data_line(sd,'Subject: '+%atrim(a_subject))
+
+    ;CC:
+    if (^passed(a_cclist)&&a_cclist)
+        xcall put_data_line(sd,'Cc: '+%atrim(a_cclist))
+
+    ;Reply to
+    if (^passed(a_replyto)&&a_replyto)
+        xcall put_data_line(sd,'Reply-To: '+%atrim(a_replyto))
+
+    ;Attachment
+    att_passed = 0
+    if (^passed(a_attachfile))
+    begin
+        xcall put_data_line(sd,'Mime-Version: 1.0')
+        xcall put_data_line(sd,'Content-Type: multipart/mixed; boundary="'+MIME_BOUNDARY+'"')
+        xcall put_data_line(sd,'')
+        xcall put_data_line(sd,'--'+MIME_BOUNDARY)
+        xcall put_data_line(sd,'Content-Type: text/plain; charset="iso-8859-1"')
+        xcall put_data_line(sd,'Content-Transfer-Encoding: 7bit')
+
+	varatt = a_attachfile	;array 10a80
+	att_passed = 1
+    end
+
+	xcall put_data_line(sd,'Content-Type: text/html; charset="ISO-8859-1"')
+
+    xcall put_data_line(sd, '')
+
+    ;Were we passed an array containing body text?
+    if (^passed(a_bodyarray))
+    begin
+        for count from 1 thru ^argdim(^argnum(a_bodyarray),1)
+            xcall put_data_line(sd, %atrim(a_bodyarray[count]))
+    end
+
+    ;Were we passed the name of a file containing body text?
+    if (^passed(a_bodyfile)&&a_bodyfile)
+    begin
+        ;Yes, load the body text from the file
+        open(chan=%syn_freechn,i,a_bodyfile) [ERR=body_err]
+        repeat
+        begin
+            reads(chan,line_buf,body_eof)
+            xcall put_data_line(sd,%atrim(line_buf))
+        end
+body_eof,
+        close chan
+        exit
+body_err,
+        freturn(SMERR_BODYFILE)
+    end
+
+    ;Were we passed an attachment file?
+	if (att_passed) call attach_file
+
+
+
+    ;Send the end of message command (CRLF.CRLF)
+    xcall ss_sendbuf(sd,%char(13)+%char(10)+'.'+%char(13)+%char(10))
+    if (%get_smtp_line(sd).ne.250)
+    begin
+        xcall ss_close(sd)
+        freturn(SMERR_SERVERFAIL)
+    end
+
+    ;Close the socket
+    xcall ss_close(sd)
+
+	close dbg
+    ;All done
+    freturn(SMERR_SUCCESS)
+
+check_rc,
+
+    using rc select
+    (421,451,452,552),
+    begin
+        xcall ss_close(sd)
+        freturn(SMERR_SERVERFAIL)
+    end
+    (!=250),
+    begin
+        xcall ss_close(sd)
+        freturn(SMERR_SENDADDR)
+    end
+    endusing
+
+    return
+
+attach_file,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	for ii from 1 thru 10
+		if (attch_array(ii) .ne. '  ')
+
+    begin
+        xcall put_data_line(sd,'')
+        xcall put_data_line(sd,'--'+MIME_BOUNDARY)
+
+        xcall parse(attch_array(ii),,,,, fname, fextension)
+;;;        xcall parse(a_attachfile,,,,, fname, fextension)
+
+        xcall put_data_line(sd,'Content-Type: application/octet-stream; name="'+%atrim(fname)+%atrim(fextension)+'"')
+.ifdef USE_BASE64_ENCRYPTION
+        if(^passed(a_encodetype)&&a_encodetype)
+            using a_encodetype select
+            (1),
+                xcall put_data_line(sd,'Content-Transfer-Encoding: base64 ')
+            endusing
+.endc ;USE_BASE64_ENCRYPTION
+        xcall put_data_line(sd,'')
+
+        open(chan=%syn_freechn,i,attch_array(ii) ) [ERR=attach_err]
+;;;        open(chan=%syn_freechn,i,a_attachfile) [ERR=attach_err]
+
+        repeat
+        begin
+            gets(chan,data_buf,attach_eof)
+            xcall put_data_line(sd,data_buf(1:%rsize), a_encodetype)
+        end
+attach_eof,
+        if(%rsize)
+            xcall put_data_line(sd,data_buf(1:%rsize), a_encodetype)
+.ifdef USE_BASE64_ENCRYPTION
+        if (^passed(a_encodetype)&&a_encodetype==1)
+            xcall put_data_line(sd,%char(13)+%char(10))
+.endc ;USE_BASE64_ENCRYPTION
+        xcall put_data_line(sd,'')
+;;;        xcall put_data_line(sd,'--'+MIME_BOUNDARY+'--')
+        close(chan)
+        exit
+attach_err,
+        freturn(SMERR_ATTACHFILE)
+    end
+
+        xcall put_data_line(sd,'--'+MIME_BOUNDARY+'--')
+  return
+;------------------------------------------------------
+
+
+endfunction
+
+;*****************************************************************************
+;
+;   if first character is a period, this function inserts a period
+;   in front of the line.  See section 4.5.2 of SMTP FAQ - Transparency
+;   note: this function will not trim buf.
+
+.subroutine put_data_line
+
+req in  sd              ,n            ;socket descriptor
+req in  a_buffer        ,a            ;buffer to send
+opt in  a_encodetype    ,n            ;encode type
+
+.include 'DBLDIR:synsock.def'
+
+.ifdef USE_BASE64_ENCRYPTION
+external function
+    base64_encode   ,a
+.endc ;USE_BASE64_ENCRYPTION
+
+.proc
+
+    if (a_buffer .and. a_buffer(1:1)=='.')
+	begin
+        xcall ss_sendbuf(sd, '.')
+;;;	writes (22,',')
+	end
+
+.ifdef USE_BASE64_ENCRYPTION
+    if(^passed(a_encodetype)&&a_encodetype) then
+        using a_encodetype select
+        (1),	begin
+            xcall ss_sendbuf(sd,%base64_encode(a_buffer,,a_encodetype))
+;;;		writes (22,%base64_encode(a_buffer,,a_encodetype))
+		end
+        (),
+            xcall ss_sendbuf(sd,a_buffer+%char(13)+%char(10))
+        endusing
+    else
+.endc ;USE_BASE64_ENCRYPTION
+        xcall ss_sendbuf(sd,a_buffer+%char(13)+%char(10))
+;;;        writes (22,a_buffer+%char(13)+%char(10))
+
+    xreturn
+
+endsubroutine
+
+;*****************************************************************************
+
+function get_smtp_line, ^val
+
+req in  sd              ,n            ;socket descriptor
+opt out a_line          ,a            ;received data
+
+.include 'DBLDIR:synsock.def'
+
+external function
+    synsock         ,^val
+
+stack record ivars
+    i               ,i4
+    err             ,i4
+
+stack record avars
+    linebuf         ,a255
+    linebuf_byte    ,[255]a1 @linebuf
+    char            ,a1
+
+proc
+
+    clear ^i(ivars),avars
+
+    while (char!=%char(10))
+    begin
+        err=%ss_recvbuf(sd,char)
+        linebuf_byte[i+=1]=char
+    end
+
+    if (^passed(a_line))
+        a_line=linebuf
+
+    freturn (%integer(linebuf(1:3)))
+
+endfunction
+
+;*****************************************************************************
+
+function send_rcpt_list, ^val
+req in  sd              ,n              ;socket descriptor
+req in  a_list          ,a              ;recipient list
+
+.include 'DBLDIR:synsock.def'
+
+external function
+    get_smtp_line   ,^val
+
+record
+    pos             ,i4 ; index into list
+    eol             ,i4 ; end of list
+    t_spos          ,i4 ; storage for token starting position
+    t_epos          ,i4 ; srorage for token ending position
+    rc              ,i4 ; storage for reply code from server
+    cr              ,a1 ; storage for carriage return char
+    lf              ,a1 ; storage for line feed char
+
+proc
+
+    eol = %trim(a_list) ; end of list = trimmed list
+    pos = 1             ; start at first position in list
+    cr = %char(13)
+    lf = %char(10)
+
+    while (pos<=eol)
+    begin
+        if (!((a_list(pos:1)==' ')||(a_list(pos:1)==',')))
+        begin
+            t_spos = pos
+
+            while((pos<eol)&&(a_list(pos:1)!=' ')&&(a_list(pos:1)!=','))
+                incr pos
+
+            if (pos!=eol) then      ; set token ending position
+                t_epos=pos-1
+            else
+                t_epos=pos
+
+            xcall ss_sendbuf(sd,'RCPT TO:<'+a_list(t_spos,t_epos)+'>'+%char(13)+%char(10))
+            rc=%get_smtp_line(sd)
+
+            using rc select
+            (550),
+                freturn(SMERR_NORELAY)
+            (421,450,451,452,552),
+                freturn(SMERR_SERVERFAIL)
+            (250,251),
+                nop
+            (),
+                freturn(SMERR_BADLIST)
+            endusing
+
+            ; successfully sent recipient token
+
+            if (pos==eol)
+                exitloop
+        end
+
+        incr pos
+
+    end
+
+    freturn(SMERR_SUCCESS)
+
+endfunction
+

@@ -1,0 +1,186 @@
+SUBROUTINE GDATE
+;
+;  GDATE / MAN
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;	PATCHED AS PER MCBA UT4-RT		FEB 21, 1986
+;
+;
+;
+;		NOTES: THIS ROUTINE TAKES A THREE DIGIT OFFSET DATE
+;		AND CONVERTS IT INTO A DATE OF THE FORMAT MMDDYY. IT
+;		CAN ALSO TAKE A NEGATIVE OFFSET DATE AND CONVERT IT
+;		INTO A DATE .
+;
+;
+DATE1	,D	;REQUIREMENT MASTER BUILD DATE
+OFFSET	,D	;3 DIGIT REQUIREMENT DATE OFFSET
+DATE2	,D	;RETURNED 6 DIGIT DATE, CONVERTED FROM 'OFFSET'
+
+RECORD MMDDYY
+	M	,D2
+	D	,D2
+	Y	,D2
+
+RECORD
+	DAY	,D2
+	DAY1	,D3
+	DAY2	,D3
+	DAY3	,D3
+	DAY4	,D3
+	DAY5	,D3
+	DAYS	,D3
+	ILEGAL	,D1
+	MAXDAY	,12D2	,31,28,31,30,31,30,31,31,30,31,30,31
+	N	,D2
+	TOTAL	,D3
+	YEAR	,D4
+PROC
+	DATE2 =
+	MMDDYY = DATE1
+	CALL CHECK
+	IF (ILEGAL) RETURN
+	DAYS = 0
+	DAY = 0
+	DAY1 = 0
+	DAY2 = 0
+	DAY3 = 0
+	DAY4 = 0
+	DAY5 = 0
+	N = M
+ADDUP,
+	TOTAL = MAXDAY(N) - D
+	IF (TOTAL.GE.OFFSET) GO TO FOUND
+CALC,
+	INCR N
+;	IF (N.GT.12) CALL RESET
+; ABOVE 1 LINE REMOVED AS PER MCBA PATCH UT4-RT		21 FEB, 1986
+;
+	IF ( N.GT.12 )
+		BEGIN
+			Y = Y + 1
+			N = N - 12
+			CALL CHECK
+		END
+;
+; ABOVE 6 LINES ADDED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+	TOTAL = TOTAL + MAXDAY(N)
+	IF (TOTAL.GE.OFFSET) GO TO FOUND
+	GO TO CALC
+FOUND,
+	IF (TOTAL.EQ.OFFSET) GO TO FNDDAT
+	DAYS = TOTAL - OFFSET
+	DAY1 = MAXDAY(N)
+	DAY = (DAY1 - DAYS)
+;	IF (DAYS.GT.MAXDAY(N)) CALL GOBACK
+; ABOVE 1 LINE REMOVED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+	IF ( DAYS.GE.MAXDAY( N ) ) CALL GOBACK
+;
+; ABOVE 1 LINE ADDED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+
+	DATE2(1,2) = N
+	DATE2(3,4) = DAY
+	DATE2(5,6) = Y
+	RETURN
+;************************************************
+FNDDAT,
+	DATE2(1,2) = N
+	DATE2(3,4) = MAXDAY(N)
+	DATE2(5,6) = Y
+	RETURN
+;************************************************
+CHECK,
+	ILEGAL = 0
+	IF (M.LT.1.OR.M.GT.12) GO TO CHKBAD
+	MAXDAY(2) = 28
+	IF (((Y/4)*4).EQ.Y) MAXDAY(2) = 29
+	IF (D.LT.1.OR.D.GT.MAXDAY(M)) GO TO CHKBAD
+	RETURN
+;************************************************
+CHKBAD,
+	ILEGAL = 1
+	RETURN
+;***********************************************
+;RESET,
+;	Y = Y + 1
+;	IF (((Y/4) * 4).EQ.Y) MAXDAY(2) = 29
+;	N = 1
+;	RETURN
+;
+; ABOVE PARAGRAPH DELETED AS PER MCBA PATCH UT4-RT		21 FEB,1986
+;
+
+GOBACK,
+	DAY2 = DAYS - MAXDAY(N)
+	IF ((N-1).EQ.0) N = 13
+;	IF (DAY2.GT.MAXDAY(N-1)) GO TO GOBAK1
+;	DAY3 = (MAXDAY(N-1) - DAY2)
+;	IF (DAY2.EQ.1) DAY3 = MAXDAY(N-1)
+;
+; ABOVE 3 LINES DELETED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+
+	IF ( DAY2.GE.MAXDAY( N-1 )) GOTO GOBAK1
+	DAY3 = ( MAXDAY( N-1 ) - DAY2 )
+;
+; ABOVE 2 LINES ADDED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+
+	N = N - 1
+	IF (N.EQ.12) Y = Y - 1
+	DAY = DAY3
+	RETURN
+GOBAK1,
+	N = N - 1
+	IF (N.EQ.12) Y = Y - 1
+	IF ( N.EQ.12 ) CALL CHECK
+; 
+; ABOVE 1 LINE ADDED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+	DAY4 = DAY2 - MAXDAY(N)
+	IF ((N-1).EQ.0) N = 13
+;	IF (DAY4.GT.MAXDAY(N-1)) DAY2 = DAY4
+;	IF (DAY4.GT.MAXDAY(N-1)) GO TO GOBAK1
+;
+; ABOVE 2 LINES DELETED AS PER MCBA PATCH UT4-RT	FEB 21, 1986
+;
+	IF ( DAY4.GE.MAXDAY( N-1 ) ) DAY2 = DAY4
+	IF ( DAY4.GE.MAXDAY( N-1 ) ) GOTO GOBAK1
+;
+; ABOVE 2 LINES ADDED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+
+	DAY5 = MAXDAY(N-1) - DAY4
+	N = N - 1
+	IF (N.EQ.12) Y = Y - 1
+;	IF (DAY5.EQ.0) DAY5 = MAXDAY(N)
+; ABOVE 1 LINE DELETED AS PER MCBA PATCH UT4-RT		FEB 21, 1986
+;
+	DAY = DAY5
+	RETURN
+END

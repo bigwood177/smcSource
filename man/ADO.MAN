@@ -1,0 +1,57 @@
+.subroutine Ado		;ADOBE READER
+	f_name	,a
+
+;2-19-18 SSQ: now in util instead of cplib
+
+.include 'def:registry.def'
+
+record	coptbl
+	.include 'def:rd182a.def'
+
+record
+	r_path	,a200
+
+record	vars
+	chn182	,d4
+	redfil	,a14
+	lokctl	,d1
+	read	,d1,0
+	ln	,d4
+	a1	,a1
+	reghndl	,i8
+	errflg	,d6
+	path	,a100
+	tst_path	,a80
+	rdr	,a150
+;
+.proc
+	chn182 = 0
+	
+	open (chn182, si, 'smc:coptbl.smm')
+
+	errflg = %RegStartSession(reghndl)
+
+	clear coptbl
+	tblcod = 'AD'
+	find (chn182, coptbl, tbl_key) [err=loop]
+loop,
+	xcall ios (chn182, coptbl, read, lokctl)
+	if (lokctl .ne. 0) goto eof
+	if (tblcod .ne. 'AD') goto eof
+	tst_path = ad_path
+	
+	errflg = %RegGetString (reghndl, HKEY_LOCAL_MACHINE,
+&	tst_path(1,%trim(tst_path)),,path)
+	
+	ln = %trim(path)
+	if (ln .le. 1) goto loop
+	
+	rdr = path(1,ln) + '\AcroRd32.exe ' + f_name
+	xcall spawn(rdr, D_NOWAIT)
+
+eof,
+	close chn182
+	xreturn
+.end
+
+

@@ -1,0 +1,550 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	WorkingDir=".">
+	<Config
+		Name="Debug32"
+		OutputFile=""
+		CompilerConfigName="">
+		<Menu>
+			<Target
+				Name="Prototype"
+				MenuCaption="&amp;Prototype"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynPrototype"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompile"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile All"
+				MenuCaption="Compile &amp;All"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompileAll"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynLink"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynBuild"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Synergy/DE Options"
+				MenuCaption="&amp;Synergy/DE Options"
+				SaveOption="SaveNone"
+				RunFromDir="%rw"
+				Dialog="_synergyde_options_form Prototype">
+				<Exec
+					CmdLine="SynShowSynDEOpts"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<SynSettings>
+			<SynSetting
+				Name="compile_all_folder"
+				Value="Source Files"/>
+			<SynSetting
+				Name="config64"
+				Value="0"/>
+			<SynSetting
+				Name="proto_command_line"
+				Value="dblproto %p%n%e"/>
+			<SynSetting
+				Name="compile_command_line"
+				Value='dbl -X -T -d -qcheck -qalign "%p%n%e"'/>
+			<SynSetting
+				Name="linklibr_command_line"
+				Value="dblink -d -l util.elb %n"/>
+			<SynSetting
+				Name="proto_clear_dbh"
+				Value="1"/>
+			<SynSetting
+				Name="build_prototype"
+				Value="1"/>
+			<SynSetting
+				Name="proto_first_run"
+				Value="0"/>
+			<SynSetting
+				Name="compile_single"
+				Value="0"/>
+			<SynSetting
+				Name="object_name"
+				Value="%rn.dbo"/>
+			<SynSetting
+				Name="proto_namespace_sequence"
+				Value="namespace1.namespace2.namespace3"/>
+			<SynSetting
+				Name="gen_batch"
+				Value="0"/>
+			<SynSetting
+				Name="batch_file"
+				Value=""/>
+			<SynSetting
+				Name="qvariant"
+				Value=""/>
+			<SynSetting
+				Name="qrelax_end"
+				Value="0"/>
+			<SynSetting
+				Name="object_dir"
+				Value=""/>
+		</SynSettings>
+	</Config>
+	<Files>
+		<Folder
+			Name="Source Files"
+			Filters="*.dbl;*.tpl;*.dbc">
+			<F N="ADDTE.MAN"/>
+			<F N="ANYCN.MAN"/>
+			<F N="ANYFK.MAN"/>
+			<F N="BDAT8.Y2K"/>
+			<F N="BDATE.MAN"/>
+			<F N="BEEP.w7"/>
+			<F N="CALL_VB.MAN"/>
+			<F N="CID.MAN"/>
+			<F N="CINPUT.MAN"/>
+			<F N="DATE8.Y2K"/>
+			<F N="DSPLY.MAN"/>
+			<F N="ENVRN.MAN"/>
+			<F N="FFILC.MAN"/>
+			<F N="FFILE.MAN"/>
+			<F N="FILEC.MAN"/>
+			<F N="FILES.MAN"/>
+			<F N="FRMAT.MAN"/>
+			<F N="GDATE.MAN"/>
+			<F N="GETAC.MAN"/>
+			<F N="GU_NAME.man"/>
+			<F N="INPT3.MAN"/>
+			<F N="INPTK.MAN"/>
+			<F N="INPUT.MAN"/>
+			<F N="IO.MAN"/>
+			<F N="IOS.MAN"/>
+			<F N="ISIO.MAN"/>
+			<F N="LEFTJ.MAN"/>
+			<F N="LINFD.MAN"/>
+			<F N="LPOFF.MAN"/>
+			<F N="LPON.MAN"/>
+			<F N="LPON2.MAN"/>
+			<F N="LPOUT.MAN"/>
+			<F N="MAIL.MAN"/>
+			<F N="MESAG.MAN"/>
+			<F N="MKPDF.man"/>
+			<F N="MMENU.MAN"/>
+			<F N="MOUNT.MAN"/>
+			<F N="NSMNU.MAN"/>
+			<F N="OFILE.MAN"/>
+			<F N="OPENF.MAN"/>
+			<F N="OUTPT.MAN"/>
+			<F N="PCEDIT.MAN"/>
+			<F N="PGCHN.MAN"/>
+			<F N="PGCHX.MAN"/>
+			<F N="PGMND.MAN"/>
+			<F N="POP1.MAN"/>
+			<F N="PRCSN.MAN"/>
+			<F N="PRSPL.MAN"/>
+			<F N="RDAT8.MAN"/>
+			<F N="RDATE.MAN"/>
+			<F N="RTSRT.MAN"/>
+			<F N="SCALE.MAN"/>
+			<F N="SERCH.MAN"/>
+			<F N="SMTPM.MAN"/>
+			<F N="SNMSG.MAN"/>
+			<F N="SPEDIT.MAN"/>
+			<F N="SPPDF.MAN"/>
+			<F N="SRCHQ.MAN"/>
+			<F N="STENO.MAN"/>
+			<F N="T_BAR.MAN"/>
+			<F N="TERID.MAN"/>
+			<F N="TMENU.MAN"/>
+			<F N="TTNO.MAN"/>
+			<F N="WANCN.WND"/>
+			<F N="WANFK.WND"/>
+			<F N="WATE.MAN"/>
+			<F N="WDSPL.WND"/>
+			<F N="WHO.MAN"/>
+			<F N="WINPT.WND"/>
+			<F N="WMENU.WND"/>
+			<F N="WNMSG.MAN"/>
+			<F N="XMAIL.MAN"/>
+			<F N="XRDATE.MAN"/>
+		</Folder>
+		<Folder
+			Name="Header Files"
+			Filters="*.def;*.dbh"/>
+		<Folder
+			Name="Other Files"
+			Filters=""/>
+	</Files>
+	<Config
+		Name="Debug64"
+		OutputFile=""
+		CompilerConfigName="">
+		<Menu>
+			<Target
+				Name="Prototype"
+				MenuCaption="&amp;Prototype"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynPrototype"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompile"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile All"
+				MenuCaption="Compile &amp;All"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompileAll"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynLink"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynBuild"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Synergy/DE Options"
+				MenuCaption="&amp;Synergy/DE Options"
+				SaveOption="SaveNone"
+				RunFromDir="%rw"
+				Dialog="_synergyde_options_form Prototype">
+				<Exec
+					CmdLine="SynShowSynDEOpts"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<SynSettings>
+			<SynSetting
+				Name="compile_all_folder"
+				Value="Source Files"/>
+			<SynSetting
+				Name="config64"
+				Value="1"/>
+			<SynSetting
+				Name="proto_command_line"
+				Value="dblproto %p%n%e"/>
+			<SynSetting
+				Name="compile_command_line"
+				Value='dbl -X -T -d -qcheck -qalign "%p%n%e"'/>
+			<SynSetting
+				Name="linklibr_command_line"
+				Value="dblink -d -l util.elb %n"/>
+			<SynSetting
+				Name="proto_clear_dbh"
+				Value="1"/>
+			<SynSetting
+				Name="build_prototype"
+				Value="1"/>
+			<SynSetting
+				Name="proto_first_run"
+				Value="0"/>
+			<SynSetting
+				Name="compile_single"
+				Value="0"/>
+			<SynSetting
+				Name="object_name"
+				Value="%rn.dbo"/>
+			<SynSetting
+				Name="proto_namespace_sequence"
+				Value="namespace1.namespace2.namespace3"/>
+			<SynSetting
+				Name="gen_batch"
+				Value="0"/>
+			<SynSetting
+				Name="batch_file"
+				Value=""/>
+			<SynSetting
+				Name="qvariant"
+				Value=""/>
+			<SynSetting
+				Name="qrelax_end"
+				Value="0"/>
+			<SynSetting
+				Name="object_dir"
+				Value=""/>
+		</SynSettings>
+	</Config>
+	<Config
+		Name="Release32"
+		OutputFile=""
+		CompilerConfigName="">
+		<Menu>
+			<Target
+				Name="Prototype"
+				MenuCaption="&amp;Prototype"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynPrototype"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompile"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile All"
+				MenuCaption="Compile &amp;All"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompileAll"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynLink"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynBuild"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Synergy/DE Options"
+				MenuCaption="&amp;Synergy/DE Options"
+				SaveOption="SaveNone"
+				RunFromDir="%rw"
+				Dialog="_synergyde_options_form Prototype">
+				<Exec
+					CmdLine="SynShowSynDEOpts"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<SynSettings>
+			<SynSetting
+				Name="compile_all_folder"
+				Value="Source Files"/>
+			<SynSetting
+				Name="config64"
+				Value="0"/>
+			<SynSetting
+				Name="proto_command_line"
+				Value="dblproto %p%n%e"/>
+			<SynSetting
+				Name="compile_command_line"
+				Value='dbl -X -T -qstrict -qalign "%p%n%e"'/>
+			<SynSetting
+				Name="linklibr_command_line"
+				Value="dblink -l util.elb %n"/>
+			<SynSetting
+				Name="proto_clear_dbh"
+				Value="1"/>
+			<SynSetting
+				Name="build_prototype"
+				Value="1"/>
+			<SynSetting
+				Name="proto_first_run"
+				Value="0"/>
+			<SynSetting
+				Name="compile_single"
+				Value="0"/>
+			<SynSetting
+				Name="object_name"
+				Value="%rn.dbo"/>
+			<SynSetting
+				Name="proto_namespace_sequence"
+				Value="namespace1.namespace2.namespace3"/>
+			<SynSetting
+				Name="gen_batch"
+				Value="0"/>
+			<SynSetting
+				Name="batch_file"
+				Value=""/>
+			<SynSetting
+				Name="qvariant"
+				Value=""/>
+			<SynSetting
+				Name="qrelax_end"
+				Value="0"/>
+			<SynSetting
+				Name="object_dir"
+				Value=""/>
+		</SynSettings>
+	</Config>
+	<Config
+		Name="Release64"
+		OutputFile=""
+		CompilerConfigName="">
+		<Menu>
+			<Target
+				Name="Prototype"
+				MenuCaption="&amp;Prototype"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynPrototype"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompile"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Compile All"
+				MenuCaption="Compile &amp;All"
+				SaveOption="SaveAll"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynCompileAll"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynLink"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec
+					CmdLine="SynBuild"
+					Type="Slick-C"/>
+			</Target>
+			<Target
+				Name="Synergy/DE Options"
+				MenuCaption="&amp;Synergy/DE Options"
+				SaveOption="SaveNone"
+				RunFromDir="%rw"
+				Dialog="_synergyde_options_form Prototype">
+				<Exec
+					CmdLine="SynShowSynDEOpts"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<SynSettings>
+			<SynSetting
+				Name="compile_all_folder"
+				Value="Source Files"/>
+			<SynSetting
+				Name="config64"
+				Value="1"/>
+			<SynSetting
+				Name="proto_command_line"
+				Value="dblproto %p%n%e"/>
+			<SynSetting
+				Name="compile_command_line"
+				Value='dbl -X -T -qstrict -qalign "%p%n%e"'/>
+			<SynSetting
+				Name="linklibr_command_line"
+				Value="dblink -l util.elb %n"/>
+			<SynSetting
+				Name="proto_clear_dbh"
+				Value="1"/>
+			<SynSetting
+				Name="build_prototype"
+				Value="1"/>
+			<SynSetting
+				Name="proto_first_run"
+				Value="0"/>
+			<SynSetting
+				Name="compile_single"
+				Value="0"/>
+			<SynSetting
+				Name="object_name"
+				Value="%rn.dbo"/>
+			<SynSetting
+				Name="proto_namespace_sequence"
+				Value="namespace1.namespace2.namespace3"/>
+			<SynSetting
+				Name="gen_batch"
+				Value="0"/>
+			<SynSetting
+				Name="batch_file"
+				Value=""/>
+			<SynSetting
+				Name="qvariant"
+				Value=""/>
+			<SynSetting
+				Name="qrelax_end"
+				Value="0"/>
+			<SynSetting
+				Name="object_dir"
+				Value=""/>
+		</SynSettings>
+	</Config>
+	<Macro>
+		<ExecMacro CmdLine="syn_set EXE=%rp"/>
+	</Macro>
+</Project>

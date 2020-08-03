@@ -1,0 +1,108 @@
+SUBROUTINE LPON; (LPSW,SPLFIL)  ;SMC VERSION
+;
+; A/R version.
+			;
+	LPSW	,D
+	SPLFIL	,A
+
+;-------- LPSW VALUES ---------
+;	1. PRINT, SPOOL, DISPLAY
+;	2. PRINT, SPOOL
+;	3. PRINT
+;	4. AUTO-SPOOL
+;	5. SPECIAL FORMS
+;	6. PRINT DIRECTLY TO LOCAL LASER PRINTER (PORTRAIT)
+
+record  s_filnam
+		,a4,    'spl:'
+	f_letr	,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record  time
+	hh      ,a2
+	mm      ,a2
+	ss      ,a2
+
+RECORD	COMPRES
+	C_CHAR	,A1		;<ESC>
+		,A4,	"&k2S"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+RECORD	LAND_SCAPE
+	O_CHAR	,A1		;<ESC>
+		,a4,	"&l1O"	;landscape mode
+
+RECORD	VARS
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OPT	,D1
+	I	,D5
+
+PROC
+	IF (LPSW .EQ. 6)	;PRINT TO LOCAL PRINTER
+		BEGIN
+		OPT = LPSW
+		GOTO PROCES
+		END
+DISPLA,
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (12,20,0,'REPORT DESTINATION',1)
+	XCALL OUTPT (13,25,0,'1. Local Printer - Compressed',1)
+	XCALL OUTPT (14,25,0,'2. Local Printer',1)
+	XCALL OUTPT (15,25,0,'3. Edit',1)
+	XCALL OUTPT (16,25,0,'4. Okidata ML 395',1)
+ASK,
+	XCALL INPUT (12,40,01,00,'#E',ENTRY,INXCTL,1)
+	GOTO (DISPLA,SPL_ERR),INXCTL
+	OPT = ENTRY(1,1)
+	IF (OPT .EQ. 0)
+		BEGIN
+		OPT = 1
+		XCALL OUTPT (12,40,0,'1',1)
+		END
+	IF (OPT.LT.1 .OR. OPT.GT.4) GOTO ASK
+
+ANYCNG,
+	CNGCTL = 2
+	XCALL ANYCN (CNGCTL,WHATNO)
+	GOTO (ASK),CNGCTL
+
+PROCES,
+	;;; Create a unique file name and open for output
+	xcall tnmbr (fter)
+	xcall time (time)
+	ftime(1,2) = hh
+	ftime(3,4) = mm
+
+	f_letr = "s"
+	onerror spl_err
+	open (14,o,s_filnam)            ;print output file
+	offerror
+
+	s_name(1,1) = OPT,'X'           ;save the printer # selected
+	splfil = s_name                 
+
+	
+	USING OPT SELECT
+	(1),	BEGIN
+		XCALL ASCII(27,C_CHAR)
+		XCALL ASCII(27,O_CHAR)
+		WRITES (14,COMPRES)
+	;;;	WRITES (14,LAND_SCAPE)
+		END
+	ENDUSING
+
+	LPSW = 1
+	RETURN
+
+spl_err,
+	offerror
+	lpsw = 0		;error or <end>
+	RETURN
+END

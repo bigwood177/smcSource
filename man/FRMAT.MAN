@@ -1,0 +1,68 @@
+SUBROUTINE FRMAT ; (AFIELD,SIZE)
+;
+;  FRMAT / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SUBROUTINE TO RIGHT JUSTIFY DECIMAL FIELDS
+;		MAXIMUM OF 18 CHARACTERS ALLOWED
+;		ONLY TOTAL NUMBER FIELDS WILL BE RIGHT JUSTIFIED
+;		(IE. '-','+',' ' ARE NOT ALLOWED IN THE NUMBER FIELD)
+
+AFIELD	,A		; PASSING ALPHA FIELD TO BE CHECKED FOR DECIMAL DATA
+SIZE	,D		; CHARACTER LENGTH OF THE ALPHA FIELD PASSED
+
+RECORD
+	DECMAL	,D18
+	WRKFLD	,A18
+	SUB	,D2
+
+PROC
+	IF (SIZE .GT. 18) RETURN
+	WRKFLD =
+	DECMAL =
+	WRKFLD (1,SIZE) = AFIELD (1,SIZE)
+	SUB = SIZE + 1
+LOOP1,				;SCAN OFF TRAILING SPACES PRIOR TO TEST
+	SUB = SUB - 1
+	IF (WRKFLD(SUB,SUB).NE.' ') GO TO LOOP2
+	IF (SUB .EQ. 1) GO TO ALPHA
+	GO TO LOOP1
+LOOP2,
+	IF (WRKFLD(SUB,SUB) .EQ. '-'.OR.
+&		WRKFLD(SUB,SUB) .EQ. '+' .OR.
+&		WRKFLD(SUB,SUB) .EQ. ' ') GO TO ALPHA
+	SUB = SUB - 1
+	IF (SUB .EQ. 0) GO TO DECCHK
+	GO TO LOOP2
+DECCHK,
+	ON ERROR ALPHA
+	DECMAL = WRKFLD
+	WRKFLD (1,SIZE) = DECMAL (19-SIZE,18)
+	OFF ERROR
+	AFIELD (1,SIZE)= WRKFLD (1,SIZE)
+ALPHA,
+	RETURN
+END

@@ -1,0 +1,65 @@
+SUBROUTINE WATE ; (OPTION,V)
+;
+;  WATE / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		ROUTINE TO DISPLAY VARIOUS "WAIT" MESSAGES
+;		USED THROUGHOUT THE SYSTEMS
+;
+	OPTION	,D	; OPTION SWITCH (SEE BELOW)
+	V	,D	; VT50/52 CONTROL
+RECORD WAITMG
+	SLOT1	,A10
+		,A10,' OCCURRING'
+	SLOT2	,A4,' ...'	; WORK
+		,A1		; FIELDS
+	SLOT3	,A11,'PLEASE WAIT'
+
+			; ***** OPTION CODES *****
+			;	1 = FOR HSITORICAL USE ONLY
+			;	2 = CLEAR SCREEN FROM (3,1) ON, DISPLAY
+			;		"PRINTING OCCURING"
+			;	3 = DISPLAY "PLEASE WAIT ..." ONLY ON (24,1)
+			;	4 = CLEAR SCREEN FROM (3,1) ON, DISPLAY
+			;		"PROCESSING OCCURING"
+
+PROC
+	GO TO (WAIT4,WAIT2,WAIT3,WAIT4), OPTION
+WAIT2,
+	SLOT1 = '  PRINTING'
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (12,20,0,WAITMG,1)
+	RETURN
+WAIT3,
+	XCALL OUTPT (24,1,1,SLOT3,1)
+	XCALL OUTPT (0,0,0,SLOT2,1)
+	RETURN
+WAIT4,
+	SLOT1 = 'PROCESSING'
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (12,20,0,WAITMG,1)
+	RETURN
+END

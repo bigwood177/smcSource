@@ -1,0 +1,24 @@
+subroutine	mkpdf
+	rtfil1	,a	;spool file
+	rtfil2	,a	;pdf file
+;
+; need path...
+;;;	rtfil1 = 'c:\smc\spool\inv.spl'
+;;;	rtfil2 = 'c:\smc\spool\inv.pdf'
+
+
+record	vars
+	command	,a1000
+	ln	,d6
+	d_path	,a100
+proc
+
+	xcall getlog ('UT', d_path, ln)	;logical for spl...
+
+;;;	command = 'pcl2pdf32.exe ' + rtfil1(1,%trim(rtfil1) ) + ' ' + rtfil2(1, %trim(rtfil2) )
+;;;	command = '\\serversbs\smc\exe\ut\pcl2pdf32.exe ' + rtfil1(1,%trim(rtfil1) ) + ' ' + rtfil2(1, %trim(rtfil2) )
+	command = d_path(1,ln) + '\pcl2pdf32.exe ' + rtfil1(1,%trim(rtfil1) ) + ' ' + rtfil2(1, %trim(rtfil2) )
+	ln = %trim(command)
+	xcall spawn(command(1,ln) )
+	xreturn
+	end

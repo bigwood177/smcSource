@@ -1,0 +1,76 @@
+subroutine jnl
+	splfil	,a	;
+	pdffil	,a
+;
+; moved from jnl.ar to jnl.man - ap uses too.
+
+;;;\\serverSBS\smc\journals\MON\SMC\yyyy_mm_dd rptnam.pdf
+
+record	rptdir
+;;;		,a*,	'\\serverSBS\smc\journals\'
+		,a*,	'\\server-dc01\smc\journals\'
+	rptmon	,a3
+		,a1,	'\'
+	rptcmp	,a3
+		,a1,	'\'
+	rpt_YY	,d4
+		,a1,	'-'
+	rpt_mm	,d2
+		,a1,	'-'
+	rpt_dd	,d2	
+		,a1,	'_'
+	rpt_hh	,a2
+	rpt_min	,a2
+		,a1,	'_'
+	rpt_nam	,a50
+
+record adate
+	aday	,a2
+		,a1				; (hyphen)
+	amon	,a3
+		,a1				; (hyphen)
+	ayear	,a4
+
+record	dtime
+	hh	,d2
+	mm	,d2
+	ss	,d2
+
+RECORD	vars
+	tl	,d2
+	cmpcod	,a3
+	i	,d2
+	TABLEA	,12A3,	'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG',
+&			'SEP','OCT','NOV','DEC'
+
+PROC
+	xcall who (cmpcod)
+	rptcmp = cmpcod
+
+	dtime = %time
+
+	XCALL DATE (ADATE)			; GET THE SYSTEM DATE
+	rptmon = amon
+
+	for i from 1 thru 12
+		begin
+		if (tablea(i) .eq. amon) exitloop
+		end
+	if (i.lt.1 .or. i.gt.12) i = 12
+
+	rpt_mm = i
+	rpt_yy = ayear
+	rpt_dd = aday
+	rpt_hh = hh,	'XX'
+	rpt_min = mm,	'XX'
+	rpt_nam = pdffil	;'sales_journal.pdf'
+	tl = %trim(rptdir)
+
+
+	xcall mkpdf (splfil, rptdir(1,tl) )
+
+	xreturn
+
+;;;	stop
+	end
+

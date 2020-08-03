@@ -1,0 +1,36 @@
+subroutine nxtfl	;next field
+	buffer	,a	;buffer to parse
+	blen	,d	;length of buffer
+	delim	,a	;delimiting char.
+	fpos	,d	;ending positon of last field
+	field	,a	;return field
+	
+record	vars
+	i	,d6
+	j	,d6
+	dec	,d3
+	temp	,a100	;working field
+;
+proc
+	clear temp, field, j
+
+	if (fpos .ge. blen) xreturn	;already at end of buffer		
+	for i from fpos+1 thru blen
+		begin
+		using buffer(i,i) select
+		(delim),	exitloop
+		('0' thru '9'), call move
+		('A' thru 'Z'), call move
+		('a' thru 'z'), call move
+		endusing
+		end
+
+	fpos = i			;position of delimiting char.
+	field = temp			;move working field into return param.
+	xreturn
+
+move,	;;;;;;;;;;;;;;;;;;;;;;;;;
+	incr j
+	temp(j,j) = buffer(i,i)
+	return
+;-------------------------------	

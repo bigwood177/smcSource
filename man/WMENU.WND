@@ -1,0 +1,56 @@
+;wmenu.wnd
+subroutine wmenu
+	w_id	,d
+	MENUID	,A	; TITLE TO DISPLAY AT TOP OF SCREEN
+	RECNAM	,A	; NAME OF KEY FIELD OF MASTER RECORD
+	SELECT	,D	; VALUE OF OPTION PASSED BACK (SELECT = 0-5)
+			; *INCOMING*
+			; -1 = DO NOT DISPLAY 'S' AFTER EACH RECNAM
+;;;	V	,D	; VT50/52 CONTROL
+
+.include 'wnd:windows.def'
+
+RECORD
+	INXCTL	,D1	; PARAMETERS
+	ENTRY	,A3	; FOR INPUT
+	MODEID	,3A14,'ADD           ','CHANGE/INQUIRE','DELETE        '
+	SAVSEL	,D1	; SAVE VALUE OF SELECT
+PROC
+	SAVSEL = SELECT
+	XCALL w_disp (w_id, wd_pos, 1,1,wd_clr,wdc_eow,MENUID)
+	XCALL w_disp (w_id, wd_pos, 10,20,'PLEASE SELECT APPLICATION')
+	XCALL w_disp (w_id, wd_pos, 12,25,'1. ADD NEW ')
+	XCALL w_disp (w_id, wd_pos, 0,0,RECNAM)
+	IF (SAVSEL.NE.-1) XCALL w_disp (w_id, wd_pos, 0,0,'S')
+	XCALL w_disp (w_id, wd_pos, 14,25,'2. CHANGE/INQUIRE ')
+	XCALL w_disp (w_id, wd_pos, 0,0,RECNAM)
+	IF (SAVSEL.NE.-1) XCALL w_disp (w_id, wd_pos, 0,0,'S')
+	XCALL w_disp (w_id, wd_pos, 16,25,'3. DELETE ')
+	XCALL w_disp (w_id, wd_pos, 0,0,RECNAM)
+	IF (SAVSEL.NE.-1) XCALL w_disp (w_id, wd_pos, 0,0,'S')
+	XCALL w_disp (w_id, wd_pos, 18,25,'4. PRINT OUT ')
+	XCALL w_disp (w_id, wd_pos, 0,0,RECNAM)
+	IF (SAVSEL.NE.-1) XCALL w_disp (w_id, wd_pos, 0,0,'S')
+MNUSEL,
+	XCALL wINPT (w_id,10,47,1,0,'#E',ENTRY,INXCTL)	; INPUT SELECTED OPTION
+;;;	XCALL INPUT (10,47,1,0,'#E',ENTRY,INXCTL,1)	; INPUT SELECTED OPTION
+	GO TO (MNUSEL,SELEND), INXCTL
+	SELECT = ENTRY
+	GO TO (DSPMOD,DSPMOD,DSPMOD,SELLST), SELECT
+	GO TO MNUSEL
+DSPMOD,							; DISPLAY MODE
+	XCALL w_disp (w_id, wd_pos, 2,1,wd_clr,wdc_eow,MODEID(SELECT))
+	RETURN
+SELEND,
+	SELECT =			; PASS BACK SELECT = 0 FOR END OF MENU
+	RETURN
+SELLST,
+	XCALL w_disp (w_id, wd_pos, 2,1,wd_clr,wdc_eow)
+	XCALL w_disp (w_id, wd_pos, 12,20,'SORT BEFORE PRINTING ?')
+	XCALL wINPT (w_id,12,44,1,0,'YN',ENTRY,INXCTL)
+;;;	XCALL INPUT (12,44,1,0,'YN',ENTRY,INXCTL,1)
+	IF (INXCTL.EQ.1) SELECT = 5
+;;;	IF (SELECT.EQ.5) XCALL WATE (4,2)
+	RETURN
+END
+

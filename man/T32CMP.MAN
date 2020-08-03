@@ -1,0 +1,71 @@
+!  T32CMP.MAN - for TSX-32
+!
+!	Command file to compile .MAN subroutines under the DBL compiler
+!	and produce the UTIL.OBJ library from them.
+!
+!	assignments
+!
+assign c:\mcba\execute\ut\ ut
+assign c:\mcba\source\def\ def
+!
+!	compile
+!
+dbl /obj=ut:ADDTE.tm1/r:debug ADDTE.MAN
+dbl /obj=ut:ANYCN.tm1/r:debug ANYCN.MAN
+dbl /obj=ut:BDATE.tm1/r:debug BDATE.MAN
+dbl /obj=ut:DSPLY.tm1/r:debug DSPLY.MAN
+dbl /obj=ut:FILES.tm1/r:debug FILES.MAN
+dbl /obj=ut:FFILE.tm1/r:debug FFILE.MAN
+dbl /obj=ut:FRMAT.tm1/r:debug FRMAT.MAN
+dbl /obj=ut:GDATE.tm1/r:debug GDATE.MAN
+dbl /obj=ut:GETAC.tm1/r:debug GETAC.MAN
+dbl /obj=ut:INPT3.tm1/r:debug INPT3.MAN
+dbl /obj=ut:INPUT.tm1/r:debug INPUT.MAN
+dbl /obj=ut:IO.tm1/r:debug IO.MAN
+dbl /obj=ut:IOS.tm1/r:debug IOS.MAN
+dbl /obj=ut:ISIO.tm1/r:debug ISIO.MAN
+dbl /obj=ut:LEFTJ.tm1/r:debug LEFTJ.MAN
+dbl /obj=ut:LINFD.tm1/r:debug LINFD.MAN
+dbl /obj=ut:LPOFF.tm1/r:debug LPOFF.MAN
+dbl /obj=ut:LPON.tm1/r:debug LPON.MAN
+dbl /obj=ut:LPOUT.tm1/r:debug LPOUT.MAN
+dbl /obj=ut:MESAG.tm1/r:debug MESAG.MAN
+dbl /obj=ut:MMENU.tm1/r:debug MMENU.MAN
+dbl /obj=ut:MOUNT.tm1/r:debug MOUNT.MAN
+dbl /obj=ut:NSMNU.tm1/r:debug NSMNU.MAN
+dbl /obj=ut:OFILE.tm1/r:debug OFILE.MAN
+dbl /obj=ut:OUTPT.tm1/r:debug OUTPT.MAN
+dbl /obj=ut:OPENF.tm1/r:debug OPENF.MAN
+dbl /obj=ut:PGCHN.tm1/r:debug PGCHN.MAN
+dbl /obj=ut:PGMND.tm1/r:debug PGMND.MAN
+dbl /obj=ut:PRCSN.tm1/r:debug PRCSN.MAN
+dbl /obj=ut:PRSPL.tm1/r:debug PRSPL.MAN
+dbl /obj=ut:RDATE.tm1/r:debug RDATE.MAN
+dbl /obj=ut:SCALE.tm1/r:debug SCALE.MAN
+dbl /obj=ut:SERCH.tm1/r:debug SERCH.MAN
+dbl /obj=ut:SNMSG.tm1/r:debug SNMSG.MAN
+dbl /obj=ut:SRCHQ.tm1/r:debug SRCHQ.MAN
+dbl /obj=ut:STENO.tm1/r:debug STENO.MAN
+dbl /obj=ut:TERID.tm1/r:debug TERID.MAN
+dbl /obj=ut:TMENU.tm1/r:debug TMENU.MAN
+dbl /obj=ut:TTNO.tm1/r:debug TTNO.MAN
+dbl /obj=ut:WATE.tm1/r:debug WATE.MAN
+!
+! add to library
+!
+DBLIBR /output=UT:util UT:addte.tm1 UT:anycn.tm1 UT:bdate.tm1 UT:dsply.tm1 -
+ UT:ffile.tm1 UT:files.tm1 UT:frmat.tm1 UT:gdate.tm1 
+DBLIBR /output=UT:util UT:util/lib UT:getac.tm1 UT:inpt3.tm1 UT:input.tm1 -
+ UT:io.tm1 UT:ios.tm1 UT:isio.tm1 UT:leftj.tm1 
+DBLIBR /output=UT:util UT:util/lib UT:linfd.tm1 UT:lpoff.tm1 UT:lpon.tm1 -
+ UT:lpout.tm1 UT:mesag.tm1 UT:mmenu.tm1 UT:mount.tm1 
+DBLIBR /output=UT:util UT:util/lib UT:nsmnu.tm1 UT:ofile.tm1 UT:openf.tm1 -
+ UT:outpt.tm1 UT:prcsn.tm1 UT:pgchn.tm1 UT:pgmnd.tm1 
+DBLIBR /output=UT:util UT:util/lib UT:prspl.tm1 UT:rdate.tm1 UT:scale.tm1 -
+ UT:serch.tm1 UT:snmsg.tm1 UT:srchq.tm1 UT:steno.tm1 
+DBLIBR /output=UT:util UT:util/lib UT:terid.tm1 UT:tmenu.tm1 UT:ttno.tm1 -
+ UT:wate.tm1
+!
+! end of T32CMP.MAN
+!
+

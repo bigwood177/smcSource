@@ -1,0 +1,211 @@
+SUBROUTINE OUTPT; (ROWIN,COLUM,FCODE,TEXT,V)
+;
+;
+;		HANDLES ALL OUTPUT TO/THRU VIDEO TERMINAL
+;
+	ROWIN	,D		;ROW-SET TO '0' IF PRESENT CURSOR POSIT OKAY.
+				;SET TO 2 (& COL=0)IF 'CRLF' DESIRED AFTER
+				;CLEARING SCREEN ON PREVIOUS XCALL
+	COLUM	,D		;COLUMN - SET TO '0' IF PRESENT CURSOR POS OKAY
+	FCODE	,D		;FUNCTION CODE - SEE BELOW FOR DESCRIPTION
+	TEXT	,A		;VARIABLE OR LITERAL TO BE DISPLAYED
+	V	,D		;SCREEN ROWS USED IN CALLING PROGRAM 1=24, 2=12
+				; IF V=2 ROW WILL BE MULTIPLIED BY 2 BEFORE
+				; BEING POSITIONED
+;
+		;-------FUNCTIONAL CODES------
+		;
+		;	-1 = Special function sent thru 'ROWIN' and 'COLUM'
+		;		or "TEXT".
+		;		(see SPECIAL FUNCTIONS below)
+		;	 0 = Position cursor and display TEXT
+		;	 1 = Position cursor, clear to end of line
+		;		and display TEXT
+		;	 2 = Position cursor at ROWIN,COLUM,
+		;		clear to end of screen, and display text
+		;		starting at ROWIN,COLUM
+		;	 3 = Clear entire screen and display text starting at
+		;		ROWIN,COLUM
+		;  THE FOLLOWING CODES TURN ON FEATURES FOR ONE DISPLAY ONLY
+		;  AND ARE THEN TURNED OFF
+		;	 4 = Display text in reverse video (VT100 only)
+		; 	 5 = Display text in double width
+		;	 6 = Display text in double height/double width (2 rows)
+		;	 7 = Display text in blinking field (AVO only)
+		;	 8 = Display text in bold type (AVO only)
+		;
+		;------SPECIAL FUNCTIONS (FCODE = -1)------
+		;
+		;	'CNTRL' - Interpret ROWIN & COLUM as ASCII characters
+		;	'BELL' - Ring the bell
+		;	'DELETE' - Echo 'backspace,dot,backspace' at cursor pos.
+		;	'TERID' - Returns value of TERMID (terminal type)
+		;		thru ROWIN
+		;	'GRAPHON' - Turn on graphics mode
+		;	'GRAPHOFF' - Turn off graphics mode
+		;	'LED1' - Turns on L1 LED
+		;	'LED2' - Turns on L2 LED
+		;	'LEDOFF' - Turns off LED's
+		;	'BOLD' - Turn on bold type
+		;	'BLINK' - Turn on blink
+		;	'REVERSE' - Turn on reverse video
+		;	'OFF' - Turn off Character Attributes
+		;
+		;------TERMINAL TYPES (TERMID)------
+		;
+		;	1 - VT52
+		;	2 - VT52 WITH LOCAL PRINTER
+		;	3 - VT100 (VT52 MODE)
+		;	4 - VT100 (VT52 MODE) WITH AVO
+		;	5 = VT100 (VT52 MODE) WITH AVO AND LOCAL PRINTER
+		;	6 = VT100 (ANSI MODE)
+		;	7 = VT100 (ANSI MODE) WITH AVO
+		;	8 - VT100 (ANSI MODE) WITH AVO AND LOCAL PRINTER
+		;
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD	AROW
+	ROW	,D2
+RECORD	ACOL
+	COL	,D2
+RECORD
+	AVO	,D1
+	COL2	,D3
+	ROW2	,D2
+	TERMNO	,D2
+	VTYPE	,D1
+	SYTTNO	,D3
+	MCTTNO	,D2
+	TTNOSW	,D1
+	SAVCOL	,D2
+PROC
+	IF (VTYPE.NE.0) GO TO BEGIN
+	XCALL TTNO (SYTTNO,MCTTNO,TTNOSW)
+	TERMNO = MCTTNO
+	TERMNO = TERMNO + 2
+	CLOSE 15
+	OPEN (15,I,'UT:MESARA.DDF')
+	READ (15,MESARA,TERMNO)
+	CLOSE 15
+	OPEN (15,I,'TT:')
+	AVO =
+	VTYPE = 1
+	IF (TERMID.GE.6) VTYPE = 2
+	IF (TERMID.EQ.4 .OR. TERMID.EQ.5 .OR. TERMID.EQ.7 .OR. TERMID.EQ.8)
+&		AVO = 1
+BEGIN,
+	IF (FCODE.LT.0) GO TO SPFUN	;HANDLE SPECIAL TERMINAL FUNCTIONS
+	IF (FCODE.EQ.3) CALL CLEAR	;CLEAR AND POSITION CURSOR AS APPROP
+	ROW = ROWIN
+	IF (V.EQ.2 .AND. ROW.NE.1) ROW = ROW * 2
+	IF (V.EQ.2.AND.ROW.GT.24) ROW = ROWIN	;;; USED TO PREVENT DISPLAYS
+						;;; BEYOND ROW 24
+	COL = COLUM
+	CALL POSITN
+	IF (FCODE.EQ.2) CALL EOSCR
+	IF (FCODE.EQ.1) CALL EOLIN
+	IF (FCODE.GT.3) CALL SETSCR
+DSPLY,					;DISPLAY TEXT MATERIAL
+	IF (TEXT.NE.'\') DISPLAY (15,TEXT)
+RETURN,
+	IF (FCODE.GE.4) CALL SCROFF
+	RETURN
+CLEAR,					;CLEAR ENTIRE SCREEN
+	ROW = 1
+	COL = 1
+	CALL POSITN
+	CALL EOSCR
+	RETURN
+EOSCR,					;CLEAR TO END-OF-SCREEN
+	DISPLAY (15,$SCR_CLR(EOS))
+	IF (ROW .EQ. 1)
+		BEGIN
+		SAVCOL = COL
+		END		
+	RETURN
+
+EOLIN,				;CLEAR TO END-OF-LINE
+	DISPLAY (15,$SCR_CLR(EOL))
+	RETURN
+
+POSITN,				;POSITION CURSOR
+	IF (ROW.EQ.0.OR.COL.EQ.0) RETURN
+	DISPLAY (15,$SCR_POS(ROW,COL))
+	RETURN
+
+SETSCR,				;SET SPECIAL SCREEN FUNCTIONS BEFORE DISPLAYING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF (FCODE.GT.8) GO TO FCNERR
+;;;	IF (TERMID.LE.2) RETURN			;NO VT52'S
+;;;	IF (AVO.EQ.0 .AND. FCODE.GT.6) RETURN	;AVO FUNCTION FOR NON-AVO TERM.
+;;;	IF (VTYPE.EQ.1) DISPLAY (15,27,'<')	;ENTER ANSI MODE
+		;
+		;	 4 = Display text in reverse video (VT100 only)
+		; 	 5 = Display text in double width
+		;	 6 = Display text in double height/double width (2 rows)
+		;	 7 = Display text in blinking field (AVO only)
+		;	 8 = Display text in bold type (AVO only)
+		;
+;;;	IF (FCODE.EQ.4) DISPLAY (15,27,'[7m')
+;;;	IF (FCODE.EQ.7) DISPLAY (15,27,'[5m')
+;;;	IF (FCODE.EQ.8) DISPLAY (15,27,'[1m')
+;;;	IF (FCODE.EQ.5) DISPLAY (15,27,'#6')
+;;;	IF (FCODE.EQ.6) DISPLAY (15,27,'#3')
+;;;	IF (VTYPE.EQ.1) DISPLAY (15,27,'[?2l')		;RETURN TO VT52 MODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	RETURN
+SCROFF,
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF (TERMID.LE.2) RETURN
+;;;	IF (AVO.EQ.0 .AND. FCODE.GT.6) RETURN
+;;;						;AVO FUNCTION FOR NON-AVO TERM.
+;;;	IF (FCODE.EQ.6) GO TO NXTROW
+;;;	IF (VTYPE.EQ.1) DISPLAY (15,27,'<')
+;;;	IF (FCODE.EQ.4 .OR. FCODE.EQ.7 .OR. FCODE.EQ.8)
+;;;&		DISPLAY (15,27,'[0m')
+;;;	IF (VTYPE.EQ.1) DISPLAY (15,27,'[?2l')
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	RETURN
+NXTROW,
+	INCR ROW
+	CALL POSITN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF (VTYPE.EQ.1) DISPLAY (15,27,'<')	;ENTER ANSI MODE
+;;;	DISPLAY (15,27,'#4')
+;;;	IF (TEXT.NE.'\') DISPLAY (15,TEXT)
+;;;	IF (VTYPE.EQ.1) DISPLAY (15,27,'[?2l')		;RETURN TO VT52 MODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	RETURN
+SPFUN,				;HANDLE SPECIAL TERMINAL FUNCTIONS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (TEXT.EQ.'CNTRL')	GO TO CNTRL
+;;;	IF (TEXT.EQ.'BELL')	DISPLAY (15,7)
+;;;	IF (TEXT.EQ.'DELETE')	DISPLAY (15,8,'.',8)
+;;;	IF (TEXT.EQ.'TERID')	ROWIN = TERMID
+;;;	IF (TEXT.EQ.'GRAPHON' .AND. VTYPE.EQ.1)	DISPLAY (15,27,'F')
+;;;	IF (TEXT.EQ.'GRAPHON' .AND. VTYPE.EQ.2) DISPLAY (15,27,'(0',27,')0')
+;;;	IF (TEXT.EQ.'GRAPHOFF' .AND. VTYPE.EQ.1) DISPLAY (15,27,'G')
+;;;	IF (TEXT.EQ.'GRAPHOFF' .AND. VTYPE.EQ.2) DISPLAY (15,27,'(B',27,')B')
+;;;	IF (TERMID.LE.2) GO TO RETURN
+;;;
+;;;	IF (VTYPE.EQ.1)			DISPLAY (15,27,'<')
+;;;	IF (TEXT.EQ.'REVERSE')		DISPLAY (15,27,'[7m')
+;;;	IF (TEXT.EQ.'BLINK' .AND. AVO)	DISPLAY (15,27,'[5m')
+;;;	IF (TEXT.EQ.'BOLD' .AND. AVO)	DISPLAY (15,27,'[1m')
+;;;	IF (TEXT.EQ.'OFF')		DISPLAY (15,27,'[0m')
+;;;
+;;;	IF (TEXT.EQ.'LEDOFF')		DISPLAY (15,27,'[0q')
+;;;	IF (TEXT.EQ.'LED1')		DISPLAY (15,27,'[1q')
+;;;	IF (TEXT.EQ.'LED2')		DISPLAY (15,27,'[2q')
+;;;	IF (VTYPE.EQ.1)			DISPLAY (15,27,'[?2l')
+;;;	GO TO RETURN
+CNTRL,					;CONTROL CHARACTERS
+	IF (ROWIN.EQ.0.AND.COLUM.EQ.0) GO TO RETURN
+	DISPLAY (15,ROWIN,COLUM)
+	GO TO RETURN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+FCNERR,
+	DISPLAY (15,13,10,10,7,'?UT-OUTPT FUNCTION ERROR',13,10,7)
+	STOP
+END

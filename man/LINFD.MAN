@@ -1,0 +1,54 @@
+SUBROUTINE LINFD ; (LNFEED)
+;
+;  LINFD / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		PERFORMS LINE FEEDS AND FORM FEEDS AND TRAPS OFF-LINE ERRORS
+;
+	LNFEED	,D	; NUMBER OF LINES TO SKIP
+			; (0 = FORM FEED)
+RECORD
+	ERR	,D3
+	ERL	,D4
+PROC
+LINFD,
+	ON ERROR OFFLIN
+	FORMS (14,LNFEED)
+	OFF ERROR
+	RETURN
+OFFLIN,
+	XCALL ERROR (ERR,ERL)
+	IF (ERR.EQ.25) GO TO FULL
+	XCALL OUTPT (24,1,1,'PRINTER OFF LINE',1)
+	SLEEP 5
+	XCALL OUTPT (24,1,1,'\',1)
+	GO TO LINFD
+FULL,
+	XCALL OUTPT (15,1,2,'SPOOL FILE FULL',1)
+	XCALL OUTPT (16,1,0,'\',1)
+	CLOSE 14
+	STOP
+END

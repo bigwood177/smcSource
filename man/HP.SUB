@@ -1,0 +1,1108 @@
+.IFNDEF APP
+SUBROUTINE HP
+.ENDC
+.IFDEF APP
+SUBROUTINE HPSTRING
+.ENDC
+;---------- ".PAGE" COMMANDS RE COMPILER LISTING IS OPTIMIZED FOR LENGTH=78 ---
+
+;				Computer Advocacy Inc
+;				601 Finch Avenue West, Suite 404
+;				Willowdale, Ontario Canada
+;				M2R 1N9   (416) 633-8972
+;	Author: Alan Cohen
+;
+;	Routine to control HP LASER SeriesII (PCL4) and SeriesIII (PCL5)
+;
+;	SYNTAX	EITHER	XCALL HP (ch,p1,p2....)
+;		  OR	XCALL HPSTRING (string,p1,p2,...)
+;
+;	Compiling HP.SUB        yields XCALL HP
+;	Compiling HPSTRING.SUB  yields XCALL HPSTRING
+;REVISIONS
+;---------
+;      5-SEP-91	First production release.
+;<R01>27-MAR-92	When calculating hSIZE & vSIZE for hpHLINE,hpVLINE,hpBOX if
+;		hpDOTS=0 multiply by 100 and round by 2 (#2) for more accuracy.
+;     15-JUN-92	$TRUE replaced with %TRUE (Unsure re DIBOL Compliance issues)
+
+;CONDITIONAL COMPILATION NOTES
+;-----------------------------
+;	There are conditional compilation statements throughout HP.SUB that
+;	cause different behaviour depending on whether or not APP has or
+;	has not been defined.
+;
+;	Compiling HP.SUB produces XCALL HP
+;
+;	Compiling HPSTRING.SUB produces XCALL HPSTRING
+;		HPSTRING.SUB is a tiny file:
+;			.define APP
+;			.include HP.SUB
+
+.DEFINE maxP ,98
+
+.IFNDEF APP
+			CH	,D	;1st parm is channel# for HP 
+.ENDC
+.IFDEF APP
+			STRING	,A	;1st parm is alpha string for HPSTRING 
+.ENDC
+			P1	,A
+			P2	,A
+			P3	,A
+			P4	,A
+			P5	,A
+			P6	,A
+			P7	,A
+			P8	,A
+			P9	,A
+			P10	,A
+			P11	,A
+			P12	,A
+			P13	,A
+			P14	,A
+			P15	,A
+			P16	,A
+			P17	,A
+			P18	,A
+			P19	,A
+			P20	,A
+			P21	,A
+			P22	,A
+			P23	,A
+			P24	,A
+			P25	,A
+			P26	,A
+			P27	,A
+			P28	,A
+			P29	,A
+			P30	,A
+			P31	,A
+			P32	,A
+			P33	,A
+			P34	,A
+			P35	,A
+			P36	,A
+			P37	,A
+			P38	,A
+			P39	,A
+			P40	,A
+			P41	,A
+			P42	,A
+			P43	,A
+			P44	,A
+			P45	,A
+			P46	,A
+			P47	,A
+			P48	,A
+			P49	,A
+			P50	,A
+			P51	,A
+			P52	,A
+			P53	,A
+			P54	,A
+			P55	,A
+			P56	,A
+			P57	,A
+			P58	,A
+			P59	,A
+			P60	,A
+			P61	,A
+			P62	,A
+			P63	,A
+			P64	,A
+			P65	,A
+			P66	,A
+			P67	,A
+			P68	,A
+			P69	,A
+			P70	,A
+			P71	,A
+			P72	,A
+			P73	,A
+			P74	,A
+			P75	,A
+			P76	,A
+			P77	,A
+			P78	,A
+			P79	,A
+			P80	,A
+			P81	,A
+			P82	,A
+			P83	,A
+			P84	,A
+			P85	,A
+			P86	,A
+			P87	,A
+			P88	,A
+			P89	,A
+			P90	,A
+			P91	,A
+			P92	,A
+			P93	,A
+			P94	,A
+			P95	,A
+			P96	,A
+			P97	,A
+			P98	,A
+			P99	,A
+.PAGE
+;-----------------------------------------------;
+;--- The file DEF:HPSUB.DEF is .INCLUDED HERE	;
+;-----------------------------------------------;
+;;;START NOPAGE NOLIST
+ .NOLIST			;1-24-2012
+.INCLUDE DEF:HPSUB.DEF
+
+.page 
+.list			;1-24-2012
+;;;START NOPAGE LIST		;1-24-2012
+
+.DEFINE PUSH	,'&f0S'
+.DEFINE POP	,'&f1S'
+.DEFINE FNF	,' file not found'
+
+RECORD
+	FONT_PARMS	,D18
+RECORD ,X
+	ORIENT	,D1	; 1 - 1
+	SYMVAL	,D2	; 2 - 3	;SYMVAL and SYMTERM define SYMBOL SET. SYMTERM
+	SYMTERM	,D2	; 4 - 5	;("termination character") is ASCII "A"-"V"
+	SPACING	,D1	; 6 - 6
+	PITCH	,D3	; 7 - 9 (note that 16.7 is converted to 16.67)
+	POINT	,D3	;10 -12
+	STYLE	,D1	;13 -13
+	WEIGHT	,D1	;14 -14
+	TYPE	,D4	;15 -18
+
+RECORD STUFF
+	SWITCH	,D2
+	THICK	,D2
+	I	,D2
+	L	,D4
+	ptr	,D2
+	TSTNUM	,D6
+	AUX	,D2	;auxilliary channel number for disc i/o
+	FILSPC	,A40
+	ASCII	,A1
+	BUFFER	,A512
+	TMP1	,A50@BUFFER
+	ALPHA1	,A1 @TMP1
+	ALPHA2	,A2 @TMP1
+	ALPHA3	,A3 @TMP1
+	ALPHA4	,A4 @TMP1
+	ALPHA5	,A5 @TMP1
+	ALPHA6	,A6 @TMP1
+	ALPHA7	,A7 @TMP1
+	ALPHA8	,A8 @TMP1
+	TMP2	,A50@BUFFER+50
+;-----------------------------------------------------------------------------
+; Where a function (eg: hpLPI) implies only 1 escape character, the following
+; technique is used:
+;		ALPHA5 = LPI ,'&lXXD'		;<esc> & l XX D
+;		DISPLAY (CH,ESC1,ALPHA5)
+;-----------------------------------------------------------------------------
+
+;-----------------------------------------------------------------------------
+; Where a function (eg: hpPOS) implies more than 1 escape sequence, the entire
+; sequence has its own record layout (eg: absPOS) and the following techique is
+; used:
+;		absROW = XX
+;		absCOL = YY
+;		DISPLAY (CH,absPOS)	;<esc> & a XX R <esc> & a YY C
+;-----------------------------------------------------------------------------
+
+RECORD absPOS
+	ESC1	,A1
+		,A2 ,'&a'
+	absROW	,D5
+		,A1 ,'R'
+	ESC2	,A1
+		,A2 ,'&a'
+	absCOL	,D5
+		,A1 ,'C'
+RECORD ,X
+	vTAB	,A9	;this is the row part
+	hTAB	,A9	;this is the col part
+
+RECORD relPOS
+	ESC3	,A1
+		,A2 ,'&a'
+	relROW	,A5		; uses mask +XXXX or -XXXX
+		,A1 ,'R'
+	ESC4	,A1
+		,A2 ,'&a'
+	relCOL	,A5		; uses mask +XXXX or -XXXX
+		,A1 ,'C'
+RECORD hLINE
+	ESC5	,A1
+		,A2 ,'*c'
+	hSIZE	,D5
+		,A1 ,'A'
+	ESC6	,A1
+		,A2 ,'*c'
+	hTHICK	,D2
+		,A1 ,'B'
+	ESC7	,A1
+		,A4 ,'*c0P'
+RECORD vLINE
+	ESC8	,A1
+		,A2 ,'*c'
+	vSIZE	,D5
+		,A1 ,'B'
+	ESC9	,A1
+		,A2 ,'*c'
+	vTHICK	,D2
+		,A1 ,'A'
+	ESC10	,A1
+		,A4 ,'*c0P'
+RECORD FILL
+	ESC11	,A1
+		,A2 ,'*c'
+	fWIDTH	,D5
+		,A1 ,'A'
+	ESC12	,A1
+		,A2 ,'*c'
+	fHEIGHT	,D5
+		,A1 ,'B'
+	ESC13	,A1
+		,A2 ,'*c'
+	fSHADE	,D3
+		,A1 ,'G'
+	ESC14	,A1
+		,A4 ,'*c2P'
+RECORD absDPOS
+	ESC15	,A1
+		,A2 ,'*p'
+	absDROW	,D5
+		,A1 ,'Y'
+	ESC16	,A1
+		,A2 ,'*p'
+	absDCOL	,D5
+		,A1 ,'X'
+RECORD ,X
+	vDTAB	,A9	;this is the row part
+	hDTAB	,A9	;this is the col part
+
+RECORD relDPOS
+	ESC17	,A1
+		,A2 ,'*p'
+	relDROW	,A5		; uses mask +XXXX or -XXXX
+		,A1 ,'Y'
+	ESC18	,A1
+		,A2 ,'*p'
+	relDCOL	,A5		; uses mask +XXXX or -XXXX
+		,A1 ,'X'
+
+RECORD MACRO
+	ESC19	,A1
+		,A2 ,'&f'
+	MACROid	,D5
+		,A1 ,'y'
+	MACROctl,D2
+		,A1 ,'X'
+.PAGE
+PROC
+	CLEAR cmhpERNUM, STUFF
+
+	IF (%numargs.GT.maxP) GOTO ERR	; Too many parms
+
+	IF (.NOT.cmhpVTHICK) cmhpVTHICK = 1
+	IF (.NOT.cmhpHTHICK) cmhpHTHICK = 1
+	IF (.NOT.cmhpCPI)    cmhpCPI    = 1000
+	IF (.NOT.cmhpLPI)    cmhpLPI    = 6
+	IF (ESC1.EQ.' ')
+		BEGIN	;--------------------------------------------------;
+		XCALL ASCII (27,ESC1)					   ;
+		SET ESC2, ESC3, ESC4, ESC5, ESC6, ESC7, ESC8, ESC9, ESC10, ;
+&		    ESC11,ESC12,ESC13,ESC14,ESC15,ESC16,ESC17,ESC18,ESC19 =ESC1
+		END	;--------------------------------------------------;
+
+	ptr = 1
+PARSE,
+	INCR ptr
+	IF (ptr.GT.%numargs) RETURN	;to caller.  all done.
+
+;-----------------
+;--0=alpha follows
+;-----------------
+	IF (.NOT.%d(%arg(ptr)))
+		BEGIN	;-----------------------;
+		INCR ptr			;
+.IFNDEF APP					;
+		DISPLAY (CH,%a(%arg(ptr)))	;
+.ENDC						;
+.IFDEF APP					;
+		XCALL APPEND (STRING,%a(%arg(ptr)))
+.ENDC						;
+		GOTO PARSE			;
+		END	;-----------------------;
+;---------------
+;--ASCII if < 32
+;---------------
+	IF (%d(%arg(ptr)).LT.32)
+		BEGIN	;-----------------------;
+		XCALL ASCII (%d(%arg(ptr)),ASCII)
+.IFNDEF APP					;
+		DISPLAY (CH,ASCII)		;
+.ENDC						;
+.IFDEF APP					;
+		XCALL APPEND (STRING,ASCII)	;
+.ENDC						;
+		GOTO PARSE			;
+		END	;-----------------------;
+;
+;-- SWITCH is used in the unlabelled CASE statement that follows ---
+;
+	SWITCH =%d(%arg(ptr)) - 31
+.PAGE
+	CASE SWITCH OF BEGINCASE	;=====================================
+;----------
+;--hpPOS=32
+;----------
+	BEGIN	;---------------------------------------;
+	INCR ptr					;
+	IF (.NOT.cmhpDOTS)				;
+	   THEN	BEGIN	;---------------;		;
+		absROW = %d(%arg(ptr))	;		;
+		INCR ptr		;		;
+		absCOL = %d(%arg(ptr))	;		;
+.IFNDEF APP				;		;
+		DISPLAY (CH,absPOS)	;
+.ENDC					;		;
+.IFDEF APP				;		;
+		XCALL APPEND (STRING,absPOS)
+.ENDC					;		;
+		END	;---------------;		;
+	   ELSE	BEGIN	;---------------;		;
+		absDROW = %d(%arg(ptr))	;		;
+		INCR ptr		;		;
+		absDCOL = %d(%arg(ptr))	;		;
+.IFNDEF APP				;		;
+		DISPLAY (CH,absDPOS)	;		;
+.ENDC					;		;
+.IFDEF APP				;		;
+		XCALL APPEND (STRING,absDPOS)		;
+.ENDC					;		;
+		END	;---------------;		;
+	END	;---------------------------------------;
+;-----------
+;--hpMOVE=33
+;-----------
+	BEGIN	;---------------------------------------;
+	INCR ptr					;
+	IF (.NOT.cmhpDOTS)				;
+	   THEN	BEGIN	;-----------------------;	;
+		TSTNUM = %d(%arg(ptr))		;	;
+		IF (TSTNUM.LT.0)		;	;
+		   THEN relROW = TSTNUM ,'-XXXX';	;
+		   ELSE relROW = TSTNUM ,'+XXXX';	;
+		INCR ptr			;	;
+		TSTNUM = %d(%arg(ptr))		;	;
+		IF (TSTNUM.LT.0) THEN relCOL = TSTNUM ,'-XXXX'
+				 ELSE relCOL = TSTNUM ,'+XXXX'
+.IFNDEF APP					;	;
+		DISPLAY (CH,relPOS)		;	;
+.ENDC						;	;
+.IFDEF APP					;	;
+		XCALL APPEND (STRING,relPOS)	;	;
+.ENDC						;	;
+		END	;-----------------------;	;
+	   ELSE	BEGIN	;-----------------------;	;
+		TSTNUM = %d(%arg(ptr))		;	;
+		IF (TSTNUM.LT.0) THEN relDROW =TSTNUM ,'-XXXX'
+				 ELSE relDROW =TSTNUM ,'+XXXX';
+		INCR ptr			;	;
+		TSTNUM = %d(%arg(ptr))		;	;
+		IF (TSTNUM.LT.0) THEN relDCOL =TSTNUM ,'-XXXX'
+				 ELSE relDCOL =TSTNUM ,'+XXXX'
+.IFNDEF APP					;	;
+		DISPLAY (CH,relDPOS)		;	;
+.ENDC						;	;
+.IFDEF APP					;	;
+		XCALL APPEND (STRING,relDPOS)	;	;
+.ENDC						;	;
+		END	;-----------------------;	;
+	END	;---------------------------------------;
+.PAGE ;
+;------------
+;--hpHLINE=34
+;------------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	hSIZE = %d(%arg(ptr))			;
+	IF (.NOT.cmhpDOTS) hSIZE = (3000000*hSIZE/cmhpCPI)#2	;<R01>
+	hTHICK= cmhpHTHICK			;
+.IFNDEF APP					;
+	DISPLAY (CH,hLINE)			;
+.ENDC						;
+.IFDEF APP					;
+	XCALL APPEND (STRING,hLINE)		;
+.ENDC						;
+	END	;-------------------------------;
+
+;------------
+;--hpVLINE=35
+;------------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	vSIZE = %d(%arg(ptr))			;
+	IF (.NOT.cmhpDOTS) vSIZE = (30000*vSIZE/cmhpLPI)#2	;<R01>
+	vTHICK= cmhpVTHICK			;
+.IFNDEF APP					;
+	DISPLAY (CH,vLINE)			;
+.ENDC						;
+.IFDEF APP					;
+	XCALL APPEND (STRING,vLINE)		;
+.ENDC						;
+	END	;-------------------------------;
+
+;-----------
+;--hpAREA=36
+;-----------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	cmhpAheight = %d(%arg(ptr))		;
+	INCR ptr				;
+	cmhpAwidth  = %d(%arg(ptr))		;
+	END	;-------------------------------;
+.PAGE ;
+;----------
+;--hpBOX=37
+;----------
+	BEGIN	;-----------------------------------------------;
+	vTHICK= cmhpVTHICK					;
+	hTHICK= cmhpHTHICK					;
+	IF (.NOT.cmhpDOTS)					;
+	   THEN	BEGIN	;-------------------------------;	;
+		hSIZE = (3000000*cmhpAwidth /cmhpCPI)#2	;	; <R01>
+		vSIZE = (30000  *cmhpAheight/cmhpLPI)#2	;	; <R01>
+		relDROW=(30000*cmhpAheight/cmhpLPI)#2 	;	; <R01>
+&			- cmhpVTHICK ,'+XXXX'		;	; <R01>
+		relDCOL= cmhpHTHICK ,'+XXXX'		;	;
+		TMP1 = relDPOS				;	;
+		relDROW = -(30000*cmhpAheight/cmhpLPI)#2;	; <R01>
+&			 + cmhpVTHICK ,'-XXXX'		;	; <R01>
+		relDCOL =30000*cmhpAwidth/cmhpCPI -cmhpHTHICK,'+XXXX'
+		TMP2 = relDPOS				;	;
+		END	;-------------------------------;	;
+	   ELSE	BEGIN	;-------------------------------;	;
+		hSIZE = cmhpAwidth			;	;
+		vSIZE = cmhpAheight			;	;
+		relDCOL = cmhpHTHICK ,'+XXXX'		;	;
+		relDROW = cmhpAheight - cmhpVTHICK ,'+XXXX'	;
+		TMP1 = relDPOS				;	;
+		relDROW =-cmhpAheight + cmhpVTHICK ,'-XXXX'	;
+		relDCOL = cmhpAwidth  - cmhpHTHICK ,'+XXXX'	;
+		TMP2 = relDPOS				;	;
+		END	;-------------------------------;	;
+.IFNDEF APP							;
+	DISPLAY (CH,	ESC1,PUSH,hLINE,vLINE,			;
+&			TMP1(1,%trim(TMP1)),hLINE,		;
+&			TMP2(1,%trim(TMP2)),vLINE,		;
+&			ESC1,POP)				;
+.ENDC								;
+.IFDEF APP							;
+	XCALL APPEND (STRING,					;
+&			ESC1,PUSH,hLINE,vLINE,			;
+&			TMP1(1,%trim(TMP1)),hLINE,		;
+&			TMP2(1,%trim(TMP2)),vLINE,		;
+&			ESC1,POP)				;
+.ENDC								;
+	END	;-----------------------------------------------;
+;-----------
+;--hpFILL=38
+;-----------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	fSHADE  = %d(%arg(ptr))			;
+	IF (.NOT.cmhpDOTS)			;
+	   THEN	BEGIN	;---------------;	;
+		fWIDTH  = 30000*cmhpAwidth /cmhpCPI
+		fHEIGHT = 300  *cmhpAheight/cmhpLPI
+		END	;---------------;	;
+	   ELSE	BEGIN	;---------------;	;
+		fWIDTH  = cmhpAwidth	;	;
+		fHEIGHT = cmhpAheight	;	;
+		END	;---------------;	;
+.IFNDEF APP					;
+	DISPLAY (CH,ESC1,PUSH,FILL,ESC1,POP)	;
+.ENDC						;
+.IFDEF APP					;
+	XCALL APPEND (STRING,ESC1,PUSH,FILL,ESC1,POP)
+.ENDC						;
+	END	;-------------------------------;
+;-----------
+;--hpDOTS=39
+;-----------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	cmhpDOTS = ( %d(%arg(ptr)).GT.0 )	;
+	END	;-------------------------------;
+.PAGE
+;--hpTHICK=40
+;------------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	SET cmhpHTHICK, cmhpVTHICK = %d(%arg(ptr))
+	END	;-------------------------------;
+;-------------
+;--hpVTHICK=41
+;-------------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	cmhpVTHICK = %d(%arg(ptr))		;
+	END	;-------------------------------;
+;-------------
+;--hpHTHICK=42
+;-------------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	cmhpHTHICK = %d(%arg(ptr))		;
+	END	;-------------------------------;
+;-----------
+;--hpHTAB=43
+;-----------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	IF (.NOT.cmhpDOTS)			;
+	   THEN	BEGIN	;-----------------;	;
+		absCOL = %d(%arg(ptr))	  ;	;
+.IFNDEF APP				  ;	;
+		DISPLAY (CH,hTAB)	  ;	;
+.ENDC					  ;	;
+.IFDEF APP				  ;	;
+		XCALL APPEND (STRING,hTAB);	;
+.ENDC					  ;	;
+		END	;-----------------;	;
+	   ELSE	BEGIN	;-----------------;	;
+		absDCOL = %d(%arg(ptr))	  ;	;
+.IFNDEF APP				  ;	;
+		DISPLAY (CH,hDTAB)	  ;	;
+.ENDC					  ;	;
+.IFDEF APP				  ;	;
+		XCALL APPEND (STRING,hDTAB)	;
+.ENDC					  ;	;
+		END	;-----------------;	;
+	END	;-------------------------------;
+;-----------
+;--hpVTAB=44
+;-----------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	IF (.NOT.cmhpDOTS)			;
+	   THEN	BEGIN	;-----------------;	;
+		absROW = %d(%arg(ptr))	  ;	;
+.IFNDEF APP				  ;	;
+		DISPLAY (CH,vTAB)	  ;	;
+.ENDC					  ;	;
+.IFDEF APP				  ;	;
+		XCALL APPEND (STRING,vTAB);	;
+.ENDC					  ;	;
+		END	;-----------------;	;
+	   ELSE	BEGIN	;-----------------;	;
+		absDROW = %d(%arg(ptr))	  ;	;
+.IFNDEF APP				  ;	;
+		DISPLAY (CH,vDTAB)	  ;	;
+.ENDC					  ;	;
+.IFDEF APP				  ;	;
+		XCALL APPEND (STRING,vDTAB)	;
+.ENDC					  ;	;
+		END	;-----------------;	;
+	END	;-------------------------------;
+.PAGE ;
+;-----------
+;--hpPUSH=45
+;-----------
+.IFNDEF APP
+	DISPLAY (CH,ESC1,PUSH)
+.ENDC
+.IFDEF APP
+	XCALL APPEND (STRING,ESC1,PUSH)
+.ENDC
+;----------
+;--hpPOP=46
+;----------
+.IFNDEF APP
+	DISPLAY (CH,ESC1,POP)
+.ENDC
+.IFDEF APP
+	XCALL APPEND (STRING,ESC1,POP)
+.ENDC
+;-----------
+;--hpFONT=47
+;-----------
+	BEGIN	;-------------------------------;
+	INCR ptr				;
+	FONT_PARMS = %d(%arg(ptr))		;
+;-- Channel output --				;
+.IFNDEF APP					;
+	IF (ORIENT)				;
+		BEGIN	;---------------;	;ORIENTATION
+		IF (ORIENT.EQ.1)	;	;
+		   THEN	DISPLAY (CH,ESC1,'&lO')	;	portrait
+		   ELSE	DISPLAY (CH,ESC1,'&l1O');	landscape
+		END	;---------------;	;
+	IF (SYMTERM)				;
+		BEGIN	;---------------;	;SYMBOL SET
+		ALPHA3 = SYMVAL ,'(XX'	;	;
+		XCALL ASCII (SYMTERM,ASCII)	;
+		DISPLAY (CH,ESC1,ALPHA3,ASCII)	;
+		END	;---------------;	;
+	IF (SPACING)				;
+		BEGIN	;---------------;	;
+		IF (SPACING.EQ.1)	;	;SPACING
+		   THEN	DISPLAY (CH,ESC1,'(s1P');	 proportional
+		   ELSE	DISPLAY (CH,ESC1,'(sP')	;	 fixed
+		END	;---------------;	;
+	IF (PITCH)				;
+		BEGIN	;---------------;	;PITCH
+		IF (PITCH.EQ.167)	;	;	Note special
+		   THEN	cmhpCPI = 1667	;	;	handling of 16.7
+		   ELSE	cmhpCPI = PITCH*10	;	It's changed to
+		ALPHA8 = cmhpCPI ,'(sXX.XXH'	;	16.67
+		DISPLAY (CH,ESC1,ALPHA8);	;
+		END	;---------------;	;
+	IF (POINT)				;
+		BEGIN	;---------------;	;POINTS
+		ALPHA7 = POINT ,'(sXX.XV';	;
+		DISPLAY (CH,ESC1,ALPHA7);	;
+		END	;---------------;	;
+	IF (STYLE)				;
+		BEGIN	;---------------;	;STYLE
+		IF (STYLE.EQ.1)		;	;
+		   THEN	DISPLAY (CH,ESC1,'(sS')	; upright
+		   ELSE	DISPLAY (CH,ESC1,'(s1S'); italic
+		END	;---------------;	;
+.PAGE ;hpFONT=47 continues....
+;---------------------				;
+;--hpFONT=47 CONTINUED				;
+;---------------------				;
+	IF (WEIGHT)				;
+		BEGIN	;---------------;	;WEIGHT	subtracting 5
+		WEIGHT = WEIGHT - 5;	;	;	gives range
+		IF (WEIGHT.LT.0);	;	;	-4 to +4
+		   THEN	ALPHA5 = WEIGHT,'(s-XB'	;	(HP actually
+		   ELSE ALPHA5 = WEIGHT,'(sXXB'	;      handles -7 to +7)
+		DISPLAY (CH,ESC1,ALPHA5);	;
+		END	;---------------;	;
+	IF (TYPE)				;
+		BEGIN	;---------------;	;TYPE FACE
+		IF (TYPE.EQ.1)		;	;	1=LinePrint
+		   THEN	DISPLAY (CH,ESC1,'(s0T');	is special case
+		   ELSE BEGIN	;----;	;	;
+			ALPHA7 = TYPE ,'(sXXXXT';	all others are
+			DISPLAY (CH,ESC1,ALPHA7);  	just as given
+			END	;----;	;	;
+		END	;---------------;	;
+						;
+.ENDC	;-- END FOR CHANNEL OUTPUT Continues with FOR STRING OUTPUT
+						;
+.IFDEF APP					;
+	IF (ORIENT)				;
+		BEGIN	;---------------;	;ORIENTATION
+		IF (ORIENT.EQ.1)	;	;
+		   THEN	XCALL APPEND (STRING,ESC1,'&lO')   ;portrait
+		   ELSE	XCALL APPEND (STRING,ESC1,'&l1O')  ;landscape
+		END	;---------------;	;
+	IF (SYMTERM)				;
+		BEGIN	;---------------;	;SYMBOL SET
+		ALPHA2 = SYMVAL ,'XX'	;	;
+		XCALL ASCII (SYMTERM,ASCII)	;
+		XCALL APPEND (STRING,ESC1,'(',ALPHA2,ASCII)
+		END	;---------------;	;
+	IF (SPACING)				;
+		BEGIN	;---------------;	;
+		IF (SPACING.EQ.1)	;	;SPACING
+		   THEN	XCALL APPEND (STRING,ESC1,'(s1P') ;proportional
+		   ELSE	XCALL APPEND (STRING,ESC1,'(sP')  ;fixed
+		END	;---------------;	;
+	IF (PITCH)			;	;
+		BEGIN	;---------------;	;PITCH
+		IF (PITCH.EQ.167)     	;	;	Note special
+		   THEN	cmhpCPI = 1667	;	;	handling of 16.7
+		   ELSE	cmhpCPI = PITCH*10	;	It's changed to
+		ALPHA8 = cmhpCPI ,'(sXX.XXH'	;	16.67
+		XCALL APPEND (STRING,ESC1,ALPHA8);
+		END	;---------------;	;
+						;
+	IF (POINT)				;
+		BEGIN	;---------------;	;POINTS
+		ALPHA7 = POINT ,'(sXX.XV';	;
+		XCALL APPEND (STRING,ESC1,ALPHA7);
+		END	;---------------;	;
+	IF (STYLE)			;	;
+		BEGIN	;---------------;	;STYLE
+		IF (STYLE.EQ.1)		;	;
+		   THEN	XCALL APPEND (STRING,ESC1,'(sS')  ;upright
+		   ELSE	XCALL APPEND (STRING,ESC1,'(s1S') ;italic
+		END	;---------------;	;
+.PAGE						;
+;------------------------------			;
+;--hpFONT=47 CONTINUED (string)			;
+;------------------------------			;
+	IF (WEIGHT)				;
+		BEGIN	;---------------;	;WEIGHT	subtracting 5
+		WEIGHT= WEIGHT-5;	;	;	gives range
+		IF (WEIGHT.LT.0)	;	;	-4 to +4
+		   THEN	ALPHA5 = WEIGHT,'(s-XB'	;	(HP actually
+		   ELSE ALPHA5 = WEIGHT,'(sXXB'	;      handles -7 to +7)
+		XCALL APPEND (STRING,ESC1,ALPHA5);
+		END	;---------------;	;
+	IF (TYPE)				;
+		BEGIN	;---------------;	;TYPE FACE
+		IF (TYPE.EQ.1)		;	;	 ;1=LinePrint
+		   THEN	XCALL APPEND (STRING,ESC1,'(s0T'); is special
+		   ELSE BEGIN	;----;	;	;
+			ALPHA7 = TYPE ,'(sXXXXT';	 ;all others are
+			XCALL APPEND (STRING,ESC1,ALPHA7);just as given
+			END	;----;	;	;
+		END	;---------------;	;
+						;
+.ENDC	;--------- END FOR STRING OUTPUT -----	;  -----
+						;
+	END	;-------------------------------;
+
+.PAGE	;---- Next function is hpLOAD=48 ----
+;-----------
+;--hpLOAD=48
+;-----------
+	BEGIN	;---------------------------------------;
+	INCR ptr				; 1st parm is filename --
+	FILSPC = %a(%arg(ptr))				;
+						; 2nd parm is ID# --
+	INCR ptr					;LASER MAY NOT take ID
+	ALPHA4 = %d(%arg(ptr)) ,'ZZZZ'[LEFT]		;with leading zeros!
+							;
+	INCR ptr					;
+	IF (%d(%arg(ptr)) .NE.4 .AND.		;3rd parm is perm(5) or temp(4)
+&	    %d(%arg(ptr)) .NE.5 )			;indicator --
+		BEGIN	;-------;			;
+		cmhpERNUM = 4	;			;
+		IF (.NOT.cmhpTRAP) GOTO ERR		;
+		RETURN		;TO MAIN ERROR=invalid tmp/perm
+		END	;-------;			;
+	CALL AUXch			;get a channel	;
+	IF (%TRUE)					;
+	   THEN	BEGIN	;---------------;		;
+		ONERROR BAD_SOFT	;		;
+		OPEN (AUX,I,FILSPC)	;		;
+		OFFERROR		;		;
+		END	;---------------;		;
+	   ELSE	BEGIN	;---------------;		;
+BAD_SOFT,	cmhpERNUM = 2		;		;
+		IF (.NOT.cmhpTRAP) GOTO ERR		;
+		RETURN		;TO MAINLINE ERROR=No SOFT file
+		END	;---------------;		;
+
+.IFNDEF APP						;
+	DISPLAY (CH,         ESC1,'*c',ALPHA4(1,%trim(ALPHA4)),'D')
+;-- send file --					;
+	CALL SEND_FILE					;
+	ALPHA4 = %d(%arg(ptr)) ,' cXF'			;Load tmp/perm
+	ALPHA1 = '*'					; suffix and
+	DISPLAY (CH,ESC1,ALPHA4)			; send it now.
+.ENDC							;
+.IFDEF APP						;
+	XCALL APPEND (STRING,ESC1,'*c',ALPHA4(1,%trim(ALPHA4)),'D')
+;-- "send file" for string output only appends file name (not its contents)--
+
+	ALPHA4 = %d(%arg(ptr)) ,' cXF'			;Load tmp/perm
+	ALPHA1 = '*'					; suffix 
+	XCALL APPEND (STRING,FILSPC,ESC1,ALPHA4)	;
+.ENDC							;
+	END	;---------------------------------------;
+
+.PAGE	;---- Next function is hpGRAPHIC=49 ----
+;--------------
+;--hpGRAPHIC=49
+;--------------
+	BEGIN	;---------------------------------------;
+	INCR ptr					; 1st parm is filename
+	FILSPC = %a(%arg(ptr))				;
+	CALL AUXch			;to get channel	;
+	IF (%TRUE)					;
+	   THEN	BEGIN	;---------------;		;
+		ONERROR BAD_GRF		;		;
+		OPEN (AUX,I,FILSPC)	;		;
+		OFFERROR		;		;
+		END	;---------------;		;
+	   ELSE	BEGIN	;---------------;		;
+BAD_GRF,	cmhpERNUM = 1		;		;
+		IF (.NOT.cmhpTRAP) GOTO ERR		;
+		RETURN		;TO MAINLINE ERROR=No GRF file
+		END	;---------------;		;
+	INCR ptr					; 2nd parm is resolution
+	IF ( %d(%arg(ptr)).EQ. 75 .OR.			;
+&	     %d(%arg(ptr)).EQ.100 .OR.			;
+&	     %d(%arg(ptr)).EQ.150 .OR.	;check for validity
+&	     %d(%arg(ptr)).EQ.300  )			;
+	   THEN BEGIN	;-------;			;
+		ALPHA6 = %d(%arg(ptr)) ,' tXXXR'	;
+		ALPHA1 = '*'	;			;
+		END	;-------;			;
+	   ELSE	BEGIN	;-------;			;
+		CLOSE AUX	;			;
+		cmhpERNUM = 3	;			;
+		IF (.NOT.cmhpTRAP) GOTO ERR		;
+		RETURN		; TO MAINLINE ERROR=bad resolution
+		END	;-------;			;
+.IFNDEF APP						;SEND TO CH --
+	DISPLAY (CH,ESC1,ALPHA6)			;send resolution
+	CALL SEND_FILE					;send the file
+.ENDC							;
+.IFDEF APP						;APPEND TO STRING --
+	XCALL APPEND (STRING,ESC1,ALPHA6,FILSPC)	;append resolution
+.ENDC							;append file NAME
+	END	;---------------------------------------;
+.PAGE
+;------------
+;--hpUNDER=50
+;------------
+.IFNDEF APP
+	DISPLAY (CH,ESC1,'&d0D')
+.ENDC
+.IFDEF APP
+	XCALL APPEND (STRING,ESC1,'&d0D')
+.ENDC
+
+;----------------
+;--hpUNDER_OFF=51
+;----------------
+.IFNDEF APP
+	DISPLAY (CH,ESC1,'&d@')
+.ENDC
+.IFDEF APP
+	XCALL APPEND (STRING,ESC1,'&d@')
+.ENDC
+
+;----------
+;--hpLPI=52
+;----------
+	BEGIN	;---------------------------------------;
+	INCR ptr					;
+	cmhpLPI = %d(%arg(ptr)) 			;
+	ALPHA5 = cmhpLPI ,'&lXXD'			;
+.IFNDEF APP						;
+	DISPLAY (CH,ESC1,ALPHA5)			;
+.ENDC							;
+.IFDEF APP						;
+	XCALL APPEND (STRING,ESC1,ALPHA5)		;
+.ENDC							;
+	END	;---------------------------------------;
+
+;------------------
+;--hpFONT_DELETE=53
+;------------------
+	NOP	;CODE NOT DONE YET	YYY
+
+;------------------
+;--hpDEBUG=54		;1=enable  line wrap AND  enable display funct. mode
+;------------------	;0=disable line wrap AND disable display funct. mode
+	BEGIN	;---------------------------------------;
+	INCR ptr					;
+	IF ( %d(%arg(ptr)) )				;
+	   THEN	BEGIN	;-----------------------;	;
+.IFNDEF APP					;	;
+		DISPLAY (CH,ESC1,'&s0C',ESC1,'Y')	;
+.ENDC						;	;
+.IFDEF APP					;	;
+		XCALL APPEND (STRING,ESC1,'&s0C',ESC1,'Y')
+.ENDC						;	;
+		END	;-----------------------;	;
+	   ELSE	BEGIN	;-----------------------;	;
+.IFNDEF APP					;	;
+		DISPLAY (CH,ESC1,'Z',ESC1,'&s1C')	;
+.ENDC						;	;
+.IFDEF APP					;	;
+		XCALL APPEND (STRING,ESC1,'Z',ESC1,'&s1C')
+.ENDC						;	;
+		END	;-----------------------;	;
+	END	;---------------------------------------;
+.PAGE
+;------------------
+;--hpFLUSH=55
+;------------------
+.IFNDEF APP
+	DISPLAY (CH,ESC1,'E')
+.ENDC
+.IFDEF APP
+	XCALL APPEND (STRING,ESC1,'E')
+.ENDC
+;------------------
+;--hpMANUAL=56
+;------------------
+.IFNDEF APP
+	DISPLAY (CH,ESC1,'&l2H')
+.ENDC
+.IFDEF APP
+	XCALL APPEND (STRING,ESC1,'&l2H')
+.ENDC
+;-----------------
+;--hpSTATIONERY=57
+;-----------------
+	BEGIN	;---------------------------------------;
+	INCR ptr					;
+	ALPHA6 = %d(%arg(ptr)) ,'&lXXXA'		;
+.IFNDEF APP						;
+	DISPLAY (CH,ESC1,ALPHA6)			;
+.ENDC							;
+.IFDEF APP						;
+	XCALL APPEND (STRING,ESC1,ALPHA6)		;
+.ENDC							;
+	END	;---------------------------------------;
+;-----------------
+;--hpLM=58
+;-----------------
+	BEGIN	;---------------------------------------;
+	INCR ptr					;
+	ALPHA6 = %d(%arg(ptr)) ,'&aXXXL'		;
+.IFNDEF APP						;
+	DISPLAY (CH,ESC1,ALPHA6)			;
+.ENDC							;
+.IFDEF APP						;
+	XCALL APPEND (STRING,ESC1,ALPHA6)		;
+.ENDC							;
+	END	;---------------------------------------;
+.PAGE
+;-----------------------------------------------------------------------------
+;NOTES RE MACROS
+;	There are 11 possible MACRO CONTROL COMMANDS (see LaserJet technical
+;	manual).  They differ only by the value of MACROctl.
+;	The 11 MACROctl values 0 - 10 are mapped from values of SWITCH 59 - 69
+;	although SWITCH has to be re-adjusted because we've reduced it by 31.
+;	Not all Macro Control functions are implemented:
+;		1 --> 60 "stop macro" is implied by hpMACROtemp & hpMACROperm
+;		6 --> 65 "delete all macros" is not implemented
+;		7 --> 66 "delete all temporary macros" is not implemented
+;-----------------------------------------------------------------------------
+;-----------------
+;--hpMACROstart=59
+;-----------------
+	BEGIN	;---------------------------------------;
+MACRO,	INCR ptr					;	For make temp
+	MACROid  = %d(%arg(ptr))			;	or permanent,
+	MACROctl = SWITCH +31 - hpMACROstart		;	do "stop macro"
+.IFNDEF APP						;	first.
+	IF (MACROctl.EQ.9.OR.				;
+&	    MACROctl.EQ.10) DISPLAY (CH,ESC1,'&f1X')	;
+	DISPLAY (CH,MACRO)				;
+.ENDC							;
+.IFDEF APP						;
+	IF (MACROctl.EQ.9.OR.				;
+&	    MACROctl.EQ.10) XCALL APPEND (STRING,ESC1,'&f1X')
+	XCALL APPEND (STRING,MACRO)			;
+.ENDC							;
+	END	;---------------------------------------;
+
+;-----------------
+;-- 60 is undefined ---- This WOULD be "stop macro" but we do that automatically
+;-----------------	 whenever we get a hpMACROtemp or hpMACROperm
+	NOP
+;-----------------
+;--hpMACROexecute=61
+;-----------------
+	GOTO MACRO
+;-----------------
+;--hpMACROcall=62
+;-----------------
+	GOTO MACRO
+;-----------------
+;--hpMACROauto=63
+;-----------------
+	GOTO MACRO
+;-----------------
+;--hpMACROdisable=64
+;-----------------
+	GOTO MACRO
+;-----------------
+;-- 65 is undefined ----	We do not have a "delete all macros"
+;-----------------
+	NOP
+;-----------------
+;-- 66 is undefined ----	We do not have a "delete all temp macros"
+;-----------------
+	NOP
+;-----------------
+;--hpMACROdel=67
+;-----------------
+	GOTO MACRO
+;-----------------
+;--hpMACROtemp=68
+;-----------------
+	GOTO MACRO
+;-----------------
+;--hpMACROperm=69
+;-----------------
+	GOTO MACRO
+.PAGE
+	ENDCASE	;===========================================================
+		else		;The ELSE clause means invalid parameter
+		BEGIN	;-----------------------------------------------;
+ERR,		CALL AUXch			; find an available channel
+		OPEN (AUX,I,'TT:')		; for terminal (error) output
+		ALPHA3 = ptr						;
+		IF (%numargs.GT.maxP) 					;
+		   THEN	DISPLAY (AUX,13,				;
+&			'%XCALL HP-','F-Too many parameters',13,10)	;
+		   ELSE	BEGIN	;-------------------------------;	;
+			IF (cmhpERNUM) THEN ASCII='W' ELSE ASCII='F'	;
+			DISPLAY (AUX,13,			;	;
+&				'%XCALL HP-',ASCII,		;	;
+&				'-Invalid parameter (argument#',ALPHA3,') ',
+&				%a(%arg(ptr)),13,10)		;	;
+			CASE cmhpERNUM OF BEGINCASE		;	;
+				DISPLAY (AUX,'Graphics',FNF)	;	;1
+				DISPLAY (AUX,'Soft font',FNF)	;	;2
+				DISPLAY (AUX,'Invalid resolution')	;3
+				DISPLAY (AUX,			;	;4
+&					'Invalid soft font temp/perm (4/5) ')
+				ENDCASE				;	;
+			END	;-------------------------------;	;
+									;
+		DISPLAY (AUX,' HP xcalled',13,10)			;
+									;
+		FOR I = 1 STEP 1 UNTIL 10 DO				;
+			BEGIN	;-----------------------;		;
+			XCALL MODNAME (I,TMP2,TSTNUM)	;		;
+			IF (TMP2.EQ.'   ') STOP		;		;
+			ALPHA6 = TSTNUM			;		;
+			DISPLAY (AUX,			;		;
+&				'At line ',ALPHA6,	;		;
+&				' in routine ',TMP2(1,%trim(TMP2)),13,10)
+			END	;-----------------------;		;
+		STOP							;
+		END	;-----------------------------------------------;
+
+	GOTO PARSE
+
+;------------------------------------------------------------------
+;--- Internal routine finds an available channel not now in use (starts at 16)
+;------------------------------------------------------------------
+AUXch,
+	AUX = 15
+	DO	BEGIN	;---------------;
+		INCR AUX		;
+		XCALL CHNOPN (AUX,I)	;
+		END	;---------------;
+	UNTIL (.NOT.I)
+	RETURN
+
+;------------------------------------------------------------------
+;--- Internal routine sends an entire file (NOT APPLICABLE TO HPSTRING)
+;---  INPUT Channel is AUX 
+;--- OUTPUT Channel is CH
+;------------------------------------------------------------------
+.IFNDEF APP
+SEND_FILE,
+	DO FOREVER
+		BEGIN	;---------------;
+		GETS (AUX,BUFFER,EOF)	;
+		PUTS (CH,BUFFER)	;
+		END	;---------------;
+EOF,	IF (%rdlen) PUTS (CH,BUFFER(1,%rdlen))
+	CLOSE AUX
+	RETURN
+.ENDC
+END
+

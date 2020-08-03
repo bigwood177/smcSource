@@ -1,0 +1,64 @@
+SUBROUTINE GETAC ; (ROW,COL,ACTNUM,INXCTL,V)
+;
+;  GETAC / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		ACCEPTS A G/L ACCOUNT NUMBER AND REDISPLAYS IT WITH MASK
+;
+	ROW	,D
+	COL	,D
+	ACTNUM	,D
+	INXCTL	,D
+	V	,D
+RECORD
+	ALPHA	,A8
+	ENTRY	,A4
+	DECMAL	,D4
+	SAVCOL	,D2
+PROC
+ENTER,
+	ACTNUM =
+	ALPHA =
+	SAVCOL = COL
+	XCALL OUTPT (ROW,COL,0,ALPHA,V)
+	XCALL INPUT (ROW,SAVCOL,4,0,'N ',ENTRY,INXCTL,V)
+	GO TO (END), INXCTL
+	IF (ENTRY.EQ.ALPHA) GO TO END
+	DECMAL = ENTRY
+	ACTNUM (1,4) = DECMAL
+	IF (ACTNUM.EQ.0) GO TO ENTER
+	SAVCOL = SAVCOL + 4
+	XCALL OUTPT (ROW,SAVCOL,0,'-',V)
+	INCR SAVCOL
+	XCALL INPUT (ROW,SAVCOL,3,0,'N ',ENTRY,INXCTL,V)
+	GO TO (ENTER), INXCTL
+	DECMAL = ENTRY
+	ACTNUM (5,7) = DECMAL (2,4)
+	ALPHA = ACTNUM, 'XXXX-XXX'
+	XCALL OUTPT (ROW,COL,0,ALPHA,V)
+END,
+	RETURN
+END

@@ -1,0 +1,60 @@
+SUBROUTINE RDATE; (TODAY)
+;
+;  RDATE / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		GETS THE CALENDER DATE STORED IN THE 
+;		OPERATING SYSTEM AND CONVERTS IT FROM
+;		        ALPHA - DD-MMM-YY, TO
+;		        DECIMAL  - MMDDYY
+;		AND RETURNS IT IN "TODAY"
+; 
+	TODAY	,D
+RECORD ADATE
+	ADAY	,A2
+		,A1				; (HYPHEN)
+	AMON	,A3
+		,A1				; (HYPHEN)
+	AYEAR	,A2
+RECORD
+	TABLEA	,12A3,	'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG',
+&			'SEP','OCT','NOV','DEC'
+	POINT	,D2,	01
+PROC
+	XCALL DATE (ADATE)			; GET THE SYSTEM DATE
+	TODAY(3,4) = ADAY			; MOVE IN DAY
+	TODAY(5,6) = AYEAR			; MOVE IN YEAR
+CHECK,
+	IF (POINT.GT.12) GO TO MOVMON
+	IF (AMON.EQ.TABLEA(POINT)) GO TO MOVMON	; GOT A MATCH ON THE MONTH
+	INCR POINT				; POINT TO NEXT MONTH IN TABLEA
+	GO TO CHECK				; CHECK AGAIN
+MOVMON,
+	IF (POINT.LE.12) TODAY(1,2) = POINT	; MOVE THE MONTH AND GO HOME
+;;;	IF (TODAY(1,2).EQ.0.OR.TODAY(3,4).EQ.0.OR.TODAY(5,6).EQ.0) TODAY =
+	IF (TODAY(1,2).EQ.0.OR.TODAY(3,4).EQ.0) TODAY =
+	RETURN
+END

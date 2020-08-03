@@ -1,0 +1,2160 @@
+
+O:\SOURCE\man>dbl OUTPT.MAN 
+    1          SUBROUTINE OUTPT; (ROWIN,COLUM,FCODE,TEXT,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\OUTPT.MAN
+
+Errors:        77, in file O:\SOURCE\man\OUTPT.MAN
+
+O:\SOURCE\man>dbl TTNO.MAN 
+    1          SUBROUTINE TTNO; (SYTTNO,MCTTNO,TTNOSW)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\TTNO.MAN
+
+Errors:        77, in file O:\SOURCE\man\TTNO.MAN
+
+O:\SOURCE\man>dbl CINPUT.MAN 
+    1          SUBROUTINE CINPUT
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\CINPUT.MAN
+
+Errors:        77, in file O:\SOURCE\man\CINPUT.MAN
+
+O:\SOURCE\man>dbl ADDTE.MAN 
+    1          SUBROUTINE ADDTE
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\ADDTE.MAN
+
+Errors:        77, in file O:\SOURCE\man\ADDTE.MAN
+
+O:\SOURCE\man>dbl ANYCN.MAN 
+    1          SUBROUTINE ANYCN ; (CNGCTL,WHATNO)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\ANYCN.MAN
+
+Errors:        77, in file O:\SOURCE\man\ANYCN.MAN
+
+O:\SOURCE\man>dbl BDATE.MAN 
+    1          SUBROUTINE BDATE
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\BDATE.MAN
+
+Errors:        77, in file O:\SOURCE\man\BDATE.MAN
+
+O:\SOURCE\man>dbl DSPLY.MAN 
+    1          SUBROUTINE DSPLY ; (MAX,ROW,COL,DECMAL,OPTION,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\DSPLY.MAN
+
+Errors:        77, in file O:\SOURCE\man\DSPLY.MAN
+
+O:\SOURCE\man>dbl FILES.MAN 
+    1          ;common files: cusmas,cusidx,aropen     ssq 8-12-04
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\FILES.MAN
+
+Errors:        77, in file O:\SOURCE\man\FILES.MAN
+
+O:\SOURCE\man>dbl ffilc.man 
+    1          ;FFILC.MAN - COMPANY CODE
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\ffilc.man
+
+Errors:        77, in file O:\SOURCE\man\ffilc.man
+
+O:\SOURCE\man>dbl FRMAT.MAN 
+    1          SUBROUTINE FRMAT ; (AFIELD,SIZE)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\FRMAT.MAN
+
+Errors:        77, in file O:\SOURCE\man\FRMAT.MAN
+
+O:\SOURCE\man>dbl GDATE.MAN 
+    1          SUBROUTINE GDATE
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\GDATE.MAN
+
+Errors:        77, in file O:\SOURCE\man\GDATE.MAN
+
+O:\SOURCE\man>dbl GETAC.MAN 
+    1          SUBROUTINE GETAC ; (ROW,COL,ACTNUM,INXCTL,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\GETAC.MAN
+
+Errors:        77, in file O:\SOURCE\man\GETAC.MAN
+
+O:\SOURCE\man>dbl INPT3.MAN 
+    1          SUBROUTINE INPT3 ; (ROW,COL,MAX,MIN,INTYPE,ENTRY,INXCTL,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\INPT3.MAN
+
+Errors:        77, in file O:\SOURCE\man\INPT3.MAN
+
+O:\SOURCE\man>dbl IO.MAN 
+    1          SUBROUTINE IO ; (CHANEL,BUFFER,RECNO,IOCTL,LOKCTL)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\IO.MAN
+
+Errors:        77, in file O:\SOURCE\man\IO.MAN
+
+O:\SOURCE\man>dbl IOS.MAN 
+    1          SUBROUTINE IOS ; (CHANEL,BUFFER,IOCTL,LOKCTL)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\IOS.MAN
+
+Errors:        77, in file O:\SOURCE\man\IOS.MAN
+
+O:\SOURCE\man>dbl ISIO.MAN 
+    1          SUBROUTINE ISIO ; (CHANEL,BUFFER,KEYFLD,IOCTL,LOKCTL)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\ISIO.MAN
+
+Errors:        77, in file O:\SOURCE\man\ISIO.MAN
+
+O:\SOURCE\man>dbl LEFTJ.MAN 
+    1          SUBROUTINE LEFTJ ;(NUMBER,SIZE)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\LEFTJ.MAN
+
+Errors:        77, in file O:\SOURCE\man\LEFTJ.MAN
+
+O:\SOURCE\man>dbl LINFD.MAN 
+    1          SUBROUTINE LINFD ; (LNFEED)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\LINFD.MAN
+
+Errors:        77, in file O:\SOURCE\man\LINFD.MAN
+
+O:\SOURCE\man>dbl LPOFF.MAN 
+    1          SUBROUTINE LPOFF ;(LPSW,SLPFIL,PGCNT,QUE_NAME)  ;smc version
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\LPOFF.MAN
+
+Errors:        77, in file O:\SOURCE\man\LPOFF.MAN
+
+O:\SOURCE\man>dbl LPON.MAN 
+    1          SUBROUTINE LPON; (LPSW,SPLFIL)  ;SMC VERSION
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\LPON.MAN
+
+Errors:        77, in file O:\SOURCE\man\LPON.MAN
+
+O:\SOURCE\man>dbl LPOUT.MAN 
+    1          SUBROUTINE LPOUT; (LINCNT,PGCNT,PLINE,TITLE,HDR1,HDR2,HDR3,LGD1,LGD2,LGD3,
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\LPOUT.MAN
+
+Errors:        77, in file O:\SOURCE\man\LPOUT.MAN
+
+O:\SOURCE\man>dbl MESAG.MAN 
+    1          SUBROUTINE MESAG ; (MSG,MSXCTL)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\MESAG.MAN
+
+Errors:        77, in file O:\SOURCE\man\MESAG.MAN
+
+O:\SOURCE\man>dbl MMENU.MAN 
+    1          SUBROUTINE MMENU; (MENUID,RECNAM,SELECT,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\MMENU.MAN
+
+Errors:        77, in file O:\SOURCE\man\MMENU.MAN
+
+O:\SOURCE\man>dbl MOUNT.MAN 
+    1          SUBROUTINE MOUNT ;(NAME,DEVICE)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\MOUNT.MAN
+
+Errors:        77, in file O:\SOURCE\man\MOUNT.MAN
+
+O:\SOURCE\man>dbl NSMNU.MAN 
+    1          SUBROUTINE NSMNU; (MENUID,RECNAM,SELECT,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\NSMNU.MAN
+
+Errors:        77, in file O:\SOURCE\man\NSMNU.MAN
+
+O:\SOURCE\man>dbl OFILE.MAN 
+    1          SUBROUTINE OFILE ; (CHANEL,FILNUM,BLOCKS,RECSIZ,SWITCH)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\OFILE.MAN
+
+Errors:        77, in file O:\SOURCE\man\OFILE.MAN
+
+O:\SOURCE\man>dbl OPENF.MAN 
+    1          SUBROUTINE OPENF        ;(CHANEL,MODE,FLSPEC,BLOCKS,RECSIZ,SWITCH)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\OPENF.MAN
+
+Errors:        77, in file O:\SOURCE\man\OPENF.MAN
+
+O:\SOURCE\man>dbl PGCHN.MAN 
+    1          SUBROUTINE PGCHN ; (PRGNAM,RSTART)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\PGCHN.MAN
+
+Errors:        77, in file O:\SOURCE\man\PGCHN.MAN
+
+O:\SOURCE\man>dbl PGMND.MAN 
+    1          SUBROUTINE PGMND 
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\PGMND.MAN
+
+Errors:        77, in file O:\SOURCE\man\PGMND.MAN
+
+O:\SOURCE\man>dbl PRCSN.MAN 
+    1          SUBROUTINE PRCSN ; (MASK1,SIZE1,PRECS1,MASK2,SIZE2,PRECS2)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\PRCSN.MAN
+
+Errors:        77, in file O:\SOURCE\man\PRCSN.MAN
+
+O:\SOURCE\man>dbl PRSPL.MAN 
+    1          SUBROUTINE PRSPL        ;(SPLFIL,SELECT,TERMNO,DEFPRN,TRMID,SPLCTL)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\PRSPL.MAN
+
+Errors:        77, in file O:\SOURCE\man\PRSPL.MAN
+
+O:\SOURCE\man>dbl RDATE.MAN 
+    1          SUBROUTINE RDATE; (TODAY)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\RDATE.MAN
+
+Errors:        77, in file O:\SOURCE\man\RDATE.MAN
+
+O:\SOURCE\man>dbl RTSRT.MAN 
+    1          SUBROUTINE RTSRT; (TSXSRT)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\RTSRT.MAN
+
+Errors:        77, in file O:\SOURCE\man\RTSRT.MAN
+
+O:\SOURCE\man>dbl SCALE.MAN 
+    1          SUBROUTINE SCALE ; (FLDIN,FLDOUT,SCALE)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\SCALE.MAN
+
+Errors:        77, in file O:\SOURCE\man\SCALE.MAN
+
+O:\SOURCE\man>dbl SERCH.MAN 
+    1          SUBROUTINE SERCH; (CHANEL,REDRED,KEY,STPOS1,ENPOS1,BSEND,BSMID,SRCCTL,SRCOPT,
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\SERCH.MAN
+
+Errors:        77, in file O:\SOURCE\man\SERCH.MAN
+
+O:\SOURCE\man>dbl SNMSG.MAN 
+    1          SUBROUTINE SNMSG; (MSG,SWITCH)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\SNMSG.MAN
+
+Errors:        77, in file O:\SOURCE\man\SNMSG.MAN
+
+O:\SOURCE\man>dbl SRCHQ.MAN 
+    1          SUBROUTINE SRCHQ; (CHANEL,REDREC,KEY,STPOS,ENPOS,BSEND,BSMID,SRCCTL,
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\SRCHQ.MAN
+
+Errors:        77, in file O:\SOURCE\man\SRCHQ.MAN
+
+O:\SOURCE\man>dbl STENO.MAN 
+    1          SUBROUTINE STENO; (STRTNO,ENDNO,STNFLD,MAX,STXCTL,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\STENO.MAN
+
+Errors:        77, in file O:\SOURCE\man\STENO.MAN
+
+O:\SOURCE\man>dbl TMENU.MAN 
+    1          SUBROUTINE TMENU; (MENUID,SELECT,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\TMENU.MAN
+
+Errors:        77, in file O:\SOURCE\man\TMENU.MAN
+
+O:\SOURCE\man>dbl WATE.MAN 
+    1          SUBROUTINE WATE ; (OPTION,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\WATE.MAN
+
+Errors:        77, in file O:\SOURCE\man\WATE.MAN
+
+O:\SOURCE\man>dbl INPUT.MAN 
+    1          SUBROUTINE INPUT ; (ROW,COL,INMAX,MIN,INTYPE,ENTRY,INXCTL,V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\INPUT.MAN
+
+Errors:        77, in file O:\SOURCE\man\INPUT.MAN
+
+O:\SOURCE\man>dbl TERID.MAN 
+    1          SUBROUTINE TERID; (V)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\TERID.MAN
+
+Errors:        77, in file O:\SOURCE\man\TERID.MAN
+
+O:\SOURCE\man>dbl FFILE.MAN 
+    1          SUBROUTINE FFILE; (FILNUM,REDFIL,CLCTL)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\FFILE.MAN
+
+Errors:        77, in file O:\SOURCE\man\FFILE.MAN
+
+O:\SOURCE\man>dbl wanfk.wnd 
+    1          SUBROUTINE WANFK ; (W_ID,LROW,CNGCTL,WHATNO,F_KEY,F_DESC)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\wanfk.wnd
+
+Errors:        77, in file O:\SOURCE\man\wanfk.wnd
+
+O:\SOURCE\man>dbl wancn.wnd 
+    1          SUBROUTINE WANCN ; (W_ID,LROW,CNGCTL,WHATNO)
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-addte.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anycn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-anyfk.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdat8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-bdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-beep.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-call_vb.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cid.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-cinput.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-date8.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-dsply.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-envrn.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffilc.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-ffile.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-filec.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-files.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-frmat.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-gdate.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-getac.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-E-PRTLOAD, Unable to load prototype .\synglobal-synroutine-get_smtp_line.dbp : Prototype file version is 1.2 while loader expects version 1.3
+
+%DBL-W-ERRCNT, Too many errors
+
+Warnings:       1, in file O:\SOURCE\man\wancn.wnd
+
+Errors:        77, in file O:\SOURCE\man\wancn.wnd

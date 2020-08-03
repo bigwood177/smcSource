@@ -1,0 +1,86 @@
+SUBROUTINE LPOFF ;(LPSW,SLPFIL,PGCNT)	;smc version
+; use this version as of 3-30-98, .smc no longer updated.
+;
+	LPSW	,D
+	SPLFIL	,A
+	PGCNT	,D
+
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+RECORD	
+		,A14,	'SELECT OPTION:'
+		,A14,	'  1. EDIT     '
+		,A14,	'  2. PRINT    '
+		,A14,	'OK ?          '
+			;12345678901234567890
+RECORD,X
+	DLINE	,4A14
+
+RECORD	VARS
+	ENTRY	,A1
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	ROW	,D2
+	I	,D3
+	OPT	,D1
+
+PROC
+	IF (LPSW.EQ.0) RETURN
+	CLOSE 14
+	s_name = splfil         ;restore printer output file name
+;;;	pnum = s_name(1,1)      ;printer number
+;;;	s_name(1,1) = 's'       ;always first char of printer output file name
+;;;	if (pnum .eq. 8)
+	LPSW = 2		;3-27-98 FOR TESTING
+	IF (LPSW .EQ. 2) CALL P_MENU
+	USING OPT SELECT
+	(1),	BEGIN			;EDIT
+		xcall spedit (s_filnam)
+		xcall delet (s_filnam)
+		END
+	(2),	begin
+		lpque (s_filnam,copies:1,delete)
+		end
+	ENDUSING
+
+	LPSW =
+	RETURN
+
+
+not_num,
+	offerror
+P_MENU,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	ROW = 9
+	FOR I FROM 1 THRU 4 
+		BEGIN
+		INCR ROW
+		DISPLAY (15,$SCR_POS(ROW,1),$SCR_CLR(LINE))
+		DISPLAY (15,$SCR_POS(ROW,4),DLINE(I))
+		INCR ROW		
+		DISPLAY (15,$SCR_POS(ROW,1),$SCR_CLR(LINE))
+		END
+	DISPLAY (15,$SCR_POS(10,20))
+	READS (15,ENTRY)
+	onerror not_num
+	OPT = ENTRY
+	offerror
+	IF (OPT .EQ. 0) OPT = 2
+	IF (OPT.LT.1 .OR. OPT.GT.2) GOTO P_MENU
+	DISPLAY (15,$SCR_POS(10,20),ENTRY)
+	DISPLAY (15,$SCR_POS(16,10))
+	READS (15,ENTRY)
+	UPCASE ENTRY
+	IF (ENTRY .EQ. 'N') GOTO P_MENU
+	RETURN
+
+END

@@ -1,0 +1,199 @@
+SUBROUTINE PGCHX ; (PRGNAM,RSTART)
+;	TOOLKIT VERSION
+;
+;		ROUTINE TO HANDLE CHAINING BETWEEN PROGRAMS.
+;		OPENS CHANNEL 13 FOR MESARA
+;
+	PRGNAM	,A	;Name of next program to chain to.
+	RSTART	,D	;Re-start switch.
+			; 0 = Next program, if aborted, is not re-startable.
+			; 1 = Next program is unconditionally re-startable.
+			; 2 = Do not disturb the LASTPG, NEXTPG or RSTART
+			;     variables when chaining to the next program.
+			; 3 = This is the only argument value for RSTART
+			;     that causes this routine to return to the
+			;     calling program.
+			;	A RSTART value of "3" returns RSTART:
+			;	 "0" if the program is found to exist,
+			;	 "1" if the program cannot be found on the
+			;	     device specified.
+			; 4 = This is a switch to return the CHAIN name
+			;     in PRGNAM
+
+	.include 'tk:tools.def'
+
+
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD ,X
+			.INCLUDE 'DEF:MES002.DEF'
+RECORD CHAIN
+	CHNASN	,A3
+	COLON	,A1	,':'
+	CHNPGM	,A6
+RECORD
+	tl	,d2
+	u_name	,a14
+	BLANKS	,A10
+	CNT1	,D2
+	CNT2	,D2
+	COUNTR	,D1
+	DCHAR	,D3
+	ERR	,D3
+	ERRLIN	,D3
+	LENGTH	,D2
+	SAVPRG	,A10
+	SUB	,D2
+	TSTPGM	,A14
+	TERMNO	,D2
+	SYTTNO	,D3
+	MCTTNO	,D2
+	TTNOSW	,D1
+PROC
+	CHAIN = '   :'
+	TSTPGM = PRGNAM
+	SAVPRG =
+	XCALL TTNO (SYTTNO,MCTTNO,TTNOSW)
+	TERMNO = MCTTNO
+	TERMNO = TERMNO + 2
+	CLOSE 13
+	OPEN (13,U,'UT:MESARA.DDF')	;OPEN CHANNEL 13 INSTEAD OF 11
+					;DUE TO POTENTIAL OF CALLING OUTPT
+					;WHILE CHANNEL IS OPEN (OUTPT USES 11)
+	IF (TSTPGM(3,3).NE.':') GO TO NOASN
+;****************************************
+; FIND LOGICAL ASSIGNMENT
+	COUNTR = 0
+	ONERROR LOKLUP
+FNDDEV,
+	READ (13,MESARA,1)
+READOK,
+	OFFERROR
+	UNLOCK 13
+	SUB =
+FLOOP,
+	INCR SUB
+	IF (SUB.GT.27) GO TO NOASN
+	IF (LOGASS(SUB).NE.TSTPGM(1,2)) GO TO FLOOP
+	CHNASN = PHYASS(SUB)
+	COLON = ':'
+	CHNPGM = TSTPGM(4,9)
+	CNT1 =
+	CNT2 =
+SQZLUP,
+	IF (CNT1.GE.10) GO TO NOASN
+	INCR CNT1
+	IF (CHAIN(CNT1,CNT1).EQ.BLANKS) GO TO SQZLUP
+	INCR CNT2
+	SAVPRG (CNT2,CNT2) = CHAIN (CNT1,CNT1)
+	GO TO SQZLUP
+NOASN,
+	CHAIN = SAVPRG
+	IF (RSTART.EQ.3) GO TO LOCAT
+	IF (RSTART.EQ.2) GO TO NOUPDT
+	IF (RSTART.EQ.4) GO TO RETPGM
+;****************************************
+; UPDATE LAST PROGRAM INFORMATION
+
+	COUNTR = 0
+	ON ERROR LOKLP2
+UPDMES,
+	READ (13,MESARA,TERMNO)
+RED2OK,
+	OFF ERROR
+	LASTPG = NEXTPG
+	NEXTPG = PRGNAM
+	RESTRT = RSTART
+	WRITE (13,MESARA,TERMNO)
+NOUPDT,
+
+;****************************************
+; "STOP" TO PROGRAM DEVICE/NAME
+
+	CLOSE 13
+	XCALL OUTPT (24,1,1,'PLEASE WAIT ...',1)
+	IF (DEVLOP.EQ.0) GO TO CHAIN
+	XCALL OUTPT (24,55,0,' Chaining to ',1)
+	XCALL OUTPT (0,0,0,PRGNAM,1)
+	XCALL OUTPT (24,1,0,'\',1)
+CHAIN,
+
+	u_name = prgnam
+	tl = %instr(1,u_name,":")
+	xcall u_start(,,,,,,,15)
+	xcall e_sect(u_name(tl+1,%trim(u_name)),D_CAPTION)
+	xcall u_finish()
+	
+	IF (CHNASN.NE.BLANKS) 	STOP CHAIN
+
+	STOP PRGNAM
+
+;****************************************
+LOKLUP,
+	XCALL ERROR (ERR,ERRLIN)
+	IF (ERR.NE.40) GO TO REDERR
+	INCR COUNTR
+	IF (COUNTR.GE.9) CALL LOKMSG
+	SLEEP 1
+	READ (13,MESARA,1)
+	XCALL OUTPT (24,1,1,'\',1)
+	GO TO READOK
+LOKLP2,
+	INCR COUNTR
+	IF (COUNTR.GE.9) CALL LOKMSG
+	SLEEP 1
+	READ (13,MESARA,TERMNO)
+	XCALL OUTPT (24,1,1,'\',1)
+	GO TO RED2OK
+LOKMSG,
+	XCALL OUTPT (24,1,1,
+&	'RECORD TEMPORARILY IN USE IN UT:MESARA.DDF - PLEASE WAIT',1)
+	COUNTR = 0
+	RETURN
+REDERR,
+	XCALL MESAG ('?PGCHN - FATAL ERROR WHILE READING UT:MESARA.DDF',1)
+	STOP
+;***************************************
+; DETERMINE IF PROGRAM PHYSICALLY EXISTS
+
+LOCAT,
+	TSTPGM = PRGNAM
+	IF (CHNASN.NE.BLANKS) TSTPGM = CHAIN
+	RSTART = 1
+	IF (SUB.GT.27.AND.TSTPGM(1,2).NE.'UT') GO TO NOTFND
+	LENGTH = 11
+LOCAT1,
+	LENGTH = LENGTH - 1
+	IF (LENGTH.EQ.0) GO TO NOTFND
+	IF (TSTPGM(LENGTH,LENGTH).EQ.' ') GO TO LOCAT1
+	TSTPGM(LENGTH+1,LENGTH+4) = '.DBR'
+	CLOSE 13
+	ONERROR TRYSAV
+	OPEN (13,I,TSTPGM)	;IS IT A ".DBR" ?
+	CLOSE 13
+	GO TO FOUND
+TRYSAV,
+	TSTPGM(LENGTH+1,LENGTH+4) = '.SAV'
+	CLOSE 13
+	ONERROR TRYTSD
+	OPEN (13,I,TSTPGM)	;IS IT A ".SAV" ?
+	CLOSE 13
+	GO TO FOUND
+TRYTSD,
+	TSTPGM (LENGTH+1,LENGTH+4) = '.TSD'
+	CLOSE 13
+	ONERROR NOTFND
+	OPEN (13,I,TSTPGM)	;IS IT A ".TSD"?
+	CLOSE 13
+	GO TO FOUND
+FOUND,
+	RSTART = 		;INDICATE "EXISTS"
+NOTFND,
+	OFF ERROR
+	RETURN			;RETURN TO CALLING PROGRAM
+RETPGM,
+	PRGNAM=CHAIN
+	OFF ERROR
+	RETURN
+;*************************************************************************
+END

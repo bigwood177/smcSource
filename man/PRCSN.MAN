@@ -1,0 +1,74 @@
+SUBROUTINE PRCSN ; (MASK1,SIZE1,PRECS1,MASK2,SIZE2,PRECS2)
+;
+;  PRCSN / MAN 
+;
+;
+;		::PCPYMAN.DEF::
+;*****************************************************************************
+;		PACKAGE SUBROUTINES - DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;	GENERATES 2 MASKS OF GIVEN SIZE AND PRECISION OF THE FORM Z
+;		<ZZZZZZ>.<XXXXX>, WHERE
+;		<ZZZZZZ> IS SOME NUMBER OF 'Z''S, AND
+;		<XXXXX>  IS SOME NUMBER OF 'X''S.
+;
+	MASK1	,A	; THESE MASKS ARE INITIALIZED BY THE SENDING PROGRAM
+	SIZE1	,D
+	PRECS1	,D
+	MASK2	,A	; TO SOMETHING OF THE FORM '<ZZZZZZ>X'
+	SIZE2	,D
+	PRECS2	,D
+RECORD
+	LOOPCT	,D2
+
+PROC
+	CALL FILLIT
+	ONERROR RETNOW
+	IF (PRECS1 .LE. 0) GOTO DO2
+	MASK1((SIZE1 - PRECS1),(SIZE1 - PRECS1)) = '.'
+	LOOPCT = SIZE1 - PRECS1 + 1
+LOOP1,
+	IF (LOOPCT .GT. SIZE1) GOTO DO2
+	MASK1(LOOPCT,LOOPCT) = 'X'
+	INCR LOOPCT
+	GOTO LOOP1
+DO2,
+	IF (PRECS2 .LE. 0) RETURN
+	MASK2((SIZE2 - PRECS2),(SIZE2 - PRECS2)) = '.'
+	LOOPCT = SIZE2 - PRECS2 + 1
+LOOP2,
+	IF (LOOPCT .GT. SIZE2) RETURN
+	MASK2(LOOPCT,LOOPCT) = 'X'
+	INCR LOOPCT
+	GOTO LOOP2
+RETNOW,
+	OFFERROR
+	RETURN
+FILLIT,
+	IF (SIZE1 .LE. 1) GOTO FILLI2
+	MASK1(1,SIZE1) = 'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'
+FILLI2,
+	IF (SIZE2 .LE. 1) RETURN
+	MASK2(1,SIZE2) = 'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'
+	RETURN
+END
+

@@ -1,0 +1,46 @@
+.subroutine sppdf
+	spfil	,a	;rpt:aaaa.txt
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record edit_string
+		,a9,	'pcl2pdf32'
+		,a1
+	path	,a200
+
+record	vars
+	pdf	,a150
+	len	,d3
+	cpystr	,a200
+	string	,a150
+
+
+proc
+
+	pdf = spfil
+	len = %trim(pdf)
+	len = len -2
+	if (len .le. 0) return
+	pdf(len, len+2) = 'pdf'
+
+	cpystr = spfil
+	len = %trim (cpystr) + 2
+	cpystr(len,200) = pdf
+
+	XCALL GETLOG ("RPT",string,LEN)
+	
+	path = string(1,len) + "\" + cpystr
+	
+	xcall spawn (edit_string(1, %trim(edit_string) ) )
+	return
+
+
+
