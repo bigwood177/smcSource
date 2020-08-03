@@ -1,0 +1,61 @@
+; VENCNT / AP 
+;
+;
+;			::PCPYAP.DEF::
+;******************************************************************************
+;		ACCOUNTS PAYABLE
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;******************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD VENMAS	
+		.INCLUDE 'DEF:RD011B.DEF'
+RECORD	,X
+		,A10
+	NXTPRG	,A6
+		,A267
+RECORD
+	BLANKS	,A6
+	PROGNM	,A9,'AP:APMENU'
+	LOKCTL	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	V	,D1,1
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT(2,1,0,'UPDATE COUNTER',1)
+	XCALL FILES (1,'U',11,5)		;FILE # 11 -- VENMAS FILE
+	LOKCTL = 1
+	XCALL IO (1,VENMAS,1,READ,LOKCTL)
+	ORG011 = REC011
+	IF (NXTPRG.NE.BLANKS) PROGNM (4,9) = NXTPRG
+	NXTPRG =
+	LOKCTL = 1
+	XCALL IO (1,VENMAS,1,WRITE,LOKCTL)
+	CLOSE 1
+	XCALL FILES(2,'I',12,4)			;FILE # 12 -- VENIDX FILE
+END,
+	XCALL PGCHN (PROGNM,1)
+END

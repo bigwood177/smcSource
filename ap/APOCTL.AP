@@ -1,0 +1,77 @@
+; APOCTL / AP 
+;
+;
+;			::PCPYAP.DEF::
+;******************************************************************************
+;		ACCOUNTS PAYABLE
+;
+;		RELEASED: AUGUST 1, 1984 (d70s10)
+;******************************************************************************
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984
+;		MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;		DISPLAYS TOTAL VALUE OF A/P OPEN FILE ON SCREEN
+;
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD APOPEN	
+		.INCLUDE 'DEF:RD017A.DEF'
+RECORD
+	ALPHA	,A15
+	ENTRY	,A2
+	INXCTL	,D1
+	SWITCH	,D1,1
+	TOTAP	,D10
+	LOKCTL	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	V	,D1,1
+PROC
+	XCALL TERID (V)
+	V = 1
+	XCALL OUTPT(1,1,2,'DISPLAY TOTAL VALUE OF OPEN PAYABLES',V)
+	XCALL WATE(4,V)
+	XCALL FILES(7,'I',17,SWITCH)		;FILE # 17 -- APOPEN FILE
+	IF (SWITCH.EQ.9) GO TO EXIT
+	LOKCTL = 1
+	XCALL IOS (7,APOPEN,READ,LOKCTL)
+	IF (LOKCTL.EQ.2) GO TO EOF
+READ,
+	LOKCTL = 1
+	XCALL IOS (7,APOPEN,READ,LOKCTL)
+	IF (LOKCTL.EQ.2) GO TO EOF
+	IF (APOPEN.EQ.']]]]]]') GOTO EOF
+	IF (AINVNO.EQ.']]]DEL') GO TO READ
+	IF (AFLAG.GE.0.AND.AFLAG.NE.2.AND.AFLAG.LT.6)
+&		TOTAP = TOTAP + AINVAM - APAID
+	GO TO READ
+EOF,
+	XCALL FILES(7,'I',17,4)
+	ALPHA = TOTAP, '$$,$$$,$$Z.XX-'
+	XCALL OUTPT (12,15,0,'TOTAL VALUE OF OPEN PAYABLES = ',V)
+	XCALL OUTPT(0,0,1,ALPHA,V)
+	XCALL OUTPT(1,0,0,'\',V)
+	XCALL OUTPT(1,0,0,'\',V)
+	XCALL MESAG (' ',2)
+EXIT,
+	XCALL WATE(3,V)
+	XCALL PGCHN ('AP:APMENU',1)
+END

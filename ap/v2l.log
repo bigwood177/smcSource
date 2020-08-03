@@ -1,0 +1,113 @@
+
+O:\SOURCE\ap>call 1099CL.bat 
+
+O:\SOURCE\ap>dblink -d 1099CL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call AGEDAP.bat 
+
+O:\SOURCE\ap>dblink -d AGEDAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call ALAPCK.bat 
+
+O:\SOURCE\ap>dblink -d ALAPCK ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APCODE.bat 
+
+O:\SOURCE\ap>dblink -d apcode rxpp2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APGLXV.bat 
+
+O:\SOURCE\ap>dblink -d APGLXV ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APINQR.bat 
+
+O:\SOURCE\ap>dblink -T  0<apinqr.cmd 
+DBLink>  -d apinqr \
+DBLink> dec4 itcfg makp popn \
+DBLink> ut:w7lib.elb dbldir:axlib.elb \
+DBLink> po:polib.elb cp:cplib.elb po:polib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\ap>call APXREF.bat 
+
+O:\SOURCE\ap>dblink -d APXREF ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APXRP2.bat 
+
+O:\SOURCE\ap>dblink -d APXRP2 input ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHECKS.bat 
+
+O:\SOURCE\ap>dblink -d CHECKS lpon ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHKPRP.bat 
+
+O:\SOURCE\ap>dblink -d CHKPRP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRMAP.bat 
+
+O:\SOURCE\ap>dblink -d CLRMAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRYAP.bat 
+
+O:\SOURCE\ap>dblink -d CLRYAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CSHREQ.bat 
+
+O:\SOURCE\ap>dblink -d CSHREQ ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call DEFSEL.bat 
+
+O:\SOURCE\ap>dblink -d DEFSEL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call MAKALP.bat 
+
+O:\SOURCE\ap>dblink -d makalp ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PR1099.bat 
+
+O:\SOURCE\ap>dblink -d PR1099 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PRGAPO.bat 
+
+O:\SOURCE\ap>dblink -d PRGAPO ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PRGRPT.bat 
+
+O:\SOURCE\ap>dblink -d PRGRPT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTAP2.bat 
+
+O:\SOURCE\ap>dblink -d PSTAP2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTAPO.bat 
+
+O:\SOURCE\ap>dblink -d PSTAPO ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PTLREG.bat 
+
+O:\SOURCE\ap>dblink -d PTLREG ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call ROLO.bat 
+
+O:\SOURCE\ap>dblink -d rolo roldx ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENANL.bat 
+
+O:\SOURCE\ap>dblink -d VENANL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENINQ.bat 
+
+O:\SOURCE\ap>dblink -d VENINQ ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENLST.bat 
+
+O:\SOURCE\ap>dblink -d VENLST ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENMNT.bat 
+
+O:\SOURCE\ap>dblink -d VENMNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENPRT.bat 
+
+O:\SOURCE\ap>dblink -d VENPRT ap:aplib.elb ut:util.elb wnd:tklib.elb 

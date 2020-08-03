@@ -1,0 +1,272 @@
+; PSTCHK / AP 
+;
+;
+;		POSTS CHECKS TO THE CHECK RECONCILIATION FILE
+;	12-23-15: create csv file for Open Systems bank reconcilliation.
+
+RECORD	OS
+	DATA,	A100
+
+RECORD	OUTFIL
+		,A*,	'\\server-dc01\smc\accounting\BR_'
+	FILNAM	,A8				;DATE XXXX/XX/XX
+		,A1,	'-'
+	FN	,D2				;SEQ NO
+		,A4,	'.CSV'
+
+	
+RECORD	CHANNEL
+	CHNOUT	,D3
+
+
+
+RECORD APCHEK	
+		.INCLUDE 'DEF:RD020A.DEF'
+RECORD DUMCHK	
+		.INCLUDE 'DEF:RD020B.DEF'
+RECORD RECONC	
+		.INCLUDE 'DEF:RD078A.DEF'
+RECORD DUMREC	
+		.INCLUDE 'DEF:RD078B.DEF'
+;;;RECORD SNDMSG
+;;;		,A9,'AP:RECCNT'
+;;;	RCNT	,D5
+;;;	OCNT	,D5
+
+RECORD BRACKS	
+		.INCLUDE 'DEF:RD020C.DEF'
+RECORD	VARS
+	CMPCOD	,A3
+	A2	,A2
+	XN	,D2
+	TAB	,A1
+	XDATE	,D8
+	LN	,D6
+	LEN	,D6,	000100
+	FIELD	,A50
+	ALPHA	,A6
+	BLANKS	,A13
+	CHKCNT	,D5,00001
+	CHKTOT	,D10
+	CONTIN	,D1
+	MSGCTL	,D1
+	NEWCHK	,D5
+	SAVCHK	,D6
+	SAVKEY	,A13
+	SAVVEN	,A4
+	SYSTEM	,D1
+	LOKCTL	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	V	,D1
+	VCHCNT	,D5
+
+PROC
+	XCALL TERID(V)
+	V = 1
+	XCALL WHO(CMPCOD)
+
+	TAB = ','	;COMMA
+
+	XCALL ENVRN(SYSTEM)
+	XCALL OUTPT(1,1,2,'PRINT A/P CHECKS',V)
+	XCALL WATE(4,V)
+	XCALL OUTPT(2,1,0,'POST CHECKS TO RECONCILIATION FILE',1)
+	XCALL FILES(9,'I',20,5)			;APCHEK FILE
+	XCALL FILES(10,'U',78,5)		;RECONC FILE
+	LOKCTL = 1
+	XCALL IO (9,DUMCHK,1,READ,LOKCTL)
+	LOKCTL = 1
+	XCALL IO (10,DUMREC,1,READ,LOKCTL)
+
+;------------------------------------------------------
+; Open csv export file...
+
+	XCALL RDAT8 (FILNAM)
+	FN = 0
+	XN = 0
+	FLAGS (300,1)	;CHECK FOR DUP FILES
+
+	ONERROR DUPF
+OL,
+	USING CMPCOD SELECT
+	('TST'),	BEGIN
+			A2 = FN, 'XX'
+			OUTFIL = 'TST:BR_OS' + A2 + '.CSV'
+			END
+	ENDUSING
+
+	OPEN (2,O,OUTFIL)
+	GOTO FILE_OK
+DUPF,
+	INCR XN
+	FN = XN
+	IF (FN .LT. 99) GOTO OL
+	FLAGS (300,0)		;WILL WRITE OVER LAST FILE
+	OFFERROR
+	OPEN (2,O,OUTFIL)
+FILE_OK,
+	OFFERROR
+	FLAGS (300,0)
+	CHNOUT = 2
+;------------------------------------------------------
+
+COUNT,
+	INCR CHKCNT
+	IF (CHKCNT.GT.REC020) GO TO ENDCNT
+	LOKCTL = 1
+	XCALL IO (9,APCHEK,CHKCNT,READ,LOKCTL)
+	IF (SAVKEY.EQ.APCHEK(1,13)) GO TO COUNT
+	INCR NEWCHK
+	SAVKEY = APCHEK (1,13)
+	GO TO COUNT
+ENDCNT,
+;;;	IF (NEWCHK+REC078.GT.MAX078) GO TO FULL
+	CHKCNT = 1
+	SAVKEY =
+WRTCHK,
+	INCR CHKCNT
+	IF (CHKCNT.GT.REC020) GO TO ENDWRT
+	LOKCTL = 1
+	XCALL IO (9,APCHEK,CHKCNT,READ,LOKCTL)
+	IF (SAVKEY.NE.APCHEK(1,13)) CALL NXTCHK
+	INCR VCHCNT
+	SAVVEN = CVENNO
+	SAVCHK = CCHKNO
+	CHKTOT = CHKTOT + CINVAM - CDSCAM
+	GO TO WRTCHK
+NXTCHK,
+	CONTIN =
+	IF (SAVKEY.EQ.BLANKS) GO TO FSTCHK
+	INCR REC078
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 12-23-15 Not printing mulitple stubs and voiding checkes...
+;;;	IF (VCHCNT.EQ.18.AND.CVENNO.EQ.SAVVEN.AND.CCHKNO.EQ.SAVCHK+1)
+;;;&		CONTIN = 1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	RCHAMT = CHKTOT
+;;;	IF (CONTIN) RCHAMT = 0
+	LOKCTL = 1
+	XCALL IO (10,RECONC,REC078,WRITE,LOKCTL)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; create csv file...
+	CLEAR DATA
+
+	XDATE(1,4) = RCHKDT(5,8)
+	XDATE(5,8) = RCHKDT(1,4)
+
+	FIELD = RCHKNO,	'ZZZZZX' [LEFT]
+	CALL TAB_D
+
+	FIELD = XDATE,	'XX/XX/XXXX' [LEFT]
+	CALL TAB_D
+
+	FIELD = RCHAMT,	'$$$$$$$$.ZZ'	[LEFT]
+	CALL TAB_D
+
+	FIELD = '0'	;NOT VOID
+	CALL TAB_D
+
+	LN = %TRIM(DATA)
+	LN = LN -1	;TRAILING COMMA
+	WRITES (CHNOUT, OS(1,LN) )
+
+;-----------------------------------------------------------------------
+
+FSTCHK,
+;;;	IF (CONTIN.EQ.0) CHKTOT =	;12-23-15
+	CHKTOT = 0			;12-23-15
+	SAVKEY = APCHEK (1,13)
+	RCSHAC = CCSHAC
+	RCHKNO = CCHKNO
+	RVENEM = CVENNO
+	RNAME = CNAME
+	RCHKDT = CCHKDT
+	RSYSTM = 1
+	VCHCNT =
+	RETURN
+ENDWRT,
+	IF (CHKCNT.GT.2) CALL NXTCHK
+
+	IF (REC078 .GE. MAX078)
+		BEGIN
+		MAX078 = REC078 + 1
+		XCALL FILL (']', RECONC)
+		XCALL IO (10, RECONC, MAX078, WRITE, LOKCTL)
+		END
+
+	LOKCTL = 1
+	XCALL IO (10,DUMREC,1,WRITE,LOKCTL)
+;;;	RCNT = REC078
+
+	CLOSE 10
+	CLOSE 9
+	XCALL FILES(9,'U',20,5)
+	CHKCNT = 1
+WRTBRK,
+	INCR CHKCNT
+	IF (CHKCNT.GT.REC020) GO TO ENDBRK
+	LOKCTL = 1
+	XCALL IO (9,BRACKS,CHKCNT,WRITE,LOKCTL)
+	GO TO WRTBRK
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;MESSGE,
+;;;	XCALL OUTPT(07,11,0,'This file must be immediately expanded to the requ
+;;;&ired minimum',V)
+;;;	XCALL OUTPT(08,11,0,'size or greater. The file expansion should be hand
+;;;&led by the',V)
+;;;	XCALL OUTPT(09,11,0,'system manager',V)
+;;;	XCALL OUTPT(11,11,0,'Do not run any other application programs from thi
+;;;&s terminal until',V)
+;;;	XCALL OUTPT(12,11,0,'the above procedure has been completed.',V)
+;;;	RETURN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ENDBRK,
+	REC020 = 1
+	DUMCHK (45,71) =
+	LOKCTL = 1
+	XCALL IO (9,DUMCHK,1,WRITE,LOKCTL)
+	XCALL FILES(9,'U',20,4)
+
+	CLOSE CHNOUT
+
+;;;	MSGCTL = 5
+;;;	XCALL SNMSG (SNDMSG,MSGCTL)
+	XCALL OUTPT(2,1,1,'\',1)
+	XCALL PGCHN('AP:SRTRCN',0)
+
+TAB_D,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	LN = %INSTR (1, FIELD, '$')	;dollar amount?
+	IF (LN .LE. 0) GOTO SKIP_DOLLAR
+
+	LN = %INSTR (1, FIELD, '-')	;negative?
+	IF (LN .GT. 0)
+		BEGIN
+		FIELD (LN,LN) = 
+		LN = %INSTR(1,FIELD,'$')
+		IF (LN.GT.0) FIELD(LN,LN) = '-'
+		END
+
+SKIP_DOLLAR,
+
+	XCALL TABD (DATA, LEN, FIELD, TAB)
+	RETURN
+;------------------------------------------------
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;FULL,
+;;;	ALPHA = NEWCHK + REC078, 'ZZ,ZZX'
+;;;	XCALL OUTPT(04,18,2,'THE "RECONC" FILE MUST BE EXPANDED TO ',V)
+;;;	XCALL OUTPT(0,0,0,ALPHA,V)
+;;;	XCALL OUTPT(05,18,0,'RECORDS BEFORE POSTING CAN BE COMPLETED.',V)
+;;;	CALL MESSGE
+;;;	XCALL MESAG('SEE "CHECK POSTING" INSTRUCTIONS FOR COMPLETE INFORMATION',1)
+;;;	XCALL PGMND
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+END

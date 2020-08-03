@@ -1,0 +1,135 @@
+;CHK_02.AP
+;
+;VCH_OS.AP
+;
+;	CREATE COMMA DELIMITED IMPORT FILE FOR OPEN SYSTEMS.
+;
+RECORD	APCHEK
+	.INCLUDE 'DEF:RD020A.DEF'
+;
+
+RECORD	OS
+	DATA,	A100
+
+RECORD	OUTFIL
+		,A*,	'\\server-dc01\smc\accounting\BR_'
+	FILNAM	,A8				;DATE XXXX/XX/XX
+		,A1,	'-'
+	FN	,D2				;SEQ NO
+		,A4,	'.CSV'
+
+	
+RECORD	CHANNEL
+	CHN020	,D3
+	CHNOUT	,D3
+
+RECORD	VARS
+	OPNOK	,D1
+	XDATE	,D8
+	SAVACT	,D7
+	ACDESC	,A30
+	BSMID	,D6
+	BSEND	,D6
+	SRCCTL	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	LN	,D6
+	LEN	,D6,	000100
+	FIELD	,A50
+	TAB	,A1
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	XCALL TERID (V)
+
+	CALL OPENS
+	IF (.NOT. OPNOK)
+		BEGIN
+		XCALL MESAG ('Open Systems Export file NOT created!!',1)
+		GOTO ENDOFF
+		END
+
+	TAB = ','	;COMMA
+	XCALL IOS (CHN020, APCHEK, READ, LOKCTL)
+
+LOOP,
+	XCALL IOS (CHN020, APCHEK, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+	IF (APCHEK .EQ. ']]]]]]') GOTO EOF
+
+	CLEAR DATA
+
+	XDATE(1,4) = CCHKDT(5,8)
+	XDATE(5,8) = CCHKDT(1,4)
+
+	FIELD = CCHKNO,	'ZZZZZX' [left]
+	CALL TAB_D
+
+	FIELD = XDATE,	'XX/XX/XXXX' [left]
+	CALL TAB_D
+
+	FIELD = (CINVAM - CDSCAM),	'ZZZ,ZZX.XX' [LEFT]
+	CALL TAB_D
+
+
+	LN = %TRIM(DATA)
+	LN = LN + 1		;TRAILING COMMA
+	DATA(LN,LN) = '0'	;1 = VOID
+
+	IF (LN .LE. 1) GOTO LOOP
+	WRITES (CHNOUT, OS(1,LN) )
+	GOTO LOOP
+
+;================================================
+
+TAB_D,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL TABD (DATA, LEN, FIELD, TAB)
+	RETURN
+;------------------------------------------------
+EOF,
+ENDOFF,
+	CALL CLOSE
+	XCALL PGCHN ('AP:PSTAPC',0)
+	STOP
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (1, 'I', 020, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN020 = 1
+
+	XCALL RDAT8 (FILNAM)
+	FN = 0
+	FLAGS (300,1)	;CHECK FOR DUP FILES
+	SWITCH = 5
+
+	ONERROR DUPF
+OL,
+	OPEN (2,O,OUTFIL)
+	GOTO FILE_OK
+DUPF,
+	INCR FN
+	IF (FN .LT. 99) GOTO OL
+	FLAGS (300,0)		;WILL WRITE OVER LAST FILE
+FILE_OK,
+	OFFERROR
+	FLAGS (300,0)
+	CHNOUT = 2
+
+	OPNOK = 1
+	RETURN
+;----------------------------------------------------
+
+CLOSE,
+	IF (CHN020) CLOSE CHN020
+	IF (CHNOUT) CLOSE CHNOUT
+	RETURN
+;----------------------------------------------------
+
+

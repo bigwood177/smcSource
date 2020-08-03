@@ -1,0 +1,116 @@
+!*****************************************************************************
+!	LSTSRC.AP
+!
+!	Program and command file list for source distribution
+!	A/P Release 7 for RT-11 DIBOL 
+!	Original directory - [APSRC.LD]
+!
+!*****************************************************************************
+! TSXBLD.AP
+! TSXCMP.AP
+! TSXLNK.AP
+! CTSBLD.AP
+! CTSCMP.AP
+! CTSLNK.AP
+! LSTDEF.AP
+! LSTTSX.AP
+! LSTTSD.AP
+! LSTSRC.AP
+! PIPDEF.AP
+! PIPSAV.AP
+! PIPTSD.AP
+! PIPSRC.AP
+! RESTOR.AP
+! 1099CL.AP
+! AGEDAP.AP
+! AL1099.AP
+! ALAPCK.AP
+! AP3.AP
+! AP4.AP
+! APACNT.AP
+! APALST.AP
+! APAMNT.AP
+! APDSUM.AP
+! APFILS.AP
+! APGLXV.AP
+! APICNT.AP
+! APMENU.AP
+! APOCTL.AP
+! APSC2.AP
+! APSPOL.AP
+! APTOJP.AP
+! APXREF.AP
+! BGLXIX.AP
+! CHECKS.AP
+! CHKLST.AP
+! CHKPRP.AP
+! CHKREC.AP
+! CHKREG.AP
+! CLRMAP.AP
+! CLRPDS.AP
+! CLRPTL.AP
+! CLRVC2.AP
+! CLRVCH.AP
+! CLRYAP.AP
+! CLSAP.AP
+! CSHREQ.AP
+! DEFSEL.AP
+! DELPTL.AP
+! DUEDIS.AP
+! FLGPDS.AP
+! GLTOAP.AP
+! INITAP.AP
+! INTPOR.AP
+! NAPPR2.AP
+! NAPPRP.AP
+! OPNAP.AP
+! ORGAPA.AP
+! ORGVEN.AP
+! PR1099.AP
+! PRECHK.AP
+! PRGAPO.AP
+! PRGRPT.AP
+! PRTIAL.AP
+! PSTAP2.AP
+! PSTAPD.AP
+! PSTAPO.AP
+! PSTCHK.AP
+! PSTPTL.AP
+! PTLREG.AP
+! RECCNT.AP
+! SETVCH.AP
+! SRTAGX.AP
+! SRTAPA.AP
+! SRTAPD.AP
+! SRTPTL.AP
+! SRTRCN.AP
+! SRTVC2.AP
+! SRTVCA.AP
+! SRTVCB.AP
+! SRTVCH.AP
+! SRTVID.AP
+! SRTVLS.AP
+! STAPCH.AP
+! STAPIN.AP
+! VCH10.AP
+! VCH11.AP
+! VCH12.AP
+! VCHE0.AP
+! VCHE1.AP
+! VCHE2.AP
+! VCHEN0.AP
+! VCHEN1.AP
+! VCHENT.AP
+! VCHREG.AP
+! VCHRG2.AP
+! VENANL.AP
+! VENCNT.AP
+! VENINQ.AP
+! VENLST.AP
+! VENMNT.AP
+! VENPRT.AP
+! VLIST.AP
+! WORDS.AP
+!*****************************************************************************
+!  END OF LSTSRC.AP
+!*****************************************************************************

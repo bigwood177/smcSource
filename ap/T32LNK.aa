@@ -1,0 +1,100 @@
+!*****************************************************************************
+!
+!         TSXLNK.AP - COMMAND FILE TO LINK AP RELEASE 7.0
+!
+!*****************************************************************************
+assign c:\mcba\source\ap\ src
+assign c:\mcba\source\temp\ obj
+assign c:\mcba\execute\ap\ exe
+assign c:\mcba\execute\ut\ ut
+!
+!	LINK 'EM UP
+!
+dblink /out=EXE:1099CL OBJ:1099CL.TMP UT:UTIL/olb
+dblink /out=EXE:AGEDAP OBJ:AGEDAP.TMP UT:UTIL/olb
+dblink /out=EXE:AL1099 OBJ:AL1099.TMP UT:UTIL/olb
+dblink /out=EXE:ALAPCK OBJ:ALAPCK.TMP UT:UTIL/olb
+dblink /out=EXE:APACNT OBJ:APACNT.TMP UT:UTIL/olb
+dblink /out=EXE:APALST OBJ:APALST.TMP UT:UTIL/olb
+dblink /out=EXE:APAMNT OBJ:APAMNT.TMP UT:UTIL/olb
+dblink /out=EXE:APDSUM OBJ:APDSUM.TMP UT:UTIL/olb
+dblink /out=EXE:APFILS OBJ:APFILS.TMP UT:UTIL/olb
+dblink /out=EXE:APGLXV OBJ:APGLXV.TMP UT:UTIL/olb
+dblink /out=EXE:APICNT OBJ:APICNT.TMP UT:UTIL/olb
+dblink /out=EXE:APMENU OBJ:APMENU.TMP UT:UTIL/olb
+dblink /out=EXE:APOCTL OBJ:APOCTL.TMP UT:UTIL/olb
+dblink /out=EXE:APSPOL OBJ:APSPOL.TMP UT:UTIL/olb
+dblink /out=EXE:APTOJP OBJ:APTOJP.TMP UT:UTIL/olb
+dblink /out=EXE:APXREF OBJ:APXREF.TMP UT:UTIL/olb
+dblink /out=EXE:BGLXIX OBJ:BGLXIX.TMP UT:UTIL/olb
+dblink /out=EXE:CHECKS OBJ:CHECKS.TMP OBJ:WORDS.TMP UT:UTIL/olb
+dblink /out=EXE:CHKLST OBJ:CHKLST.TMP UT:UTIL/olb
+dblink /out=EXE:CHKPRP OBJ:CHKPRP.TMP UT:UTIL/olb
+dblink /out=EXE:CHKREC OBJ:CHKREC.TMP UT:UTIL/olb
+dblink /out=EXE:CHKREG OBJ:CHKREG.TMP UT:UTIL/olb
+dblink /out=EXE:CLRMAP OBJ:CLRMAP.TMP UT:UTIL/olb
+dblink /out=EXE:CLRPDS OBJ:CLRPDS.TMP UT:UTIL/olb
+dblink /out=EXE:CLRPTL OBJ:CLRPTL.TMP UT:UTIL/olb
+dblink /out=EXE:CLRVC2 OBJ:CLRVC2.TMP UT:UTIL/olb
+dblink /out=EXE:CLRVCH OBJ:CLRVCH.TMP UT:UTIL/olb
+dblink /out=EXE:CLRYAP OBJ:CLRYAP.TMP UT:UTIL/olb
+dblink /out=EXE:CSHREQ OBJ:CSHREQ.TMP UT:UTIL/olb
+dblink /out=EXE:DEFSEL OBJ:DEFSEL.TMP UT:UTIL/olb
+dblink /out=EXE:DELPTL OBJ:DELPTL.TMP UT:UTIL/olb
+dblink /out=EXE:DUEDIS OBJ:DUEDIS.TMP UT:UTIL/olb
+dblink /out=EXE:FLGPDS OBJ:FLGPDS.TMP UT:UTIL/olb
+dblink /out=EXE:GLTOAP OBJ:GLTOAP.TMP UT:UTIL/olb
+dblink /out=EXE:INITAP OBJ:INITAP.TMP UT:UTIL/olb
+dblink /out=EXE:NAPPR2 OBJ:NAPPR2.TMP UT:UTIL/olb
+dblink /out=EXE:NAPPRP OBJ:NAPPRP.TMP UT:UTIL/olb
+dblink /out=EXE:ORGAPA OBJ:ORGAPA.TMP UT:UTIL/olb
+dblink /out=EXE:ORGVEN OBJ:ORGVEN.TMP UT:UTIL/olb
+dblink /out=EXE:PR1099 OBJ:PR1099.TMP UT:UTIL/olb
+dblink /out=EXE:PRECHK OBJ:PRECHK.TMP UT:UTIL/olb
+dblink /out=EXE:PRGAPO OBJ:PRGAPO.TMP UT:UTIL/olb
+dblink /out=EXE:PRGRPT OBJ:PRGRPT.TMP UT:UTIL/olb
+dblink /out=EXE:PRTIAL OBJ:PRTIAL.TMP UT:UTIL/olb
+dblink /out=EXE:PSTAP2 OBJ:PSTAP2.TMP UT:UTIL/olb
+dblink /out=EXE:PSTAPD OBJ:PSTAPD.TMP UT:UTIL/olb
+dblink /out=EXE:PSTAPO OBJ:PSTAPO.TMP UT:UTIL/olb
+dblink /out=EXE:PSTCHK OBJ:PSTCHK.TMP UT:UTIL/olb
+dblink /out=EXE:PSTPTL OBJ:PSTPTL.TMP UT:UTIL/olb
+dblink /out=EXE:PTLREG OBJ:PTLREG.TMP UT:UTIL/olb
+dblink /out=EXE:RECCNT OBJ:RECCNT.TMP UT:UTIL/olb
+dblink /out=EXE:SETVCH OBJ:SETVCH.TMP UT:UTIL/olb
+dblink /out=EXE:SRTAGX OBJ:SRTAGX.TMP UT:UTIL/olb
+dblink /out=EXE:SRTAPA OBJ:SRTAPA.TMP UT:UTIL/olb
+dblink /out=EXE:SRTAPD OBJ:SRTAPD.TMP UT:UTIL/olb
+dblink /out=EXE:SRTPTL OBJ:SRTPTL.TMP UT:UTIL/olb
+dblink /out=EXE:SRTRCN OBJ:SRTRCN.TMP UT:UTIL/olb
+dblink /out=EXE:SRTVC2 OBJ:SRTVC2.TMP UT:UTIL/olb
+dblink /out=EXE:SRTVCA OBJ:SRTVCA.TMP UT:UTIL/olb
+dblink /out=EXE:SRTVCB OBJ:SRTVCB.TMP UT:UTIL/olb
+dblink /out=EXE:SRTVCH OBJ:SRTVCH.TMP UT:UTIL/olb
+dblink /out=EXE:SRTVID OBJ:SRTVID.TMP UT:UTIL/olb
+dblink /out=EXE:SRTVLS OBJ:SRTVLS.TMP UT:UTIL/olb
+dblink /out=EXE:STAPCH OBJ:STAPCH.TMP UT:UTIL/olb
+dblink /out=EXE:STAPIN OBJ:STAPIN.TMP UT:UTIL/olb
+dblink /out=EXE:VCHEN0 OBJ:VCHEN0.TMP OBJ:VCHE0.TMP OBJ:VCHE1.TMP -
+ OBJ:VCHE2.TMP UT:UTIL/olb
+dblink /out=EXE:VCHENT OBJ:VCHENT.TMP UT:UTIL/olb
+dblink /out=EXE:VCHREG OBJ:VCHREG.TMP UT:UTIL/olb
+dblink /out=EXE:VCHRG2 OBJ:VCHRG2.TMP UT:UTIL/olb
+dblink /out=EXE:VENANL OBJ:VENANL.TMP UT:UTIL/olb
+dblink /out=EXE:VENCNT OBJ:VENCNT.TMP UT:UTIL/olb
+dblink /out=EXE:VENINQ OBJ:VENINQ.TMP UT:UTIL/olb
+dblink /out=EXE:VENLST OBJ:VENLST.TMP UT:UTIL/olb
+dblink /out=EXE:VENMNT OBJ:VENMNT.TMP UT:UTIL/olb
+dblink /out=EXE:VENPRT OBJ:VENPRT.TMP UT:UTIL/olb
+dblink /out=EXE:VLIST OBJ:VLIST.TMP UT:UTIL/olb
+!
+DEL OBJ:*.TMP/NOQ
+!
+!	BIND 'EM UP
+!
+DBLINK @SRC:T32BND.AP
+!
+!
+!*****************************************************************************
+!  END OF TSXLNK.AP
+!*****************************************************************************

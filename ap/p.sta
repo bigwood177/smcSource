@@ -1,0 +1,30 @@
+The record length for this file is 126 characters.  There are 5 keys.
+There are currently 6 records in this ISAM file.
+
+Primary key   is           prime
+The key is 10 characters long, starting at position 1 within the record,
+and is ordered in ascending sequence with no duplicates allowed. 
+This key may not be modified by WRITE.
+
+1st alternate is            name
+The key is 38 characters long, segmented and is ordered in ascending sequence 
+with duplicates allowed. 
+This key may be modified by WRITE.
+ Segment #1 starts at 15 with length 30.
+ Segment #2 starts at 45 with length 8.
+
+2nd alternate is             inv
+The key is 8 characters long, starting at position 62 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may not be modified by WRITE.
+
+3rd alternate is              po
+The key is 8 characters long, starting at position 45 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may not be modified by WRITE.
+
+  4th alternate is             vch
+The key is 8 characters long, starting at position 54 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may not be modified by WRITE.
+

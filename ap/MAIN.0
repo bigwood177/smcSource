@@ -1,0 +1,199 @@
+;CHK_OS.AP
+;
+;VCH_OS.AP
+;
+;	CREATE COMMA DELIMITED IMPORT FILE FOR OPEN SYSTEMS.
+;
+RECORD	NEWAPD
+	.INCLUDE 'DEF:RD015A.DEF'
+;
+
+RECORD	OS
+	DATA,	A100
+
+RECORD	OUTFIL
+		,A*,	'\\serversbs\smc\accounting\CK_'
+	FILNAM	,A8				;DATE XXXX/XX/XX
+		,A1,	'-'
+	FN	,D2				;SEQ NO
+		,A4,	'.CSV'
+
+	
+RECORD	CHANNEL
+	CHN015	,D3
+	CHNOUT	,D3
+
+RECORD	VARS
+	OPNOK	,D1
+	CMPCOD	,A3
+	XN	,D2
+	A2	,A2
+	XDATE	,D8
+	SAVACT	,D7
+	ACDESC	,A30
+	BSMID	,D6
+	BSEND	,D6
+	SRCCTL	,D1
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	LN	,D6
+	LEN	,D6,	000100
+	FIELD	,A50
+	TAB	,A1
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	XCALL TERID (V)
+	XCALL WHO(CMPCOD)
+
+	CALL OPENS
+	IF (.NOT. OPNOK)
+		BEGIN
+		XCALL MESAG ('Open Systems Export file NOT created!!',1)
+		GOTO ENDOFF
+		END
+
+	SAVACT = -1
+	TAB = ','	;COMMA
+	XCALL IOS (CHN015, NEWAPD, READ, LOKCTL)
+
+LOOP,
+	XCALL IOS (CHN015, NEWAPD, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+	IF (NEWAPD .EQ. ']]]]]]') GOTO EOF
+
+	IF (NACCT .NE. SAVACT) CALL GET_ACT
+	CLEAR DATA
+
+	XDATE(1,4) = NDATE(5,8)
+	XDATE(5,8) = NDATE(1,4)
+
+	FIELD = NACCT,	'XXXXXXX' [left]
+	CALL TAB_D
+
+	FIELD = ACDESC
+	CALL TAB_D
+
+	FIELD = XDATE,	'XX/XX/XXXX' [left]
+	CALL TAB_D
+
+; 1-6-15: reveresed this...
+	USING NTYPE SELECT
+	(4,6),	BEGIN
+		FIELD = NTRXAM,	'-$$$$$$.XX' [left]
+		CALL TAB_D			;DR
+		FIELD = '0.00'
+		CALL TAB_D			;CR
+		END
+
+	(),	BEGIN
+		FIELD = '0.00'
+		CALL TAB_D			;DR
+		FIELD = NTRXAM,	'$$$$$$.XX-' [left]
+		CALL TAB_D			;cR
+		END
+
+	ENDUSING
+
+;;;	USING NTYPE SELECT
+;;;	(4,6),	BEGIN
+;;;		FIELD = '0.00'
+;;;		CALL TAB_D			;DR
+;;;		FIELD = NTRXAM,	'-$$$$$$.XX' [left]
+;;;		CALL TAB_D			;CR
+;;;		END
+;;;
+;;;	(),	BEGIN
+;;;		FIELD = NTRXAM,	'$$$$$$.XX-' [left]
+;;;		CALL TAB_D			;DR
+;;;		FIELD = '0.00'
+;;;		CALL TAB_D			;CR
+;;;		END
+;;;
+;;;	ENDUSING
+;---------------------------------------------------------------
+
+	LN = %TRIM(DATA)
+	LN = LN - 1		;TRAILING COMMA
+	IF (LN .LE. 1) GOTO LOOP
+	WRITES (CHNOUT, OS(1,LN) )
+	GOTO LOOP
+
+;================================================
+GET_ACT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL ACCT(NACCT, ACDESC, SRCCTL)
+	SAVACT = NACCT
+	RETURN
+;------------------------------------------------
+
+TAB_D,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	LN = %INSTR (1, FIELD, '$')	;dollar amount?
+	IF (LN .LE. 0) GOTO SKIP_DOLLAR
+
+	LN = %INSTR (1, FIELD, '-')	;negative?
+	IF (LN .GT. 0)
+		BEGIN
+		FIELD (LN,LN) = 
+		LN = %INSTR(1,FIELD,'$')
+		IF (LN.GT.0) FIELD(LN,LN) = '-'
+		END
+
+SKIP_DOLLAR,
+	XCALL TABD (DATA, LEN, FIELD, TAB)
+	RETURN
+;------------------------------------------------
+EOF,
+ENDOFF,
+	CALL CLOSE
+	XCALL PGCHN ('AP:PSTAPC',0)
+	STOP
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (1, 'I', 015, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN015 = 1
+
+	XCALL RDAT8 (FILNAM)
+	FN = 0
+	XN = 0
+	FLAGS (300,1)	;CHECK FOR DUP FILES
+	SWITCH = 5
+
+	ONERROR DUPF
+OL,
+	USING CMPCOD SELECT
+	('TST'),	BEGIN
+			A2 = XN, 'XX'
+			OUTFIL = 'TST:VCH_OS' + A2 + '.CSV'
+			END
+	ENDUSING
+
+	OPEN (2,O,OUTFIL)
+	GOTO FILE_OK
+DUPF,
+	INCR XN
+	FN = XN
+	IF (XN .LT. 99) GOTO OL
+	FLAGS (300,0)		;WILL WRITE OVER LAST FILE
+FILE_OK,
+	OFFERROR
+	FLAGS (300,0)
+	CHNOUT = 2
+
+	OPNOK = 1
+	RETURN
+;----------------------------------------------------
+
+CLOSE,
+	IF (CHN015) CLOSE CHN015
+	IF (CHNOUT) CLOSE CHNOUT
+	RETURN
+;----------------------------------------------------
+

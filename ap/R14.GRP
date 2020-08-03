@@ -1,0 +1,94 @@
+File APSC2.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+File APTOJP.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+                .INCLUDE 'DEF:RD014C.DEF'
+File CLRVC2.AP:
+                .INCLUDE 'DEF:RD014C.DEF'
+                .INCLUDE 'DEF:RD014H.DEF'
+File CLRVCH.AP:
+                .INCLUDE 'DEF:RD014B.DEF'
+;;; This is now in RD014B.DEF
+                .INCLUDE 'DEF:RD014K.DEF'
+File CVAP70.AP:
+RECORD NEWAP1           ; ::CRD014G.DEF::
+                        ;Source:        "RD014G.DEF"
+RECORD AP1CTL,X         ; ::CRD014C.DEF::
+                        ;Source:        "RD014C.DEF"
+RECORD NEWAP0,X         ; ::CRD014E.DEF::
+                        ;"RD014E.DEF"
+File INITAP.AP:
+                        .INCLUDE 'DEF:RD014S.DEF'
+File LSTDEF.AP:
+! RD014A.DEF
+! RD014B.DEF
+! RD014C.DEF
+! RD014D.DEF
+! RD014G.DEF
+! RD014H.DEF
+! RD014K.DEF
+! RD014S.DEF
+! RD014T.DEF
+File NAPPR2.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+                .INCLUDE 'DEF:RD014C.DEF'
+File NAPPRP.AP:
+                .INCLUDE 'DEF:RD014A.DEF'
+                .INCLUDE 'DEF:RD014B.DEF'
+File OPNAP.AP:
+                .INCLUDE 'DEF:RD014C.DEF'
+File PIPDEF.AP:
+COPY IN:RD014A.DEF OUT:RD014A.DEF
+COPY IN:RD014B.DEF OUT:RD014B.DEF
+COPY IN:RD014C.DEF OUT:RD014C.DEF
+COPY IN:RD014D.DEF OUT:RD014D.DEF
+COPY IN:RD014G.DEF OUT:RD014G.DEF
+COPY IN:RD014H.DEF OUT:RD014H.DEF
+COPY IN:RD014K.DEF OUT:RD014K.DEF
+COPY IN:RD014S.DEF OUT:RD014S.DEF
+COPY IN:RD014T.DEF OUT:RD014T.DEF
+File PSTAP2.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+File PSTAPO.AP:
+                .INCLUDE 'DEF:RD014A.DEF'
+File SETVCH.AP:
+                .INCLUDE 'DEF:RD014C.DEF'
+File SRTVC2.AP:
+.INCLUDE 'DEF:RD014D.DEF'
+File SRTVCA.AP:
+.INCLUDE 'DEF:RD014T.DEF'
+File SRTVCB.AP:
+.INCLUDE 'DEF:RD014T.DEF'
+File SRTVCH.AP:
+.INCLUDE 'DEF:RD014D.DEF'
+File VCH10.AP:
+                .INCLUDE 'DEF:RD014C.DEF'
+File VCH11.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+                .INCLUDE 'DEF:RD014C.DEF'
+File VCH12.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+File VCHE0.AP:
+                .INCLUDE 'DEF:RD014B.DEF'
+;;; This overlay info in RD014B.DEF
+File VCHE1.AP:
+                .INCLUDE 'DEF:RD014A.DEF'
+                .INCLUDE 'DEF:RD014E.DEF'
+File VCHE2.AP:
+                .INCLUDE 'DEF:RD014A.DEF'
+                .INCLUDE 'DEF:RD014B.DEF'
+                .INCLUDE 'DEF:RD014E.DEF'
+File VCHEN0.AP:
+                .INCLUDE 'DEF:RD014A.DEF'
+                .INCLUDE 'DEF:RD014B.DEF'
+File VCHEN1.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+                .INCLUDE 'DEF:RD014C.DEF'
+File VCHENT.AP:
+                .INCLUDE 'DEF:RD014C.DEF'
+File VCHREG.AP:
+                .INCLUDE 'DEF:RD014A.DEF'
+                .INCLUDE 'DEF:RD014B.DEF'
+File VCHRG2.AP:
+                .INCLUDE 'DEF:RD014G.DEF'
+                .INCLUDE 'DEF:RD014C.DEF'

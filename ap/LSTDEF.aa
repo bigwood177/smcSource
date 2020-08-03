@@ -1,0 +1,106 @@
+!*****************************************************************************
+!  LSTDEF.AP
+!
+!  List of record definitions sent with source distribution
+!  A/P Release 7 RT-11 DIBOL
+!  Original directory - [APSRC.LD]
+!
+******************************************************************************
+! CMP001.DEF
+! DEV001.DEF
+! MES001.DEF
+! MES002.DEF
+! RD011A.DEF
+! RD011B.DEF
+! RD011C.DEF
+! RD011D.DEF
+! RD011S.DEF
+! RD012A.DEF
+! RD012B.DEF
+! RD012S.DEF
+! RD013A.DEF
+! RD013B.DEF
+! RD013C.DEF
+! RD013E.DEF
+! RD013F.DEF
+! RD013G.DEF
+! RD013S.DEF
+! RD014A.DEF
+! RD014B.DEF
+! RD014C.DEF
+! RD014D.DEF
+! RD014G.DEF
+! RD014H.DEF
+! RD014K.DEF
+! RD014S.DEF
+! RD014T.DEF
+! RD015A.DEF
+! RD015B.DEF
+! RD015D.DEF		
+! RD015S.DEF
+! RD016A.DEF
+! RD016B.DEF
+! RD016S.DEF
+! RD017A.DEF
+! RD017B.DEF
+! RD017C.DEF
+! RD017S.DEF
+! RD018A.DEF
+! RD018B.DEF
+! RD018C.DEF
+! RD018S.DEF
+! RD019A.DEF
+! RD019B.DEF
+! RD019C.DEF
+! RD019D.DEF
+! RD019S.DEF
+! RD020A.DEF
+! RD020B.DEF
+! RD020C.DEF
+! RD020D.DEF
+! RD020S.DEF
+! RD031A.DEF
+! RD041A.DEF
+! RD041B.DEF
+! RD042A.DEF
+! RD043A.DEF
+! RD043B.DEF
+! RD072A.DEF
+! RD077A.DEF
+! RD077D.DEF
+! RD078A.DEF
+! RD078B.DEF
+! RD078C.DEF
+! RD078D.DEF
+! RD078E.DEF
+! RD078S.DEF
+! RD087A.DEF
+! RD087B.DEF
+! RD087C.DEF
+! RD087D.DEF
+! RD087S.DEF
+! RD095A.DEF
+! RD095B.DEF
+! RD095S.DEF
+! RD098A.DEF
+! RD098B.DEF
+! RD121A.DEF
+! RD121B.DEF
+! RD122A.DEF
+! RD127A.DEF
+! RD127B.DEF
+! RD127C.DEF	!USED IN J/C ONLY
+! RD127D.DEF
+! RD127S.DEF
+! RD151A.DEF
+! RD151B.DEF
+! RD152A.DEF
+! RD152B.DEF
+! RD154A.DEF
+! RD154B.DEF
+! SPL001.DEF
+! SPL002.DEF
+! SPL003.DEF
+!*****************************************************************************
+!  END OF LSTDEF.AP
+!*****************************************************************************

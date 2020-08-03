@@ -1,0 +1,312 @@
+
+O:\SOURCE\ap>call chk192 
+
+O:\SOURCE\ap>dblink -d chk192 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call vch192 
+
+O:\SOURCE\ap>dblink -d vch192 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call 1099CL 
+
+O:\SOURCE\ap>dblink -d 1099CL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call AGEDAP 
+
+O:\SOURCE\ap>dblink -d AGEDAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call AL1099 
+
+O:\SOURCE\ap>dblink -d AL1099 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call ALAPCK 
+
+O:\SOURCE\ap>dblink -d ALAPCK ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APACNT 
+
+O:\SOURCE\ap>dblink -d APACNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APALST 
+
+O:\SOURCE\ap>dblink -d APALST ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APAMNT 
+
+O:\SOURCE\ap>dblink -d APAMNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APDSUM 
+
+O:\SOURCE\ap>dblink -d APDSUM ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APFILS 
+
+O:\SOURCE\ap>dblink -d APFILS ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APGLXV 
+
+O:\SOURCE\ap>dblink -d APGLXV ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APICNT 
+
+O:\SOURCE\ap>dblink -d APICNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APMENU 
+
+O:\SOURCE\ap>dblink -d APMENU ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APOCTL 
+
+O:\SOURCE\ap>dblink -d APOCTL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APSPOL 
+
+O:\SOURCE\ap>dblink -d APSPOL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APTOJP 
+
+O:\SOURCE\ap>dblink -d APTOJP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call APXREF 
+
+O:\SOURCE\ap>dblink -d APXREF ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call BGLXIX 
+
+O:\SOURCE\ap>dblink -d BGLXIX ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHECKS 
+
+O:\SOURCE\ap>dblink -d CHECKS ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHKLST 
+
+O:\SOURCE\ap>dblink -d CHKLST ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHKPRP 
+
+O:\SOURCE\ap>dblink -d CHKPRP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHKREC 
+
+O:\SOURCE\ap>dblink -d CHKREC ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CHKREG 
+
+O:\SOURCE\ap>dblink -d CHKREG ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRMAP 
+
+O:\SOURCE\ap>dblink -d CLRMAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRPDS 
+
+O:\SOURCE\ap>dblink -d CLRPDS ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRPTL 
+
+O:\SOURCE\ap>dblink -d CLRPTL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRVC2 
+
+O:\SOURCE\ap>dblink -d CLRVC2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRVCH 
+
+O:\SOURCE\ap>dblink -d CLRVCH ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CLRYAP 
+
+O:\SOURCE\ap>dblink -d CLRYAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call CSHREQ 
+
+O:\SOURCE\ap>dblink -d CSHREQ ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call DEFSEL 
+
+O:\SOURCE\ap>dblink -d DEFSEL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call DELPTL 
+
+O:\SOURCE\ap>dblink -d DELPTL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call DUEDIS 
+
+O:\SOURCE\ap>dblink -d DUEDIS ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call FLGPDS 
+
+O:\SOURCE\ap>dblink -d FLGPDS ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call GLTOAP 
+
+O:\SOURCE\ap>dblink -d GLTOAP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call makalp 
+
+O:\SOURCE\ap>dblink -d makalp ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call NAPPR2 
+
+O:\SOURCE\ap>dblink -d NAPPR2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call NAPPRP 
+
+O:\SOURCE\ap>dblink -d NAPPRP ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call ORGAPA 
+
+O:\SOURCE\ap>dblink -d ORGAPA ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call ORGVEN 
+
+O:\SOURCE\ap>dblink -d ORGVEN ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PR1099 
+
+O:\SOURCE\ap>dblink -d PR1099 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PRECHK 
+
+O:\SOURCE\ap>dblink -d PRECHK ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PRGAPO 
+
+O:\SOURCE\ap>dblink -d PRGAPO ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PRGRPT 
+
+O:\SOURCE\ap>dblink -d PRGRPT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PRTIAL 
+
+O:\SOURCE\ap>dblink -d PRTIAL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTAP2 
+
+O:\SOURCE\ap>dblink -d PSTAP2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTAPD 
+
+O:\SOURCE\ap>dblink -d PSTAPD ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTAPO 
+
+O:\SOURCE\ap>dblink -d PSTAPO ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTCHK 
+
+O:\SOURCE\ap>dblink -d PSTCHK ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PSTPTL 
+
+O:\SOURCE\ap>dblink -d PSTPTL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call PTLREG 
+
+O:\SOURCE\ap>dblink -d PTLREG ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call RECCNT 
+
+O:\SOURCE\ap>dblink -d RECCNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SETVCH 
+
+O:\SOURCE\ap>dblink -d SETVCH ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTAGX 
+
+O:\SOURCE\ap>dblink -d SRTAGX ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTAPA 
+
+O:\SOURCE\ap>dblink -d SRTAPA ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTAPD 
+
+O:\SOURCE\ap>dblink -d SRTAPD ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTPTL 
+
+O:\SOURCE\ap>dblink -d SRTPTL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTRCN 
+
+O:\SOURCE\ap>dblink -d SRTRCN ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTVC2 
+
+O:\SOURCE\ap>dblink -d SRTVC2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTVCA 
+
+O:\SOURCE\ap>dblink -d SRTVCA ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTVCB 
+
+O:\SOURCE\ap>dblink -d SRTVCB ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTVCH 
+
+O:\SOURCE\ap>dblink -d SRTVCH ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTVID 
+
+O:\SOURCE\ap>dblink -d SRTVID ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call SRTVLS 
+
+O:\SOURCE\ap>dblink -d SRTVLS ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call STAPCH 
+
+O:\SOURCE\ap>dblink -d STAPCH ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call STAPIN 
+
+O:\SOURCE\ap>dblink -d STAPIN ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VCHEN0 
+
+O:\SOURCE\ap>dblink -T  0<vchen0.cmd 
+DBLink> -d vchen0 vche0 vche1 vche2 pop2 \
+DBLink> a_ven \
+DBLink> ap:aplib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\ap>call VCHENT 
+
+O:\SOURCE\ap>dblink -d VCHENT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VCHREG 
+
+O:\SOURCE\ap>dblink -d VCHREG ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VCHRG2 
+
+O:\SOURCE\ap>dblink -d VCHRG2 ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENANL 
+
+O:\SOURCE\ap>dblink -d VENANL ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENCNT 
+
+O:\SOURCE\ap>dblink -d VENCNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENINQ 
+
+O:\SOURCE\ap>dblink -d VENINQ ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENLST 
+
+O:\SOURCE\ap>dblink -d VENLST ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENMNT 
+
+O:\SOURCE\ap>dblink -d VENMNT ap:aplib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\ap>call VENPRT 
+
+O:\SOURCE\ap>dblink -d VENPRT ap:aplib.elb ut:util.elb wnd:tklib.elb 

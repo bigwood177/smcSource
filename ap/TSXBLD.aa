@@ -1,0 +1,104 @@
+;****************************************************************************
+;  TSXBLD.AP
+;		
+;  Command file to build Release 7 A/P programs and (optionally) 
+;  package subroutines (.MAN extension) and the UTIL.OBJ library.
+;
+;  The device containing the package source code must be manually
+;  assigned the logical name "SRC" before running this command file.
+;
+.;  Execute by typing "IND SRC:TSXBLD.AP" from the TSX-Plus or RT-11 monitor.
+.;
+;****************************************************************************
+.;
+.ENABLE GLOBAL
+.ENABLE SUBSTITUTION
+.DISABLE SUFFIX
+.SETN TST 1
+.;
+.;	LOG FILE QUERY
+.;
+.ASK LOGFIL DO YOU WISH TO CREATE A LOG FILE OF THIS BUILD BATCH ?
+.IFF LOGFIL .GOTO ASSIGN
+.ASKS [0:14:"LP:"] FILE ENTER LOG FILE NAME [LP:]
+SET LOG FILE='FILE'
+.;
+.;	LOGICAL ASSIGNMENT SECTION
+;
+.ASSIGN:
+.ASK DO 	DO YOU WISH TO ENTER LOGICAL ASSIGNMENTS [N] ?
+.IFF DO  .GOTO DIRECT
+;
+; ENTER THE PHYSICAL DEVICES THAT CONTAIN THE FOLLOWING:
+;
+.ASKS [0:4:"DK:"] LOG 	UTILITY SOURCE CODE [DK]
+ASSIGN 'LOG' UTL
+;
+.ASKS [0:4:"DK:"] LOG 	FILE DEFINITIONS [DK]
+ASSIGN 'LOG' DEF
+;
+.ASKS [0:4:"DK:"] LOG 	PACKAGE OBJECT CODE DESTINATION [DK]
+ASSIGN 'LOG' OBJ
+;
+.ASKS [0:4:"DK:"] LOG 	PACKAGE EXECUTABLE CODE DESTINATION [DK]
+ASSIGN 'LOG' EXE
+;
+.ASKS [0:4:"DK:"] LOG 	OBJECT LIBRARY (UT:) CODE DESTINATION [DK]
+ASSIGN 'LOG' UT
+.;
+.;	COMPILE AND LINK SECTION
+.;
+.DIRECT:
+;
+.ASK SUB 	COMPILE LIBRARY SUBROUTINES AND BUILD THE UTIL.OBJ LIBRARY [N] ?
+;
+.IFT SUB .ASK DELTM1 	DELETE LIBRARY SUBROUTINE OBJECT CODE [N] ?
+.IFF SUB .SETL DELTM1 <FALSE>
+;
+.ASK PKG 	COMPILE A/P PROGRAMS [N] ?
+;
+.IFT PKG .ASK DELTMP 	DELETE A/P PROGRAM OBJECT CODE [N] ?
+.IFF PKG .SETL DELTMP <FALSE>
+;
+.ASK UTL 	LINK A/P PROGRAMS [N] ?
+;
+.;
+.;	EXECUTE COMPILE & LINK COMMAND FILES	
+.;
+.IFT SUB .GOTO BUILD
+.IFF UTL .GOTO BUILD
+.TESTFILE UT:UTIL.OBJ
+.IF <FILERR> EQ TST .GOTO GSORT
+;
+;	UTIL.OBJ library was not found on logical device UT:.
+;
+;	Please re-run this build batch and either properly assign UT: or 
+;	select the option of building the UTIL.OBJ library.
+;
+;
+.GOTO END
+.GSORT:
+.TESTFILE UT:GSORT.SAV
+.IF <FILERR> EQ TST .GOTO BUILD
+;
+;	GSORT.SAV was not found on logical device UT:.
+;
+;	Please re-run this build batch and properly assign UT:.  If GSORT
+;	does not exist on device UT:, you will have to create it by running
+;	the TSXBLD.UTL build batch.
+;
+.GOTO END
+.BUILD:
+.IFT SUB $@UTL:TSXCMP.MAN
+.IFT PKG $@SRC:TSXCMP.AP
+.IFT UTL $@SRC:TSXLNK.AP
+.;****************************************************************************
+.;	DELETE TEMPORARY FILES
+.;     
+.IFT DELTM1 DELETE/NOQUERY UT:*.TM1
+.IFF DELTMP .GOTO END
+DELETE/NOQUERY OBJ:*.TMP
+DELETE/NOQUERY OBJ:*.DBL
+.END:
+.IFT LOGFIL SET LOG CLOSE
+.STOP

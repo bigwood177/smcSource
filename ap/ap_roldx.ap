@@ -1,0 +1,111 @@
+.subroutine	ap_roldx
+	ven_rec	,a		;venmas record
+	allow_update	,d	;0 = no update allowed, 1 = updates
+	x	,d		;row
+	y	,d		;col
+	r_type	,d		;0=both, 1=sales, 2=shipping
+	chan	,d		;channel (optional)
+;
+
+	.include 'wnd:tools.def'
+
+record	venmas
+	.include 'def:rd011a.def'
+
+record	aprolo		;(374 bytes)
+	.include 'def:aprolo.def'
+
+record	vars
+	r_chan	,d2
+	inp_id	,i4
+	col_id	,i4
+	select	,d1
+	status	,d1	;0 = ok, 1 = abort
+	srcflg	,d1,	1
+	sts	,d4
+	done	,d1
+
+.proc
+	venmas = ven_rec
+
+	xcall i_ldinp(inp_id, g_utlib, "i_aprolo",D_NOPLC)
+
+	xcall i_display(inp_id,"ven_info",venmas,"name,add1,add2,city,
+&		state,zip,telno")
+
+	if (allow_update)
+	then	xcall b_enable(inp_id,"Save")
+	else	xcall b_disable(inp_id, "Save")
+
+	if (%passed(chan))
+	then	r_chan = chan
+	else	begin
+		xcall u_open(r_chan,"u:i","SMC:APROLO.SMM",,srcflg,sts)
+		if (sts)
+			begin
+			xcall u_message("Error opening apRolo")
+			xreturn
+			end
+		end
+	select = 2			;change
+	read (r_chan,aprolo,venno) [err=eof]
+
+	xcall i_display(inp_id,"rolo_info",aprolo,"r_fax, r_cont1,
+&		r_cont2, r_cont3, r_cont4, r_notes")
+
+eof,
+	xcall U_WINDOW (D_PLACE, inp_id, x, y)
+
+	if (r_venno .eq. venno)
+	then	select = 2
+	else	select = 1	
+
+	xcall i_input(inp_id, "rolo_info", aprolo,,,,,,,status)
+	if (g_select)
+		begin
+		using G_entnam select
+		("SAVE"),using select select
+			(1),	begin
+				r_venno = venno
+				store (r_chan,aprolo,r_venno)
+				xcall u_message ("Rolodex updated")
+				end
+			(2),	begin
+				write (r_chan,aprolo,r_venno)
+				xcall u_message ("Rolodex updated")
+				end
+			endusing
+		("CANCEL"),	 xcall u_beep
+		endusing
+		done = TRUE
+		end
+
+
+fini,	
+	if (.not. %passed(chan) ) xcall u_close (r_chan)
+	XCALL U_WINDOW(D_DELETE, inp_id)
+	xreturn
+	.end
+
+.subroutine	cmd_save
+	id	,i
+	name	,a
+	status	,d
+.proc
+	status = 0	;ok
+	xcall m_signal("Save")
+	return
+.end
+
+.subroutine	cmd_cancel
+	id	,i
+	name	,a
+	status	,d
+.proc
+	status = 1	;abort
+	xcall m_signal("Cancel")
+	return
+.end
+
+
+

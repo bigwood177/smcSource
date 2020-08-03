@@ -1,0 +1,78 @@
+
+O:\SOURCE\ap>dbl -d -l -- 1099CL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- AGEDAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ALAPCK.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APCODE.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APGLXV.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APINQR.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APXREF.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APXRP2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- A_VEN.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CHECKS.AP 
+    275                WRITES (CHNWRK, APWORK
+%DBL-E-INVEXPR, Invalid expression at or near {END OF LINE}
+%DBL-E-NOOBJ, No object file created
+
+
+O:\SOURCE\ap>dbl -d -l -- CHKPRP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRMAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRYAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CSHREQ.AP 
+
+O:\SOURCE\ap>dbl -d -l -- DEFSEL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- MAKALP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PR1099.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PRGAPO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PRGRPT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTAP2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTAPO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PTLREG.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ROLDX.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ROLO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHE0.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHE1.AP 
+  7.23                 ORG011  ,D5     ; ORGANIZED RECORD COUNT
+%DBL-E-NOEXTEND, Cannot extend record by 1 bytes with overlay field ORG011
+  7.24                 REC011  ,D5     ; ACTIVE RECORD COUNT
+%DBL-E-NOEXTEND, Cannot extend record by 5 bytes with overlay field REC011
+  7.25                 MAX011  ,D5     ; MAXIMUM RECORD COUNT
+%DBL-E-NOEXTEND, Cannot extend record by 5 bytes with overlay field MAX011
+  7.26                 DEL011  ,D3     ; DELETED RECORD COUNT
+%DBL-E-NOEXTEND, Cannot extend record by 3 bytes with overlay field DEL011
+%DBL-E-NOOBJ, No object file created
+
+
+O:\SOURCE\ap>dbl -d -l -- VCHE2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENANL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENINQ.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENLST.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENMNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENPRT.AP 

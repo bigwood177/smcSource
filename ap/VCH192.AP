@@ -1,0 +1,155 @@
+;VCH192.AP
+;
+RECORD	PORNXF
+	.INCLUDE 'DEF:RD192A.DEF'
+
+RECORD	NEWAP
+	.INCLUDE 'DEF:RD014A.DEF'
+
+RECORD	PO_KEY
+	PON	,D6
+	POR	,D2
+
+RECORD CHANNEL
+	CHN014	,D2
+	CHN192	,D2
+;
+RECORD	VARS
+	OPNOK	,D1
+	D6	,D6
+	MATCH	,D1
+	COUNTER	,D10
+	BLANKS	,A8
+	READ	,D1,0
+	WRITE	,D1,1
+	STORE	,D1,2
+	LOKCTL	,D1
+	SWITCH	,D1
+	V	,D1
+
+;
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'UPDATE A/P - PO CROSS REF INDEX',1)
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+	
+	XCALL IOS (CHN014, NEWAP, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+LOOP,
+	XCALL IOS (CHN014, NEWAP, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+	IF (NEWAP .EQ. ']]]]]]') GOTO EOF
+	IF (WPCHNO(1,6) .NE. BLANKS)
+		BEGIN
+		CALL GET_PO
+		GOTO LOOP
+		END
+
+; if no PO, try the invoice number...
+	IF (WINVNO .NE. BLANKS) CALL MAK_IDX	;UPDATE THE INVOICE INFO
+	
+	GOTO LOOP
+
+EOF,	
+
+ENDOFF,	CALL CLOSE
+	XCALL PGCHN ('AP:PSTAPD',1)
+
+GET_PO,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	XCALL ALPDC (WPCHNO(1,6), PON, SWITCH)
+	IF (SWITCH.NE.0 .OR. PON.LE.0) RETURN
+
+	POR = 00
+	FIND (CHN192, PORNXF, PO_KEY, KRF:3) [ERR=NO_PO]
+	XCALL IOS (CHN192, PORNXF, READ, LOKCTL)
+;8-1-16: might be multiple vouchers for a PO - need to add new records if po record has already been updated
+	if (pxvch.gt.0)
+	then	call mak_idx	;new voucher for same vendor
+	else	CALL UPD_IDX	;EXISTING RECORD
+	RETURN
+NO_PO,	
+	CALL MAK_IDX	;MAKE NEW RECORD FOR THIS PO...
+
+	RETURN
+;---------------------------------------------------
+
+
+MAK_IDX,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CALL GET_COUNTER
+	CLEAR PORNXF
+
+	PXKEY = COUNTER
+	PXVEN = WVENNO
+	PXNAM = WNAME
+	PXPO = WPCHNO(1,6)
+	PXPORL = 00		;1-18-16
+;;;	PXPORL = WPCHNO(7,8)
+	PXVCH = WVCHNO
+	PXINV = WINVNO
+	PXIRF = WDESC
+	PXIDT = WINVDT
+	PXIAMT = WINVAM
+
+	XCALL ISIO (CHN192, PORNXF, PXK0, STORE, LOKCTL)
+
+	RETURN
+;---------------------------------------------------
+
+UPD_IDX,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	PXVEN = WVENNO
+	PXNAM = WNAME
+	PXPO = WPCHNO(1,6)
+	PXPORL = WPCHNO(7,8)
+	PXVCH = WVCHNO
+	PXINV = WINVNO
+	PXIRF = WDESC
+	PXIDT = WINVDT
+	PXIAMT = WINVAM
+
+	delete (chn192)
+	store (chn192, pornxf, pxk0)
+;;;	XCALL ISIO (CHN192, PORNXF, PXK0, WRITE, LOKCTL)
+
+	RETURN
+;---------------------------------------------------
+
+GET_COUNTER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	PXK0 = 0
+	XCALL ISIO (CHN192, PORNXF, PXK0, READ, LOKCTL)
+	INCR PXNEXT
+	XCALL ISIO (CHN192, PORNXF, PXK0, WRITE, LOKCTL)
+
+	COUNTER = PXNEXT
+	RETURN
+;---------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (19, 'SU', 192, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN192 = 19
+
+	SWITCH = 5
+	XCALL FILES (1, 'I', 014, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN014 = 1
+
+	OPNOK = 1
+	RETURN
+;---------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (CHN192) CLOSE CHN192
+	IF (CHN014) CLOSE CHN014
+
+	RETURN
+;---------------------------------------------------

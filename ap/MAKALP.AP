@@ -1,0 +1,72 @@
+;MAKALP2.DBL
+;
+RECORD	VENALP
+	.INCLUDE 'DEF:RD027A.DEF'
+
+RECORD	VENMAS
+	.INCLUDE 'DEF:RD011A.DEF'
+
+RECORD	DIS
+	I	,D6
+		,a2
+	J	,d5
+
+RECORD	VARS
+	BLANKS	,A20
+	STAT	,D1
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (1,1,2,'POPULATE "VENALP"',1)
+
+	SWITCH = 5
+	XCALL FILES (1,'I',11,SWITCH)
+
+	SWITCH = 5
+	XCALL FILES (2,'SU',27,SWITCH)
+;;;	OPEN (2,SU,'SMC:VENALP.SMM')
+	xcall outpt (2,1,1,'clear file',1)
+cl_loop,
+	READS (2,VENALP,EOF_CL) 
+	DELETE (2,V_NAME)
+	GOTO CL_LOOP
+EOF_CL,
+	xcall outpt (2,1,1,'rebuild index',1)
+
+	READS (1,VENMAS,EOF)
+	I = 1
+LOOP,
+	INCR I
+	IF (I/100*100 .EQ. I) XCALL OUTPT (1,60,1,DIS,1)
+	READS (1,VENMAS,EOF)
+	IF (VENMAS .EQ. ']]]]]]') GOTO EOF
+	IF (NAME .EQ. ']]]DEL') GOTO LOOP
+
+	read (2,VENALP, name) [err=mak_record]
+	if (V_VENNO .eq. VENNO) goto loop
+
+mak_record,
+	incr j
+	V_NAME = NAME
+	V_VENNO = VENNO
+	V_ADD1 = ADD1
+	V_ADD2 = ADD2
+	V_CITY = CITY
+	V_STATE = STATE
+	V_ZIP = ZIP
+	V_UC = USERCD
+	V_PHONE = TELNO
+	V_FAX = VFAX,	'ZZZ XXX XXXX'
+	STORE (2,VENALP,V_NAME) ;[err=loop]
+	GOTO LOOP
+yes,
+	v = 1
+	return
+EOF,
+	CLOSE 1
+	CLOSE 2
+	STOP
+	END
+

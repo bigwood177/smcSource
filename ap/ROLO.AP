@@ -1,0 +1,254 @@
+;rolo.ap
+;	NOT REQUIRED TO BE LOGGED INTO SECURITY SYSTEM.
+
+
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+
+	.define	update		,1
+
+	.include 'wnd:tools.def'
+	.INCLUDE 'DEF:WINDOWS.DEF'
+
+RECORD	VENMAS
+	.INCLUDE 'DEF:RD011A.DEF'
+RECORD,X
+	.INCLUDE 'DEF:RD011B.DEF'
+
+;;;RECORD	VENIDX
+;;;	.INCLUDE 'DEF:RD012A.DEF'
+
+RECORD	POPAR
+	.INCLUDE 'DEF:RXPOP.DEF'
+
+RECORD	VENALP
+		.INCLUDE 'DEF:RD027A.DEF'
+
+RECORD	CHANNEL
+	CHN011	,D2
+	CHN012	,D2
+	CHN027	,D2
+
+RECORD	WN_NAME
+		,A5,	'ROLMN'
+	WN_TNMBR,D4
+
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+
+RECORD	VARS
+	R_TYPE	,D1,0
+	rx	,d2
+	ry	,d2
+	TSTAT	,D1
+	START_NAME	,A30
+	F_KEY	,D3
+	I	,D5
+	OPNOK	,D1
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D1
+	SRCCTL	,D1
+	KEY	,A6
+	BSEND	,D5
+	BSMID	,D5
+	READ	,D1,0
+	WRITE	,D1,1
+	LOKCTL	,D1
+	ACUST	,A6
+	DVEND	,A4
+	SAVVND	,A4
+	WND_1	,D4
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	OPEN (15,I,'TT:')
+
+	CALL INIT_WINDOW
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+
+;====================================================
+DISPLA,
+	XCALL W_DISP(WND_1,WD_POS,23,2,WD_CLR,WDC_EOL,'<F1> = ALPHA LOOK-UP')
+	XCALL W_DISP(WND_1,WD_POS,1,1,"VEND #",WD_CLR,WDC_EOL)
+	XCALL W_UPDT
+
+	XCALL WINPT (WND_1,1,8,04,00,'#E',ENTRY,INXCTL,F_KEY)
+;-
+	GOTO (DISPLA,ENDOFF),INXCTL
+	IF (F_KEY .EQ. F_01)
+		BEGIN
+		CALL ALPHA_LOOKUP
+		XCALL W_DISP(WND_1,WD_POS,21,1,WD_CLR,WDC_EOL)
+		GOTO (DISPLA,DISPLA),INXCTL
+		XCALL W_DISP(WND_1,WD_POS,1,8,ENTRY(1,4) )
+		END
+
+	XCALL W_DISP(WND_1,WD_POS,21,1,WD_CLR,WDC_EOL)
+;-
+	XCALL FRMAT (ENTRY(1,4),4)
+	DVEND = ENTRY(1,4)
+	IF (DVEND .EQ. '    ')
+		BEGIN
+		DVEND = SAVVND
+		XCALL W_DISP(WND_1,WD_POS,1,8,DVEND )
+		END
+
+	LOKCTL = 1
+	XCALL ISIO (CHN011, VENMAS, DVEND, READ, LOKCTL)	
+	IF (LOKCTL .EQ. 0)
+	THEN	SRCCTL = 0
+	ELSE	BEGIN
+		SRCCTL = 1
+		XCALL WNMSG (WND_1,23,'VENDOR NOT ON FILE',1)
+		GOTO DISPLA
+		END
+
+;;;	XCALL SERCH (chn012,VENIDX,DVEND,1,4,BSEND,BSMID,SRCCTL,4,5,09,0,0,0,0)
+;;;	IF (SRCCTL .OR. IRC011.LE.0)
+;;;		BEGIN
+;;;		XCALL MESAG ('VENDOR NOT ON FILE',1)
+;;;		GOTO DISPLA
+;;;		END
+;;;	READ (CHN011,VENMAS,IRC011)
+
+	SAVVND = DVEND
+
+	XCALL W_DISP(WND_1,WD_POS,1,16,NAME)
+
+	xcall roldx (VENMAS,update,rx,ry,R_TYPE)
+	GOTO DISPLA
+
+
+ENDOFF,
+	CALL CLOSE
+	XCALL FLAGS (7000000)
+	xcall u_finish
+	STOP
+;====================================================
+;====================================================
+
+ALPHA_LOOKUP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; ALPHA VENDOR LOOK-UP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL W_DISP(WND_1,WD_POS,21,2,WD_CLR,WDC_EOL,'VEND NAME:')
+	XCALL WINPT(WND_1,21,13,30,00,'AE',ENTRY,INXCTL)
+	GOTO (ALPHA_RETURN,ALPHA_RETURN),INXCTL
+	START_NAME = ENTRY(1,30)
+
+	FIND (CHN011, VENMAS, START_NAME, KRF:1) [ERR=MORE_NAMES]
+;;;	FIND (CHN027,VENALP,START_NAME) [ERR=MORE_NAMES]
+	CLEAR LOKCTL
+MORE_NAMES,
+	CALL GET_NAMES
+	XCALL TTSTS(TSTAT)
+	IF (TSTAT) XCALL W_DISP(WND_1,WD_READS,ENTRY)
+	IF (NUMARA .GT. 0)
+	THEN	BEGIN
+		DLINE = '  VEND #  NAME'
+		XCALL AP_RXPOP (POPAR)
+		END
+	ELSE	BEGIN
+		XCALL MESAG ('NO MORE NAMES',1)
+		INXCTL = 2
+		RETURN
+		END
+
+	CASE P_ACTION OF
+	BEGINCASE
+	0:	INXCTL = 2		;<END>
+	1:	BEGIN
+		DLINE = PARRY(PI)
+		ENTRY = DLINE(1,6)
+		CLEAR INXCTL		
+		END
+	4:	GOTO MORE_NAMES
+	ENDCASE
+ALPHA_RETURN,
+	RETURN
+;------------------------------------------------
+
+GET_NAMES,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; GET NEXT 20 NAMES FROM VENALP
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR I
+	READS (CHN011, VENMAS, GN_EOF)
+	WHILE (I.LT.MAXARA)
+		BEGIN	
+		CLEAR DLINE
+		DLINE(1,4) = VENNO
+		DLINE(6,35) = NAME
+		INCR I
+		PARRY(I) = DLINE
+		DLINE (1,25) = ADD1
+		DLINE (26,50) = ADD2
+		DLINE (51,65) = CITY
+		DLINE (67,68) = STATE
+		DLINE (70,79) = ZIP
+		P_ADD(I) = DLINE
+		READS (CHN011,VENMAS,GN_EOF)
+		END
+GN_EOF,
+	NUMARA = I
+	IF (I.EQ.0 .OR. I.EQ.MAXARA) RETURN
+	
+	FOR I FROM NUMARA+1 THRU MAXARA	CLEAR PARRY(I)
+	RETURN
+;------------------------------------------------
+
+OPENS,
+	CLEAR OPNOK
+	xcall u_open (chn011,"i:i","tst:VENMAS.tsm",,,switch)
+;;;	xcall u_open (chn011,"i:i","smc:VENMAS.smm",,,switch)
+	if (switch) return
+
+	OPNOK = 1
+BAD_OPEN,
+	RETURN
+;------------------------------------------------------
+
+CLOSE,
+	IF (CHN011) xcall u_close (chn011)
+;;;	IF (CHN012) xcall u_close (chn012)
+;;;	IF (CHN027) xcall u_close (chn027)
+
+	RETURN
+;------------------------------------------------------
+
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL TNMBR (WN_TNMBR)
+	xcall u_start("lib:ap_wnd",,,,,,,15)
+;;;	XCALL W_INIT(POOLSIZE,WNDCHNL,MAXWINS)
+	XCALL W_PROC(WP_FIND,WND_1,WN_NAME)
+	IF (WND_1.EQ.0)
+		BEGIN
+		XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,24,80)
+		END
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	xcall u_logwnd(wnd_1)
+	xcall e_sect("AP Rolodex",D_CAPTION)
+	rx = 3
+	ry = 5
+;; POP info...
+
+	MAXARA = 20
+	PLEN = 34
+	NUMROW = 10
+	WX = 8
+	WY = 7
+	POP_WID(1,5) = "RXPOP"
+	POP_WID(6,8) = WN_TNMBR,	'XXX'
+	POP_TITLE = "Vendor Lookup"
+	RETURN
+;-----------------------------------------------------------------
+
+

@@ -1,0 +1,65 @@
+SUBROUTINE LPOFF ;(LPSW,SLPFIL,PGCNT)	;smc version
+; use this version as of 3-30-98, .smc no longer updated.
+;
+; Print selections are hard-coded into LPON.MAN and this routine.
+; Current selections are:
+;	1. Local Printer (Compressed)
+;	2. Local Printer
+;	3. Edit
+;	4. Epson ML 395  (name=Epson LQ-2500)
+;	5. Unused
+;	6. Don't prompt for printer, use Local Printer (Not compressed)
+
+
+	LPSW	,D
+	SPLFIL	,A
+	PGCNT	,D
+
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+
+RECORD	VARS
+	ENTRY	,A1
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	ROW	,D2
+	I	,D3
+	OPT	,D1
+
+PROC
+	IF (LPSW.EQ.0) RETURN
+	CLOSE 14
+	s_name = splfil         ;restore printer output file name
+	OPT = s_name(1,1)	;printer number
+	s_name(1,1) = 's'       ;always first char of printer output file name
+
+
+	USING OPT SELECT
+	(1,2,6),	begin	; Local laser 
+		lpque (s_filnam,copies:1,delete)
+		end
+	(3),	BEGIN			;EDIT
+		xcall spedit (s_filnam)
+		xcall delet (s_filnam)
+		END
+
+	(4),	begin	; Epson ML 295
+		lpque (s_filnam,lpnum:"Epson LQ-2500",copies:1,delete)
+		end
+	ENDUSING
+
+	LPSW =
+	RETURN
+
+
+END

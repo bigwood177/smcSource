@@ -1,0 +1,150 @@
+;VCHLBL.AP
+;
+;	PRINT VOUCHER BARCODE LABELS
+;
+RECORD	NEWAP
+	.INCLUDE 'DEF:RD014A.DEF'
+
+RECORD	EJECT
+	E_CHAR	,A1		;<ESC>
+		,A4,	"&l0H"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+RECORD	PLINE
+		,A5
+	LINE1	,A30
+		,A12
+	LINE2	,A30
+
+RECORD	CHANNELS
+	CHN014,	D2
+
+RECORD	VARS
+	OPNOK	,D1
+	LBLCNT	,D6
+	TOGL	,D1
+	I	,D6
+	B_DATA	,A100
+	B_STRNG	,A100
+	SPLFIL	,A14
+	READ	,D1,0
+	ENTRY	,A30
+	INXCTL	,D1
+	LOKCTL	,D1
+	SWITCH	,D1
+	V	,D1
+
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'PRINT VOUCHER BARCODE LABELS',1)
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	XCALL MOUNT ('VOUCHER LABELS','LOCAL PRINTER')
+
+	XCALL ASCII(27,E_CHAR)
+
+REPRINT,
+	CLEAR LBLCNT
+	TOGL = 1
+
+	XCALL IOS (CHN014, NEWAP, READ, LOKCTL)	;HEADER
+LOOP,
+	XCALL IOS (CHN014, NEWAP, READ, LOKCTL)
+	IF (NEWAP .EQ. ']]]]]]') GOTO EOF
+	IF (LOKCTL .NE. 0) GOTO EOF
+	CALL PRTLBL
+	GOTO LOOP
+
+
+EOF,
+	IF (TOGL .EQ. 2) CALL PRINT
+
+	WRITES (14, EJECT)
+
+	CLOSE 14
+	LPQUE (SPLFIL)
+	XCALL OUTPT (12,5,1,'ARE ALL LABELS OK?',1)
+	XCALL INPUT (12, 28, 01, 01, 'YN', ENTRY, INXCTL,1)
+	GOTO (ENDOFF, REPRINT),INXCTL
+
+ENDOFF,
+	CALL CLOSE
+	STOP
+
+PRTLBL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; PRINT A LABEL
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	B_DATA(1,2) = 'V~'
+	B_DATA(3,10) = WINVNO
+	XCALL B128 (B_DATA, B_STRNG, 70)
+
+		
+	USING TOGL SELECT
+	(1),	BEGIN
+		LINE1 = WNAME
+	;;;	CALL PRINT
+
+		LINE1 = WINVNO
+	;;;	CALL PRINT
+	;;;	CALL PRINT
+	;;;	CALL PRINT
+
+		LINE1 = B_STRNG
+	;;;	CALL PRINT
+	;;;	CALL PRINT
+		TOGL = 2
+		END
+
+	(2),	BEGIN
+		LINE2 = WNAME
+		CALL PRINT
+
+		LINE2 = WINVNO
+		CALL PRINT
+		CALL PRINT
+		CALL PRINT
+
+		LINE2(4,30) = B_STRNG
+		CALL PRINT
+		CALL PRINT
+		TOGL = 1
+		END
+	ENDUSING
+
+	INCR LBLCNT
+	RETURN
+;-----------------------------------------------------
+
+PRINT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	IF (LBLCNT .GE. 10) WRITES (14, EJECT)
+	WRITES (14, PLINE)
+	CLEAR PLINE
+	RETURN
+;-----------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (4,'I',014,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN014 = 4
+
+	SPLFIL = 'SPL:VCHLBL.SPL'
+	OPEN (14, O, SPLFIL)
+
+	OPNOK = 1
+	RETURN
+;-----------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	IF (CHN014) CLOSE CHN014
+
+	RETURN
+;-----------------------------------------------------
+
+END
+

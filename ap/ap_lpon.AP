@@ -1,0 +1,137 @@
+SUBROUTINE AP_LPON; (LPSW,SPLFIL)  ;SMC VERSION
+;
+			;
+;changed 5-20-98 lpsw returned as printer number
+
+	LPSW	,D		;8 = local, don't ask
+	SPLFIL	,A
+
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+;;; 10-14-15 why is this here? .INCLUDE 'DEF:HPSUB.DEF'
+
+record  s_filnam
+		,a4,    'spl:'
+	f_letr	,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record  time
+	hh      ,a2
+	mm      ,a2
+	ss      ,a2
+
+record	reset
+	R_CHAR	,A1
+		,A1,	'E'
+	
+
+RECORD	COMPRES
+	C_CHAR	,A1		;<ESC>
+		,A4,	"&k2S"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+RECORD	COMP14
+	O_CHAR	,A1		;<ESC>
+		,a4,	"&l1O"	;landscape mode
+	ESC_12	,A1		;<ESC>
+		,A4,	"&l8D"	;vertical spacing, 8 lines/inch
+	ESC_13	,A1		;<ESC>
+		,A8,	"(s13.00H"	;pitch 14 CPI
+
+RECORD TRAY_4
+	T_CHAR	,A1		;<ESC>
+		,A2,	"&l"
+	PAR	,A2,	"4H"	;select multi-purpose tray
+	
+RECORD	VARS
+	UNAME	,A20
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OPT	,D1
+	I	,D5
+
+PROC
+	if (lpsw .eq. 8) 
+		begin
+		lpsw = 1	;local printer
+		opt = 1
+		goto proces	
+		end
+
+DISPLA,
+	XCALL OUTPT (3,1,2,'\',1)
+	XCALL OUTPT (12,20,0,'REPORT DESTINATION',1)
+	XCALL OUTPT (13,25,0,'1. Local Printer',1)
+	XCALL OUTPT (14,25,0,'2. Local Printer - Compressed',1)
+	XCALL OUTPT (15,25,0,'3. Local Printer - Landscape',1)
+	XCALL OUTPT (16,25,0,'4. Edit',1)
+ASK,
+	XCALL INPUT (12,40,01,00,'#E',ENTRY,INXCTL,1)
+	GOTO (DISPLA,SPL_ERR),INXCTL
+	OPT = ENTRY(1,1)
+	IF (OPT .EQ. 0)
+		BEGIN
+		OPT = 1
+		XCALL OUTPT (12,40,0,'1',1)
+		END
+	IF (OPT.LT.1 .OR. OPT.GT.4) GOTO ASK
+
+ANYCNG,
+	CNGCTL = 2
+	XCALL ANYCN (CNGCTL,WHATNO)
+	GOTO (ASK),CNGCTL
+
+PROCES,
+;;; Create a unique file name and open for output
+	xcall tnmbr (fter)
+	xcall time (time)
+	ftime(1,2) = hh
+	ftime(3,4) = mm
+
+	f_letr = "s"
+	onerror spl_err
+	open (14,o,s_filnam)            ;print output file
+	offerror
+
+	s_name(1,1) = OPT,'X'           ;save the printer # selected
+	splfil = s_name                 
+
+	UNAME = %GU_NAME	;4-26-07 ssq
+	UPCASE UNAME
+	if (uname.eq.'KRISTINAF' .and. opt.ne.4)
+		begin
+		xcall ascii(27,t_char)
+		writes (14,tray_4)
+		end
+
+	USING OPT SELECT
+	(2),	BEGIN			;local laser compressed
+		XCALL ASCII(27,C_CHAR)
+		WRITES (14,COMPRES)
+		END
+	(3),	BEGIN			;local laser landscape
+		XCALL ASCII(27,O_CHAR)
+		ESC_12 = O_CHAR
+		ESC_13 = O_CHAR
+		WRITES (14,COMP14)
+		END
+	ENDUSING
+
+	LPSW = OPT		;5-20-98
+	RETURN
+;=================================================================
+
+
+spl_err,
+	offerror
+	lpsw = 0		;error or <end>
+	RETURN
+END

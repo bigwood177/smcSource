@@ -1,0 +1,202 @@
+
+O:\SOURCE\ap>dbl -d -l -- 1099CL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ACCT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- AGEDAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- AL1099.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ALAPCK.AP 
+
+O:\SOURCE\ap>dbl -d -l -- AP3.AP 
+
+O:\SOURCE\ap>dbl -d -l -- AP4.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APACNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APALST.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APAMNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APCODE.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APDSUM.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APFILS.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APGLXV.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APICNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APMENU.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APOCTL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APSPOL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APTABL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APTOJP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APXREF.AP 
+
+O:\SOURCE\ap>dbl -d -l -- APXRP2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- BGLXIX.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CHECKS.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CHKLST.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CHKPRP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CHKREC.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CHKREG.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRMAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRPDS.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRPTL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRVC2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRVCH.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLRYAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CLSAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- CSHREQ.AP 
+
+O:\SOURCE\ap>dbl -d -l -- DEFSEL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- DELPTL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- DUEDIS.AP 
+
+O:\SOURCE\ap>dbl -d -l -- FLGPDS.AP 
+
+O:\SOURCE\ap>dbl -d -l -- GLTOAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- INITAP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- LPOFF.AP 
+
+O:\SOURCE\ap>dbl -d -l -- LPON.AP 
+
+O:\SOURCE\ap>dbl -d -l -- MAKALP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- NAPPR2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- NAPPRP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- OPNAP.AP 
+    45         RECORD DUMPOH,X
+%DBL-W-RECETY, Record is empty
+    46                         .INCLUDE 'DEF:RD151B.DEF'
+%DBL-E-OPENIN2, Cannot open:  DEF:RD151B.DEF
+%DBL-E-NOOBJ, No object file created
+
+
+O:\SOURCE\ap>dbl -d -l -- ORGAPA.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ORGVEN.AP 
+
+O:\SOURCE\ap>dbl -d -l -- POP2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PR1099.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PRECHK.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PRGAPO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PRGRPT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PRTIAL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTAP2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTAPD.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTAPO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTCHK.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PSTPTL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- PTLREG.AP 
+
+O:\SOURCE\ap>dbl -d -l -- RECCNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ROLDX.AP 
+
+O:\SOURCE\ap>dbl -d -l -- ROLO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- RXPOP.AP 
+
+O:\SOURCE\ap>dbl -d -l -- RXPP2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SETVCH.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTAGX.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTAPA.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTAPD.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTAPO.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTPTL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTRCN.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTVC2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTVCA.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTVCB.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTVCH.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTVID.AP 
+
+O:\SOURCE\ap>dbl -d -l -- SRTVLS.AP 
+
+O:\SOURCE\ap>dbl -d -l -- STAPCH.AP 
+
+O:\SOURCE\ap>dbl -d -l -- STAPIN.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHE0.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHE1.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHE2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHEN0.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHENT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHREG.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VCHRG2.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENANL.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENCNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENINQ.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENLST.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENMNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VENPRT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- VGLMNT.AP 
+
+O:\SOURCE\ap>dbl -d -l -- WNMSG.AP 
+
+O:\SOURCE\ap>dbl -d -l -- WORDS.AP 

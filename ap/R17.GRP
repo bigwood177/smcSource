@@ -1,0 +1,110 @@
+File AGEDAP.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File ALAPCK.AP:
+                .INCLUDE 'DEF:RD017E.DEF'       ;1-27-99 TO REPLACE BELOW...
+                .INCLUDE 'DEF:RD017B.DEF'
+File APGLXV.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File APOCTL.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+File APXREF.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File APXRP2.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File CHECKS.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+        .INCLUDE 'DEF:RD017E.DEF'       ;1-27-99 Created to replace below ...
+File CHKPRP.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+                .INCLUDE 'DEF:RD017E.DEF'
+File CLRMAP.AP:
+                .INCLUDE 'DEF:RD017B.DEF'
+                .INCLUDE 'DEF:RD017A.DEF'
+File CLRPDS.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+                .INCLUDE 'DEF:RD017C.DEF'
+File CSHREQ.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+File CVAP70.AP:
+RECORD APOPEN,X         ; ::CRD017A.DEF::
+                        ;SOURCE:        "RD017A.DEF"
+RECORD APOCTL,X         ; ::CRD017B.DEF::
+                        ;SOURCE:        "RD017B.DEF"
+File DEFSEL.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+                .INCLUDE 'DEF:RD017D.DEF'       ;1-27-99 SSQ: created to 
+File DELPTL.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File DUEDIS.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File FLGPDS.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+                .INCLUDE 'DEF:RD017E.DEF'
+File INITAP.AP:
+                        .INCLUDE 'DEF:RD017S.DEF'
+File LSTDEF.AP:
+! RD017A.DEF
+! RD017B.DEF
+! RD017C.DEF
+! RD017S.DEF
+File NAPPR2.AP:
+                .INCLUDE 'DEF:RD017B.DEF'
+File NAPPRP.AP:
+                .INCLUDE 'DEF:RD017B.DEF'
+File OPNAP.AP:
+                .INCLUDE 'DEF:RD017B.DEF'
+File PIPDEF.AP:
+COPY IN:RD017A.DEF OUT:RD017A.DEF
+COPY IN:RD017B.DEF OUT:RD017B.DEF
+COPY IN:RD017C.DEF OUT:RD017C.DEF
+COPY IN:RD017S.DEF OUT:RD017S.DEF
+File PRECHK.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+File PRGAPO.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File PRTIAL.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File PSTAP2.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File PSTAPO.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File PSTPTL.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File PTLREG.AP:
+                .INCLUDE 'DEF:RD017B.DEF'
+File SRTAPO.AP:
+        .INCLUDE 'DEF:RD017A.DEF'
+File VCH11.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+File VCHE1.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+File VCHE2.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File VCHEN0.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File VCHEN1.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+File VENINQ.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'
+File VENMNT.AP:
+                .INCLUDE 'DEF:RD017A.DEF'
+                .INCLUDE 'DEF:RD017B.DEF'

@@ -1,0 +1,125 @@
+;CHK192.AP
+;
+RECORD	PORNXF
+	.INCLUDE 'DEF:RD192A.DEF'
+
+RECORD	APCHEK
+	.INCLUDE 'DEF:RD020A.DEF'
+
+
+RECORD CHANNEL
+	CHN020	,D2
+	CHN192	,D2
+;
+RECORD	VARS
+	OPNOK	,D1
+	MATCH	,D1
+	COUNTER	,D10
+	BLANKS	,A8
+	READ	,D1,0
+	WRITE	,D1,1
+	STORE	,D1,2
+	LOKCTL	,D1
+	SWITCH	,D1
+	V	,D1
+
+;
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'UPDATE A/P - PO CROSS REF INDEX',1)
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+	
+	XCALL IOS (CHN020, APCHEK, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+LOOP,
+	XCALL IOS (CHN020, APCHEK, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO EOF
+	IF (APCHEK .EQ. ']]]]]]') GOTO EOF
+
+	CALL UPDATE_BY_VOUCHER
+
+	GOTO LOOP
+
+EOF,	
+
+ENDOFF,	CALL CLOSE
+	XCALL PGCHN ('AP:PSTCHK',1)
+
+UPDATE_BY_VOUCHER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	FIND (CHN192, PORNXF, CVCHNO, KRF:4) [ERR=MAK_IDX]
+UPV_LOOP,
+
+	XCALL IOS (CHN192, PORNXF, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO MAK_IDX
+		
+	PXCHK = CCHKNO
+	PXCDT = CCHKDT
+
+;;;	write (chn192, pornxf, pxk0)
+	XCALL ISIO (CHN192, PORNXF, PXK0, WRITE, LOKCTL)
+
+EOF_UPV,
+	RETURN
+;---------------------------------------------------
+MAK_IDX,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CALL GET_COUNTER
+	CLEAR PORNXF
+
+	PXKEY = COUNTER
+	PXVEN = CVENNO
+	PXNAM = CNAME
+	PXVCH = CVCHNO
+	PXINV = CINVNO
+	PXIDT = CINVDT
+	PXIAMT = CINVAM+CDSCAM
+	PXCHK = CCHKNO
+	PXCDT = CCHKDT
+
+	XCALL ISIO (CHN192, PORNXF, PXK0, STORE, LOKCTL)
+
+	RETURN
+;---------------------------------------------------
+
+
+GET_COUNTER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	PXK0 = 0
+	XCALL ISIO (CHN192, PORNXF, PXK0, READ, LOKCTL)
+	INCR PXNEXT
+	XCALL ISIO (CHN192, PORNXF, PXK0, WRITE, LOKCTL)
+
+	COUNTER = PXNEXT
+	RETURN
+;---------------------------------------------------
+
+
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CLEAR OPNOK
+
+	SWITCH = 5
+	XCALL FILES (19, 'SU', 192, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN192 = 19
+
+	SWITCH = 5
+	XCALL FILES (1, 'I', 020, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN020 = 1
+
+	OPNOK = 1
+	RETURN
+;---------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	IF (CHN192) CLOSE CHN192
+	IF (CHN020) CLOSE CHN020
+
+	RETURN
+;---------------------------------------------------
+
