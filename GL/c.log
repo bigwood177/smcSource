@@ -1,0 +1,132 @@
+
+O:\SOURCE\GL>dbl -d -l -- APFACE.gl 
+
+O:\SOURCE\GL>dbl -d -l -- ARFACE.gl 
+
+O:\SOURCE\GL>dbl -d -l -- autogl.gl 
+
+O:\SOURCE\GL>dbl -d -l -- BALNCE.gl 
+
+O:\SOURCE\GL>dbl -d -l -- BFNIDX.gl 
+
+O:\SOURCE\GL>dbl -d -l -- BLDSRC.gl 
+
+O:\SOURCE\GL>dbl -d -l -- BSCHED.gl 
+
+O:\SOURCE\GL>dbl -d -l -- CATDAT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- CHTCNT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- CHTLST.gl 
+
+O:\SOURCE\GL>dbl -d -l -- CHTMNT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- COMPRS.gl 
+
+O:\SOURCE\GL>dbl -d -l -- COMWRK.gl 
+
+O:\SOURCE\GL>dbl -d -l -- CSHFLW.gl 
+
+O:\SOURCE\GL>dbl -d -l -- FINPOS.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GENLEG.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GENLG2.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GLFACE.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GLFILS.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GLMENU.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GLSPFN.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GLSPOL.gl 
+
+O:\SOURCE\GL>dbl -d -l -- glxel.gl 
+
+O:\SOURCE\GL>dbl -d -l -- GNJENT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- gnjreg.gl 
+
+O:\SOURCE\GL>dbl -d -l -- INITGL.gl 
+
+O:\SOURCE\GL>dbl -d -l -- JCFACE.gl 
+  3.9                  MAX085  ,D5     ; MAXIMUM RECORD COUNT
+%DBL-E-NOEXTEND, Cannot extend record by 1 bytes with overlay field MAX085
+  3.10                 DEL085  ,D3     ; FILLER
+%DBL-E-NOEXTEND, Cannot extend record by 3 bytes with overlay field DEL085
+    164                TRXDAT (1,2) = JTRXDT (5,6)
+%DBL-E-NFND, JTRXDT() not found
+    165                TRXDAT (3,6) = JTRXDT (1,4)
+%DBL-E-NFND, JTRXDT() not found
+    166                IF (JTRXAC.EQ.SAVACT) GO TO WRITE2
+%DBL-E-NFND, JTRXAC not found
+    167                KEY = JTRXAC, KEYMSK
+%DBL-E-NFND, JTRXAC not found
+    169                SAVACT = JTRXAC
+%DBL-E-NFND, JTRXAC not found
+    171                GJACCT = JTRXAC
+%DBL-E-NFND, JTRXAC not found
+    172                GJDATE = JTRXDT
+%DBL-E-NFND, JTRXDT not found
+    173                GJAMT = JTRXAM
+%DBL-E-NFND, JTRXAM not found
+%DBL-E-NOOBJ, No object file created
+
+
+O:\SOURCE\GL>dbl -d -l -- JCTMNT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- JEMAIN.gl 
+
+O:\SOURCE\GL>dbl -d -l -- JEMENU.gl 
+
+O:\SOURCE\GL>dbl -d -l -- JEPOST.gl 
+
+O:\SOURCE\GL>dbl -d -l -- JEPRNT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- ORGCHT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- PRDMNT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- PRFLOS.gl 
+
+O:\SOURCE\GL>dbl -d -l -- PROFMA.gl 
+
+O:\SOURCE\GL>dbl -d -l -- PSCHED.gl 
+
+O:\SOURCE\GL>dbl -d -l -- PSTGNJ.gl 
+
+O:\SOURCE\GL>dbl -d -l -- rcface.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SARATO.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SELPFC.gl 
+
+O:\SOURCE\GL>dbl -d -l -- smface.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SRCREF.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SRTGNJ.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SRTIDX.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SRTSRC.gl 
+
+O:\SOURCE\GL>dbl -d -l -- SRTYTD.gl 
+
+O:\SOURCE\GL>dbl -d -l -- STCIDX.gl 
+
+O:\SOURCE\GL>dbl -d -l -- STFIDX.gl 
+
+O:\SOURCE\GL>dbl -d -l -- STSIDX.gl 
+
+O:\SOURCE\GL>dbl -d -l -- TRLBAL.gl 
+
+O:\SOURCE\GL>dbl -d -l -- UNPRFS.gl 
+
+O:\SOURCE\GL>dbl -d -l -- UPDCHT.gl 
+
+O:\SOURCE\GL>dbl -d -l -- UPDPRD.gl 
+
+O:\SOURCE\GL>dbl -d -l -- VERIFY.gl 

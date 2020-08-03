@@ -1,0 +1,235 @@
+
+O:\SOURCE\GL>call APFACE 
+
+O:\SOURCE\GL>dblink -d APFACE gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call ARFACE 
+
+O:\SOURCE\GL>dblink -d ARFACE gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call autoar 
+
+O:\SOURCE\GL>dblink -T  0<autoar.cmd 
+DBLink> -d autoar autar autrc autsm autcl artab \
+DBLink> gl:gllib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\GL>call autoap 
+
+O:\SOURCE\GL>dblink -T  0<autoap.cmd 
+DBLink> -d autoap autap autcl aptab \
+DBLink> gl:gllib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\GL>call autogl 
+
+O:\SOURCE\GL>dblink -T  0<autogl.cmd 
+DBLink> -d autogl autar autrc autsm autcl gtab \
+DBLink> gl:gllib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\GL>call BALNCE 
+
+O:\SOURCE\GL>dblink -d BALNCE gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call BFNIDX 
+
+O:\SOURCE\GL>dblink -d BFNIDX gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call BLDSRC 
+
+O:\SOURCE\GL>dblink -d BLDSRC gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call BSCHED 
+
+O:\SOURCE\GL>dblink -d BSCHED gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call CATDAT 
+
+O:\SOURCE\GL>dblink -d CATDAT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call CHTCNT 
+
+O:\SOURCE\GL>dblink -d CHTCNT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call CHTLST 
+
+O:\SOURCE\GL>dblink -d CHTLST gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call CHTMNT 
+
+O:\SOURCE\GL>dblink -d CHTMNT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call COMPRS 
+
+O:\SOURCE\GL>dblink -d COMPRS gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call COMWRK 
+
+O:\SOURCE\GL>dblink -d COMWRK gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call CSHFLW 
+
+O:\SOURCE\GL>dblink -d CSHFLW gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call FINPOS 
+
+O:\SOURCE\GL>dblink -d FINPOS gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GENLEG 
+
+O:\SOURCE\GL>dblink -d GENLEG gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GENLG2 
+
+O:\SOURCE\GL>dblink -d GENLG2 gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GLFACE 
+
+O:\SOURCE\GL>dblink -d GLFACE gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GLFILS 
+
+O:\SOURCE\GL>dblink -d GLFILS gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GLMENU 
+
+O:\SOURCE\GL>dblink -d GLMENU gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GLSPFN 
+
+O:\SOURCE\GL>dblink -d GLSPFN gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call GLSPOL 
+
+O:\SOURCE\GL>dblink -d GLSPOL gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call glxel 
+
+O:\SOURCE\GL>dbl -dXT glxel.gl 
+
+O:\SOURCE\GL>dblink -d glxel WND:tklib.elb DBLDIR:axlib.elb 
+
+O:\SOURCE\GL>call GNJENT 
+
+O:\SOURCE\GL>dblink -d GNJENT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call gnjreg 
+
+O:\SOURCE\GL>dblink -d gnjreg gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call INITGL 
+
+O:\SOURCE\GL>dblink -d INITGL gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call JCTMNT 
+
+O:\SOURCE\GL>dblink -d JCTMNT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call JEMAIN 
+
+O:\SOURCE\GL>dblink -d JEMAIN gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call JEMENU 
+
+O:\SOURCE\GL>dblink -d JEMENU gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call JEPOST 
+
+O:\SOURCE\GL>dblink -d JEPOST gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call JEPRNT 
+
+O:\SOURCE\GL>dblink -d JEPRNT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call ORGCHT 
+
+O:\SOURCE\GL>dblink -d ORGCHT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call PRDMNT 
+
+O:\SOURCE\GL>dblink -d PRDMNT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call PRFLOS 
+
+O:\SOURCE\GL>dblink -d PRFLOS gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call PROFMA 
+
+O:\SOURCE\GL>dblink -d PROFMA gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call PSCHED 
+
+O:\SOURCE\GL>dblink -d PSCHED gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call PSTGNJ 
+
+O:\SOURCE\GL>dblink -d PSTGNJ gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call rcface 
+
+O:\SOURCE\GL>dblink -d rcface gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SARATO 
+
+O:\SOURCE\GL>dblink -d SARATO gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SELPFC 
+
+O:\SOURCE\GL>dblink -d SELPFC gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call smface 
+
+O:\SOURCE\GL>dblink -d smface gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SRCREF 
+
+O:\SOURCE\GL>dblink -d SRCREF gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SRTGNJ 
+
+O:\SOURCE\GL>dblink -d SRTGNJ gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SRTIDX 
+
+O:\SOURCE\GL>dblink -d SRTIDX gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SRTSRC 
+
+O:\SOURCE\GL>dblink -d SRTSRC gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call SRTYTD 
+
+O:\SOURCE\GL>dblink -d SRTYTD gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call STCIDX 
+
+O:\SOURCE\GL>dblink -d STCIDX gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call STFIDX 
+
+O:\SOURCE\GL>dblink -d STFIDX gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call STSIDX 
+
+O:\SOURCE\GL>dblink -d STSIDX gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call TRLBAL 
+
+O:\SOURCE\GL>dblink -d TRLBAL gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call UNPRFS 
+
+O:\SOURCE\GL>dblink -d UNPRFS gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call UPDCHT 
+
+O:\SOURCE\GL>dblink -d UPDCHT gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call UPDPRD 
+
+O:\SOURCE\GL>dblink -d UPDPRD gl:gllib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\GL>call VERIFY 
+
+O:\SOURCE\GL>dblink -d VERIFY gl:gllib.elb ut:util.elb wnd:tklib.elb 

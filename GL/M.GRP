@@ -1,0 +1,38 @@
+File BLDSRC.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File CHTLST.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File CHTMNT.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File COMPRS.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File COMWRK.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File CSHFLW.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File FINPOS.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File GENLEG.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File GNJENT.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File GNJREG.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File INITGL.GL:
+		.INCLUDE 'DEF:RD070S.DEF'
+File PRDMNT.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File PROFMA.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File SARATO.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File SELPFC.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File TRLBAL.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File UPDCHT.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File UPDPRD.GL:
+                .INCLUDE 'DEF:RD070A.DEF'
+File VERIFY.GL:
+                .INCLUDE 'DEF:RD070A.DEF'

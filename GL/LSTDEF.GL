@@ -1,0 +1,62 @@
+!*****************************************************************************
+!  LSTDEF.GL
+!
+!  List of record definitions sent with source distribution
+!  G/L Release 7 RT-11 DIBOL
+!
+!*****************************************************************************
+! CMP001.DEF
+! DEV001.DEF
+! MES001.DEF
+! MES002.DEF
+! RD008A.DEF
+! RD008B.DEF
+! RD016A.DEF
+! RD016B.DEF
+! RD030A.DEF
+! RD030B.DEF
+! RD031A.DEF
+! RD031B.DEF
+! RD031C.DEF
+! RD031D.DEF
+! RD031E.DEF
+! RD031S.DEF
+! RD032A.DEF
+! RD032B.DEF
+! RD032C.DEF
+! RD032S.DEF
+! RD033A.DEF
+! RD033B.DEF
+! RD033C.DEF
+! RD033D.DEF
+! RD033E.DEF
+! RD033F.DEF
+! RD033S.DEF
+! RD034A.DEF
+! RD034B.DEF
+! RD034D.DEF
+! RD034E.DEF
+! RD034S.DEF
+! RD035A.DEF
+! RD035B.DEF
+! RD035S.DEF
+! RD036A.DEF
+! RD036S.DEF
+! RD037A.DEF
+! RD037S.DEF
+! RD038A.DEF
+! RD038B.DEF
+! RD038S.DEF
+! RD070A.DEF
+! RD070S.DEF
+! RD085A.DEF
+! RD085B.DEF
+! RD086A.DEF
+! RD086B.DEF
+! RD089A.DEF
+! SPL001.DEF
+! SPL002.DEF
+! SPL003.DEF
+******************************************************************************
+!  END OF LSTDEF.GL
+!*****************************************************************************

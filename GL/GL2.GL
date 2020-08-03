@@ -1,0 +1,10 @@
+;GL2.GL
+;
+record	vars
+	i	,d6
+;
+proc
+	xcall spawn ('c:\smc\spool\gltab.xls')
+	stop
+	end
+

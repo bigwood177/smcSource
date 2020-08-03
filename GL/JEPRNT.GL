@@ -1,0 +1,200 @@
+;JEPRNT.GL
+;
+;
+
+RECORD	JEMAIN
+	.INCLUDE 'DEF:RD030A.DEF'
+
+RECORD	JNLMAS
+	.INCLUDE 'DEF:RD028A.DEF'
+
+
+RECORD TITLE
+		,A37,'REOCURRING ENTRIES'
+RECORD HD2
+		,A*,	'JNL#  ACCOUNT  REFERENCE                             '
+		,A*,	'DEBITS       CREDITS  CAT'
+
+RECORD	HD1
+		,A80
+RECORD	PRINT
+	HD	,A6,	'NO HDR'
+	LG	,A9,	'NO LEGEND'
+	LPSW	,D1
+	LINCNT	,D2,60
+	PGCNT	,D3
+	PLINE	,A132
+	PAGSIZ	,D3,	080
+	LPARG	,D1,2
+	PRTTYP	,A1
+	RPTNUM	,D3
+	SPLFIL	,A14
+	PRNTON	,D1
+
+RECORD	CHANNEL
+	CHN028	,D2
+	CHN030	,D2
+
+RECORD	VARS
+	SAVJE	,A4
+	STJE	,A4
+	ENJE	,A4
+	TOTDR	,D10
+	TOTCR	,D10
+	DEC	,D2
+	OPNOK	,D1
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	READ	,D1	,0
+	WRITE	,D1	,1
+	FIND	,D1	,2
+	LOKCTL	,D1
+	SWITCH	,D1
+	V	,D1
+
+PROC 
+	XCALL TERID (V)
+	V = 1
+
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
+DISPLA,
+	CLEAR PRNTON, CNGCTL
+
+	XCALL OUTPT (1,1,2,'JOURNAL PRINT-OUT',1)
+	XCALL OUTPT (4,4,0,'STARTING JE #',1)
+	XCALL OUTPT (6,4,0,'ENDING   JE #',1)
+
+STJE,
+	XCALL INPUT (4,19,02,00,'#E',ENTRY,INXCTL,1)
+	GOTO (DISPLA,ENDOFF),INXCTL
+	DEC = ENTRY(1,2)
+	IF (DEC .EQ. 0)
+		BEGIN
+		XCALL OUTPT (4,19,1,'ALL',1)
+		STJE(3,4) = '00'
+		ENJE(3,4) = '99'
+		GOTO ANYCN
+		END
+	STJE(3,4) = DEC,	'XX'
+	GOTO (ANYCN),CNGCTL
+ENJE,
+	XCALL INPUT (6,19,02,00,'# ',ENTRY,INXCTL,1)
+	GOTO (DISPLA),INXCTL
+	DEC = ENTRY(1,2)
+	IF (DEC .EQ. 0)
+		BEGIN
+		ENJE(3,4) = STJE(3,4)
+		XCALL OUTPT (6,19,1,ENJE(3,4),1)
+		END
+
+ANYCN,
+	XCALL ANYCN(CNGCTL,WHATNO)
+	GOTO (PROCES,CNGBR),CNGCTL + 1
+CNGBR,
+	GOTO (STJE,ENJE),WHATNO
+	GOTO ANYCN
+PROCES,
+	STJE(1,2) = 'JE'
+	ENJE(1,2) = 'JE'
+	SAVJE = '&&&&'
+;;;	XCALL ISIO (CHN028,JNLMAS,STJE,FIND,LOKCTL)
+	FIND (CHN028,JNLMAS,STJE)[ERR=NO_JNL]
+NO_JNL,
+LOOP,
+	XCALL IOS (CHN028,JNLMAS,READ,LOKCTL)
+	IF (LOKCTL.NE.0 .OR. J_JNL.GT.ENJE) GOTO EOF
+	IF (J_JNL .NE. SAVJE) CALL NEW_JNL
+
+	PLINE (1,4) = J_JNL
+	PLINE (6,13) = J_ACT,	'ZXXX-XXX'
+	PLINE (16,45) = J_REF
+	PLINE (47,60) = J_DR,	'ZZ,ZZZ,ZZX.XX-'
+	PLINE (61,74) = J_CR,	'ZZ,ZZZ,ZZX.XX-'
+	PLINE (77,77) = J_CAT
+
+	CALL PRINT
+	TOTDR = TOTDR + J_DR
+	TOTCR = TOTCR + J_CR
+	GOTO LOOP
+
+EOF,
+	CALL NEW_JNL
+	GOTO ENDOFF
+;;========================================================
+
+NEW_JNL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (SAVJE .EQ. '&&&&') GOTO OUT_JNL
+	PLINE (5,11) = 'JOURNAL'
+	PLINE (13,16) = SAVJE
+	PLINE (18,24) = 'TOTALS:'
+	PLINE (47,60) = TOTDR,	'ZZ,ZZZ,ZZX.XX-'
+	PLINE (61,74) = TOTCR,	'ZZ,ZZZ,ZZX.XX-'
+	CALL PRINT
+	LINCNT = 66
+OUT_JNL,
+	SAVJE = J_JNL
+	CLEAR TOTDR, TOTCR
+
+	XCALL ISIO (CHN030,JEMAIN,J_JNL,READ,LOKCTL)
+	IF (LOKCTL.NE.0) CLEAR JEMAIN
+	HD1(1,4) = JE_JNL
+	HD1(6,36) = JE_DES
+	RETURN
+;----------------------------------------------------------
+
+
+
+PRINT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (PRNTON .EQ. 0) CALL LPONT
+
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HD1,HD2,HD,LG,
+&		LG,LG,0,80,80,1,LPSW,RPTNUM,PRTTYP)
+	RETURN
+;----------------------------------------------------------
+
+LPONT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GO TO ABORT1
+	PRNTON = 1
+	RETURN
+;----------------------------------------------------------
+
+ENDOFF,
+	IF (PRNTON) XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+ABORT1,
+	CALL CLOSE
+	XCALL PGCHN ('GL:JEMENU',1)
+;======================================================
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	CLEAR OPNOK
+
+	SWITCH = 1
+	XCALL FILES (1,'SI',028,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN028 = 1
+
+	XCALL FILES (2,'SI',030,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN030 = 2
+	
+	OPNOK = 1
+	RETURN
+;----------------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN028) XCALL FILES (CHN028,'SI',028,4)
+	IF (CHN030) XCALL FILES (CHN030,'SI',030,4)
+	RETURN
+;----------------------------------------------------------
+
+
+;JNL#  ACCOUNT  REFERENCE                             DEBITS       CREDITS  CAT
+;AAAA XXXX-XXX  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ZZ,ZZZ,ZZX.XX ZZ,ZZZ,ZZX.XX   A
+;12345678901234567890123456789012345678901234567890123456789012345678901234567890
+;         1         2         3         4         5         6         7         8
+END

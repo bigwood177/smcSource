@@ -1,0 +1,8 @@
+
+C:\smc\SOURCE\GL>gennet40 -o sap:vbExcel dllp:vbExcel.dll 
+assembly dllp:vbExcel.dll not found
+for more information check the output log
+
+C:\smc\SOURCE\GL>dblproto vbExcel 
+
+C:\smc\SOURCE\GL>dbl -qrelax:interop vbExcel 

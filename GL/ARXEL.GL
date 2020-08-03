@@ -1,0 +1,142 @@
+;ARXEL.GL
+;apxel.gl
+; see vbExcel.bat to create vbExcel files - you must have c:\smc\dll\vbExcel.dll
+;
+; source is source\vb\vbExcel...
+ 
+.include "sap:vbExcel.inc"
+;
+;----------------------------------------------------------------------
+.main ExcelSheet
+
+.include "WND:tools.def"
+.include "WND:windows.def"
+
+.align
+common
+	Container		,i4
+	Control			,i4
+	Mode			,i4
+	Status			,i4
+	FileName		,a60
+
+record	gltab
+	.include 'def:gltab.def'
+
+record	vars
+	obj	,@vbExcel.vbExcel
+	opnok	,d1
+	chntab	,d2
+	rr	,i4	;d4	;row index
+	cc	,d4	;column index
+	tl	,d4
+	sum_dr	,a20
+	sum_cr	,a20
+	amt	,a12
+
+.proc
+
+	xcall u_start(,1,0)
+	xcall e_sect("Excel A/P Data", D_HEADER)
+
+	xcall e_state(D_ON,D_LOWER)
+
+;;;	FileName = '\\serversbs\smc\accounting\ar.xls'
+	FileName = '\\server-dc01\smc\accounting\ar.xls'
+
+
+	call opens
+	if (.not. opnok) goto endoff
+
+
+	obj = new vbExcel()
+
+	if obj.CreateSheet() then
+	begin
+
+	; Headings...
+		obj.CellContent (1,1,"Account")
+		obj.CellContent (1,2,"Description")
+		obj.CellContent (1,3,"Debits")
+		obj.CellContent (1,4,"Credits")
+
+		call load_sheet
+
+		sum_dr = '=SUM(C2:C'
+		tl = %trim(sum_dr)
+		tl = tl + 1
+		sum_dr(tl,tl+2) = rr,	'ZZX' [left]
+		tl = %trim(sum_dr)
+		tl = tl + 1
+		sum_dr(tl,tl) = ')'
+
+		incr rr
+		obj.CellFormat(rr,3,"$#,##0.00_);[Red]($#,##0.00)")
+		obj.CellFormula(rr,3,(object)sum_dr)
+
+		sum_cr = sum_dr
+		sum_cr(6,6) = 'D'
+		sum_cr(9,9) = 'D'
+
+		obj.CellFormat(rr,4,"$#,##0.00_);[Red]($#,##0.00)")
+		obj.CellFormula(rr,4,(object)sum_cr)
+	
+		if obj.SaveSheet((string)FileName) then
+			xcall u_message("Created spreadsheet " + %atrim(FileName))
+		else
+			xcall u_message("Failed to save spreadsheet as " + %atrim(FileName))
+	
+		obj.CloseSheet()
+
+	end
+	else
+		xcall u_message("Failed to create Excel spreadsheet!")
+
+
+endoff,
+	xcall u_finish
+	call close
+
+	stop
+
+load_sheet,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	rr = 1
+	cc = 1
+	read (chntab, gltab, ^first) [err=e2] ;header
+l2,
+	reads (chntab, gltab, e2)
+	incr rr
+
+	amt(1,8) = gt_acct, 'ZZXX-XXX' 
+	obj.CellContent(rr,1,amt(1,8))
+	obj.CellContent(rr,2,gt_desc)
+
+	obj.CellFormat(rr,3,"$#,##0.00_);[Red]($#,##0.00)")
+	amt = gt_dr, '-XXXXXXXX.ZZ' [left]
+	obj.CellContent(rr,3,amt)
+
+	amt = gt_cr, '-XXXXXXXX.ZZ' [left]
+	obj.CellFormat(rr,4,"$#,##0.00_);[Red]($#,##0.00)")
+	obj.CellContent(rr,4,amt)
+
+
+	goto l2
+e2,
+	return
+;-------------------------------------------
+opens,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear opnok
+	open (10,si,'spl:/artab.ism')
+	chntab = 10
+	opnok = 1
+	return
+;-------------------------------------------
+close,
+	close chntab
+	return
+;-------------------------------------------
+
+.end
+
+
+

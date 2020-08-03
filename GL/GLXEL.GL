@@ -1,0 +1,156 @@
+;glxel.gl
+;
+;----------------------------------------------------------------------
+.main ExcelSheet
+
+.include "WND:tools.def"
+.include "WND:windows.def"
+.include "DBLDIR:activex.def"
+
+.align
+common
+	Container		,i4
+	Control			,i4
+	Mode			,i4
+	Status			,i4
+	FileName		,a60
+
+record	gltab
+	.include 'def:gltab.def'
+
+record	vars
+	opnok	,d1
+	chntab	,d2
+	rr	,d4	;row index
+	cc	,d4	;column index
+	tl	,d4
+	sum_dr	,a20
+	sum_cr	,a20
+	amt	,a12
+
+.proc
+
+	xcall u_start(,1,0)
+	xcall e_sect("Excel A/R Data", D_HEADER)
+
+	xcall e_state(D_ON,D_LOWER)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	FileName = '\\serversbs\smc\accounting\ar.xls'
+
+;;;	FileName = 'c:\Documents and Settings\debbieh.smcduct\Desktop\ar.xls'
+;;;	FileName = 'c:\Documents and Settings\debbieh\Desktop\ar.xls'
+;;;	FileName = 'c:\Documents and Settings\ar.xls'
+
+;;;	xcall u_dialog(FileName,,,,"Enter a file spec for the spreadsheet to be created",
+;;;	&			   "Example: C:\temp\test.xls",
+;;;	&			   "(Existing files will be overwritten!)","")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;	mode=D_MYESNO+D_MDEFBUTTON2+D_MICONQUESTION
+;;;	if (%u_msgbox("Use ActiveX debugger?",mode,"Debug Mode").eq.D_MIDYES) then
+;;;		xcall setlog("AXDEBUG","yes",Status)
+;;;	else
+;;;		xcall setlog("AXDEBUG",,Status)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	call opens
+	if (.not. opnok) goto endoff
+
+	xcall w_proc(WP_HOURGLASS_ON)
+
+	container=%ax_create
+	control=%ax_load(container,"SynExcel.ExcelSheet")
+
+	xcall w_proc(WP_HOURGLASS_OFF)
+	
+	if %ax_call(control,"CreateSheet") then
+	begin
+
+		xcall w_proc(WP_HOURGLASS_ON)
+	; Headings...
+		xcall ax_call(control,"CellContent",1,1,"Account")
+		xcall ax_call(control,"CellContent",1,2,"Description")
+		xcall ax_call(control,"CellContent",1,3,"Debits")
+		xcall ax_call(control,"CellContent",1,4,"Credits")
+
+		call load_sheet
+
+
+		sum_dr = '=SUM(C2:C'
+		tl = %trim(sum_dr)
+		tl = tl + 1
+		sum_dr(tl,tl+2) = rr,	'ZZX' [left]
+		tl = %trim(sum_dr)
+		tl = tl + 1
+		sum_dr(tl,tl) = ')'
+
+		incr rr
+		xcall ax_call(control,"CellFormat",rr,3,"$#,##0.00_);[Red]($#,##0.00)")
+		xcall ax_call(control,"CellFormula",rr,3,sum_dr)
+		sum_cr = sum_dr
+		sum_cr(6,6) = 'D'
+		sum_cr(9,9) = 'D'
+
+		xcall ax_call(control,"CellFormat",rr,3,"$#,##0.00_);[Red]($#,##0.00)")
+		xcall ax_call(control,"CellFormula",rr,4,sum_cr)
+
+	
+		xcall w_proc(WP_HOURGLASS_OFF)
+		
+		if %ax_call(control,"SaveSheet",FileName) Then
+			xcall u_message("Created spreadsheet " + %atrim(FileName))
+		else
+			xcall u_message("Failed to save spreadsheet as " + %atrim(FileName))
+	
+		xcall ax_call(control,"CloseSheet")
+	end
+	else
+		xcall u_message("Failed to create Excel spreadsheet!")
+
+	xcall ax_delete(container)
+
+endoff,
+	xcall u_finish
+	call close
+
+	stop
+
+load_sheet,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	rr = 1
+	cc = 1
+	read (chntab, gltab, ^first) [err=e2] ;header
+l2,
+	reads (chntab, gltab, e2)
+	incr rr
+
+	xcall ax_call(control,"CellContent",rr,1,gt_acct)
+	xcall ax_call(control,"CellContent",rr,2,gt_desc)
+	
+	xcall ax_call(control,"CellFormat",rr,3,"$#,##0.00_);[Red]($#,##0.00)")
+	amt = gt_dr, '-XXXXXXXX.ZZ' [left]
+	xcall ax_call(control,"CellContent",rr,3,amt)
+
+	amt = gt_cr, '-XXXXXXXX.ZZ' [left]
+	xcall ax_call(control,"CellFormat",rr,4,"$#,##0.00_);[Red]($#,##0.00)")
+	xcall ax_call(control,"CellContent",rr,4,amt)
+
+	goto l2
+e2,
+	return
+;-------------------------------------------
+opens,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	clear opnok
+	open (10,si,'spl:/gltab.ism')
+	chntab = 10
+	opnok = 1
+	return
+;-------------------------------------------
+close,
+	close chntab
+	return
+;-------------------------------------------
+
+.end
+

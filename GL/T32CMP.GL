@@ -1,0 +1,143 @@
+!*****************************************************************************
+!  T32CMP.GL
+!
+!         COMMAND FILE TO COMPILE GL RELEASE 7.0 for tsx-32
+!
+!*****************************************************************************
+!
+!
+ASSIGN C:\MCBA\SOURCE\GL\ SRC
+ASSIGN C:\MCBA\SOURCE\DEF\ DEF
+ASSIGN C:\MCBA\SOURCE\TEMP\ OBJ
+ASSIGN C:\MCBA\EXECUTE\UT\ UT
+!
+!
+dbr UT:GSORT
+SRC:SRTGNJ.GL
+OBJ:SRTGNJ.DBL
+
+dbr UT:GSORT
+SRC:SRTIDX.GL
+OBJ:SRTIDX.DBL
+
+dbr UT:GSORT
+SRC:SRTSRC.GL
+OBJ:SRTSRC.DBL
+
+dbr UT:GSORT
+SRC:STCIDX.GL
+OBJ:STCIDX.DBL
+
+dbr UT:GSORT
+SRC:STFIDX.GL
+OBJ:STFIDX.DBL
+
+dbr UT:GSORT
+SRC:STSIDX.GL
+OBJ:STSIDX.DBL
+!
+!
+!
+dbl /obj=OBJ:ADFACE.TMP/r:debug SRC:ADFACE.GL
+dbl /obj=OBJ:APFACE.TMP/r:debug SRC:APFACE.GL
+dbl /obj=OBJ:ARFACE.TMP/r:debug SRC:ARFACE.GL
+dbl /obj=OBJ:BALNCE.TMP/r:debug SRC:BALNCE.GL
+dbl /obj=OBJ:BFNIDX.TMP/r:debug SRC:BFNIDX.GL
+dbl /obj=OBJ:BLDSRC.TMP/r:debug SRC:BLDSRC.GL
+dbl /obj=OBJ:BSCHED.TMP/r:debug SRC:BSCHED.GL
+dbl /obj=OBJ:CHTCNT.TMP/r:debug SRC:CHTCNT.GL
+dbl /obj=OBJ:CHTLST.TMP/r:debug SRC:CHTLST.GL
+dbl /obj=OBJ:CHTMNT.TMP/r:debug SRC:CHTMNT.GL
+dbl /obj=OBJ:COMPRS.TMP/r:debug SRC:COMPRS.GL
+dbl /obj=OBJ:COMWRK.TMP/r:debug SRC:COMWRK.GL
+dbl /obj=OBJ:CSHFLW.TMP/r:debug SRC:CSHFLW.GL
+dbl /obj=OBJ:FINPOS.TMP/r:debug SRC:FINPOS.GL
+dbl /obj=OBJ:GENLEG.TMP/r:debug SRC:GENLEG.GL
+dbl /obj=OBJ:GLFACE.TMP/r:debug SRC:GLFACE.GL
+dbl /obj=OBJ:GLFILS.TMP/r:debug SRC:GLFILS.GL
+dbl /obj=OBJ:GLMENU.TMP/r:debug SRC:GLMENU.GL
+dbl /obj=OBJ:GLSPFN.TMP/r:debug SRC:GLSPFN.GL
+dbl /obj=OBJ:GLSPOL.TMP/r:debug SRC:GLSPOL.GL
+dbl /obj=OBJ:GNJENT.TMP/r:debug SRC:GNJENT.GL
+dbl /obj=OBJ:GNJREG.TMP/r:debug SRC:GNJREG.GL
+dbl /obj=OBJ:INITGL.TMP/r:debug SRC:INITGL.GL
+dbl /obj=OBJ:JCFACE.TMP/r:debug SRC:JCFACE.GL
+dbl /obj=OBJ:ORGCHT.TMP/r:debug SRC:ORGCHT.GL
+dbl /obj=OBJ:PRDMNT.TMP/r:debug SRC:PRDMNT.GL
+dbl /obj=OBJ:PRFACE.TMP/r:debug SRC:PRFACE.GL
+dbl /obj=OBJ:PRFLOS.TMP/r:debug SRC:PRFLOS.GL
+dbl /obj=OBJ:PROFMA.TMP/r:debug SRC:PROFMA.GL
+dbl /obj=OBJ:PSCHED.TMP/r:debug SRC:PSCHED.GL
+dbl /obj=OBJ:PSTGNJ.TMP/r:debug SRC:PSTGNJ.GL
+dbl /obj=OBJ:SARATO.TMP/r:debug SRC:SARATO.GL
+dbl /obj=OBJ:SELPFC.TMP/r:debug SRC:SELPFC.GL
+dbl /obj=OBJ:SRCREF.TMP/r:debug SRC:SRCREF.GL
+dbl /obj=OBJ:TRLBAL.TMP/r:debug SRC:TRLBAL.GL
+dbl /obj=OBJ:UNPRFS.TMP/r:debug SRC:UNPRFS.GL
+dbl /obj=OBJ:UPDCHT.TMP/r:debug SRC:UPDCHT.GL
+dbl /obj=OBJ:UPDPRD.TMP/r:debug SRC:UPDPRD.GL
+dbl /obj=OBJ:VERIFY.TMP/r:debug SRC:VERIFY.GL
+dbl /obj=OBJ:CVGL70.TMP/r:debug SRC:CVGL70.GL
+!
+DBL /OBJ=OBJ:SRTGNJ.TMP/R:DEBUG OBJ:SRTGNJ.DBL
+DBL /OBJ=OBJ:SRTIDX.TMP/R:DEBUG OBJ:SRTIDX.DBL
+DBL /OBJ=OBJ:SRTSRC.TMP/R:DEBUG OBJ:SRTSRC.DBL
+DBL /OBJ=OBJ:STCIDX.TMP/R:DEBUG OBJ:STCIDX.DBL
+DBL /OBJ=OBJ:STFIDX.TMP/R:DEBUG OBJ:STFIDX.DBL
+DBL /OBJ=OBJ:STSIDX.TMP/R:DEBUG OBJ:STSIDX.DBL
+!
+!	compile for bound execution
+!
+dbl /obj=SRC:ADFACE.BND/bind/s:refresh/r:debug SRC:ADFACE.GL
+dbl /obj=SRC:APFACE.BND/bind/s:refresh/r:debug SRC:APFACE.GL
+dbl /obj=SRC:ARFACE.BND/bind/s:refresh/r:debug SRC:ARFACE.GL
+dbl /obj=SRC:BALNCE.BND/bind/s:refresh/r:debug SRC:BALNCE.GL
+dbl /obj=SRC:BFNIDX.BND/bind/s:refresh/r:debug SRC:BFNIDX.GL
+dbl /obj=SRC:BLDSRC.BND/bind/s:refresh/r:debug SRC:BLDSRC.GL
+dbl /obj=SRC:BSCHED.BND/bind/s:refresh/r:debug SRC:BSCHED.GL
+dbl /obj=SRC:CHTCNT.BND/bind/s:refresh/r:debug SRC:CHTCNT.GL
+dbl /obj=SRC:CHTLST.BND/bind/s:refresh/r:debug SRC:CHTLST.GL
+dbl /obj=SRC:CHTMNT.BND/bind/s:refresh/r:debug SRC:CHTMNT.GL
+dbl /obj=SRC:COMPRS.BND/bind/s:refresh/r:debug SRC:COMPRS.GL
+dbl /obj=SRC:COMWRK.BND/bind/s:refresh/r:debug SRC:COMWRK.GL
+dbl /obj=SRC:CSHFLW.BND/bind/s:refresh/r:debug SRC:CSHFLW.GL
+dbl /obj=SRC:FINPOS.BND/bind/s:refresh/r:debug SRC:FINPOS.GL
+dbl /obj=SRC:GENLEG.BND/bind/s:refresh/r:debug SRC:GENLEG.GL
+dbl /obj=SRC:GLFACE.BND/bind/s:refresh/r:debug SRC:GLFACE.GL
+dbl /obj=SRC:GLFILS.BND/bind/s:refresh/r:debug SRC:GLFILS.GL
+dbl /obj=SRC:GLMENU.BND/primary/s:refresh/r:debug SRC:GLMENU.GL
+dbl /obj=SRC:GLSPFN.BND/bind/s:refresh/r:debug SRC:GLSPFN.GL
+dbl /obj=SRC:GLSPOL.BND/bind/s:refresh/r:debug SRC:GLSPOL.GL
+dbl /obj=SRC:GNJENT.BND/bind/s:refresh/r:debug SRC:GNJENT.GL
+dbl /obj=SRC:GNJREG.BND/bind/s:refresh/r:debug SRC:GNJREG.GL
+dbl /obj=SRC:INITGL.BND/bind/s:refresh/r:debug SRC:INITGL.GL
+dbl /obj=SRC:JCFACE.BND/bind/s:refresh/r:debug SRC:JCFACE.GL
+dbl /obj=SRC:ORGCHT.BND/bind/s:refresh/r:debug SRC:ORGCHT.GL
+dbl /obj=SRC:PRDMNT.BND/bind/s:refresh/r:debug SRC:PRDMNT.GL
+dbl /obj=SRC:PRFACE.BND/bind/s:refresh/r:debug SRC:PRFACE.GL
+dbl /obj=SRC:PRFLOS.BND/bind/s:refresh/r:debug SRC:PRFLOS.GL
+dbl /obj=SRC:PROFMA.BND/bind/s:refresh/r:debug SRC:PROFMA.GL
+dbl /obj=SRC:PSCHED.BND/bind/s:refresh/r:debug SRC:PSCHED.GL
+dbl /obj=SRC:PSTGNJ.BND/bind/s:refresh/r:debug SRC:PSTGNJ.GL
+dbl /obj=SRC:SARATO.BND/bind/s:refresh/r:debug SRC:SARATO.GL
+dbl /obj=SRC:SELPFC.BND/bind/s:refresh/r:debug SRC:SELPFC.GL
+dbl /obj=SRC:SRCREF.BND/bind/s:refresh/r:debug SRC:SRCREF.GL
+dbl /obj=SRC:TRLBAL.BND/bind/s:refresh/r:debug SRC:TRLBAL.GL
+dbl /obj=SRC:UNPRFS.BND/bind/s:refresh/r:debug SRC:UNPRFS.GL
+dbl /obj=SRC:UPDCHT.BND/bind/s:refresh/r:debug SRC:UPDCHT.GL
+dbl /obj=SRC:UPDPRD.BND/bind/s:refresh/r:debug SRC:UPDPRD.GL
+dbl /obj=SRC:VERIFY.BND/bind/s:refresh/r:debug SRC:VERIFY.GL
+dbl /obj=SRC:CVGL70.BND/bind/s:refresh/r:debug SRC:CVGL70.GL
+!
+DBL /OBJ=SRC:SRTGNJ.BND/BIND/S:REFRESH/R:DEBUG OBJ:SRTGNJ.DBL
+DBL /OBJ=SRC:SRTIDX.BND/BIND/S:REFRESH/R:DEBUG OBJ:SRTIDX.DBL
+DBL /OBJ=SRC:SRTSRC.BND/BIND/S:REFRESH/R:DEBUG OBJ:SRTSRC.DBL
+DBL /OBJ=SRC:STCIDX.BND/BIND/S:REFRESH/R:DEBUG OBJ:STCIDX.DBL
+DBL /OBJ=SRC:STFIDX.BND/BIND/S:REFRESH/R:DEBUG OBJ:STFIDX.DBL
+DBL /OBJ=SRC:STSIDX.BND/BIND/S:REFRESH/R:DEBUG OBJ:STSIDX.DBL
+!
+del OBJ:*.dbl/noq
+!
+!*****************************************************************************
+!  END OF TSXCMP.GL
+!*****************************************************************************

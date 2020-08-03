@@ -1,0 +1,3 @@
+gennet40 -o vbExcel dllp:vbExcel.dll
+dblproto vbExcel
+dbl -qrelax:interop vbExcel
