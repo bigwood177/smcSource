@@ -1,0 +1,33 @@
+;this is the PO version 11-23-15
+
+subroutine makp		;make path from order #
+	order	,d	;po-rel #
+	doctyp	,a
+	path	,a	;path to pdf files
+;
+record	vars
+	temp	,a100
+	server	,a*,	'\\192.168.1.10\scan\'
+
+;;;	server	,a*,	'\\192.168.1.12\scan\'
+;;;	server	,a*,	'\\192.168.1.12\scan\PO'		
+	dc	,a2	;PO or AP
+	dt	,a1
+	num	,a2
+	aord	,a6
+;
+proc
+	dt = doctyp
+	upcase dt
+	using dt select
+	('P'),	dc = 'PO'
+	('C'),	dc = 'AP'
+	endusing
+
+	num = order(1,2),	'XX'
+	aord = order,	'XXXXXX'
+	temp = server + dc + num + '\' + aord + '.pdf'
+	path = temp
+	xreturn
+end
+

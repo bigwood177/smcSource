@@ -1,0 +1,318 @@
+;POADDH ;
+;
+;
+	.DEFINE POOLSIZE	,25000
+	.DEFINE WNDCHNL		,15
+	.DEFINE MAXWINS		,10
+	.INCLUDE 'WND:WINDOWS.DEF'
+
+	.include 'def:hpsub.def'
+
+EXTERNAL FUNCTION
+	GU_NAME	,A
+
+record	coptbl
+	.include 'def:rd182a.def'
+
+RECORD HEADER		
+	.INCLUDE 'DEF:RD151A.DEF'
+
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MIN	,D2
+		,A1
+	MAX	,D2
+		,A1
+	TYPE	,D2
+
+RECORD	WVARS
+	W_ID	,D4
+	WND_1	,D4
+
+RECORD	WN_NAME
+		,A6,	'POADDH'
+;;;	WN_TNMBR,D4
+
+RECORD	FUNKEY
+	.INCLUDE 'DEF:FUNKEY.DEF'
+
+RECORD	CHANNEL
+	CHN011	,D2
+	CHN012	,D2
+	CHN027	,D2
+	CHN041	,D2
+	CHN042	,D2
+	CHN151	,D2
+	CHN152	,D2
+	CHN153	,D2
+	CHN149	,D2
+	CHN182	,D2		;COP TABLES
+
+RECORD	POHEDR
+	.INCLUDE 'DEF:RD151C.DEF'
+
+RECORD	VARS
+	CHN192	,D2		;PORNXF
+	nbr	,d3
+	UCDE	,A2		;LOGGED IN USER'S INIT'S.
+	UNAME	,A25
+	VNAME	,A30
+	OPNOK	,D1
+	LOKCTL	,D1
+	SWITCH	,D1
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	V	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+;;;	POHEDR	,A142
+	OPT	,D1
+	EXITSW	,D1
+	UPDSW	,D1
+	RESTRT	,D1
+	BSMID	,D5
+	SRCCTL	,D1
+	SRCOPT	,D1
+	PONUM	,D8
+PROC
+	XCALL TERID (V)
+	V = 1
+xcall outpt(1,1,2,' ',1)
+
+	UNAME = %GU_NAME		;GET USER NAME
+	UPCASE UNAME
+;;;	IF (UNAME .EQ. 'MARTYW')
+;;;	THEN	UCDE = 'MW'		;MARTY'S VENDORS
+;;;	ELSE	UCDE = 'PO'		;MIKE'S VENDORS
+
+	USING UNAME SELECT
+	('MARTYW'),	UCDE = 'MW'	;MARTY W
+	('MIKEM'),	UCDE = 'MM'	;MIKE M
+	('STEVEE'),	UCDE = 'SE'	;STEVE E
+	('JESSIER'),	UCDE = 'JR'	;JESSIE RICHARDSON
+	(),		UCDE = 'PO'	;EVERYONE ELSE
+	ENDUSING
+
+BEGIN,
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+	CALL INIT_WINDOW
+
+HDLOOP,
+	EXITSW =
+	OPT = 1
+	XCALL PO_SCRN1 (POHEDR,OPT,EXITSW,VNAME,UCDE)
+	IF (EXITSW.EQ.1) 
+		BEGIN
+		CALL REWRIT
+		GO TO ENDOFF
+		END
+
+	IF (OPT .EQ. 1) XCALL PO192 (POHEDR, CHN011, CHN192)
+
+	EXITSW = 2
+;;;	UPDSW = 1
+	OPT = 1
+	XCALL LINEX (POHEDR,OPT,EXITSW,VNAME,UCDE)
+	
+	using opt select
+	(3),	begin
+		XCALL PRTPO(POHEDR,CHANNEL,ucde)
+		CALL REWRIT
+		IF(HACKNW.EQ.'Y')
+			BEGIN
+			XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+			XCALL W_DISP(WND_1,WD_CLEAR)
+			XCALL W_DISP(wnd_1,WD_POS,24,1,'Send Fax?')
+			XCALL W_UPDT
+			CTL = '24,14,01,01,YN'
+			CALL INPUT
+;			IF(INXCTL.EQ.1) xcall faxpo(pohedr,channel)
+			END
+		end
+	(4),	call email
+
+	(5),	begin
+		XCALL PRTPO(POHEDR,CHANNEL,ucde)
+		CALL REWRIT
+		IF(HACKNW.EQ.'Y')
+			BEGIN
+			XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+			XCALL W_DISP(WND_1,WD_CLEAR)
+			XCALL W_DISP(wnd_1,WD_POS,24,1,'Send Fax?')
+			XCALL W_UPDT
+			CTL = '24,14,01,01,YN'
+			CALL INPUT
+;			IF(INXCTL.EQ.1) xcall faxpo(pohedr,channel)
+			END
+		call email
+		end
+
+	endusing
+
+;;;	IF(OPT.EQ.3)	;PRINT PO SELECTED
+;;;		begin
+;;;		XCALL mkPO(POHEDR,CHANNEL,ucde)
+;;;		CALL REWRIT
+;;;		IF(HACKNW.EQ.'Y')
+;;;			BEGIN
+;;;			XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+;;;			XCALL W_DISP(WND_1,WD_CLEAR)
+;;;			XCALL W_DISP(wnd_1,WD_POS,24,1,'Send Fax?')
+;;;			XCALL W_UPDT
+;;;			CTL = '24,14,01,01,YN'
+;;;			CALL INPUT
+;;;			IF(INXCTL.EQ.1) xcall faxpo(pohedr,channel)
+;;;			END
+;;;		end
+
+	CALL REWRIT
+	GO TO HDLOOP
+
+EMAIL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; EMAIL PO
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	HEADER = POHEDR
+
+	clear coptbl
+	tblcod = 'VC'
+	vc_ven = hvendr
+	vc_seq = hcnbr
+	lokctl = 1
+	xcall isio (chn182, coptbl, tbl_key, read, lokctl)
+	if (lokctl .ne. 0) 
+		begin
+		xcall olmsg (wnd_1, 23, 'Email not found',1)
+		clear vc_email
+		end
+
+	xcall mkpo (pohedr, channel, ucde, vc_email)
+
+	RETURN
+;-------------------------------------------
+
+;===========================================
+
+ENDOFF,
+	XCALL W_EXIT
+
+	CALL CLOSE
+	RESTRT = 1
+	XCALL PGCHN ('PO:POMENU',RESTRT)
+
+;**********************************************************************
+
+REWRIT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	HEADER = POHEDR
+	PONUM(1,6) = HPONUM
+	PONUM(7,8) = HRLNUM
+	LOKCTL = 1
+	XCALL ISIO (1,HEADER,PONUM,READ,LOKCTL)
+	HEADER = POHEDR
+	IF (LOKCTL.NE.0) RETURN
+	LOKCTL = 1
+	XCALL ISIO (1,HEADER,PORKEY,WRITE,LOKCTL)
+	RETURN
+;--------------------------------------------------
+
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	OPNOK = 0
+
+	XCALL FILES (1,'SU',151,SWITCH)
+	IF (SWITCH.EQ.9) RETURN
+	CHN151 = 1
+
+	XCALL FILES (2,'SU',152,SWITCH)
+	IF (SWITCH.EQ.9) RETURN
+	CHN152 = 2
+
+	SWITCH = 1
+	XCALL FILES (3,'U',153,SWITCH)
+	IF (SWITCH.EQ.9) RETURN
+	CHN153 = 3
+
+	SWITCH = 5
+	XCALL FILES (4,'SI',011,SWITCH)
+	IF (SWITCH.EQ.9) RETURN
+	CHN011 = 4
+
+;;;	SWITCH = 5
+;;;	XCALL FILES (5,'I',012,SWITCH)
+;;;	IF (SWITCH.EQ.9) RETURN
+;;;	CHN012 = 5
+
+;;;	SWITCH = 1
+;;;	XCALL FILES (6,'I',042,SWITCH)
+;;;	IF (SWITCH.EQ.9) RETURN
+;;;	CHN042 = 6
+
+	SWITCH = 1
+	XCALL FILES (7,'SI',041,SWITCH)
+	IF (SWITCH.EQ.9) RETURN
+	CHN041 = 7
+
+	SWITCH = 5
+	XCALL FILES (8,'SI',027,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN027 = 8
+
+	SWITCH = 5
+	XCALL FILES (9,'SU',149,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN149 = 9
+
+	SWITCH = 5
+	XCALL FILES (10,'SI',182,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN182 = 10
+
+	SWITCH = 5
+	XCALL FILES (29,'SU',192,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+	CHN192 = 29
+
+	OPNOK = 1
+	RETURN
+;---------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF(CHN011) XCALL FILES(CHN011,'SI',011,4)
+;;;	IF(CHN012) XCALL FILES(CHN012,'I',012,4)
+	IF(CHN041) XCALL FILES(CHN041,'SI',041,4)
+	IF(CHN042) XCALL FILES(CHN042,'I',042,4)
+	IF(CHN153) XCALL FILES(CHN153,'I',153,4)
+	IF(CHN152) CLOSE CHN152
+	IF(CHN151) CLOSE CHN151
+	IF(CHN149) CLOSE CHN149
+	IF(CHN182) CLOSE CHN182
+	IF(CHN192) CLOSE CHN192
+
+	RETURN
+;---------------------------------------------
+
+INPUT,		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL WINPT (W_ID,ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL)
+	RETURN
+;----------------------------------------------
+
+INIT_WINDOW,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; SET UP SCREEN 1 WINDOW
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	xcall u_start("LIB:newlib",1,0,,24,80,,100)
+	xcall u_start("LIB:t_uipo",1,0,,24,80,,100)
+	XCALL W_PROC(WP_CREATE,WND_1,WN_NAME,24,80)
+	XCALL W_PROC(WP_PLACE,WND_1,1,1)	
+	XCALL W_DISP(WND_1,WD_CLEAR)
+	xcall u_logwnd(wnd_1)
+
+	W_ID = WND_1
+	RETURN
+;-------------------------------------------------------------------
+END
+

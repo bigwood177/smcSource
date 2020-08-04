@@ -1,0 +1,182 @@
+;  ORGVPT / POR - D11
+;
+;		DATE: 4-SEP-80
+;
+;		::CRELAR.DEF::
+;*****************************************************************************
+;		PURCHASE ORDER - RELEASE 6.1
+;
+;		RELEASED - 1/MAY/82
+;		MODIFIED - 2/DEC/83
+;*****************************************************************************
+;		::PCPYEMS.DEF::
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of Mini-Computer Business Applications, Inc. (MCBA) of
+;		Glendale, California, USA and Effective Management Systems, Inc.
+;		of Menomonee Falls, Wisconsin, USA embodying substantial
+;		creative effort and confidential information, ideas and
+;		expressions, no part of which may be reproduced or transmitted
+;		in any form or by any means, electronic, mechanical or
+;		otherwise, including photocopying and recording or in
+;		connection with any information storage or retrieval system
+;		without the permission in writing from MCBA.
+;
+;		COPYRIGHT NOTICES:  Copyright <C> 1976, 1977, 1978, 1979,
+;		1980, 1981, 1982 by Mini-Computer Business Applications, Inc.
+;		AN UNPUBLISHED WORK.  Copyright <C> 1980, 1981, 1982
+;		by Effective Management Systems, Inc.  AN UNPUBLISHED WORK.
+;
+;
+;		COMPILE & LINK PER DOCUMENTATION INSTALLATION NOTES.
+;
+;		REMOVES RECORDS MARKED FOR DELETION FROM VIPART
+;		AND CREATES NEW VPTIDX
+;
+;
+RECORD VIPART
+	IPART	,A15		; INVENTORY PART #
+	IVEN	,D4		; VENDOR #
+	VPART	,A15		; VENDOR'S PART #
+RECORD DUMVPT
+		,A14
+	DFL061	,D1
+	SFL061	,D1
+	ORG061	,D5
+	REC061	,D5
+	MAX061	,D5
+	DEL061	,D3
+RECORD VPTIDX
+	VPTKEY	,A19
+	IRC061	,D5
+RECORD BRACKS		
+			; RECORD SIZE = 34	DEVICE - 061
+			;
+		,A34,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+RECORD
+	RECVP1	,40A34
+RECORD ,X
+	RECVP2	,50A24
+RECORD
+	CLRVP2	,A13,	'002,PO:ORGVPT'
+	RDCNT	,D5
+	WRTCNT	,D5
+	RECNT	,D5
+	ORGREC	,D5
+	ORGDEL	,D3,	000
+	DELVPT	,100D5
+	CNT	,D3,	000
+	SUB	,D3
+	N	,D3,	001
+	VPTCNT	,D3,	000
+	SWITCH	,D1,	2
+	V	,D1
+	READ	,D1,	0
+	WRITE	,D1,	1
+	LOKCTL	,D1
+PROC
+	XCALL TERID (V)
+	XCALL OUTPT (2,1,1,'REORGANIZE VENDOR PART # FILES',1)
+	XCALL FILES (2,'U',62,5)		;FILE # 62 -- VPTIDX FILE
+	XCALL FILES (1,'U',61,5)		;FILE # 61 -- VIPART FILE
+	XCALL FLAGS (10000000)
+	LOKCTL = 1
+	XCALL IO (1,DUMVPT,1,READ,LOKCTL)
+	RECNT = REC061
+	ORGREC = ORG061
+	RDCNT = 2
+	WRTCNT = 1
+READ,
+	LOKCTL = 1
+	XCALL IO (1,VIPART,RDCNT,READ,LOKCTL)
+	IF (VPART.EQ.BRACKS) GO TO EOF1
+	INCR RDCNT
+	IF (VPART.EQ.']]]DEL') GO TO DELETE
+	INCR VPTCNT
+	RECVP1 (VPTCNT) = VIPART
+	IF (VPTCNT.EQ.40) CALL WRTVP1
+CONTIN,
+	IF (RDCNT.GT.RECNT) GO TO EOF1
+	GO TO READ
+DELETE,
+	INCR CNT
+	DELVPT (CNT) = RDCNT - 1
+	IF (RDCNT-1.LE.ORG061) INCR ORGDEL
+	GO TO CONTIN
+WRTVP1,
+	INCR WRTCNT
+	LOKCTL = 1
+	XCALL IO (1,RECVP1(N),WRTCNT,WRITE,LOKCTL)
+	IF (N.EQ.VPTCNT) GO TO OUT1
+	INCR N
+	GO TO WRTVP1
+OUT1,
+	VPTCNT = 0
+	N = 1
+	RETURN
+EOF1,
+	IF (VPTCNT.NE.0) CALL WRTVP1
+	LOKCTL = 1
+	XCALL IO (1,DUMVPT,1,READ,LOKCTL)
+	ORG061 = ORG061 - ORGDEL
+	REC061 = WRTCNT
+	DEL061 = 0
+	LOKCTL = 1
+	XCALL IO (1,DUMVPT,1,WRITE,LOKCTL)
+	VIPART = BRACKS
+WRTBRK,
+	IF (WRTCNT.EQ.RECNT) GO TO EOF2
+	INCR WRTCNT
+	LOKCTL = 1
+	XCALL IO (1,VIPART,WRTCNT,WRITE,LOKCTL)
+	GO TO WRTBRK
+EOF2,
+	CLOSE 1
+	RDCNT = 1
+	WRTCNT = 1
+RDCIDX,
+	IF (RDCNT.EQ.RECNT) GO TO EOF3
+	INCR RDCNT
+	LOKCTL = 1
+	XCALL IO (2,VPTIDX,RDCNT,READ,LOKCTL)
+	IF (IRC061.EQ.0) GO TO RDCIDX
+	SUB = 0
+LOOP,
+	INCR SUB
+	IF (SUB.GT.CNT) GO TO OUT
+	IF (DELVPT(SUB).LT.IRC061) GO TO LOOP
+OUT,
+	IRC061 = IRC061 - (SUB-1)
+	INCR VPTCNT
+	RECVP2 (VPTCNT) = VPTIDX
+	IF (VPTCNT.EQ.50) CALL WRTVP2
+	GO TO RDCIDX
+WRTVP2,
+	INCR WRTCNT
+	LOKCTL = 1
+	XCALL IO (2,RECVP2(N),WRTCNT,WRITE,LOKCTL)
+	IF (N.EQ.VPTCNT) GO TO OUT2
+	INCR N
+	GO TO WRTVP2
+OUT2,
+	VPTCNT = 0
+	N = 1
+	RETURN
+EOF3,
+	IF (VPTCNT.NE.0) CALL WRTVP2
+	VPTIDX = BRACKS
+WRBRK2,
+	IF (RECNT.EQ.WRTCNT) GO TO END
+	INCR WRTCNT
+	LOKCTL = 1
+	XCALL IO (2,VPTIDX,WRTCNT,WRITE,LOKCTL)
+	GO TO WRBRK2
+END,
+	CLOSE 1
+	CLOSE 2
+	XCALL FILES (2,'U',62,4)
+	XCALL FILES (1,'U',61,4)
+	XCALL FLAGS(00000000)
+	XCALL PGCHN ('PO:POMENU',1)
+END

@@ -1,0 +1,751 @@
+ 102 SOUTEC SOU                 MISSING                       
+ 284 BRAD FULLE                 MISSING                       
+ 378 JNC LOGIST                 MISSING                       
+ 940 ALLIANCE S  940 A2 SALES,  MIS-MATCH                     
+ 950 ABL FINANC                 MISSING                       
+ 953 A & C META                 MISSING                       
+ 960 AB FREIGHT                 MISSING                       
+ 962 A & B FREI                 MISSING                       
+1100 A B F FREI                 MISSING                       
+1108 A-RELIABLE                 MISSING                       
+1120 AHR INNOVA                 MISSING                       
+1122 INDEPENDEN                 MISSING                       
+1152 ASTM                       MISSING                       
+1153 AT & T     1153 AT&T MOBIL MIS-MATCH                     
+1155 AT&T COMMU                 MISSING                       
+1160 ACE SUPPLY 1160 ACE SUPPLY MIS-MATCH                     
+1165 AWD COOLER                 MISSING                       
+1190 UNITED SUR                 MISSING                       
+1191 ACCOUNTEMP                 MISSING                       
+1194 ACCU DUCT                  MISSING                       
+1195 ACCTRONIX                  MISSING                       
+1198 ACTION STE                 MISSING                       
+1200 US METALS                  MISSING                       
+1203 ACCUSTREAM                 MISSING                       
+1209 ACUDOR                     MISSING                       
+1210 ADVANCED H                 MISSING                       
+1215 AERO MATER                 MISSING                       
+1253 AIR-DUCT T                 MISSING                       
+1255 AIRMATE CO                 MISSING                       
+1256 ALBERS MEC                 MISSING                       
+1263 AIR AUTOMA 1263 AIR-DUCT T MIS-MATCH                     
+1266 AIR CLEANI                 MISSING                       
+1268 AIR-TITE I                 MISSING                       
+1269 ALAN HOOPE                 MISSING                       
+1273 ALL ABOUT                  MISSING                       
+1278 ALLENS SER                 MISSING                       
+1283 ALL WAYS D 1283 AIR-TITE I MIS-MATCH                     
+1289 ALL AMERIC                 MISSING                       
+1290 AIDA AMERI                 MISSING                       
+1295 ALL SEASON                 MISSING                       
+1298 ALTHOFF IN 1298            MIS-MATCH                     
+1300 AMERICAN A                 MISSING                       
+1305 ALPINE GLA                 MISSING                       
+1306 ALPINE LAW                 MISSING                       
+1308 AL'S WORLD                 MISSING                       
+1309 AMERICAN B                 MISSING                       
+1310 AMERICAN B                 MISSING                       
+1312 AMERICAN B                 MISSING                       
+1315 AMERICAN C                 MISSING                       
+1350 AMERICAN F                 MISSING                       
+1358 AMERILAB T                 MISSING                       
+1360 AMERICAN H                 MISSING                       
+1361 AMERICAN H                 MISSING                       
+1362 AMERICAN H                 MISSING                       
+1386 AMERICAN N                 MISSING                       
+1390 AMERICINN                  MISSING                       
+1395 AMERICAN S                 MISSING                       
+1400 AMERICAN O                 MISSING                       
+1403 SBC                        MISSING                       
+1408 AMERITECH                  MISSING                       
+1410 BP AMOCO   1410 BP/SYNCB   MIS-MATCH                     
+1415 ANDERSON M                 MISSING                       
+1420 BP AMOCO                   MISSING                       
+1430 JOHN MARTI                 MISSING                       
+1450 ANDERSON C                 MISSING                       
+1460 ANDERSON &                 MISSING                       
+1470 ANOKA COUN                 MISSING                       
+1480 AUTO ACCES                 MISSING                       
+1492 APPLIED PR                 MISSING                       
+1493 APPLIED IN                 MISSING                       
+1496 CITY OF AN                 MISSING                       
+1498 ARCHER STE                 MISSING                       
+1500 ARC KINETI                 MISSING                       
+1502 ARBOR DESI                 MISSING                       
+1503 ARENA TRAI                 MISSING                       
+1505 ARLINGTON                  MISSING                       
+1513 ARMALAS SA                 MISSING                       
+1518 AQUA ENGIN                 MISSING                       
+1523 AUTO GLASS                 MISSING                       
+1532 AUTOMATION                 MISSING                       
+1533 ASPEN EQUI                 MISSING                       
+1540 ALLIED WAS 1540 BFI/ALLIED MIS-MATCH                     
+1549 BALDWIN ST                 MISSING                       
+1552 BARTON                     MISSING                       
+1554 BAUDETTE T                 MISSING                       
+1565 BALLARD CO                 MISSING                       
+1570 BAN-KOE SY                 MISSING                       
+1573 BARKER ROC                 MISSING                       
+1575 BATTERY WH                 MISSING                       
+1580 BAY STATE                  MISSING                       
+1589 BEER TRUCK                 MISSING                       
+1590 BEDNAR TRU                 MISSING                       
+1591 BEHR IRON                  MISSING                       
+1592 BEI TECHNO                 MISSING                       
+1593 BENITEZ TR                 MISSING                       
+1595 BENNETT MA                 MISSING                       
+1598 BELIMO AIR                 MISSING                       
+1607 BERGER TRA 1607 BELIMO AIR MIS-MATCH                     
+1609 BERG INC.                  MISSING                       
+1615 BIG RED MA 1615 BERRY PLAS MIS-MATCH                     
+1633 BILLS TRUC                 MISSING                       
+1640 BLACK LAKE                 MISSING                       
+1655 BLISS CLEA                 MISSING                       
+1660 BOEDEKER P                 MISSING                       
+1665 OFFICEMAX  1665 OFFICEMAX- MIS-MATCH                     
+1666 BOESER                     MISSING                       
+1672 BOWERS TRU                 MISSING                       
+1673 TIM BOURBO                 MISSING                       
+1688 BRAHAM LUM                 MISSING                       
+1721 BROADWAY P                 MISSING                       
+1736 BROOKLYN P                 MISSING                       
+1745 BUILD TO O                 MISSING                       
+1747 BLDG FACIL                 MISSING                       
+1750 BUILDING F                 MISSING                       
+1753 BUDDE TRUC                 MISSING                       
+1765 BURTON EQU                 MISSING                       
+1785 BYFUGLIEN                  MISSING                       
+1790 BYLANDER T                 MISSING                       
+1805 CMD                        MISSING                       
+1810 SEACOLE                    MISSING                       
+1812 C.J. SPRAY                 MISSING                       
+1818 CBE GROUP                  MISSING                       
+1830 CMCS                       MISSING                       
+1831 CPTO                       MISSING                       
+1840 CWCI CHARI                 MISSING                       
+1850 CAIN                       MISSING                       
+1880 CALHOUN IN                 MISSING                       
+1922 CANVAS PLU                 MISSING                       
+1928 CARDINAL G                 MISSING                       
+1930 CAPITAL ON                 MISSING                       
+1965 CASTLEWOOD                 MISSING                       
+1968 CARTER & S                 MISSING                       
+1985 CINGULAR W                 MISSING                       
+1988 AT & T WIR 1988 CARTRIDGE  MIS-MATCH                     
+2003 CENTRAL FR                 MISSING                       
+2005 CENTRAL TR                 MISSING                       
+2012 CENTURY IN                 MISSING                       
+2018 CERTIFIED                  MISSING                       
+2020 CENTURY ST                 MISSING                       
+2038 CHAMPLIN P                 MISSING                       
+2042 CHRISTY'S                  MISSING                       
+2043 CHRIS TRUC                 MISSING                       
+2045 CHECKCARE                  MISSING                       
+2046 CECO ENVIR                 MISSING                       
+2048 CESCO PROD                 MISSING                       
+2050 CHICAGO DE 2050 CHICAGO DE MIS-MATCH                     
+2055 CHESLEY TR                 MISSING                       
+2057 CHURCH OFF                 MISSING                       
+2062 CHICAGO SU                 MISSING                       
+2071 CITY OF FE                 MISSING                       
+2074 CITICAPITA                 MISSING                       
+2077 CINGULAR W                 MISSING                       
+2083 CIRCLE BOR 2083 CINTAS COR MIS-MATCH                     
+2098 CLASS C CO                 MISSING                       
+2100 CLARK FILT                 MISSING                       
+2105 CLEANCO TR                 MISSING                       
+2106 JOHN CLARK                 MISSING                       
+2108 CLARK BROS                 MISSING                       
+2137 COMMERCIAL                 MISSING                       
+2140 COMMONWEAT 2140 COMCAST    MIS-MATCH                     
+2152 COMMUNITY                  MISSING                       
+2153 COMMERCIAL                 MISSING                       
+2166 CONSTRUCTI                 MISSING                       
+2168 CONSTRUCTI                 MISSING                       
+2177 CONSOLIDAT                 MISSING                       
+2185 CONTACTS,                  MISSING                       
+2190 CONTRACT O                 MISSING                       
+2201 CONTRACT O                 MISSING                       
+2203 COORDINATE                 MISSING                       
+2205 FIRESTONE                  MISSING                       
+2206 COPIER SER                 MISSING                       
+2208 CORPORATE                  MISSING                       
+2212 COVERALL N                 MISSING                       
+2228 CROWN MARK                 MISSING                       
+2230 CRYSTAL WE                 MISSING                       
+2238 CUSTOM ONE                 MISSING                       
+2257 CROWN OF M                 MISSING                       
+2260 CUSTOM HOS                 MISSING                       
+2263 CYMAX MEDI                 MISSING                       
+2265 DAMA-MP IN                 MISSING                       
+2271 DHL EXPRES                 MISSING                       
+2275 D'AMICO CA                 MISSING                       
+2277 D-C EXPRES                 MISSING                       
+2280 DC SALES C                 MISSING                       
+2284 DACH FENCE                 MISSING                       
+2285 DALLAS MAV                 MISSING                       
+2297 DEPT OF FI                 MISSING                       
+2300 DAVID SHEP                 MISSING                       
+2301 JEFF DAVIS                 MISSING                       
+2303 DAGGETT TR                 MISSING                       
+2305 DAKOTA PLU                 MISSING                       
+2308 DEPT OF LA                 MISSING                       
+2320 DECOPAC, I                 MISSING                       
+2330 DEY DISTRI                 MISSING                       
+2340 DOODY MECH                 MISSING                       
+2345 DIRECTOR O                 MISSING                       
+2350 DILIGENT T                 MISSING                       
+2357 DIRIG SHEE                 MISSING                       
+2358 DOMETRI CO                 MISSING                       
+2360 RICHARD DI                 MISSING                       
+2366 DOM'S PRIN                 MISSING                       
+2371 DIVERSIFOA                 MISSING                       
+2372 DIVERSICO                  MISSING                       
+2375 DODGE CONS                 MISSING                       
+2376 DONOVAN RE                 MISSING                       
+2378 DORAL CORP                 MISSING                       
+2380 THE DRAWIN                 MISSING                       
+2391 D. WEXLER                  MISSING                       
+2398 E.I. DU PO 2398 DURO DYNE  MIS-MATCH                     
+2400 DVJ                        MISSING                       
+2410 DURO DYNE                  MISSING                       
+2420 EC & S                     MISSING                       
+2420 EC & S                     MISSING                       
+2425 ENIC CORPO                 MISSING                       
+2428 EOG ENVIRO                 MISSING                       
+2445 EARLE BROW                 MISSING                       
+2465 EDGCOMB ME                 MISSING                       
+2470 JIM EDGELL                 MISSING                       
+2473 EDINA COUR                 MISSING                       
+2486 ELECTRIC F                 MISSING                       
+2487 EIDE SAW A                 MISSING                       
+2493 ELITE TRAD                 MISSING                       
+2500 ABETECH                    MISSING                       
+2510 CAPITAL HA 2510 CAPITAL HA MIS-MATCH                     
+2515 ANTHONY EL                 MISSING                       
+2525 EMERGENCY                  MISSING                       
+2550 EMERGENCY                  MISSING                       
+2552 EMERGENCY                  MISSING                       
+2560 MENLO WORL                 MISSING                       
+2562 ENVIRONMEN                 MISSING                       
+2565 KRISTIE EN                 MISSING                       
+2566 GARRETT EN                 MISSING                       
+2567 ABIGAIL EN                 MISSING                       
+2568 BAILEY ENG                 MISSING                       
+2570 ENVIRO TEC                 MISSING                       
+2585 ESCHELON T 2585 EQUIPMENT  MIS-MATCH                     
+2605 EKRE TRUCK                 MISSING                       
+2615 ESMARK STE                 MISSING                       
+2620 EXELON SER                 MISSING                       
+2630 EXOPACK PE                 MISSING                       
+2650 EXPEDITE                   MISSING                       
+2670 FAGELHABER                 MISSING                       
+2685 FALK PAPER                 MISSING                       
+2691 FERRELLGAS                 MISSING                       
+2693 FESTIVAL O                 MISSING                       
+2694 FESTO                      MISSING                       
+2702 FEDEX FREI                 MISSING                       
+2705 FEDTECH IN 2705 FERRET BAC MIS-MATCH                     
+2708 FERGUSON                   MISSING                       
+2713 FIL-MORE E                 MISSING                       
+2717 FERGUSON E                 MISSING                       
+2723 FIVE STAR  2723 FIRESTONE  MIS-MATCH                     
+2724 FIRESTONE                  MISSING                       
+2735 STEVE FLYG                 MISSING                       
+2768 GARY FORD                  MISSING                       
+2772 FORDER ENG                 MISSING                       
+2780 FOREMOST D                 MISSING                       
+2800 FORSTER ME                 MISSING                       
+2810 FREEDOM ST                 MISSING                       
+2822 FRIENDS OF                 MISSING                       
+2823 FREEMAN                    MISSING                       
+2824 FREIGHT MA                 MISSING                       
+2841 FRIDLEY GO                 MISSING                       
+2843 RODNEY FUL                 MISSING                       
+2844 BRAD FULLE                 MISSING                       
+2845 GALVMET IN                 MISSING                       
+2848 GJC AND AS                 MISSING                       
+2852 GMAC COMM.                 MISSING                       
+2870 GARLANDS I                 MISSING                       
+2872 GARDCO                     MISSING                       
+2880 PATTY GAVN                 MISSING                       
+2921 GENERAL OF                 MISSING                       
+2925 GENERAL HT                 MISSING                       
+2930 GENERAL SH                 MISSING                       
+2932 GENERAL DI                 MISSING                       
+2936 JEFF GERBI                 MISSING                       
+2938 GERLACH CO                 MISSING                       
+2939 GLADWIN MA                 MISSING                       
+2941 GLADWIN MA                 MISSING                       
+2954 INFINETIVI                 MISSING                       
+2955 GOODIN COM                 MISSING                       
+2960 THE GORGEN                 MISSING                       
+2963 GRACE CHUR                 MISSING                       
+2965 KEN GRAHAM                 MISSING                       
+2970 GERALD G.                  MISSING                       
+2983 GREAT LAKE                 MISSING                       
+2984 GREAT PLAI                 MISSING                       
+2986 GRANT COUN                 MISSING                       
+2988 GREENE'S C                 MISSING                       
+2989 GREAT WEST                 MISSING                       
+2995 GROUNDED A                 MISSING                       
+3003 GREENE TRA                 MISSING                       
+3010 THE GUTHRI                 MISSING                       
+3020 EH GUSTAFS                 MISSING                       
+3050 HAGEMEYER                  MISSING                       
+3115 LEANN HANS                 MISSING                       
+3118 HAPPYFACES                 MISSING                       
+3125 HARBOR FRE 3125 HARTFIEL A MIS-MATCH                     
+3130 HARMON FUL                 MISSING                       
+3134 HARMON GLA                 MISSING                       
+3136 HARRIS MEC                 MISSING                       
+3155 MICHAEL HE                 MISSING                       
+3175 HEALTHPART                 MISSING                       
+3188 TODD HERRM                 MISSING                       
+3203 MIKE HEINZ                 MISSING                       
+3208 HENNEPIN C                 MISSING                       
+3210 HENNEPIN C                 MISSING                       
+3214 HERITAGE T                 MISSING                       
+3219 HEYL                       MISSING                       
+3222 JOHN HIGGI 3222 JOHN T HIG MIS-MATCH                     
+3227 HI-TECH PL                 MISSING                       
+3240 HOLIDAY IN                 MISSING                       
+3245 K DAVID HI                 MISSING                       
+3250 HOWARD BRO                 MISSING                       
+3255 HORTON SAL                 MISSING                       
+3259 HOMELAND M                 MISSING                       
+3262 HOT-LINE F                 MISSING                       
+3273 HUTCH BLUE                 MISSING                       
+3275 HUB TRANSP                 MISSING                       
+3276 HYDRAULIC                  MISSING                       
+3278 HUDSON MAP                 MISSING                       
+3280 IDEAL ADVE                 MISSING                       
+3284 INDEPENDEN                 MISSING                       
+3288 ID AMERICA                 MISSING                       
+3292 INDIANA SU                 MISSING                       
+3299 INDUSTRIAL                 MISSING                       
+3307 ILLINOIS D                 MISSING                       
+3312 INDUSTRIAL                 MISSING                       
+3318 IMPACT STE                 MISSING                       
+3320 JOSEPH T.                  MISSING                       
+3322 ILLINOIS M                 MISSING                       
+3324 INTER-TEL                  MISSING                       
+3342 INTERTEK T                 MISSING                       
+3353 INTERSTATE                 MISSING                       
+3357 KILIAN TRU                 MISSING                       
+3359 MRC RECEIV                 MISSING                       
+3363 IRRIGATION                 MISSING                       
+3365 TREASURER,                 MISSING                       
+3370 JAX CAFE                   MISSING                       
+3377 J.M. STEEL                 MISSING                       
+3378 JNC LOGIST                 MISSING                       
+3380 MARK MONTA                 MISSING                       
+3382 JL SONTAG                  MISSING                       
+3386 JOHN HENRY                 MISSING                       
+3387 J.J. KELLE                 MISSING                       
+3389 KEVIN M JO                 MISSING                       
+3390 JNR ADJUST                 MISSING                       
+3392 J & M TRAN                 MISSING                       
+3398 JESCO INDU 3398 JAX CAFE   MIS-MATCH                     
+3403 JOYCE JEFF                 MISSING                       
+3405 JEFFERSON                  MISSING                       
+3412 JENSEN TRA                 MISSING                       
+3415 JESCO INDU                 MISSING                       
+3520 KAWALEK TR                 MISSING                       
+3530 KANSAS PHC                 MISSING                       
+3532 DIGIKEY                    MISSING                       
+3535 KEVIN'S TR                 MISSING                       
+3538 KENNEDY TR                 MISSING                       
+3541 K.I.H. ERE                 MISSING                       
+3543 KMT WATERJ                 MISSING                       
+3549 KINKO'S IN                 MISSING                       
+3553 KING DISTR 3553 KIRK & BLU MIS-MATCH                     
+3555 RANDY KORU 3555 KMT WATERJ MIS-MATCH                     
+3559 KIRK & BLU                 MISSING                       
+3560 JOHN J KNI                 MISSING                       
+3563 JOHN J KNI                 MISSING                       
+3566 GREG KORYN                 MISSING                       
+3568 KIWANIS CL                 MISSING                       
+3575 KRONOS INC                 MISSING                       
+3581 PATRICK KO                 MISSING                       
+3583 KEN KURTEN                 MISSING                       
+3585 LSI                        MISSING                       
+3590 LAKE BUSIN                 MISSING                       
+3595 LAKES TRAN                 MISSING                       
+3605 LAKEVIW IN 3605 LACHNET, I MIS-MATCH                     
+3615 LANDAMERIC                 MISSING                       
+3617 LANEY'S ME                 MISSING                       
+3623 LAUREN MAN                 MISSING                       
+3625 LAMETTRY'S                 MISSING                       
+3634 LIEN SERVI                 MISSING                       
+3640 LEWIS TRAN                 MISSING                       
+3654 AK MATERIA                 MISSING                       
+3655 LINCOLN BU                 MISSING                       
+3656 LINDQUIST                  MISSING                       
+3661 LITCHFIELD                 MISSING                       
+3666 LOCAL # 2                  MISSING                       
+3670 LOFGREN TR                 MISSING                       
+3673 LITTLE FAL                 MISSING                       
+3688 LOMBARDS T                 MISSING                       
+3690 LONG HAUL                  MISSING                       
+3700 LOWRY TRAN                 MISSING                       
+3706 LOYALTY DA                 MISSING                       
+3712 LOVCI CONT                 MISSING                       
+3732 LUPIENT CO                 MISSING                       
+3750 LYON SHEET                 MISSING                       
+3755 ERIC LYZHO                 MISSING                       
+3760 MCC GROUP                  MISSING                       
+3765 MMMR METAL                 MISSING                       
+3780 MIP I                      MISSING                       
+3790 MMMR METAL                 MISSING                       
+3799 MACSTEEL U 3799 M2 LOGISTI MIS-MATCH                     
+3803 M & M HTG                  MISSING                       
+3805 M.N. TRUCK                 MISSING                       
+3810 M/T STEEL                  MISSING                       
+3820 MAGIC MAN, 3820 MAILFINANC MIS-MATCH                     
+3830 MGM STEEL                  MISSING                       
+3850 JOHN MARTI                 MISSING                       
+3855 MAGNUM LOG                 MISSING                       
+3858 MAHONEY SI                 MISSING                       
+3860 MAJESTIC S                 MISSING                       
+3865 MAILING MA                 MISSING                       
+3874 MANAGE.NET                 MISSING                       
+3875 MATANDY ST                 MISSING                       
+3883 MARANATHA                  MISSING                       
+3888 MID AMERIC                 MISSING                       
+3892 MARCO                      MISSING                       
+3900 MARC STEEL                 MISSING                       
+3905 THE MARQUE                 MISSING                       
+3906 MASTER SHE                 MISSING                       
+3910 MATANDY ST                 MISSING                       
+3918 MAWSON & M                 MISSING                       
+3922 MATRIX LOG                 MISSING                       
+3927 MAYPAK PRO                 MISSING                       
+3940 RONALD MCG                 MISSING                       
+3951 INTER-TEL                  MISSING                       
+3952 MC GILL AI                 MISSING                       
+3954 MCLEOD USA                 MISSING                       
+3958 MESTEK MAC                 MISSING                       
+3966 METAL MAST 3966 MEDTOX LAB MIS-MATCH                     
+3968 METALWEST  3968 MESTEK MAC MIS-MATCH                     
+3975 METROPOLIT                 MISSING                       
+3976 METRO PROD                 MISSING                       
+3988 METRO AREA                 MISSING                       
+3992 METROPOLIT                 MISSING                       
+3997 MINNESOTA                  MISSING                       
+4001 MICROFACS  4001 MN DEPT OF MIS-MATCH                     
+4005 MID STATES 4005 MINNEAOTA  MIS-MATCH                     
+4008 MIDNITE EX 4008 MINNESOTA  MIS-MATCH                     
+4015 MIDLAND TR                 MISSING                       
+4021 MIDWAY SHE                 MISSING                       
+4031 MIDWAY FOR                 MISSING                       
+4040 MIDWEST RU                 MISSING                       
+4045 MIDWEST SC                 MISSING                       
+4048 MILBANK IN                 MISSING                       
+4050 MILLER WAS 4050 MIKES TRUC MIS-MATCH                     
+4051 MILLENIA M                 MISSING                       
+4053 MILWAUKEE                  MISSING                       
+4058 MINNEAPOLI                 MISSING                       
+4070 MINNEAPOLI 4070 MMR METALS MIS-MATCH                     
+4100 CENTERPOIN 4100 CENTERPOIN MIS-MATCH                     
+4120 ALLIED IND                 MISSING                       
+4122 MINNESOTA                  MISSING                       
+4124 MINNESOTA                  MISSING                       
+4130 MINNESOTA                  MISSING                       
+4137 MI-T-M COR                 MISSING                       
+4143 COMMISSION 4143 MORKEN EXP MIS-MATCH                     
+4145 D R MORRIS                 MISSING                       
+4150 MINNETONKA                 MISSING                       
+4160 BLAINE MOR                 MISSING                       
+4182 MORKEN EXP                 MISSING                       
+4225 MUZAK      4225 MUZAK LLC  MIS-MATCH                     
+4235 MULTICARE                  MISSING                       
+4237 APA                        MISSING                       
+4240 CATHRYN MY 4240 CATHRYN MY MIS-MATCH                     
+4265 C. WILLI M                 MISSING                       
+4267 N & M TRAN                 MISSING                       
+4277 NATIONAL I                 MISSING                       
+4280 NATIONAL M 4280 N E STATE  MIS-MATCH                     
+4300 FORIUS                     MISSING                       
+4305 NETWORK SO                 MISSING                       
+4306 NE KIWANIS                 MISSING                       
+4316 NEEHAH SPR                 MISSING                       
+4317 NELSON CAR                 MISSING                       
+4352 NEW VISION                 MISSING                       
+4355 NEW YORK U                 MISSING                       
+4361 DISTRICT C                 MISSING                       
+4385 SPRINT                     MISSING                       
+4387 SPRINT                     MISSING                       
+4393 NORMAN EQU                 MISSING                       
+4403 NORTH AMER                 MISSING                       
+4404 NORTH SECO                 MISSING                       
+4405 NORTHEAST  4405 NORTH AMER MIS-MATCH                     
+4408 NORTHEAST                  MISSING                       
+4410 NORTHEAST                  MISSING                       
+4412 N E STATE                  MISSING                       
+4418 NORTH STAR                 MISSING                       
+4445 NORTHWAY C                 MISSING                       
+4452 NORSTAR ME                 MISSING                       
+4458 NORTHERN I                 MISSING                       
+4460 NORTH MEMO                 MISSING                       
+4462 NORTHWOODS                 MISSING                       
+4463 NORTHWEST                  MISSING                       
+4464 NORTHWEST                  MISSING                       
+4472 RICHARD NU                 MISSING                       
+4478 NORTHLAND                  MISSING                       
+4482 QWEST DEX                  MISSING                       
+4484 OFFICE DEP                 MISSING                       
+4489 SYSTRAN FI                 MISSING                       
+4493 NOVA                       MISSING                       
+4496 CHRIS OLSO                 MISSING                       
+4508 ONE 2 ONE                  MISSING                       
+4510 OMNI SATEL                 MISSING                       
+4520 OFFICAL MO                 MISSING                       
+4539 OSF MEDICA                 MISSING                       
+4540 ONYX WASTE                 MISSING                       
+4541 ONYX WASTE                 MISSING                       
+4545 OVERNITE T                 MISSING                       
+4555 PA SCDU                    MISSING                       
+4558 OVALFORMER                 MISSING                       
+4559 PJK INC.                   MISSING                       
+4575 PENNYSYLVA                 MISSING                       
+4605 PMI LLC    4605 PFC EQUIPM MIS-MATCH                     
+4606 P & A GROU 4606 PLS LOGIST MIS-MATCH                     
+4607 PLC PRESCH                 MISSING                       
+4610 BETH PATTI                 MISSING                       
+4628 PACKAGING                  MISSING                       
+4630 PACESETTER                 MISSING                       
+4635 PADGETT TH                 MISSING                       
+4663 PARAGON GR                 MISSING                       
+4664 PAUL MAPES                 MISSING                       
+4665 PECK HANNA                 MISSING                       
+4670 PASCHKE PR                 MISSING                       
+4680 PENSKE TRU                 MISSING                       
+4705 PENN MUTUA                 MISSING                       
+4707 PERFECT LA                 MISSING                       
+4711 PHYSCIANS                  MISSING                       
+4715 PHILLIPS 6 4715 PINE POINT MIS-MATCH                     
+4719 BRAD PITSC                 MISSING                       
+4720 PINE BEND  4720 PFENINGER  MIS-MATCH                     
+4721 PITTSBURGH                 MISSING                       
+4725 PINE POINT                 MISSING                       
+4726 PLYMOUTH P                 MISSING                       
+4731 PITNEY BOW 4731 PITNEY BOW MIS-MATCH                     
+4740 U.S. POSTA                 MISSING                       
+4748 PRES-ON TA 4748 PRESS ROOM MIS-MATCH                     
+4755 MARK A. PR                 MISSING                       
+4760 PRINTING A                 MISSING                       
+4765 PRINTERS S                 MISSING                       
+4775 PROFIT PLA 4775 PROFESSION MIS-MATCH                     
+4777 PRO FLOOR                  MISSING                       
+4783 PROGRESSIV                 MISSING                       
+4785 PROW TRUCK                 MISSING                       
+4804 QUALITY ST                 MISSING                       
+4810 QUILL                      MISSING                       
+4838 QUAKER TRA                 MISSING                       
+4849 QPS STAFFI                 MISSING                       
+4855 QUOTE SOFT                 MISSING                       
+4862 R & R META                 MISSING                       
+4863 R S HUGHES                 MISSING                       
+4865 RAS SYSTEM                 MISSING                       
+4870 R & L CARR                 MISSING                       
+4901 RECYCLE TE                 MISSING                       
+4905 RED ARROW                  MISSING                       
+4910 RAPID COOL 4910 READY PEST MIS-MATCH                     
+4912 GARY REED                  MISSING                       
+4915 RAPID SERV                 MISSING                       
+4925 RICHMOND &                 MISSING                       
+4930 REED BUSIN 4930 REED CONST MIS-MATCH                     
+4932 ROBERT JAM                 MISSING                       
+4934 RENTAL SER                 MISSING                       
+4935 RENTONS                    MISSING                       
+4938 THE REVERE                 MISSING                       
+4941 RIVER BEND                 MISSING                       
+4947 ROADWAY EX                 MISSING                       
+4953 ROCKET CRA                 MISSING                       
+4958 ROCKFORD I                 MISSING                       
+4961 ROCKFORD R                 MISSING                       
+4965 RONALD MCD                 MISSING                       
+4966 ROCKFORD P                 MISSING                       
+4975 RYDER TRAN                 MISSING                       
+4985 S & T OFFI                 MISSING                       
+4988 RUPP AIR M                 MISSING                       
+4989 RUDE TRANS                 MISSING                       
+4991 RUAN TRANS                 MISSING                       
+4995 SACA                       MISSING                       
+5003 S/L NATION                 MISSING                       
+5010 S & S COMM 5010 SAV TRANSP MIS-MATCH                     
+5020 S & H COMP                 MISSING                       
+5035 SHEET META 5035 SMACNA CHI MIS-MATCH                     
+5048 SMWIA                      MISSING                       
+5051 SMACCA WIS                 MISSING                       
+5153 SAIA MOTOR                 MISSING                       
+5160 SARATOGA C                 MISSING                       
+5166 CHARLES D.                 MISSING                       
+5168 SAW SERVIC                 MISSING                       
+5170 SCHAD-TRAC 5170 SCOTT'S RV MIS-MATCH                     
+5173 SCHRADER I                 MISSING                       
+5175 SEDGWICK H 5175 SEACOLE-CR MIS-MATCH                     
+5180 SCHERER BR                 MISSING                       
+5189 SERVICELIG                 MISSING                       
+5193 SECRETARY  5193 JESSE WHIT MIS-MATCH                     
+5195 SECRY STAT                 MISSING                       
+5196 SET ENTERP                 MISSING                       
+5205 WILLIAM SC                 MISSING                       
+5206 SECOND CIT                 MISSING                       
+5211 UFP LUMBER                 MISSING                       
+5222 RICHARD D                  MISSING                       
+5245 SERVICE PL                 MISSING                       
+5246 SHADOW TRU                 MISSING                       
+5260 SHARX                      MISSING                       
+5270 SHEET META                 MISSING                       
+5311 PAUL SHELM                 MISSING                       
+5312 PAUL SHELM                 MISSING                       
+5316 SHIPPERNET                 MISSING                       
+5320 PAUL SIEBE                 MISSING                       
+5323 SIGN LANGU                 MISSING                       
+5327 SIGNS NOW                  MISSING                       
+5340 SIMONSON L                 MISSING                       
+5342 SIGNODE PA                 MISSING                       
+5345 DON SIITER                 MISSING                       
+5353 SIWEK LUMB                 MISSING                       
+5360 SKARNES IN                 MISSING                       
+5363 SKILLPATH                  MISSING                       
+5365 SKYLINE DI                 MISSING                       
+5366 SMITH IND.                 MISSING                       
+5370 SNIPS                      MISSING                       
+5375 SNELLING C                 MISSING                       
+5402 SOUTH DAKO                 MISSING                       
+5403 SOUTHERN A                 MISSING                       
+5406 SOUDRONIC                  MISSING                       
+5417 SD EXPRESS                 MISSING                       
+5420 SPEEDWAY R                 MISSING                       
+5426 SPECIAL WA                 MISSING                       
+5430 SOUTHERN M                 MISSING                       
+5440 SPIRIT TOO                 MISSING                       
+5462 SPIRAL TEC                 MISSING                       
+5463 SPRAYING S                 MISSING                       
+5473 ST PETERS                  MISSING                       
+5490 STAN KOCH  5490 STAN'S STU MIS-MATCH                     
+5495 ST PETERS                  MISSING                       
+5496 ST PETERS                  MISSING                       
+5498 STEEL PREP                 MISSING                       
+5501 STEELMAX C                 MISSING                       
+5503 STEPHEN FO 5503 STANCO WEL MIS-MATCH                     
+5511 STRAIGHT S                 MISSING                       
+5513 DOUG STOCK                 MISSING                       
+5514 STEWART, Z                 MISSING                       
+5520 JEREMY STE                 MISSING                       
+5535 SUBURBAN R                 MISSING                       
+5537 SUN STEEL                  MISSING                       
+5540 SUPER-FIT                  MISSING                       
+5542 SUPERIOR C                 MISSING                       
+5545 PRINZING T                 MISSING                       
+5560 SPEEDWAY R                 MISSING                       
+5562 STORAGE EQ                 MISSING                       
+5564 SWH PRECIS                 MISSING                       
+5568 T FRIESEN                  MISSING                       
+5571 T-6 WIRELE                 MISSING                       
+5573 TSI MOLDIN                 MISSING                       
+5575 SUBWAY                     MISSING                       
+5577 TBI INC.                   MISSING                       
+5580 TD ENVIRON                 MISSING                       
+5583 TNT TRANSP                 MISSING                       
+5588 DAVE TALBE                 MISSING                       
+5590 TAILOR-MAD                 MISSING                       
+5591 TEAM PACKI                 MISSING                       
+5593 TALBOT LUM                 MISSING                       
+5598 TAKE 1 PRO                 MISSING                       
+5610 USF DUGAN                  MISSING                       
+5615 THIEF RIVE                 MISSING                       
+5618 THREE RIVE                 MISSING                       
+5625 TRIANGLE M                 MISSING                       
+5635 TIMBER BAY 5635 TRAVELERS  MIS-MATCH                     
+5638 ALAN T TSC                 MISSING                       
+5643 TRAVERSE J                 MISSING                       
+5645 TUBEFORMER 5645 TRI-STAR I MIS-MATCH                     
+5650 TRI STATE                  MISSING                       
+5651 TRI COUNTY                 MISSING                       
+5653 TOTAL LOGI                 MISSING                       
+5654 TRANSWORLD                 MISSING                       
+5655 TRANS TECH                 MISSING                       
+5660 TRADES PUB 5660 TRUSTEE GR MIS-MATCH                     
+5663 TRUMPF INC                 MISSING                       
+5665 TREASURER                  MISSING                       
+5666 TRIPLE H H                 MISSING                       
+5670 TWIN CITY  5670 TWIST OFFI MIS-MATCH                     
+5673 TWIN CITIE 5673 TWIN CITIE MIS-MATCH                     
+5678 COVALENCE  5678 TYCO ADHES MIS-MATCH                     
+5680 UNITY HOSP                 MISSING                       
+5691 U.S. DIARY 5691 UNITED STA MIS-MATCH                     
+5693 TRANSAM TR 5693 UNITED STA MIS-MATCH                     
+5710 UNEMPLOYME                 MISSING                       
+5770 UNITED REF                 MISSING                       
+5773 UNIFIED SE                 MISSING                       
+5775 UNIFLYTE C                 MISSING                       
+5793 UPS SUPPLY                 MISSING                       
+5803 UNITED BRO                 MISSING                       
+5805 UPS CUSTOM                 MISSING                       
+5812 UNISOURCE                  MISSING                       
+5815 UNIVERSAL                  MISSING                       
+5816 UNIVERSITY                 MISSING                       
+5818 UNION LABO                 MISSING                       
+5820 UNION 76                   MISSING                       
+5822 UNIVERSAL                  MISSING                       
+5825 UNOCAL                     MISSING                       
+5830 UNITY HOSP                 MISSING                       
+5832 VFW MID-WI                 MISSING                       
+5875 VICON MACH                 MISSING                       
+5882 VERIZON NO 5882 VERIZON    MIS-MATCH                     
+5883 VERIZON WI                 MISSING                       
+5884 VERIZON                    MISSING                       
+5885 VERNON  CO                 MISSING                       
+5892 THE VILLAG                 MISSING                       
+5895 VASKO RUBB                 MISSING                       
+5896 VOLK TRANS                 MISSING                       
+5898 LARRY VICT                 MISSING                       
+5905 VILLAGE BA                 MISSING                       
+5920 VINCENT ME                 MISSING                       
+5921 VITCO STEE                 MISSING                       
+5923 VIRTUAL TR                 MISSING                       
+5925 VISA                       MISSING                       
+5931 WALSTRA PL                 MISSING                       
+5935 WALD INDUS                 MISSING                       
+5938 WALLY MCCA                 MISSING                       
+5960 THE WEEK                   MISSING                       
+5982 RICHIE & S 5982 WEB MACHIN MIS-MATCH                     
+5983 LLOYD J WE                 MISSING                       
+5985 EARL WEIKL                 MISSING                       
+6002 AIRTEC INC                 MISSING                       
+6005 WENZEL HEA                 MISSING                       
+6008 WES-PAC DI                 MISSING                       
+6015 WINKLER-BL                 MISSING                       
+6016 WINKLER-BL                 MISSING                       
+6018 WI DOT                     MISSING                       
+6025 WILSON ELE 6025 WEX BANK   MIS-MATCH                     
+6030 WEST STEEL                 MISSING                       
+6037 WISEWAY TR                 MISSING                       
+6045 EARL WEIKL                 MISSING                       
+6050 THE WHOLES                 MISSING                       
+6058 WEINER WOO                 MISSING                       
+6063 WILLIAMSON                 MISSING                       
+6068 WINGFOOT C                 MISSING                       
+6072 WINZER COR                 MISSING                       
+6077 WISCONSIN                  MISSING                       
+6081 WISCONSIN                  MISSING                       
+6083 WOOSTER PR                 MISSING                       
+6091 WS PACKAGI                 MISSING                       
+6092 EW WYLIE C                 MISSING                       
+6093 XM SATELLI 6093 XCEL ENERG MIS-MATCH                     
+6095 XPEDX      6095 XCEL ENERG MIS-MATCH                     
+6097 XTRA LEASE                 MISSING                       
+6100 YALE MATER                 MISSING                       
+6106 YELLOW TRA 6106 YELLOW FRE MIS-MATCH                     
+6110 YELLOW BOO                 MISSING                       
+6113 YELLOW PAG                 MISSING                       
+6150 YOUNG TRUC 6150 MIKE ZAPPA MIS-MATCH                     
+6160 ZABEL TRUC                 MISSING                       
+6193 JANEL ZAPP                 MISSING                       
+6231 BARB ZENTZ                 MISSING                       
+6863 MAHONEY, S                 MISSING                       
+ABFF ABF FREIGH                 MISSING                       

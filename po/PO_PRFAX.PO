@@ -1,0 +1,236 @@
+SUBROUTINE PO_PRFAX
+	ORDNO		,D
+	WND_1		,D		;PARENT WINDOW
+	F_INFO		,A		;FAXINFO
+	F_SEND		,D		;0 = ABORT FAX
+
+	.INCLUDE 'DEF:WINDOWS.DEF'
+
+; 2-21-18 RENAMED TO PO_PRFAX FOR VS
+
+; Create a Quote output file in Rich-text format.
+;
+;
+;
+
+.include	'def:rtf.def'
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+record	pvars
+	P_SELECTED	,D1
+	stats		,i4
+	alpha	,a10
+
+RECORD	SUBJECT
+		,A*,	'::S=PO# '
+	S_QUOTE	,D6
+
+RECORD	FAXINFO
+	.INCLUDE 'DEF:FAXINFO.DEF'
+
+RECORD	O_FILE
+;;;		,a*,	'\\serversbs\de63\faxscan\'
+		,a*,	'\\server-hv01\de63\faxscan\'
+		,A1,	'P'
+	O_ORDER	,D6
+		,A4,	'.txt'
+
+record	buf
+		,A200
+
+RECORD	FAXFIL
+		,A*,	'SPL:'
+		,A1,	'P'
+	SFAX	,D6
+		,A4,	'.FAX'
+
+RECORD	PBUF
+	PLINE	,A132
+
+record	
+	ffone	,d10
+record,x
+	ff_area	,d3
+	ff_exch	,d3
+	ff_num	,d4
+
+RECORD	CHANNEL
+	CHN182	,D2
+	CHN044	,D2
+	CHN045	,D2
+	CHN054	,D2
+	CHN175	,D2
+	CHNWRK	,D2
+	CHNOUT	,D2
+	CHNDUC	,D2
+
+RECORD	VARS
+	i	,d5
+	fax_string	,a200
+	f_work		,a10
+	f_number	,a11
+	LINCNT	,D2
+	A_FRT	,A6
+	NEG_ZERO	,D1,1
+	ZERO		,D1,0
+	X_FRT		,D1
+	STAT	,D1
+	ORDER	,D6
+	LOKCTL	,D1
+	READ	,D1
+	Lrow	,D2
+	Lcol	,D3
+	DECMAL	,D18
+	TOTPRC	,D8
+	BLANKS	,A30
+	CONFIG	,D7
+	PAGE	,D2
+	KEY	,A6
+	BSMID	,D5
+	SRCCTL	,D1
+	SWITCH	,D1
+	V	,D1
+	ACCUOM	,A2
+	LFEED	,D2
+	DTMASK	,A8,	'XX/XX/XX'
+	NUMASK	,A8,	'ZZZZZZX-'
+	MAXLIN	,D2
+	ENTRY	,A30
+	INXCTL	,D1
+	NO_DOLLARS	,D1
+	P_OPT		,D1
+PROC
+	faxinfo = f_info
+
+ASK,
+	F_SEND = 0		;CANCEL FAX
+	call print_setup
+	if (.not. p_selected) return
+
+	SFAX = ORDNO
+	OPEN(21,I,FAXFIL)
+LOOP,
+	READS(21,BUF,EOF)
+	WRITES(14,BUF(1,%TRIM(BUF)) )
+	GOTO LOOP
+EOF,
+	F_SEND = 1			;FAX WILL BE SENT
+	CLOSE 14
+	CLOSE 21			;SSQ 11-16-04
+ENDOFF,
+	RETURN
+
+;================================================
+
+
+;=================================================================
+;=================================================================
+; Print routines...
+;=================================================================
+;=================================================================
+
+PRINT_SETUP,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Set up printer interface
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; open spool file
+	onerror not_num
+	ffone = fc_fax
+	offerror
+	
+	using ff_area select
+; user will not include area code unless long distance call (JM 7-14-99)
+; area codes used for local numbers, 4-25-01
+;;;	(0),	f_number = fc_fax			;local
+	(0, 612, 651, 763, 952),	f_number = fc_fax		;local
+	(),		begin
+			f_work = fc_fax			;dec to alpha
+			f_number = "1" + f_work		;long distance
+			end
+	endusing
+
+	goto f_ok
+not_num,
+	xcall mesag ('Invalid fax number',1)
+	p_selected = 0
+	return
+f_ok,
+	p_selected = 1
+
+;create a unique spool file 
+	O_ORDER = ORDNO
+
+	open(14,O,O_FILE)
+	clear fax_string
+	fax_string = "::" + fc_cusname(1,%trim(fc_cusname))
+&		+ "," + fc_cont(1,%trim(fc_cont)) + ","
+&		+ f_number(1,%trim(f_number))
+	
+	writes (14,fax_string(1,%trim(fax_string)) )
+;;;dbg	WRITES (14,'::Computer Services,Sherwood Quiring,5721100')
+	WRITES (14,'::H, C=POCOVER.RTF')
+	S_QUOTE = ORDNO		;QUOTE #
+	WRITES (14,SUBJECT)
+
+	XCALL RTF(14, START_RTF)
+	xcall rtf (14, BOLD)		;5-14-09 PER CATHY 
+; --------------------- cover page info ------------------------
+	FOR I FROM 1 THRU 7
+		BEGIN
+		PLINE (26,76) = FC_NOTARA(I)
+		CALL PRINT
+		END
+
+	LFEED = 2
+	XCALL RTF(14, LN_FEED, LFEED)
+
+	PLINE (46,66) = 'Thank You,'
+	CALL PRINT
+	PLINE (46,66) = FC_SALESMAN
+	CALL PRINT
+
+	LFEED = 10
+	XCALL RTF(14, LN_FEED, LFEED)
+
+	PLINE (31,80) = 'If you should have any questions or concerns'
+	CALL PRINT
+	LFEED = 1
+	XCALL RTF(14, LN_FEED, LFEED)
+	PLINE (27,80) = 'Please do not hesitate to call me at (763) 572-0000'
+	CALL PRINT
+
+	LFEED = 15
+	XCALL RTF(14, LN_FEED, LFEED)
+
+; --------------------- cover page info ------------------------
+	return
+;---------------------------------------------------------------
+
+print_err,
+	display (15,$scr_pos(22,1), "an error occured")
+	stop
+
+
+print,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; set up the print parameters
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL RTF(14, LPRINT, PLINE)
+	INCR LINCNT
+	return
+;--------------------------------------------
+
+print2,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;;print the line, don't incr lincnt
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	XCALL RTF(14, FORMAT, PLINE)
+	return
+
+;--------------------------------------------
+
+END

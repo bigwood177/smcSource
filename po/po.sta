@@ -1,0 +1,15 @@
+The record length for this file is 116 characters.  There are 2 keys.
+There are currently 14930 records in this ISAM file.
+
+Primary key   is name_po        
+The key is 38 characters long, segmented and is ordered in ascending sequence 
+with no duplicates allowed. 
+This key may not be modified by WRITE.
+ Segment #1 starts at 5 with length 30.
+ Segment #2 starts at 35 with length 8.
+
+1st alternate is inv            
+The key is 8 characters long, starting at position 52 within the record,
+and is ordered in ascending sequence with duplicates allowed. 
+This key may not be modified by WRITE.
+

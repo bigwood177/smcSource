@@ -1,0 +1,257 @@
+
+O:\SOURCE\po>call ADDPO 
+
+O:\SOURCE\po>dblink -d addpo po:polib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\po>call CLRREC 
+
+O:\SOURCE\po>dblink -d clrrec po:polib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\po>call CODRPT 
+
+O:\SOURCE\po>dblink -d CODRPT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call DELRCV 
+
+O:\SOURCE\po>dblink -d DELRCV po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call ITMAGE 
+
+O:\SOURCE\po>dblink -d ITMAGE po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call NUVRPT 
+
+O:\SOURCE\po>dblink -d NUVRPT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call ORGPOT 
+
+O:\SOURCE\po>dblink -d ORGPOT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call p1tmnt 
+
+O:\SOURCE\po>dblink -d p1tmnt po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PARTN1 
+
+O:\SOURCE\po>dblink -d PARTN1 po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PARTV1 
+
+O:\SOURCE\po>dblink -d PARTV1 po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call pnnmnt 
+
+O:\SOURCE\po>dblink -d pnnmnt po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call poaddh 
+
+O:\SOURCE\po>rem dbl -d -l -- poaddh.po 
+
+O:\SOURCE\po>rem dbl -d -l -- scrn1.po 
+
+O:\SOURCE\po>rem dbl -d -l -- linex.po 
+
+O:\SOURCE\po>rem dbl -d -l -- popop.po 
+
+O:\SOURCE\po>rem dbl -d -l -- olmsg.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- prtpo.po 
+
+O:\SOURCE\po>rem dbl -d -l -- replc.po 
+
+O:\SOURCE\po>rem dbl -d -l -- rtf.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- roldx.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- oeco.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- prfax.po 
+
+O:\SOURCE\po>rem dbl -d -l -- uipo.po 
+
+O:\SOURCE\po>rem dbl -d -l -- pop2.po 
+
+O:\SOURCE\po>rem dbl -d -l -- itcfg.po 
+
+O:\SOURCE\po>rem dbl -d -l -- dec4.po 
+
+O:\SOURCE\po>dblink -T  0<poaddh.cmd 
+DBLink>  -d poaddh scrn1 linex popop \
+DBLink> prtpo replc rtf roldx faxpo prfax uipo pop2 \
+DBLink> dec4 itcfg oeco \
+DBLink> mkpo mail x7mail w7lib.elb dbldir:axlib.elb \
+DBLink> po:polib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\po>call POAUDT 
+
+O:\SOURCE\po>dblink -d POAUDT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POCANC 
+
+O:\SOURCE\po>dbl -d -l -- pocanc.po 
+
+O:\SOURCE\po>dblink -d pocanc gtitm po:polib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\po>call POCASH 
+
+O:\SOURCE\po>dblink -d POCASH po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POCLOS 
+
+O:\SOURCE\po>dblink -T  0<poclos.cmd 
+DBLink>  -d poclos scrn5 gtitm \
+DBLink> po:polib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\po>call POEDLS 
+
+O:\SOURCE\po>dblink -d POEDLS po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POFILS 
+
+O:\SOURCE\po>dblink -d POFILS po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POHMRK 
+
+O:\SOURCE\po>dblink -d POHMRK po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POMENU 
+
+O:\SOURCE\po>dblink -d POMENU po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POPPOR 
+
+O:\SOURCE\po>dblink -d POPPOR po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PORINQ 
+
+O:\SOURCE\po>dblink -d porinq popop po:polib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\po>call PORCVR 
+
+O:\SOURCE\po>dblink -d PORCVR po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PORDFL 
+
+O:\SOURCE\po>dblink -d PORDFL po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call porecv 
+
+O:\SOURCE\po>dblink -d porecv po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PORITM 
+
+O:\SOURCE\po>dblink -d PORITM po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call poschi 
+
+O:\SOURCE\po>dblink -d poschi po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call poschv 
+
+O:\SOURCE\po>dblink -d poschv po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POSCRG 
+
+O:\SOURCE\po>dblink -d POSCRG po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POSFMN 
+
+O:\SOURCE\po>dblink -d POSFMN po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POTBLL 
+
+O:\SOURCE\po>dblink -d POTBLL po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POTBLM 
+
+O:\SOURCE\po>dblink -d POTBLM po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call POTCNT 
+
+O:\SOURCE\po>dblink -d POTCNT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PRGPUR 
+
+O:\SOURCE\po>dblink -d PRGPUR po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PRGREG 
+
+O:\SOURCE\po>dblink -d PRGREG po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PRSPRP 
+
+O:\SOURCE\po>dblink -d PRSPRP po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PRTCOM 
+
+O:\SOURCE\po>dblink -d PRTCOM po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call PVNDFT 
+
+O:\SOURCE\po>dblink -d PVNDFT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call pvnlst 
+
+O:\SOURCE\po>dblink -d pvnlst po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call pvnmnt 
+
+O:\SOURCE\po>dblink -d pvnmnt po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call RECEDT 
+
+O:\SOURCE\po>dblink -d RECEDT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call recent 
+
+O:\SOURCE\po>dblink -d recent po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call RECRPT 
+
+O:\SOURCE\po>dblink -d RECRPT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call SRTCOM 
+
+O:\SOURCE\po>dblink -d SRTCOM po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call SRTPOI 
+
+O:\SOURCE\po>dblink -d SRTPOI po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call SRTPOT 
+
+O:\SOURCE\po>dblink -d SRTPOT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call srtrec 
+
+O:\SOURCE\po>dblink -d srtrec po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call TBLMNU 
+
+O:\SOURCE\po>dblink -d TBLMNU po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call TRXCNT 
+
+O:\SOURCE\po>dblink -d TRXCNT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call UNPROT 
+
+O:\SOURCE\po>dblink -d UNPROT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call UPDIMF 
+
+O:\SOURCE\po>dblink -d UPDIMF po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call VCNMNT 
+
+O:\SOURCE\po>dblink -d VCNMNT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call VCRRPT 
+
+O:\SOURCE\po>dblink -d VCRRPT po:polib.elb ut:util.elb wnd:tklib.elb                          
+
+O:\SOURCE\po>call VIRPR2 
+
+O:\SOURCE\po>dblink -d VIRPR2 po:polib.elb ut:util.elb wnd:tklib.elb                          

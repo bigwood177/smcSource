@@ -1,0 +1,104 @@
+;  CNVVEN / PO - D11
+;
+;		CREATED:  15-DEC-94
+;		AUTHOR:   DIANA K. SCHEPPA
+;**********************************************************************
+;		PROGRAM TO CONVERT THE P.O. LINE ITEM FILE
+;		** NOTE: THE VENDOR PART # WAS EXPANDED FROM 15 TO 20 CHARACTERS
+;			 2 MORE P/O NOTES FIELDS WERE ADDED
+;
+;		RECORD LENGTH:   OLD: 254      NEW: 319
+;
+;
+RECORD PORLIN
+	.INCLUDE 'DEF:RD152A.DEF'
+
+RECORD PORCTL
+	.INCLUDE 'DEF:RD152B.DEF'
+
+RECORD BRACKS
+	,A50,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	,A50,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	,A50,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	,A50,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	,A50,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	,A50,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	,A19,	']]]]]]]]]]]]]]]]]]]'
+
+RECORD OLDPOR			;RECORD LENGTH: 254
+		,A254
+
+RECORD OLDCTL
+		,A236
+	OCVALS	,A18
+
+RECORD
+	BLANKS	,A5
+	SWITCH	,D1,1
+	CNGCTL	,D1
+	NEWSIZ	,D4
+	ENTRY	,A6
+	INXCTL	,D1
+	MAXREC	,D5
+	V	,D1
+	READ	,D1,	0
+	LOKCTL	,D1
+	KEY	,A4
+	SRCCTL	,D1
+	BSMID	,D5
+	VREC	,D5
+	
+
+PROC
+	XCALL TERID (V)
+	V = 1
+BEGIN,
+	CNGCTL =
+	XCALL OUTPT(01,01,3,'CONVERT PORLIN FILE',V)
+	XCALL OUTPT(12,17,2,'ARE YOU SURE YOU WISH TO RUN THIS PROGRAM ?',V)
+	XCALL INPUT(12,62,01,01,'YN',ENTRY,INXCTL,V)
+	GO TO (END), INXCTL-1
+PROCES,
+	XCALL WAIT (4,V)
+
+;;	OPEN (1,I,'TST:PORLIN.TST')
+	OPEN (1,I,'DPO:PORLIN.NUA')
+	READ (1,OLDCTL,1)
+	MAXREC = OCVALS (11,15)
+	NEWSIZ = (321 * (MAXREC + 2)) / 512 + 1
+	ONERROR NOROOM
+;;	OPEN (2,O,'TST:PORLIN.NEW')
+	OPEN (2,O,'DPO:PORLIN.NEW')
+	OFFERROR
+	ORG152(1,18) = OCVALS
+	WRITES (2,PORCTL)
+	VREC = 1
+NXTVEN,
+	READS (1,OLDPOR,EOF1)
+	IF (OLDPOR.EQ.']]]]]]') GO TO WRTBRK
+	INCR VREC
+	XCALL OUTPT (22,5,0,VREC,V)
+ADDREC,
+	PORLIN(1,77) = OLDPOR(1,77)
+	PORLIN(83,224) = OLDPOR(78,219)
+	PORLIN(285,319) = OLDPOR(220,254)
+	WRITES (2,PORLIN)
+	GO TO NXTVEN
+WRTBRK,
+	WRITES (2,BRACKS)
+	READS (1,OLDPOR,EOF1)
+	GO TO WRTBRK
+EOF1,
+	OFF ERROR
+	CLOSE 1
+	CLOSE 2
+END,
+	CLOSE 15
+	XCALL PGMND
+	STOP
+NOROOM,
+	XCALL MESAG('NOT ENOUGH ROOM FOR NEW PORLIN FILE',1)
+	STOP
+
+END
+

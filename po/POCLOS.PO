@@ -1,0 +1,18 @@
+;POCLOS.PO
+;
+;		CLOSE PRINTED PO'S 
+;
+
+
+RECORD	VARS
+	OPT	,A1
+	V	,D1
+
+PROC
+	XCALL TERID(V)
+	OPT = 'C'
+	XCALL PO_SCRN5(OPT)		;SCRN5 does the work of 5
+
+	XCALL PGCHN ('PO:POMENU',1)
+	END
+

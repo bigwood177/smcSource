@@ -1,0 +1,188 @@
+
+O:\SOURCE\po>dbl -d -l -- ADDPO.PO 
+
+O:\SOURCE\po>dbl -d -l -- BDATE.PO 
+
+O:\SOURCE\po>dbl -d -l -- BYITM.PO 
+
+O:\SOURCE\po>dbl -d -l -- BYJOB.PO 
+
+O:\SOURCE\po>dbl -d -l -- BYVEN.PO 
+
+O:\SOURCE\po>dbl -d -l -- CLRREC.PO 
+
+O:\SOURCE\po>dbl -d -l -- CLSPO.PO 
+
+O:\SOURCE\po>dbl -d -l -- CNVPO2.PO 
+
+O:\SOURCE\po>dbl -d -l -- CNVPOH.PO 
+
+O:\SOURCE\po>dbl -d -l -- CNVPOL.PO 
+
+O:\SOURCE\po>dbl -d -l -- CNVRCV.PO 
+
+O:\SOURCE\po>dbl -d -l -- CNVVEN.PO 
+
+O:\SOURCE\po>dbl -d -l -- CODRPT.PO 
+
+O:\SOURCE\po>dbl -d -l -- DEC4.PO 
+
+O:\SOURCE\po>dbl -d -l -- DELRCV.PO 
+
+O:\SOURCE\po>dbl -d -l -- FAXPO.PO 
+
+O:\SOURCE\po>dbl -d -l -- GDATE.PO 
+
+O:\SOURCE\po>dbl -d -l -- ITCFG.PO 
+
+O:\SOURCE\po>dbl -d -l -- ITMAGE.PO 
+
+O:\SOURCE\po>dbl -d -l -- LINEX.PO 
+
+O:\SOURCE\po>dbl -d -l -- MIKE.PO 
+
+O:\SOURCE\po>dbl -d -l -- MKPO.PO 
+
+O:\SOURCE\po>dbl -d -l -- NUVRPT.PO 
+
+O:\SOURCE\po>dbl -d -l -- ORGPOA.PO 
+
+O:\SOURCE\po>dbl -d -l -- ORGPOT.PO 
+
+O:\SOURCE\po>dbl -d -l -- ORGVPT.PO 
+
+O:\SOURCE\po>dbl -d -l -- P1TMNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- PARTN1.PO 
+
+O:\SOURCE\po>dbl -d -l -- PARTV1.PO 
+
+O:\SOURCE\po>dbl -d -l -- PNNMNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- POADDH.PO 
+
+O:\SOURCE\po>dbl -d -l -- POADDL.PO 
+
+O:\SOURCE\po>dbl -d -l -- POAUDT.PO 
+
+O:\SOURCE\po>dbl -d -l -- POBRLS.PO 
+
+O:\SOURCE\po>dbl -d -l -- POCANC.PO 
+
+O:\SOURCE\po>dbl -d -l -- POCASH.PO 
+
+O:\SOURCE\po>dbl -d -l -- POCLOS.PO 
+
+O:\SOURCE\po>dbl -d -l -- POCNGH.PO 
+
+O:\SOURCE\po>dbl -d -l -- POCNGL.PO 
+
+O:\SOURCE\po>dbl -d -l -- POEDLS.PO 
+
+O:\SOURCE\po>dbl -d -l -- POFILS.PO 
+
+O:\SOURCE\po>dbl -d -l -- POHMRK.PO 
+
+O:\SOURCE\po>dbl -d -l -- POLCNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- POMENU.PO 
+
+O:\SOURCE\po>dbl -d -l -- POP2.PO 
+
+O:\SOURCE\po>dbl -d -l -- POPOP.PO 
+
+O:\SOURCE\po>dbl -d -l -- PORCVR.PO 
+
+O:\SOURCE\po>dbl -d -l -- PORDFL.PO 
+
+O:\SOURCE\po>dbl -d -l -- PORECV.PO 
+
+O:\SOURCE\po>dbl -d -l -- PORINQ.PO 
+
+O:\SOURCE\po>dbl -d -l -- PORITM.PO 
+
+O:\SOURCE\po>dbl -d -l -- POSCHI.PO 
+
+O:\SOURCE\po>dbl -d -l -- POSCHV.PO 
+
+O:\SOURCE\po>dbl -d -l -- POSCRG.PO 
+
+O:\SOURCE\po>dbl -d -l -- POSFMN.PO 
+
+O:\SOURCE\po>dbl -d -l -- POTBLL.PO 
+
+O:\SOURCE\po>dbl -d -l -- POTBLM.PO 
+
+O:\SOURCE\po>dbl -d -l -- POTCNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- PRFAX.PO 
+
+O:\SOURCE\po>dbl -d -l -- PRGPUR.PO 
+
+O:\SOURCE\po>dbl -d -l -- PRGREG.PO 
+
+O:\SOURCE\po>dbl -d -l -- PRSPRP.PO 
+
+O:\SOURCE\po>dbl -d -l -- PRTCOM.PO 
+
+O:\SOURCE\po>dbl -d -l -- PRTPO.PO 
+
+O:\SOURCE\po>dbl -d -l -- PVNDFT.PO 
+
+O:\SOURCE\po>dbl -d -l -- PVNLST.PO 
+
+O:\SOURCE\po>dbl -d -l -- PVNMNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- RECEDT.PO 
+
+O:\SOURCE\po>dbl -d -l -- RECENT.PO 
+
+O:\SOURCE\po>dbl -d -l -- RECRPT.PO 
+
+O:\SOURCE\po>dbl -d -l -- REPLC.PO 
+
+O:\SOURCE\po>dbl -d -l -- SCRN1.PO 
+
+O:\SOURCE\po>dbl -d -l -- SCRN2.PO 
+
+O:\SOURCE\po>dbl -d -l -- SCRN5.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTCOM.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTPOA.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTPOH.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTPOI.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTPOS.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTPOT.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTREC.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTTRH.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTTRL.PO 
+
+O:\SOURCE\po>dbl -d -l -- SRTVPT.PO 
+
+O:\SOURCE\po>dbl -d -l -- TBLMNU.PO 
+
+O:\SOURCE\po>dbl -d -l -- TRN4.PO 
+
+O:\SOURCE\po>dbl -d -l -- TRXCNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- UIPO.PO 
+
+O:\SOURCE\po>dbl -d -l -- UNPROT.PO 
+
+O:\SOURCE\po>dbl -d -l -- UPDIMF.PO 
+
+O:\SOURCE\po>dbl -d -l -- VCNMNT.PO 
+
+O:\SOURCE\po>dbl -d -l -- VCRRPT.PO 
+
+O:\SOURCE\po>dbl -d -l -- VIRPR2.PO 
+
+O:\SOURCE\po>dbl -d -l -- VPTCNT.PO 

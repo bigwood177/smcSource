@@ -1,0 +1,6 @@
+ -d poaddh scrn1 linex popop olmsg \
+prtpo replc rtf roldx faxpo prfax uipo pop2 \
+dec4 itcfg oeco cont \
+mkpo mail x7mail w7lib.elb dbldir:axlib.elb \
+po:polib.elb ut:util.elb wnd:tklib.elb
+

@@ -1,0 +1,124 @@
+;PRTCOM / POR - D11
+;
+;
+;		PRINT COMMODITY CODE VENDOR'S REPORT
+;
+RECORD RD155B	
+	.INCLUDE 'DEF:RD155B.DEF'
+
+RECORD HDR1
+		,A9,	'COMMODITY'
+		,A2
+		,A8,	'VENDOR  '
+		,A4
+		,A11,	'VENDOR NAME'
+		,A20
+		,A9,	'TELEPHONE'
+		,A7
+		,A12,	'CONTACT NAME'
+		,A12
+		,A8,	'ACTIVE ?'
+		,A30
+
+
+;**********************************************************************
+RECORD TITLE
+		,A30,	'COMMODITY CODE VENDOR REPORT  '
+
+;**********************************************************************
+RECORD
+	BRAKTS	,A30,	']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+	DSPW	,D1
+	LINCNT	,D2
+	LINCTL	,D1
+	LPSW	,D1
+	LOKCTL	,D1
+	NOABRT	,D1,	1
+	PGCNT	,D6,	000000
+	PLINE	,A132
+	PRTCTL	,D3
+	PRTTYP	,A1
+	READS	,D1,	0
+	SAVCD	,A4
+	RPTNUM	,D3
+	SPLFIL	,A14
+	SWITCH	,D1
+	V	,D1
+
+;**********************************************************************
+PROC
+;**********************************************************************
+BEGIN,
+	XCALL TERID (V)
+	XCALL OUTPT (1,1,2,'COMMODITY CODE VENDOR REPORT',1)
+
+	SWITCH = 5
+	XCALL FILES (1,'I',155,SWITCH)
+	IF (SWITCH.EQ.9) GO TO INUSE
+
+	LINCNT = 60
+
+	LOKCTL = 1
+	XCALL IOS (1,RD155B,READS,LOKCTL)
+	IF (LOKCTL.EQ.2) GO TO ENDOFF
+
+	LOKCTL = 1
+	XCALL IOS (1,RD155B,READS,LOKCTL)
+	IF (LOKCTL.EQ.2) GO TO ENDOFF
+	IF (XVENAM.EQ.BRAKTS) GO TO ENDOFF
+
+	LPSW = 1
+	SPLFIL(5,6) = 'N5'
+
+	XCALL LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GO TO ENDOFF
+	IF (LPSW.NE.4) XCALL WATE (2,V)
+
+;**********************************************************************
+READ,
+	PLINE =
+	LINCTL =
+
+	IF (XCOMCD.NE.SAVCD) PLINE(4,7)	= XCOMCD
+	IF (XCOMCD.NE.SAVCD) CALL SKIP
+	PLINE(14,17) = XVENNO
+	PLINE(24,48) = XVENAM
+	PLINE(54,65) = XPHONE
+	PLINE(71,90) = XCNTCT
+	PLINE(97,98) = 'NO'
+	IF (XACTIV) PLINE (97,99) = 'YES'
+	IF (XACTIV.EQ.'2') PLINE (97,99) = ' NO'
+	CALL PRINT
+
+	SAVCD = XCOMCD
+	LOKCTL = 1
+	XCALL IOS (1,RD155B,READS,LOKCTL)
+	IF (XVENAM.EQ.BRAKTS) GO TO WRAPUP
+	IF (LOKCTL.EQ.2) GO TO WRAPUP
+	GO TO READ
+
+;**********************************************************************
+WRAPUP,
+	XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+ENDOFF,
+	XCALL WATE (3,V)
+	XCALL FILES (1,'I',155,7)
+INUSE,
+	XCALL PGCHN ('PO:POCOMM',1)
+
+;**********************************************************************
+PRINT,
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,'NO HDR',' ','NO LEGEND',
+&	' ',' ',LINCTL,0,0,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+
+;**********************************************************************
+SKIP,
+	XCALL LINFD(1)
+	INCR LINCNT
+	RETURN
+
+;**********************************************************************
+
+END
+

@@ -1,0 +1,173 @@
+
+O:\SOURCE\po>call ADDPO 
+
+O:\SOURCE\po>dblink -d addpo po:polib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\po>call CLRREC 
+
+O:\SOURCE\po>call CLVNAV 
+
+O:\SOURCE\po>call CODRPT 
+
+O:\SOURCE\po>call DELRCV 
+
+O:\SOURCE\po>call ITMAGE 
+
+O:\SOURCE\po>call NUVRPT 
+
+O:\SOURCE\po>call ORGPOT 
+
+O:\SOURCE\po>call p1tmnt 
+
+O:\SOURCE\po>call PARTN1 
+
+O:\SOURCE\po>call PARTV1 
+
+O:\SOURCE\po>call pnnmnt 
+
+O:\SOURCE\po>call poaddh 
+
+O:\SOURCE\po>rem dbl -d -l -- poaddh.po 
+
+O:\SOURCE\po>rem dbl -d -l -- scrn1.po 
+
+O:\SOURCE\po>rem dbl -d -l -- linex.po 
+
+O:\SOURCE\po>rem dbl -d -l -- popop.po 
+
+O:\SOURCE\po>rem dbl -d -l -- olmsg.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- prtpo.po 
+
+O:\SOURCE\po>rem dbl -d -l -- replc.po 
+
+O:\SOURCE\po>rem dbl -d -l -- rtf.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- roldx.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- oeco.cp 
+
+O:\SOURCE\po>rem dbl -d -l -- prfax.po 
+
+O:\SOURCE\po>rem dbl -d -l -- uipo.po 
+
+O:\SOURCE\po>rem dbl -d -l -- pop2.po 
+
+O:\SOURCE\po>rem dbl -d -l -- itcfg.po 
+
+O:\SOURCE\po>rem dbl -d -l -- dec4.po 
+
+O:\SOURCE\po>dblink -T  0<poaddh.cmd 
+DBLink>  -d poaddh scrn1 linex popop \
+DBLink> prtpo replc rtf roldx faxpo prfax uipo pop2 \
+DBLink> dec4 itcfg oeco \
+DBLink> mkpo mail x7mail w7lib.elb dbldir:axlib.elb \
+DBLink> po:polib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\po>call POAUDT 
+
+O:\SOURCE\po>call POCANC 
+
+O:\SOURCE\po>dbl -d -l -- pocanc.po 
+
+O:\SOURCE\po>dblink -d pocanc gtitm po:polib.elb ut:util.elb wnd:tklib.elb 
+
+O:\SOURCE\po>call POCASH 
+
+O:\SOURCE\po>call POCLOS 
+
+O:\SOURCE\po>dblink -T  0<poclos.cmd 
+DBLink>  -d poclos scrn5 gtitm \
+DBLink> po:polib.elb ut:util.elb wnd:tklib.elb
+DBLink> 
+
+O:\SOURCE\po>call POEDLS 
+
+O:\SOURCE\po>call POENMN 
+
+O:\SOURCE\po>call POFILS 
+
+O:\SOURCE\po>call POHDEL 
+
+O:\SOURCE\po>call POHMRK 
+
+O:\SOURCE\po>call POIMNU 
+
+O:\SOURCE\po>call poldel 
+
+O:\SOURCE\po>call POMENU 
+
+O:\SOURCE\po>call POPPOR 
+
+O:\SOURCE\po>call popupd 
+
+O:\SOURCE\po>call PORCVR 
+
+O:\SOURCE\po>call PORDFL 
+
+O:\SOURCE\po>call porecv 
+
+O:\SOURCE\po>call PORITM 
+
+O:\SOURCE\po>call poschi 
+
+O:\SOURCE\po>call poschj 
+
+O:\SOURCE\po>call poschv 
+
+O:\SOURCE\po>call POSCRG 
+
+O:\SOURCE\po>call POSFMN 
+
+O:\SOURCE\po>call POTBLL 
+
+O:\SOURCE\po>call POTBLM 
+
+O:\SOURCE\po>call POTCNT 
+
+O:\SOURCE\po>call PRGPUR 
+
+O:\SOURCE\po>call PRGREG 
+
+O:\SOURCE\po>call PRSPRP 
+
+O:\SOURCE\po>call PRTCOM 
+
+O:\SOURCE\po>call PVNDFT 
+
+O:\SOURCE\po>call pvnlst 
+
+O:\SOURCE\po>call pvnmnt 
+
+O:\SOURCE\po>call RECEDT 
+
+O:\SOURCE\po>call recent 
+
+O:\SOURCE\po>call RECRPT 
+
+O:\SOURCE\po>call SRTCOM 
+
+O:\SOURCE\po>call SRTPOI 
+
+O:\SOURCE\po>call SRTPOT 
+
+O:\SOURCE\po>call srtrec 
+
+O:\SOURCE\po>call TBLMNU 
+
+O:\SOURCE\po>call TRXCNT 
+
+O:\SOURCE\po>call UNPROT 
+
+O:\SOURCE\po>call UPDIMF 
+
+O:\SOURCE\po>call VCNMNT 
+
+O:\SOURCE\po>call VCRRPT 
+
+O:\SOURCE\po>call vemail 
+
+O:\SOURCE\po>call VIMENU 
+
+O:\SOURCE\po>call VIRPR2 

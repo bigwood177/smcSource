@@ -1,0 +1,389 @@
+;POAUDT isam
+;
+; REVISIONS:
+;
+;		PRINT RECEIPTS AUDIT TRAIL
+
+RECORD	D_STUFF
+	D_IN	,D8		;DATE-IN, ANY FORMAT
+	D_OUT	,D6		;RETURN VALUE MMDDYY
+	D_OUTR	,D8		;RETURN VALUE CCYYMMDD
+	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
+	D_SW	,A2		;"99" = DATE CONVERSION ERROR
+
+
+RECORD RD154A	
+	.INCLUDE 'DEF:RD154A.DEF'
+
+record	itmmas
+	.include 'def:rd041a.def'
+RECORD INVCTL	,x
+	.INCLUDE 'DEF:RD041B.def'
+
+RECORD HDR1
+		,A50
+		,A10,	'UNIT COST:'
+		,A4
+		,A5,	'DATE:'
+		,A3
+		,A9,	'QUANTITY:'
+		,A1
+		,A8,	'RECEIVED'
+		,A2
+		,A8,	'REJECTS:'
+
+;**********************************************************************
+RECORD HDR2
+		,A3
+		,A3,	'P/O'
+		,A5
+		,A4,	'LINE'
+		,A3
+		,A11,	'ITEM NUMBER'
+		,A9
+		,A4,	'COMM'
+		,A3
+		,A3,	'U/M'
+		,A4
+		,A8,	'EXPECTED'
+		,A3
+		,A8,	'PROMISED'
+		,A2
+		,A7,	'ORDERED'
+		,A4
+		,A4,	'THIS'
+		,A4
+		,A8,	'QUANTITY'
+		,A2
+		,A6,	'NOTIFY'
+		,A2
+		,A8,	'RECEIVER'
+		,A14
+
+;**********************************************************************
+RECORD HDR3
+		,A1
+		,A6,	'NUMBER'
+		,A3
+		,A6,	'NUMBER'
+		,A2
+		,A16,	'ITEM DESCRIPTION'
+		,A4
+		,A4,	'CODE'
+		,A11
+		,A6,	'ACTUAL'
+		,A5
+		,A4,	'RCVD'
+		,A4
+		,A8,	'TOT RCVD'
+		,A2
+		,A8,	'SHIPMENT'
+		,A3
+		,A4,	'CODE'
+		,A5
+		,A7,	'MOVE TO'
+		,A2
+		,A6,	'VENDOR'
+		,A4
+		,A8,	'LOCATION'
+		,A3
+
+;**********************************************************************
+RECORD TITLE
+		,A20,	'RECEIPTS AUDIT TRAIL'
+
+;**********************************************************************
+RECORD CONTRL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+;**********************************************************************
+RECORD
+	BLANKS	,A6
+	BRAKTS	,A20,	']]]]]]]]]]]]]]]]]]]]'
+	CNGCTL	,D1
+	DSPSW	,D1
+	DTEFMT	,A10
+	ENDDTE	,D8
+	ENTRY	,A8
+	HDATE	,D8
+	INXCTL	,D1
+	LINCNT	,D2
+	LINCTL	,D1
+	LOKCTL	,D1
+	LPSW	,D1
+	MSKDTE	,A8,	'XX/XX/XX'
+	MSKCST	,A12,	'ZZZ,ZZX.XXXX'
+	NOABRT	,D1,	1
+	PGCNT	,D6,	000000
+	PRGOPT	,D1
+	PLINE	,A132
+	PRTCTL	,D3
+	PRTTYP	,A1
+	READ	,D1,	0
+	DELETE	,D,	4
+	RECNO	,D5
+	RPTNUM	,D3
+	SAMREC	,D6
+	SAMFMT	,A8
+	SPLFIL	,A14
+	SRCCTL	,D1
+	STRTDT	,D8
+	SWITCH	,D1
+	TDTERC	,D8
+	KEY	,A17
+	V	,D1
+	WHATNO	,D1
+	WRITE	,D1,	1
+	ZEROSW	,D1
+	RJUST	,D1
+
+;**********************************************************************
+PROC
+;**********************************************************************
+;STARTUP ACTIONS
+;**********************************************************************
+BEGIN,
+	XCALL TERID (V)
+	SWITCH = 1
+	XCALL FILES (10,'SI',41,SWITCH)
+	IF (SWITCH.EQ.9) GO TO EXIT
+	LOKCTL = 1
+	itemno = '!!!!!!!!!!!!!!!'
+	xcall isio (10, invctl, itemno, read, lokctl)
+
+;;;	XCALL IO (10,INVCTL,1,READ,LOKCTL)
+	RJUST=JSTIFY
+	XCALL FILES (10,'I',41,4)
+
+	SWITCH = 1
+	XCALL FILES (1,'SU',154,SWITCH)			;RCVHST FILE
+	IF (SWITCH.EQ.9) GO TO EXIT
+
+	LINCNT = 60
+
+;**********************************************************************
+;DISPLAY THE SELECTION SCREEN & ACCEPT SELECTION CRITERIA
+;**********************************************************************
+DISPLA,
+	STRTDT =
+	ENDDTE =
+	ZEROSW =
+	CNGCTL =
+	XCALL OUTPT (1,1,2,'RECEIPTS ENTRY',1)
+	XCALL OUTPT (2,1,0,'PRINT RECEIPTS AUDIT TRAIL',1)
+	XCALL OUTPT (4,20,0,'PLEASE ENTER:',V)
+	XCALL OUTPT (5,25,0,'1. STARTING RECEIPT DATE',V)
+	XCALL OUTPT (6,25,0,'2. ENDING RECEIPT DATE',V)
+	XCALL OUTPT (7,25,0,'3. PRINT/PURGE OPTION',V)
+
+DATE1,
+	CONTRL = '05,51,08,00,DE'
+	CALL INPUT
+	GO TO (DISPLA,ENDOFF), INXCTL
+	IF (ENTRY.EQ.BLANKS) GO TO ALL
+;;;	HDATE = ENTRY(1,8)
+	STRTDT = ENTRY(1,8)
+;;;	STRTDT(1,2) = HDATE(5,6)
+;;;	STRTDT(3,6) = HDATE(1,4)
+	IF (ENDDTE.EQ.99999999) GO TO DITTO
+	IF (CNGCTL.NE.1) GO TO DITTO
+	IF (ENDDTE.LT.STRTDT) GO TO MSG1
+	GO TO ANYCN
+
+DATE2,
+	IF (ENDDTE.EQ.99999999) GO TO DATE1
+DITTO,
+	CONTRL = '06,51,08,00,D '
+	CALL INPUT
+	GO TO (DISPLA),INXCTL
+	ENDDTE = ENTRY(1,8)
+;;;	HDATE = ENTRY(1,6)
+;;;	ENDDTE(1,2) = HDATE(5,6)
+;;;	ENDDTE(3,6) = HDATE(1,4)
+	IF (ENTRY.EQ.BLANKS) GO TO SAME
+	IF (ENDDTE.LT.STRTDT) GO TO MSG1
+	IF (CNGCTL) GO TO ANYCN
+	GO TO PURGE
+
+SAME,
+	ENDDTE = STRTDT
+
+	XCALL DATE8(ENDDTE, D_OUT, D_OUTR, D_FMT, D_SW)
+	XCALL OUTPT (6,51,0,D_FMT,V)
+;;;	SAMREC (1,4) = STRTDT(3,6)
+;;;	SAMREC (5,6) = STRTDT(1,2)
+;;;	SAMFMT  =  SAMREC,MSKDTE
+;;;	XCALL OUTPT (6,51,0,SAMFMT,V)
+	IF (CNGCTL) GO TO ANYCN
+	GO TO PURGE
+
+ALL,
+	STRTDT =
+	ENDDTE = 99999999
+	XCALL OUTPT (5,51,1,'\',V)
+	XCALL OUTPT (5,55,0,'ALL',V)
+	XCALL OUTPT (6,51,1,'\',V)
+	IF (CNGCTL) GO TO ANYCN
+
+PURGE,
+	XCALL OUTPT (7,56,0,'0 = PRINT/DISPLAY ONLY',V)
+	XCALL OUTPT (8,56,0,'1 = PRINT & THEN PURGE',V)
+	XCALL OUTPT (9,56,0,'2 = PURGE ONLY',V)
+	CONTRL = '07,51.01,00,# '
+	CALL INPUT
+	GO TO (DISPLA),INXCTL
+	PRGOPT = ENTRY
+
+;**********************************************************************
+;ALLOW CHANGE
+;**********************************************************************
+ANYCN,
+	XCALL ANYCN (CNGCTL,WHATNO)
+	IF (CNGCTL.EQ.0) GO TO PROCES
+	GO TO (DATE1,DATE2,PURGE) , WHATNO
+	CNGCTL = 3
+	GO TO ANYCN
+;**********************************************************************
+MSG1,
+	XCALL MESAG ('STARTING/ENDING RECEIPT DATES ARE OUT OF ORDER',V)
+	ENDDTE = 99999999
+	GO TO DATE1
+;**********************************************************************
+;READ A RECORD AND PRINT AND/OR PURGE A LINE
+;**********************************************************************
+PROCES,
+	IF (PRGOPT.EQ.2) GO TO DELETE
+	LPSW = 1
+	SPLFIL(5,6) = 'N3'
+	XCALL LPON (LPSW,SPLFIL)
+	IF (LPSW.EQ.0) GO TO ENDOFF
+	IF (LPSW.EQ.1.OR.LPSW.EQ.3)	XCALL WATE (2,V)
+	IF (LPSW.EQ.2) XCALL WATE (1,V)
+	LOKCTL = 1
+	KEY = 
+	FIND (1, RD154A, KEY) [ERR=PTONLY]
+;;;	XCALL ISIO (1,RD154A,KEY,READ,LOKCTL)
+	GOTO PTONLY
+PRINT,
+	CALL FIRST
+	CALL LPOUT
+	CALL SECOND
+	CALL LPOUT
+	IF (PRGOPT.EQ.0) GO TO PTONLY
+DELETE,
+	LOKCTL = 1
+	XCALL ISIO (1,RD154A,RCVKEY,DELETE,LOKCTL)
+	CALL READ
+	IF (ZEROSW) GO TO WRAPUP
+	GO TO (PRINT,DELETE), PRGOPT
+PTONLY,
+	CALL READ
+	IF (ZEROSW) GO TO WRAPUP
+	GO TO PRINT
+NONE,
+	XCALL MESAG ('THERE ARE NO RECORDS FOR THIS RANGE OF DATES',2)
+	GO TO DISPLA
+
+;**********************************************************************
+READ,
+	XCALL IOS (1,RD154A,READ,LOKCTL)
+	IF (LOKCTL .NE. 0) GOTO ZERO	;SSQ 9-5-01
+	IF (RDTERC.LT.STRTDT) GO TO READ
+	IF (RDTERC.GT.ENDDTE) GO TO ZERO
+	RETURN
+
+ZERO,
+	ZEROSW = 1
+	RETURN
+
+;**********************************************************************
+;FINISH UP
+;**********************************************************************
+
+WRAPUP,
+	IF (PRGOPT.EQ.2) XCALL MESAG ('RANGE PURGED',2)
+	IF (PRGOPT.EQ.0.OR.PRGOPT.EQ.1) CALL TRNOFF
+	IF (ENDDTE.EQ.99999999) GO TO ENDOFF
+	GO TO DISPLA
+
+ENDOFF,
+	XCALL FILES (1,'SU',154,4)
+EXIT,
+	XCALL PGCHN ('PO:PORECV',1)
+
+TRNOFF,
+	XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+	XCALL WATE (3,V)
+	RETURN
+
+;**********************************************************************
+;THE FIRST PRINT LINE
+;**********************************************************************
+FIRST,
+	LINCTL = 0
+	PLINE =
+	PLINE(1,6)	= RPONUM
+	PLINE(7,7)	= '-'
+	PLINE(8,9)	= RRLNUM
+	IF (RRLNUM.EQ.0) PLINE(8,9) = '00'
+	PLINE(13,15)	= RLINNO
+	PLINE(19,33)	= RCVINO
+	IF(RJUST) XCALL LEFTJ (PLINE(19,33),15)
+	PLINE(39,42)	= RITMCC
+	PLINE(47,48)	= RINVUM
+	PLINE(51,62)	= REXCST,MSKCST
+
+	XCALL DATE8(RDTEPM, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE(65,72)	= D_OUT,MSKDTE
+;;;	PLINE(65,72)	= RDTEPM,MSKDTE
+
+	PLINE(75,80)	= RQTYOR
+	PLINE(83,88)	= RCVNOW
+	PLINE(93,98)	= REJNOW
+	PLINE(104,106)	= RNOTIF
+	PLINE(113,115)	= RRCVER
+	PLINE(125,126)	= RSHPTO
+	RETURN
+
+;**********************************************************************
+;ESTABLISH THE SECOND PRINT LINE
+;**********************************************************************
+SECOND,
+	LINCTL = 1
+	PLINE =
+	PLINE(19,48)	= RCVDSC
+	PLINE(51,62)	= RNWCST,MSKCST
+;;;	TDTERC(5,6) = RDTERC(1,2)
+;;;	TDTERC(1,4) = RDTERC(3,6)
+	XCALL DATE8(RDTERC, D_OUT, D_OUTR, D_FMT, D_SW)
+	PLINE(65,72)	= D_OUT,MSKDTE
+;;;	PLINE(65,72)	= TDTERC,MSKDTE
+
+	PLINE(75,80)	= RQTYRC
+	PLINE(97,98)	= RREJCD
+	PLINE(104,106)	= RMOVET
+	PLINE(112,115)	= RVENDR
+	RETURN
+
+;**********************************************************************
+LPOUT,
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,HDR2,HDR3,'NO LEGEND',
+&	'  ','  ',LINCTL,0,0,0,LPSW,RPTNUM,PRTTYP)
+	RETURN
+
+;**********************************************************************
+INPUT,
+	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,ENTRY,INXCTL,V)
+	RETURN
+
+;**********************************************************************
+
+END
+

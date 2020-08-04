@@ -1,0 +1,199 @@
+;VIRPR2 / POR  D-11
+;
+;		AUTHOR: 9-JAN-97  DIANA SCHEPPA
+;		ISO APPROVED VENDOR LIST
+;
+;		::CRELPOR.DEF::
+;**********************************************************************
+;		PURCHASE ORDER & RECEIVING -- Release 1.1
+;		RELEASED: 1-MAY-82
+;**********************************************************************
+;:
+;		::PCPYEMS.DEF::
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of Mini-Computer Business Applications, Inc. (MCBA) of
+;		Glendale, California, USA and Effective Management Systems, Inc.
+;		of Menomonee Falls, Wisconsin, USA embodying substantial
+;		creative effort and confidential information, ideas and
+;		expressions, no part of which may be reproduced or transmitted
+;		in any form or by any means, electronic, mechanical or
+;		otherwise, including photocopying and recording or in
+;		connection with any information storage or retrieval system
+;		without the permission in writing from MCBA.
+;
+;		COPYRIGHT NOTICES:  Copyright <C> 1980, 1981, 1982
+;		by Mini-Computer Business Applications, Inc.
+;		AN UNPUBLISHED WORK.  Copyright <C> 1980, 1981, 1982
+;		by Effective Management Systems, Inc.  AN UNPUBLISHED WORK.
+;
+;
+;		COMPILE & LINK PER DOCUMENTATION INSTALLATION NOTES.
+;
+;:
+;
+RECORD POSIDX
+	.INCLUDE 'DEF:RD155C.DEF'
+
+RECORD VENDR
+	.INCLUDE 'DEF:RD011A.DEF'
+
+RECORD VENIDX		
+	.INCLUDE 'DEF:RD012A.DEF'
+
+RECORD VENCTL
+	.INCLUDE 'DEF:RD011B.DEF'
+
+RECORD PLINE
+		,A80 
+RECORD LINE1 ,X
+		,A4
+	VENDNO	,A4
+		,A4
+	VENNAM	,A25
+		,A43
+RECORD HDR1
+		,A45,	'   VEND-NO  VENDOR NAME                      '
+		,A35
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,D2
+
+RECORD TITLE
+	,A20,	'APPROVED VENDOR LIST'
+RECORD
+	V	,D1
+	SWITCH	,D1
+	LOKCTL	,D1
+	LPSW	,D1
+	SPLFIL	,A14
+	PGCNT	,A2
+	OLDVEN	,A4
+	NOITMS	,D3
+	BSMID	,D5
+	SRCOPT	,D1
+	SRCCTL	,D1
+	READ	,D1,	0
+	CHANTO	,A9
+	RESTRT	,D1
+	LINCNT	,D3
+	XRECNO	,D5
+	WVEN	,A4
+	RPTNUM	,D3
+	PRTTYP	,A1
+	WTARG	,D1,	2
+	MSGSW	,D1
+	EOF	,D1
+	NOABRT	,D1,	1
+	BRACKS	,A15,	']]]]]]]]]]]]]]]'
+	RJUST	,D1
+PROC
+	XCALL TERID (V)
+	V = 1
+	XCALL OUTPT (1,1,2,'APPROVED VENDOR LIST',V)
+	XCALL WAIT (4,V)
+
+	SWITCH = 5
+	XCALL FILES (1,'I',155,SWITCH)		;OPENS POSIDX
+
+	SWITCH = 1
+	XCALL FILES (3,'I',011,SWITCH)		;OPENS VENMAS
+	IF (SWITCH.EQ.9) GO TO INUSE2
+
+	LOKCTL = 0
+	XCALL IO (3,VENCTL,1,READ,LOKCTL)		;READS THE CONTROL RECORD OF THE VENDOR FILE
+	UNLOCK 3
+
+	SWITCH = 1
+	XCALL FILES (4,'I',012,SWITCH)		;OPENS VENIDX
+	IF (SWITCH.EQ.9) GO TO INUSE3
+
+	LPSW = 1
+	SPLFIL(5,6) = 'N4'
+	PGCNT =
+	LINCNT = 60
+	XCALL LPON (LPSW,SPLFIL)
+	GO TO (EXIT), LPSW + 1
+	IF (LPSW.EQ.2) WTARG = 4
+	IF (LPSW.NE.4) XCALL WAIT (WTARG,V)
+	XRECNO = 2
+VENDRS,
+	CALL READIX
+	IF (VENNUM.EQ.'    ') GOTO VENDRS
+	IF (VENNUM.EQ.'0   ') GOTO VENDRS
+	IF (VENNUM.EQ.'   0') GOTO VENDRS
+	IF (EOF) GOTO DONE
+	IF (VENNUM.NE.OLDVEN) GOTO PRTIT
+	GOTO VENDRS
+PRTIT,
+	OLDVEN = VENNUM
+	VENDR =
+	SRCOPT = 4
+	BSMID = 1
+	SRCCTL = 1
+	XCALL SERCH (4,VENIDX,VENNUM,1,4,ORG011,BSMID,SRCCTL,SRCOPT,6,10,
+&			0,0,0,0)
+	IF (SRCCTL.EQ.0) GO TO FOUND
+	NAME = 'VENDOR NOT ON FILE'
+	GO TO VENDR2
+FOUND,
+	LOKCTL = NOABRT
+	XCALL IO (3,VENDR,IRC011,READ,LOKCTL)
+VENDR2,
+	VENDNO = VENNUM
+	XCALL LEFTJ (VENDNO,4)
+	VENNAM = NAME
+	CALL PRINT
+	XCALL LINFD (1)
+	INCR LINCNT
+	GOTO VENDRS
+
+READIX,
+	EOF =
+REREAD,
+	INCR XRECNO
+	LOKCTL = NOABRT
+	XCALL IO (1,POSIDX,XRECNO,READ,LOKCTL)
+	IF (POSIDX.EQ.BRACKS) GO TO ENDFIL
+	RETURN
+ENDFIL,
+	EOF = 1
+	RETURN
+
+;**********************************************************************
+DONE,
+	XCALL LPOFF (LPSW,SPLFIL,PGCNT)
+	XCALL OUTPT (1,1,2,'APPROVED VENDOR LIST',V)
+	XCALL WAIT (4,V)
+EXIT,
+	SWITCH = 4
+	XCALL FILES (4,'I',012,SWITCH)
+INUSE3,
+	SWITCH = 4
+	XCALL FILES (3,'I',011,SWITCH)
+INUSE2,
+	SWITCH = 7
+	XCALL FILES (1,'I',155,SWITCH)
+INUSE1,
+	RESTRT = 1
+	XCALL PGCHN ('PO:POIMNU',RESTRT)
+
+;**********************************************************************
+
+PRINT,
+	XCALL LPOUT (LINCNT,PGCNT,PLINE,TITLE,HDR1,'NO HDR','NO HDR',
+&		'NO LEGEND','NO LEGEND','NO LEGEND',0,80,80,0,LPSW,
+&		RPTNUM,PRTTYP)
+	RETURN
+;**********************************************************************
+
+END
+

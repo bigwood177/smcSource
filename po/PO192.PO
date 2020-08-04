@@ -1,0 +1,86 @@
+
+SUBROUTINE PO192	;UPDATE PORNXF FILE
+	HEADER	,A	;PORHDR
+	CHN011	,D	;CHANNEL TO VENMAS
+	CHN192	,D	;CHANNEL TO PORNXF
+;
+RECORD	PORNXF
+	.INCLUDE 'DEF:RD192A.DEF'
+
+RECORD	PORHDR
+	.INCLUDE 'DEF:RD151A.DEF'
+
+RECORD	VENMAS
+	.INCLUDE 'DEF:RD011A.DEF'
+
+RECORD	VARS
+	COUNTER	,D10
+	LOKCTL	,D1
+	READ	,D1,0
+	WRITE	,D1,1
+	STORE	,D1,2
+	DELETE	,D1,3
+	SWITCH	,D1
+
+;
+PROC
+	PORHDR = HEADER
+	LOKCTL = 0
+	XCALL ISIO (CHN011, VENMAS, HVENDR, READ, LOKCTL)
+	IF (LOKCTL .NE. 0) CLEAR VENMAS
+	UNLOCK CHN011
+
+
+	CLEAR PORNXF
+	K2PO = HPONUM
+	K2RL = HRLNUM
+	FIND (CHN192, PORNXF, PXKEY3, KRF:3) [ERR=ADD]
+
+	XCALL IOS (CHN192, PORNXF, READ, LOKCTL)
+	IF (LOKCTL .EQ. 0)
+		BEGIN
+		PXVEN = HVENDR
+		PXNAM = NAME
+		PXPO = HPONUM
+		PXPORL = HRLNUM
+
+	LOKCTL = 1
+	XCALL ISIO (CHN192, PORNXF, PXKEY, WRITE, LOKCTL)
+	GOTO FINI
+
+ADD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	CALL GET_COUNTER
+
+	CLEAR PORNXF
+	PXKEY = COUNTER
+
+	PXVEN = HVENDR
+	PXNAM = NAME
+	PXPO = HPONUM
+	PXPORL = HRLNUM
+	
+
+	K1NAM = NAME
+	K1PO = PXPO
+	K1RL = PXPORL
+
+	LOKCTL = 1
+	XCALL ISIO (CHN192, PORNXF, PXKEY0, STORE, LOKCTL)
+
+FINI,
+
+	XRETURN
+;-------------------------------------------------------
+
+get_counter,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	pxk0 = 0
+	read (chn192, pornxf, pxk0)
+	incr pxnext
+	write (chn192, pornxf, pxk0)
+
+	counter = pxnext
+	return
+;----------------------------------------------------	
+	
+end	
