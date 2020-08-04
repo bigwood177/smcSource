@@ -1,0 +1,348 @@
+.TITLE MAKEFONT
+
+;15-JUN-92 -	Intinsic functions checked for DIBOL compliance
+
+RECORD DPY
+	DPY_ORIENT	,D1	; 1 - 1
+			,A1	; 2 - 2
+	DPY_SYM		,D4	; 3 - 6
+			,A1	; 7 - 7
+	DPY_SPACING	,D1	; 8 - 8
+			,A1	; 9 - 9
+	DPY_PITCH	,D3	;10 -12
+			,A1	;13 -13
+	DPY_POINT	,D3	;14 -16
+			,A1	;17 -17
+	DPY_STYLE	,D1	;18 -18
+			,A1	;19 -19
+	DPY_WEIGHT	,D1	;20 -20
+			,A1	;21 -21
+	DPY_TYPE	,D4	;22 -25
+	ADPY_TYPE	,A4 @DPY_TYPE
+
+RECORD
+	sym_ptr		,D2
+	max_sym_ptr	,D2,24
+	SYM_NUM	,24D4	,0065,0066,0068,0169
+&			,0070,0071,0073,0877
+&			,0078,0081,0181,0281
+&			,0481,1081,1181,0083
+&			,0183,0085,0185,0885
+&			,1085,1185,1285,1585
+	SYM_NAME,24A13
+&		,' 1=MATH7'	,' 2=TAX'	,' 3=DANISH'	,' 4=UK'
+&		,' 5=FRENCH'	,' 6=GERMAN'	,' 7=ITALIAN'	,' 8=MATH8'
+&		,' 9=ECMA94'	,'10=MATH8A'	,'11=MATH8B'	,'12=PIA'
+&		,'13=PCLINE'	,'14=ECMA7'	,'15=ECMA8'	,'16=SWEDISH'
+&		,'17=SPANISH'	,'18=ASCII'	,'19=LEGAL'	,'20=ROMAN8'
+&		,'21=PC8'	,'22=PC8DN'	,'23=PC850'	,'24=PIFONT'
+
+;
+;-- These values are lifted from HPSUB.DEF --
+;
+.define max_typ_num ,24
+
+	TYP_NUM	,max_typ_num D4
+&		,0001		,0003		,0004		,0005
+&		,0006		,0007		,0008		,0009
+&		,0010		,0011		,0013		,0014
+&		,0015		,0016		,0017		,0018
+&		,0019		,0020		,0021		,0022
+&		,0023		,0024		,4101		,4148
+	ATYP_NUM,max_typ_num A4 @TYP_NUM
+
+	TYP_NAME,max_typ_num A10
+&		,'LINEPRINT'	,'COURIER'	,'HELV'		,'TIMES'
+&		,'GOTHIC'	,'SCRIPT'	,'PRESTIGE'	,'CASLON'
+&		,'ORATOR'	,'PRESENT'	,'SERIFA'	,'FUTURA'
+&		,'PALATINO'	,'SOUVENIR'	,'OPTIMA'	,'GARAMOND'
+&		,'COOPER'	,'CORONET'	,'BROADWAY'	,'BAUER'
+&		,'CENTURY'	,'UNIVERSITY'	,'CGTIMES'	,'UNIVERS'
+
+	FLD	,D1
+	I	,D4
+	J	,D2
+	COLwidth,D2
+	XROW	,D2
+	XCOL	,D2
+	LINE	,A79
+	ALPHA15	,A15
+	ALPHA13	,A13@ALPHA15
+	ALPHA10	,A10@ALPHA15
+	ALPHA4	,A4 @ALPHA15
+RECORD CTL
+	ROW	,D2
+	COL	,D2
+	MAX	,D1
+PROC
+	OPEN (15,I,'TT:')
+	XCALL FLAGS (1100000,1)
+LINE = 'Instructions below this line.   Press <EOF> (unix:^D else:^Z) to end'
+	DISPLAY (15,
+&		$scr_clr(SCREEN),$scr_att(REVERSE),
+&		$scr_pos( 1,1), 'BUILD A FONT DESCRIPTOR',
+&		$scr_pos(20,1),LINE,
+&		$scr_att(CLEAR),
+&		$scr_pos( 3,1), '+------------------------------- ORIENTATION',
+&		$scr_pos( 4,1), '|',
+&		$scr_pos( 5,1), '| +----------------------------- SYMBOL SET',
+&		$scr_pos( 6,1), '| |',
+&		$scr_pos( 7,1), '| |    +------------------------ SPACING',
+&		$scr_pos( 8,1), '| |    |',
+&		$scr_pos( 9,1), '| |    | +---------------------- PITCH (CPI)',
+&		$scr_pos(10,1), '| |    | |',
+&		$scr_pos(11,1), '| |    | |   +------------------ POINT SIZE',
+&		$scr_pos(12,1), '| |    | |   |',
+&		$scr_pos(13,1), '| |    | |   |   +-------------- STYLE',
+&		$scr_pos(14,1), '| |    | |   |   |',
+&		$scr_pos(15,1), '| |    | |   |   | +------------ WEIGHT',
+&		$scr_pos(16,1), '| |    | |   |   | |',
+&		$scr_pos(17,1), '| |    | |   |   | | +---------- TYPEFACE',
+&		$scr_pos(18,1), '| |    | |   |   | | | ',
+&		$scr_pos(19,27),
+&			'--> D18 FONT DESCRIPTOR (spaces for clarity only)')
+
+;
+;--Set default values --
+;
+	sym_ptr = 1
+
+	DPY_ORIENT	= 1		;portrait
+;;;	DPY_SYM		= SYM_NUM(1)	;MATH7
+	DPY_SPACING	= 2		;Fixed
+	DPY_PITCH	= 166		;16.6 cpi
+	DPY_POINT	= 085		; 8.5 points
+	DPY_STYLE	= 1		;upright
+	DPY_WEIGHT	= 5		;medium
+	DPY_TYPE	= TYP_NUM(1)	;Lineprint
+
+	FOR FLD = 1 STEP 1 UNTIL 8 DO CALL DESCRIPTOR
+
+
+ORIENT,
+	FLD = 1
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1.OR.I.GT.2) GOTO ORIENT
+		DPY_ORIENT = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+SYM_NUM,
+	FLD = 2
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1.OR.I.GT.max_sym_ptr) GOTO SYM_NUM
+		sym_ptr = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+SPACING,
+	FLD = 3
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1.OR.I.GT.2) GOTO SPACING
+		DPY_SPACING = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+PITCH,
+	FLD = 4
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1) GOTO PITCH	;
+		DPY_PITCH = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+POINTS,
+	FLD = 5
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1) GOTO POINTS	;
+		DPY_POINT = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+STYLE,
+	FLD = 6
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1.OR.I.GT.2) GOTO STYLE
+		DPY_STYLE = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+
+WEIGHT,
+	FLD = 7
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1) GOTO WEIGHT	;
+		DPY_WEIGHT = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+
+TYP_NUM,
+	FLD = 8
+	CALL CHOICES
+	IF (I)	BEGIN	;---------------;
+		IF (I.LT.1) GOTO TYP_NUM;
+		DPY_TYPE = I		;
+		CALL DESCRIPTOR		;
+		END	;---------------;
+
+	GOTO ORIENT				;LOOP AROUND (CTRL-Z TO STOP)
+
+
+CHOICES,
+;-----------------------------------------------------------------------------
+; DISPLAYS ELIGIBLE CHOICES FOR CURRENT FIELD (FLD) BEING ENTERED
+;-----------------------------------------------------------------------------
+	DISPLAY (15,$scr_pos(21,1),$scr_clr(eos))
+	CASE FLD OF BEGINCASE
+;--1=ORIENTATION --
+		DISPLAY (15,$scr_pos(21,1),'1=PORTRAIT  2=LANDSCAPE')
+
+;--2=SYMBOL SET ---
+		DISPLAY (15,$scr_pos(21,1),
+& SYM_NAME(1),SYM_NAME(5),SYM_NAME( 9),SYM_NAME(13),SYM_NAME(17),SYM_NAME(21),
+& $scr_pos(22,1),
+& SYM_NAME(2),SYM_NAME(6),SYM_NAME(10),SYM_NAME(14),SYM_NAME(18),SYM_NAME(22),
+& $scr_pos(23,1),
+& SYM_NAME(3),SYM_NAME(7),SYM_NAME(11),SYM_NAME(15),SYM_NAME(19),SYM_NAME(23),
+& $scr_pos(24,1),
+& SYM_NAME(4),SYM_NAME(8),SYM_NAME(12),SYM_NAME(16),SYM_NAME(20),SYM_NAME(24))
+
+;--3=SPACING --
+		DISPLAY (15,$scr_pos(21,1),'1=PROPORTIONAL  2=FIXED')
+
+;--4=PITCH --
+		DISPLAY (15,$scr_pos(21,1),'CPI is a 3digit# as XX.X')
+
+;--5=POINTS --
+		DISPLAY (15,$scr_pos(21,1),'POINT HEIGHT is a 3digit# as XX.X')
+
+;--6=STYLE --
+		DISPLAY (15,$scr_pos(21,1),'1=UPRIGHT  2=ITALICS')
+
+;--7=WEIGHT --
+		DISPLAY (15,$scr_pos(21,1),
+& 'WEIGHT is a 1-digit 1 to 9.  Larger numbers are darker. "5" is considered',
+& $scr_pos(22,1),
+& 'normal. "8" is considered bold. "2" is considered light.')
+
+;--8=TYPE FACE --
+		BEGIN	;---------------------------------------;
+		XROW = 20					;
+		XCOL = 1					;
+		IF (max_typ_num.LE.24) THEN COLwidth=13 ELSE COLwidth=11
+		FOR I = 1 STEP 1 UNTIL max_typ_num DO		;
+			BEGIN	;-----------------------;	;
+			INCR XROW			;	;
+			IF (XROW.GT.24)			;	;
+				BEGIN	;-------;	;	;
+				XROW = 21	;	;	;
+				XCOL = XCOL + COLwidth	;	;
+				END	;-------;	;	;
+			ALPHA15 = TYP_NUM(I) [LEFT]	;	;
+			ALPHA15(%trim(ALPHA15)+1:1) = '='	;
+			ALPHA15(%trim(ALPHA15)+1,15) = TYP_NAME(I)
+							;	;
+			DISPLAY (15,$SCR_POS(XROW,XCOL))
+			IF (XCOL.GT.1) DISPLAY (15,$SCR_MOV(0,-1),' ')
+			DISPLAY (15,ALPHA15)		;	;
+			END	;-----------------------;	;
+		END	;---------------------------------------;
+
+	ENDCASE
+	CALL DESCRIPTOR
+INPUT,
+	DISPLAY (15,$scr_pos(ROW,COL-3),'   ',$scr_pos(ROW,COL-3))
+	IF (%TRUE)
+	   THEN	READS (15,ALPHA4(1,MAX),EOF)
+	   ELSE	BEGIN	;---------------;
+EOF,		DISPLAY (15,$scr_pos(23,1))
+		STOP			;
+		END	;---------------;
+	ONERROR INPUT
+	I = ALPHA4(1,MAX)
+	OFFERROR
+	DISPLAY (15,$scr_pos(ROW,COL-3),'   ')
+	RETURN
+
+
+DESCRIPTOR,
+;-----------------------------------------------------------------------------
+; SHOWS VALUE OF CURRENT DESCRIPTOR
+;-----------------------------------------------------------------------------
+	DISPLAY (15,$scr_pos(19,1),DPY,$scr_att(REVERSE))
+	CASE FLD OF BEGINCASE
+;--1=ORIENTATION--
+		BEGIN	;-------------------------------;
+		CTL = 03501				;
+		IF (DPY_ORIENT.EQ.1)
+		   THEN	DISPLAY (15,$scr_pos(ROW,50),'PORTRAIT ')
+		   ELSE	DISPLAY (15,$scr_pos(ROW,50),'LANDSCAPE')
+		END	;-------------------------------;
+
+;--2=SYMBOL SET --
+		BEGIN	;-------------------------------;
+		CTL = 05502				;
+		DPY_SYM = SYM_NUM(sym_ptr)		;
+		ALPHA13 = SYM_NAME(sym_ptr)		;
+		DISPLAY (15,$scr_pos(ROW,50),ALPHA13(4,13))
+		END	;-------------------------------;
+
+;--3=SPACING --
+		BEGIN	;-------------------------------;
+		CTL = 07501				;
+		IF (DPY_SPACING.EQ.1)
+		   THEN	DISPLAY (15,$scr_pos(ROW,50),'PROPORTIONAL ')
+		   ELSE	DISPLAY (15,$scr_pos(ROW,50),'FIXED SPACING')
+		END	;-------------------------------;
+
+;--4=PITCH --
+		BEGIN	;-------------------------------;
+		CTL = 09503				;
+		ALPHA4 = DPY_PITCH ,'ZX.X'		;
+		DISPLAY (15,$scr_pos(ROW,50),ALPHA4)	;
+		END	;-------------------------------;
+
+;--5=POINTS --
+		BEGIN	;-------------------------------;
+		CTL = 11503				;
+		ALPHA4 = DPY_POINT ,'ZX.X'		;
+		DISPLAY (15,$scr_pos(ROW,50),ALPHA4)	;
+		END	;-------------------------------;
+
+;--6=STYLE --
+		BEGIN	;-------------------------------;
+		CTL = 13501				;
+		IF (DPY_STYLE.EQ.1)
+		   THEN	DISPLAY (15,$scr_pos(ROW,50),'UPRIGHT')
+		   ELSE	DISPLAY (15,$scr_pos(ROW,50),'ITALIC ')
+		END	;-------------------------------;
+
+;--7=WEIGHT --
+		BEGIN	;-------------------------------;
+		CTL = 15501				;
+		CASE DPY_WEIGHT OF BEGINCASE		;
+			DISPLAY (15,$scr_pos(ROW,50),'1=VERY LIGHT      ')
+			DISPLAY (15,$scr_pos(ROW,50),'2=LIGHT           ')
+			DISPLAY (15,$scr_pos(ROW,50),'3=SHADE OVER LIGHT')
+			DISPLAY (15,$scr_pos(ROW,50),'4=SHADE UNDER NORM')
+			DISPLAY (15,$scr_pos(ROW,50),'5=NORMAL          ')
+			DISPLAY (15,$scr_pos(ROW,50),'6=SHADE OVER NORM ')
+			DISPLAY (15,$scr_pos(ROW,50),'7=SHADE UNDER NORM')
+			DISPLAY (15,$scr_pos(ROW,50),'8=STANDARD BOLD   ')
+			DISPLAY (15,$scr_pos(ROW,50),'9=VERY BOLD       ')
+		ENDCASE					;
+		END	;-------------------------------;
+
+;--8=TYPE FACE --
+		BEGIN	;-------------------------------;
+		CTL = 17504				;
+		ALPHA10 = 'UNKNOWN'			;
+		FOR J = 1 STEP 1 UNTIL max_typ_num DO	;
+			IF (TYP_NUM(J).EQ.DPY_TYPE) ALPHA10 = TYP_NAME(J)
+		DISPLAY (15,$scr_pos(ROW,50),ADPY_TYPE,'=',ALPHA10)
+		END	;-------------------------------;
+
+	ENDCASE
+	DISPLAY (15,$scr_att(CLEAR))
+	RETURN

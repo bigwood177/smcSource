@@ -1,0 +1,41 @@
+.TITLE SHOWFONT
+
+;READS an input file and uses XCALL FONTRPT to write an output file
+
+.INCLUDE DEF:HPSUB.DEF
+
+RECORD
+	INFILE	,A30
+	OUTFILE	,A30
+	ENTRY	,A1
+	DESCR	,A73
+RECORD LINE
+	FONT	,D18
+		,A100
+PROC
+	OPEN (15,I,'TT:')
+	DISPLAY (15,9,
+&'This program reads an INPUT file attempting to interpret the 1st 18',13,10,9,
+&'characters of each line as a D18 XCALL HP font descriptor. It then ',13,10,9,
+&'outputs the entire line with the narrative description appended to ',13,10,9,
+&'its end out to an OUTPUT file. (Short lines or lines that begin    ',13,10,9,
+&'with a semi-colon are ignored)',13,10,10,
+&'NAME OF  INPUT FILE: ')
+	READS (15,INFILE)
+	OPEN (1,I,INFILE)
+	DISPLAY (15,'NAME OF OUTPUT FILE: ')
+	READS (15,OUTFILE)
+	OPEN (2,O,OUTFILE)
+
+LOOP,
+	READS (1,LINE,EOF)
+	IF (%rdlen.LT.5) GOTO LOOP
+	IF (LINE.EQ.';') GOTO LOOP
+	XCALL FONTRPT (FONT,DESCR)
+	DISPLAY (2,LINE(1,%rdlen),' ',DESCR,13,10)
+	GOTO LOOP
+EOF,
+	CLOSE 1
+	CLOSE 2
+	STOP
+END

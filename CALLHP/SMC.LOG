@@ -1,0 +1,17 @@
+Byte order: low byte 1st
+Image File Dir. Address = 00000008
+Number of entries in IFD =0014
+Tag Field#1  Tag ID 254 Ignored
+Tag Field#2  Image Width =00000527
+Tag Field#3  Image Length=00001171
+Tag Field#4  Bits/Sample =08
+Tag Field#5  Compression =1
+Tag Field#6  Photo Interp=1
+Tag Field#7  # of Strips =00001 Strip#1 Addr=000470
+Tag Field#8  Samples/Pixl=1
+Tag Field#9  Rows/Strip  =001171
+Tag Field#10 Strip1 Count=617117
+Tag Field#11 X Resolution=646158 over 065540
+Tag Field#12 Y Resolution=646158 over 065540
+Tag Field#13 Resolv.Unit =2
+Tag Field#14 Tag ID 159 Ignored

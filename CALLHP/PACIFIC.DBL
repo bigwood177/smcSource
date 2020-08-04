@@ -1,0 +1,238 @@
+.TITLE PACIFIC
+
+;DESCRIPTION OF PACIFIC
+;	This program creates a file PACIFIC.DDF to contain 132 records.
+;	Each record is of the following format:
+;		a D18 font descriptor usable by XCALL HP
+;		a blank
+;		a 3 digit record number
+;
+;	The 132 records represent the 1st 132 fonts listed in the 
+;	Pacific 25-in-1 cartridge documentation.
+;
+;	See also the program  SHOWFONT  which reads an input file of one or 
+;	more font descriptors and outputs another file of records containing 
+;	both the font descriptor and a narrative description of it.
+
+.INCLUDE DEF:HPSUB.DEF
+
+RECORD
+	F	,132D18
+	AFONT	,132A18 @F
+
+	ENTRY	,A1
+	I	,D3
+	ALPHA	,A3 @ I
+PROC
+	OPEN (15,I,'TT:')
+	DISPLAY (15,'Create PACIFIC.DDF  CONTINUE? ')
+	READS (15,ENTRY)
+	IF (ENTRY.NE.'Y') STOP
+
+	OPEN (1,O,'PACIFIC.DDF')
+;
+;--helvetica bold 14 point --
+;
+F(1)=hpPORT+hpROMAN8+hpPRO+hp10CPI+hp14PT+hpUPRIGHT+hpBOLD+hpHELV
+F(2)=F(1) - hpROMAN8+hpASCII
+F(3)=F(2) - hpASCII +hpECMA7
+F(4)=F(3) - hpECMA7 +hpECMA8
+
+;
+;--helvetica bold 12 point --	(start from helv.bold.14pt)=F(1)
+;
+F(5)=F(1)			 - hp14PT + hp12PT
+F(6)=F(5) - hpROMAN8 + hpASCII
+F(7)=F(6) - hpASCII  + hpECMA7
+F(8)=F(7) - hpECMA7  + hpECMA8
+;
+;--helvetica medium 12 point --	(start from helv.bold.12pt)=F(5)
+;
+F(9) =F(5)			- hpBOLD + hpMEDIUM 
+F(10)=F(9)  - hpROMAN8+ hpASCII
+F(11)=F(10) - hpASCII + hpECMA7
+F(12)=F(11) - hpECMA7 + hpECMA8
+;
+;--helvetica italic 12 point --	(start from helv.med.12pt)=F(9)
+;
+F(13)=F(9)			-hpUPRIGHT+hpITALIC
+F(14)=F(13) - hpROMAN8+ hpASCII
+F(15)=F(14) - hpASCII + hpECMA7
+F(16)=F(15) - hpECMA7 + hpECMA8
+
+;=== fonts getting smaller: make pitch smaller from here on ==
+
+;
+;--helvetica bold 10 point --	(start from helv.bold.14pt)=F(1)
+;
+F(17)=F(1)			-hp14PT+hp10PT   -hp10CPI+hp12CPI
+F(18)=F(17) - hpROMAN8+ hpASCII
+F(19)=F(18) - hpASCII + hpECMA7
+F(20)=F(19) - hpECMA7 + hpECMA8
+;
+;--helvetica italic 10 point --	(start from helv.bold.10pt)=F(17)
+;
+F(21)=F(17)			-hpBOLD+hpMEDIUM   -hpUPRIGHT+hpITALIC
+F(22)=F(21) - hpROMAN8+ hpASCII
+F(23)=F(22) - hpASCII + hpECMA7
+F(24)=F(23) - hpECMA7 + hpECMA8
+;
+;--helvetica medium 10 point --	(start from helv.bold.10pt)=F(17)
+;
+F(25)=F(17)			-hpBOLD+hpMEDIUM
+F(26)=F(25) - hpROMAN8+ hpASCII
+F(27)=F(26) - hpASCII + hpECMA7
+F(28)=F(27) - hpECMA7 + hpECMA8
+;
+;--helvetica bold 8 point ASCII-- (start from helv.bold.10pt)=F(17)
+;
+F(29)=F(17) - hpROMAN8+hpASCII -hp10PT+hp8PT
+;
+;--helvetica medium 8 point--	(start from helv.bold.8pt.ascii)=F(29)
+;
+F(30)=F(29) - hpASCII +hpROMAN8 - hpBOLD+hpMEDIUM
+F(31)=F(30) - hpROMAN8+hpASCII
+F(32)=F(31) - hpASCII +hpECMA7
+F(33)=F(32) - hpECMA7 +hpECMA8
+;
+;helvetica medium 6 point--	(start from helv.med.8pt)=F(30)
+;
+F(34)=F(30)			- hp8PT+hp6PT
+F(35)=F(34) - hpROMAN8+hpASCII
+
+;-----------------------------------------------------------------------;
+; FONTS 36 TO 55 are same as 1 TO 20 except HELVETICA CHANGED TO TIMES	;
+;-----------------------------------------------------------------------;
+FOR I = 36 STEP 1 UNTIL 55 DO F(I) = F(I-35) -hpHELV + hpTIMES		;
+;									;
+;-----------------------------------------------------------------------;
+
+;-----------------------------------------------------------------------;
+; FONTS 56 TO 59 are same as 25 TO 28 except HELVETICA CHANGED TO TIMES	;
+;-----------------------------------------------------------------------;
+FOR I = 56 STEP 1 UNTIL 59 DO F(I) = F(I-31) -hpHELV + hpTIMES		;
+;									;
+;-----------------------------------------------------------------------;
+
+;-----------------------------------------------------------------------;
+; FONTS 60 TO 63 are same as 21 TO 24 except HELVETICA CHANGED TO TIMES	;
+;-----------------------------------------------------------------------;
+FOR I = 60 STEP 1 UNTIL 63 DO F(I) = F(I-39) -hpHELV + hpTIMES		;
+;									;
+;-----------------------------------------------------------------------;
+
+;-----------------------------------------------------------------------;
+; FONTS 64 TO 67 are same as 30 TO 33 except HELVETICA CHANGED TO TIMES	;
+;-----------------------------------------------------------------------;
+FOR I = 64 STEP 1 UNTIL 67 DO F(I) = F(I-34) -hpHELV + hpTIMES		;
+;									;
+;-----------------------------------------------------------------------;
+
+;
+;Times (math) medium 10 point--	(start from times.med.10pt.roman8)=F(56)
+;
+F(68)=F(56)			- hpROMAN8+hpMATH8A
+F(69)=F(68) - hpMATH8A + hpMATH8B
+;
+;Times (math) medium 8 point--	(start from times.med.10pt.math8a)=F(68)
+;
+F(70)=F(68)			- hp10PT+hp8PT
+F(71)=F(70) -hpMATH8A+hpMATH8B
+
+F(72)=F(71) -hpMATH8B+hpPIA -hp8PT+hp10PT
+
+;-----------------------------------------------------------------------------
+;	THIS COMPLETES THE PORTRAIT PROPORTIONAL FONTS. NEXT ARE FIXED CPI
+;-----------------------------------------------------------------------------
+
+;-----------------------------------------------------------------------------
+; FOR DEMONSTRATION PURPOSES WE'LL USE A TECHNIQUE NOW THAT DEFINES EACH FONT
+; (starting with #74) SOLELY ON THE BASIS OF THE ONE PRECEDING IT
+;-----------------------------------------------------------------------------
+;
+;--Gothic
+;
+F(73)=hpPORT+hpASCII+hpFIX+hp10CPI+hp14PT+hpUPRIGHT+hpMEDIUM+hpGOTHIC
+
+F(74)=F(73) - hpASCII +hpLEGAL
+F(75)=F(74) - hpLEGAL +hpROMAN8 -hp14PT+hp12PT -hpMEDIUM+hpBOLD -hp10CPI+hp12CPI
+F(76)=F(75) - hpROMAN8+hpASCII
+F(77)=F(76) - hpASCII +hpROMAN8 -hpBOLD+hpMEDIUM
+F(78)=F(77) - hpROMAN8+hpASCII
+F(79)=F(78) - hpASCII +hpROMAN8 -hpUPRIGHT+hpITALIC
+F(80)=F(79) - hpROMAN8+hpASCII
+F(81)=F(80) - hpASCII +hpROMAN8 -hpITALIC+hpUPRIGHT -hp12CPI+hp167CPI 
+F(82)=F(81) - hpROMAN8+hpASCII
+;
+;--Prestige Elite
+;
+F(83)=hpPORT+hpROMAN8+hpFIX+hp12CPI+hp10PT+hpUPRIGHT+hpBOLD+hpPRESTIGE
+
+F(84)=F(83) - hpROMAN8+hpASCII
+F(85)=F(84) - hpASCII +hpLEGAL
+F(86)=F(85) - hpLEGAL +hpROMAN8 -hpBOLD+hpMEDIUM
+F(87)=F(86) - hpROMAN8+hpASCII
+F(88)=F(87) - hpASCII +hpLEGAL
+F(89)=F(88) - hpLEGAL +hpROMAN8 -hpUPRIGHT+hpITALIC
+F(90)=F(89) - hpROMAN8+hpASCII
+F(91)=F(90) - hpASCII +hpLEGAL
+F(92)=F(91) - hpLEGAL +hpROMAN8 -hp12CPI+hp167CPI -hp10PT+hp7PT 
+F(93)=F(92) - hpROMAN8+hpASCII
+F(94)=F(93) - hpASCII +hpLEGAL
+;
+;--Prestige (Math) Elite
+;
+F(95)=hpPORT+hpMATH7+hpFIX+hp12CPI+hp10PT+hpUPRIGHT+hpMEDIUM+hpPRESTIGE
+
+F(96)=F(95) - hpMATH7 +hpMATH8
+F(97)=F(96) - hpMATH8 +hpMATH8A
+F(98)=F(97) - hpMATH8A+hpMATH8B
+F(99)=F(98) - hpMATH8B+hpPIFONT
+F(100)=F(99)  - hpPIFONT +hpPIA
+F(101)=F(100) - hpPIA   +hpMATH8 - hp10PT+hp7PT
+F(102)=F(101) - hpMATH8 +hpMATH8A
+F(103)=F(102) - hpMATH8A+hpMATH8B
+;
+;--Courier
+;
+F(104)=hpPORT+hpROMAN8+hpFIX+hp10CPI+hp12PT+hpUPRIGHT+hpBOLD+hpCOURIER
+
+F(105)=F(104) - hpROMAN8 +hpASCII
+F(106)=F(105) - hpASCII  +hpFRENCH
+F(107)=F(106) - hpFRENCH +hpGERMAN
+F(108)=F(107) - hpGERMAN +hpITALIAN
+F(109)=F(108) - hpITALIAN+hpSPANISH
+F(110)=F(109) - hpSPANISH+hpSWEDISH
+F(111)=F(110) - hpSWEDISH+hpDANISH
+F(112)=F(111) - hpDANISH +hpUK
+F(113)=F(112) - hpUK     +hpROMAN8 -hpBOLD+hpMEDIUM - hpUPRIGHT+hpITALIC
+F(114)=F(113) - hpROMAN8 +hpASCII
+F(115)=F(114) - hpASCII  +hpFRENCH
+F(116)=F(115) - hpFRENCH +hpGERMAN
+F(117)=F(116) - hpGERMAN +hpITALIAN
+F(118)=F(117) - hpITALIAN+hpSPANISH
+F(119)=F(118) - hpSPANISH+hpSWEDISH
+F(120)=F(119) - hpSWEDISH+hpDANISH
+F(121)=F(120) - hpDANISH +hpUK
+F(122)=F(121) - hpUK     +hpASCII  - hpITALIC+hpUPRIGHT
+F(123)=F(122) - hpASCII  +hpFRENCH
+F(124)=F(123) - hpFRENCH +hpGERMAN
+F(125)=F(124) - hpGERMAN +hpITALIAN
+F(126)=F(125) - hpITALIAN+hpSPANISH
+F(127)=F(126) - hpSPANISH+hpSWEDISH
+F(128)=F(127) - hpSWEDISH+hpDANISH
+F(129)=F(128) - hpDANISH +hpUK
+
+F(130)=hpPORT+hpPCLINE+hpFIX+hp10CPI+hp14PT+hpUPRIGHT+hpBOLD+hpLINEPRINT
+
+F(131)=hpPORT+hpTAX +hpFIX+hp10CPI  +hp12PT+hpUPRIGHT+hpBOLD+hpLINEPRINT
+
+F(132)=hpPORT+hpPC8 +hpFIX+hp167CPI+hp85PT+hpUPRIGHT+hpMEDIUM+hpLINEPRINT
+
+
+
+	FOR I = 1 STEP 1 UNTIL 132 DO DISPLAY (1,AFONT(I),' ',ALPHA,13,10)
+	CLOSE 1
+	STOP
+END
+

@@ -1,0 +1,611 @@
+.TITLE HPQUERY3
+
+;LOOKS AT A SOFT FONT AND REPORTS SOME OF ITS CHARACTERISTICS
+
+RECORD
+	FILSPC	,A40
+	OUTFILE	,A30
+	BUFFER	,A512
+	ptr	,d3
+	eptr	,d3
+	I	,D3
+	J	,D3
+	null	,a1
+	alpha1	,a1
+	alpha5	,a5
+
+	ALPHA	,A6
+	NUM	,D5
+
+	NUM1	,D3
+	NUM2	,D3
+	NUM3	,D5
+
+	des_size,d5
+RECORD DESC_START
+	ESC1	,A1
+		,A* ,')s'
+RECORD ID_START
+	ESC2	,A1
+		,A2 ,'*c'
+RECORD
+	TYPEFACE_VENDOR	,D2
+	TYPEFACE_VERSION,D1
+	TYPEFACE_FAMILY	,D5
+	TYPEFACE_BASE	,D3
+	TYPEFACE_VALUE	,D5
+
+	MSB	,D8
+	LSB	,D8
+	WORD	,D16 @MSB
+TEST	,D16
+BINARY	,256D8
+&          ,00000001,00000010,00000011,00000100,00000101,00000110,00000111
+& ,00001000,00001001,00001010,00001011,00001100,00001101,00001110,00001111
+& ,00010000,00010001,00010010,00010011,00010100,00010101,00010110,00010111
+& ,00011000,00011001,00011010,00011011,00011100,00011101,00011110,00011111
+& ,00100000,00100001,00100010,00100011,00100100,00100101,00100110,00100111
+& ,00101000,00101001,00101010,00101011,00101100,00101101,00101110,00101111
+& ,00110000,00110001,00110010,00110011,00110100,00110101,00110110,00110111
+& ,00111000,00111001,00111010,00111011,00111100,00111101,00111110,00111111
+& ,01000000,01000001,01000010,01000011,01000100,01000101,01000110,01000111
+& ,01001000,01001001,01001010,01001011,01001100,01001101,01001110,01001111
+& ,01010000,01010001,01010010,01010011,01010100,01010101,01010110,01010111
+& ,01011000,01011001,01011010,01011011,01011100,01011101,01011110,01011111
+& ,01100000,01100001,01100010,01100011,01100100,01100101,01100110,01100111
+& ,01101000,01101001,01101010,01101011,01101100,01101101,01101110,01101111
+& ,01110000,01110001,01110010,01110011,01110100,01110101,01110110,01110111
+& ,01111000,01111001,01111010,01111011,01111100,01111101,01111110,01111111
+& ,10000000,10000001,10000010,10000011,10000100,10000101,10000110,10000111
+& ,10001000,10001001,10001010,10001011,10001100,10001101,10001110,10001111
+& ,10010000,10010001,10010010,10010011,10010100,10010101,10010110,10010111
+& ,10011000,10011001,10011010,10011011,10011100,10011101,10011110,10011111
+& ,10100000,10100001,10100010,10100011,10100100,10100101,10100110,10100111
+& ,10101000,10101001,10101010,10101011,10101100,10101101,10101110,10101111
+& ,10110000,10110001,10110010,10110011,10110100,10110101,10110110,10110111
+& ,10111000,10111001,10111010,10111011,10111100,10111101,10111110,10111111
+& ,11000000,11000001,11000010,11000011,11000100,11000101,11000110,11000111
+& ,11001000,11001001,11001010,11001011,11001100,11001101,11001110,11001111
+& ,11010000,11010001,11010010,11010011,11010100,11010101,11010110,11010111
+& ,11011000,11011001,11011010,11011011,11011100,11011101,11011110,11011111
+& ,11100000,11100001,11100010,11100011,11100100,11100101,11100110,11100111
+& ,11101000,11101001,11101010,11101011,11101100,11101101,11101110,11101111
+& ,11110000,11110001,11110010,11110011,11110100,11110101,11110110,11110111
+& ,11111000,11111001,11111010,11111011,11111100,11111101,11111110,11111111
+
+
+PROC
+	XCALL FLAGS (1000000,1)		;No stop message
+	XCALL ASCII (27,ESC1)
+	ESC2 = ESC1
+	XCALL ASCII (0,NULL)
+	OPEN (15,I,'TT:')
+
+FILSPC,
+	DISPLAY (15,'NAME OF SOFT FONT FILE TO ANALYSE (PCL5 Series III): ')
+	READS (15,FILSPC)
+	IF (%TRUE)
+	   THEN	OPEN (1,I,FILSPC) [ERR=FNF]
+	   ELSE	BEGIN
+FNF,		DISPLAY (15,7,'?-CANNOT OPEN ',FILSPC,13,10)
+		GOTO FILSPC
+		END
+	GETS (1,BUFFER)
+	CLOSE 1
+	ptr = %INSTR(1,BUFFER,DESC_START)
+;
+;-- The Descriptor command <ESC> ) s # W is normally FIRST in the file --
+;
+	IF (ptr.GT.1)
+		BEGIN	;---------------------------------------;
+		DECR ptr					;
+		ALPHA5 = ptr ,'ZZZZZ'[LEFT]			;
+		DISPLAY (15,'WARNING: File contains ',ALPHA5(1,%trim(ALPHA5)),
+&				' bytes BEFORE descriptor begins:',13,10)
+		FOR I = 1 STEP 1 UNTIL ptr DO
+			BEGIN	;-----------------------;	;
+			IF (BUFFER(I,I).EQ.ESC1)	;	;
+			   THEN	DISPLAY (15,'<Esc>')	;	;
+			   ELSE	DISPLAY (15,BUFFER(I,I));	;
+			END	;-----------------------;	;
+		INCR ptr					;
+		END	;---------------------------------------;
+;
+;-- In case Descriptor can't be found at all --
+;
+	IF (.NOT.ptr)
+		BEGIN	;---------------;
+NODESCRIPTOR,				;
+					;
+WRITES(15,'Could not find Font Descriptor command "<ESC> ) s # W" in 1st block')
+WRITES(15,'Where "#" is a number ranging from 0 to 32767')
+WRITES(15,'The Font Descriptor command is usually the first thing in the file')
+		STOP			;
+		END	;---------------;
+;
+;-- Advance ptr to beginning of "#". Advance eptr to end of "#"
+;
+	SET ptr,eptr = ptr+3			;ptr points to 1st digit in "#"
+	INCR eptr				;which we call DES_SIZE.
+	IF (BUFFER(eptr:1).NE.'W') INCR eptr	;Look at next bytes until you
+	IF (BUFFER(eptr:1).NE.'W') INCR eptr	;find "W".  When you've found
+	IF (BUFFER(eptr:1).NE.'W') INCR eptr	;it, you have just passed the
+	IF (BUFFER(eptr:1).NE.'W') INCR eptr	;end of "#" so DECR eptr.  This
+	IF (BUFFER(eptr:1).NE.'W') INCR eptr	;will leave # = BUFFER(ptr,eptr)
+	IF (BUFFER(eptr:1).NE.'W') 		;If you can't find this sequence
+		GOTO NODESCRIPTOR		;give up.
+	DECR eptr
+	DES_SIZE = BUFFER(ptr,eptr) 
+	ALPHA5 =   DES_SIZE ,'ZZZZZ'[LEFT]
+
+	DISPLAY (15,'OUTPUT FILE FOR ANALYSIS: [TT:] ')
+	READS (15,OUTFILE)
+	IF (OUTFILE.EQ.'   ') OUTFILE = 'TT:'
+	OPEN (1,O,OUTFILE)
+;
+;-- In particular, check to see if file contains an ID# before the descriptor--
+;
+	IF (%instr(1,BUFFER(1,ptr),ID_START,I))
+		BEGIN	;---------------------------------------;
+		I = I+3						;
+		J = I						;
+		INCR J						;
+		IF (BUFFER(J:1).NE.'D') INCR J			;
+		IF (BUFFER(J:1).NE.'D') INCR J			;
+		IF (BUFFER(J:1).NE.'D') INCR J			;
+		IF (BUFFER(J:1).NE.'D') INCR J			;
+		DECR J						;
+		DISPLAY (15,'WARNING: FILE CONTAINS BUILT-IN ID# "',
+&				BUFFER(I,J),'"',13,10)		;
+		END	;---------------------------------------;
+
+;
+;-- Make BUFFER contain only the descriptor data.  
+;-- We will then have DES_SIZE number of bytes to report on
+;
+	BUFFER = BUFFER(eptr+2:DES_SIZE)
+
+;-----------------------------------------------------------------------------
+;In almost all cases, a value is either 1 or 2 bytes long.
+;In the case of 2-byte (words) the MSB comes first followed by the LSB.
+;	MSB goes into NUM1
+;	LSB goes into NUM2
+;	NUM3 is calculated as NUM1*256 + NUM2
+;
+;In the case of signed bytes, if byte>127, subtract byte from 256 and
+;		consider the answer to be negative
+;-----------------------------------------------------------------------------
+; The following routines return a value in NUM and a formatted string in ALPHA
+; Each uses "ptr" to indicate which byte(s) in BUFFER we're interested in.
+;
+;   Routine GET_UB	returns unsigned byte value (0...255)
+;   Routine GET_SB	returns   signed byte value (-128..127)
+;   Routine GET_UI	returns unsigned integer    (0...65535)
+;   Routine GET_SI	returns   signed integer    (-32768..32767)
+;-----------------------------------------------------------------------------
+
+;
+;--0,1 = FONT DESCRIPTOR SIZE --
+;
+	ptr = 0
+	CALL GET_UI
+	DISPLAY (1,'00-01 Font Descrip size ',ALPHA,' ',
+&		FILSPC(1,%trim(FILSPC)),' Descriptor size=',ALPHA5,13,10)
+;
+;--2 = DESCRIPTOR FORMAT --
+;
+	ptr = 2
+	CALL GET_UB
+	DISPLAY (1,'   02 Descriptor format ',ALPHA,' ')
+	IF (.NOT.NUM)
+	   THEN	DISPLAY (1,'Bitmap',13,10)
+	   ELSE	BEGIN	;-------------------------------;
+		IF (NUM.EQ.10)	THEN DISPLAY (1,'Intellifont Scalable',13,10)
+				ELSE DISPLAY (1,'UNKNOWN FORMAT',13,10)
+		END	;-------------------------------;
+;
+;--3 = FONT TYPE --
+;
+	ptr = 3
+	CALL GET_UB
+	DISPLAY (1,'   03 Font type         ',ALPHA,' ')
+	CASE NUM+1 OF BEGINCASE
+		DISPLAY (1,'7-bit (96chars) 32-127 printable',13,10)
+		DISPLAY (1,'8-bit (192chars) 32-127 & 160-255 printable',13,10)
+		DISPLAY (1,'8-bit (256chars) All printable',13,10)
+	ENDCASE	ELSE
+		DISPLAY (1,'UNKNOWN FONT TYPE',13,10)
+;
+;--4 = STYLE --	PCL5 STYLE is 2 bytes MSB=Byte#4, LSB=Byte#23 in strange scheme
+;
+;	+------------MSB-Byte#4--------++------------LSB-Byte#23-------+
+;	|                              ||                              |
+;	+---+-------------------+-------------------+-----------+------+
+;	| X | RESERVED          | STRUCTURE         |APPEARANCE |POSTUR|
+;	|   |                   |                   |WIDTH      |      |
+;	+---+-------------------+-------------------+-----------+------+
+;	|16 |15  14  13  12  11 |10  09  08  07  06 |05  04  03 |02  01|
+;	|01 |02  03  04  05  06 |07  08  09  10  11 |12  13  14 |15  16|
+;	+---+-------------------+-------------------+-----------+------+
+;	|   |                   |                   |           |      |
+;	|   |                   |                   |           |      |
+;	+---+-------------------+-------------------+-----------+------+
+	ptr = 4
+	CALL GET_UB
+	IF (NUM)
+	   THEN	MSB = BINARY(NUM)
+	   ELSE	MSB =
+
+	ptr = 23
+	CALL GET_UB
+	IF (NUM)
+	   THEN	LSB = BINARY(NUM)
+	   ELSE LSB =
+
+	DISPLAY (1,'04,23 Style Parameters  POSTURE=')
+	TEST = WORD(15,16)
+	I =
+	IF (TEST) DO INCR I UNTIL (BINARY(I).EQ.TEST)
+
+	CASE I + 1 OF BEGINCASE
+		DISPLAY (1,'Upright')
+		DISPLAY (1,'Italic')
+		DISPLAY (1,'Alternate Italic')
+		DISPLAY (1,'Reserved')
+	ENDCASE	ELSE
+		DISPLAY (1,'UNKNOWN')
+
+	DISPLAY (1,13,10,'               APPEARANCE WIDTH=')
+	TEST = WORD(12,14)
+	I =
+	IF (TEST) DO INCR I UNTIL (BINARY(I).EQ.TEST)
+
+	CASE I + 1 OF BEGINCASE
+		DISPLAY (1,'Normal')
+		DISPLAY (1,'Condensed')
+		DISPLAY (1,'Compressed or Extra condensed')
+		DISPLAY (1,'Extra Compressed')
+		DISPLAY (1,'Ultra Compressed')
+		DISPLAY (1,'Reserved')
+		DISPLAY (1,'Extended or Expanded')
+		DISPLAY (1,'Extra Extended or Extra Expanded')
+	ENDCASE	ELSE
+		DISPLAY (1,'UNKNOWN')
+
+	DISPLAY (1,13,10,'                      STRUCTURE=')
+	TEST = WORD(7,11)
+	I =
+	IF (TEST) DO INCR I UNTIL (BINARY(I).EQ.TEST)
+
+	CASE I + 1 OF BEGINCASE
+		DISPLAY (1,'Solid')			;0
+		DISPLAY (1,'Outline')			;1
+		DISPLAY (1,'Inline')			;2
+		DISPLAY (1,'Contour')			;3
+		DISPLAY (1,'Solid with Shadow')		;4
+		DISPLAY (1,'Outline with Shadow')	;5
+		DISPLAY (1,'Inline with Shadow')	;6
+		DISPLAY (1,'Contour with Shadow')	;7
+		DISPLAY (1,'Patterned Complex')		;8
+		DISPLAY (1,'Patterned Complex')		;9
+		DISPLAY (1,'Patterned Complex')		;10
+		DISPLAY (1,'Patterned Complex')		;11
+		DISPLAY (1,'Patterned with Shadow')	;12
+		DISPLAY (1,'Patterned with Shadow')	;13
+		DISPLAY (1,'Patterned with Shadow')	;14
+		DISPLAY (1,'Patterned with Shadow')	;15
+		DISPLAY (1,'Inverse')			;16
+		DISPLAY (1,'Inverse in Open Border')	;17
+	ENDCASE	ELSE
+		DISPLAY (1,'Reserved')
+	DISPLAY (1,13,10)
+
+;
+;--5 = RESERVED
+;
+	ptr = 5
+	CALL GET_UB
+	DISPLAY (1,'   05 Reserved          ',ALPHA,13,10)
+;
+;--6 = BASELINE POSITION --
+;
+	ptr = 6
+	CALL GET_UI
+	DISPLAY (1,'06,07 Baseline Position ',ALPHA,13,10)
+;
+;--8 = CELL WIDTH ==
+;
+	ptr = 8
+	CALL GET_UI
+	DISPLAY (1,'08,09 Cell Width        ',ALPHA,13,10)
+;
+;--10 = CELL HEIGHT ==
+;
+	ptr = 10
+	CALL GET_UI
+	DISPLAY (1,'10,11 Cell Height       ',ALPHA,13,10)
+;
+;--12 = ORIENTATION ==
+;
+	ptr = 12
+	CALL GET_UB
+	DISPLAY (1,'   12 Orientation       ',ALPHA,' ')
+	CASE NUM+1 OF BEGINCASE
+		DISPLAY (1,'Portrait')
+		DISPLAY (1,'Landscape 90 degrees counterclockwise')
+		DISPLAY (1,'Reverse Portrait')
+		DISPLAY (1,'Reverse Landscape 270 degrees counterclockwise')
+	ENDCASE	ELSE
+		DISPLAY (1,'UNKNOWN')
+	DISPLAY (1,13,10)
+;
+;--13 = SPACING ==
+;
+	ptr = 13
+	CALL GET_UB
+	DISPLAY (1,'   13 Spacing           ',ALPHA,' ')
+	CASE NUM+1 OF BEGINCASE
+		DISPLAY (1,'Fixed Spacing',13,10)
+		DISPLAY (1,'Proportional Spacing',13,10)
+	ENDCASE	ELSE
+		DISPLAY (1,'UNKNOWN SPACING',13,10)
+;
+;--14,15 = SYMBOL SET ==
+;
+	ptr = 14
+	CALL GET_UI
+	DISPLAY (1,'14,15 Symbol Set        ',ALPHA,' ')
+	num1 = num/32				;8 = 277/32
+	ALPHA = NUM1 ,'ZZZX'[LEFT]
+	num2 = num - num1*32 + 64		;U =277-277/32*32 + 64
+	xcall ascii (num2,alpha1)
+	DISPLAY (1,ALPHA(1,%trim(ALPHA)),ALPHA1,13,10)
+;
+;-- 16,17 = PITCH (Default HMI)
+;
+	ptr = 16
+	CALL GET_UI
+	DISPLAY (1,'16,17 Pitch:Default HMI ',ALPHA,' = ')
+	ALPHA = 120000/NUM ,'ZZX.XX'[LEFT]
+	DISPLAY (1,ALPHA(1,%trim(ALPHA)),' CPI',13,10)
+;
+;--18,19 = HEIGHT ==
+;
+	ptr = 18
+	CALL GET_UI
+	DISPLAY (1,'18,19 Height            ',ALPHA,' = ')
+	ALPHA = 72*NUM/12 ,'ZZX.XX'[LEFT]
+	DISPLAY (1,ALPHA(1,%trim(ALPHA)),' Points',13,10)
+;
+;-- 20,21 = xHEIGHT ==
+;
+	ptr = 20
+	CALL GET_UI
+	DISPLAY (1,'20,21 Height of "x"     ',ALPHA,' = ')
+	ALPHA = NUM*100/4 ,'ZZX.XX'[LEFT]
+	DISPLAY (1,ALPHA(1,%trim(ALPHA)),' Dots',13,10)
+;
+;-- 22 = WIDTH TYPE ==
+;
+	ptr = 22
+	CALL GET_SB
+	DISPLAY (1,'   22 Width typ ignored ',ALPHA,13,10)
+;
+;-- 23 is part of Style -- Set Byte#4
+;
+
+;
+;-- 24 = STROKE WEIGHT ==
+;
+	ptr = 24
+	CALL GET_SB
+	DISPLAY (1,'   24 Stroke weight     ',ALPHA,
+&		' "0" is medium. <0 is light >0 is dark(bold)',13,10)
+
+;
+;-- 25,26 = TYPEFACE == is 2 bytes MSB=Byte25, LSB=Byte26 in strange scheme
+;
+	ptr = 25
+	CALL GET_UI
+	IF (NUM1)
+	   THEN	LSB = BINARY(NUM1)
+	   ELSE	LSB =
+	IF (NUM2)
+	   THEN	MSB = BINARY(NUM2)
+	   ELSE MSB =
+	DISPLAY (1,'25,26 Typeface Calc...  ',ALPHA,13,10)
+
+;	+------------MSB-Byte#25-------++------------LSB-Byte#26-------+
+;	|                              ||                              |
+;	+---+---------------+------------------------------------------+
+;	| X | VENDOR        |VERSION|  TYPE FACE BASE VALUE            |
+;	|   |               |       |                                  |
+;	+---+---------------|-------+----------------------------------+
+;	|16 |15  14  13  12 |11  10 |09  08  07  06  05  04  03  02  01|
+;	|01 |02  03  04  05 |06  07 |08  09  10  11  12  13  14  15  16|
+;	+---+---------------+-------+----------------------------------+
+;	|   |               |       |                                  |
+;	|   |               |       |                                  |
+;	+---+---------------+-------+----------------------------------+
+	TEST = WORD(2,5)
+	I =
+	IF (TEST) DO INCR I UNTIL (BINARY(I).EQ.TEST)
+	ALPHA = I ,'ZZZZX'[LEFT]
+	DISPLAY (1,'                  Vendor=',ALPHA)
+	TYPEFACE_VENDOR = I
+
+	CASE TYPEFACE_VENDOR+1 OF BEGINCASE
+		DISPLAY (1,'Reserved',13,10)		;0
+		DISPLAY (1,'Reserved',13,10)		;1
+		DISPLAY (1,'AGFA Compugraphic',13,10)	;2
+		DISPLAY (1,'Reserved',13,10)		;3
+		DISPLAY (1,'Bitstream Inc',13,10)	;4
+		DISPLAY (1,'Reserved',13,10)		;5
+		DISPLAY (1,'Linotype Company',13,10)	;6
+		DISPLAY (1,'Reserved',13,10)		;7
+		DISPLAY (1,'Monotype Corp plc',13,10)	;8
+		DISPLAY (1,'Reserved',13,10)		;9
+		DISPLAY (1,'Adobe Systems',13,10)	;10
+		DISPLAY (1,'Reserved',13,10)		;11
+		DISPLAY (1,'Reserved',13,10)		;12
+		DISPLAY (1,'Reserved',13,10)		;13
+		DISPLAY (1,'Reserved',13,10)		;14
+		DISPLAY (1,'Reserved',13,10)		;15
+	ENDCASE	ELSE
+		DISPLAY (1,'UNKNOWN',13,10)
+
+	TEST = WORD(6,7)
+	I =
+	IF (TEST) DO INCR I UNTIL (BINARY(I).EQ.TEST)
+	ALPHA = I ,'ZZZZX'[LEFT]
+	DISPLAY (1,'                 Version=',ALPHA,13,10)
+	TYPEFACE_VERSION = I
+
+	CASE TYPEFACE_VENDOR OF BEGINCASE
+	;--0,1-Resereved
+		NOP
+	;--2-- AGFA
+		BEGIN	;-----------------------------------------------;
+		IF (TYPEFACE_VERSION.EQ.0) TYPEFACE_FAMILY = 4096	; Ver0
+		IF (TYPEFACE_VERSION.EQ.1) TYPEFACE_FAMILY = 4608	; Ver1
+		END	;-----------------------------------------------;
+	;--3--Reserved
+		NOP
+	;--4--Bitstream
+		IF (TYPEFACE_VERSION.EQ.0) TYPEFACE_FAMILY = 8192
+	;--5--Reserved
+		NOP
+	;--6--Linotype
+		IF (TYPEFACE_VERSION.EQ.0) TYPEFACE_FAMILY = 12288
+	;--7--Reserved
+		NOP
+	;--8--Monotype
+		IF (TYPEFACE_VERSION.EQ.0) TYPEFACE_FAMILY = 16384
+	;--9--Reserved
+		NOP
+	;--10-Adobe
+		BEGIN	;-----------------------------------------------;
+		IF (TYPEFACE_VERSION.EQ.0) TYPEFACE_FAMILY = 20480	; Ver0
+		IF (TYPEFACE_VERSION.EQ.1) TYPEFACE_FAMILY = 20992	; Ver1
+		END	;-----------------------------------------------;
+	ENDCASE
+	ALPHA = TYPEFACE_FAMILY ,'ZZZZX'
+	DISPLAY (1,'             Typeface Family Value=',ALPHA,
+&			' per HP table of vendors & versions',13,10)
+
+				;We must actually test WORD(8,16) --> 9 bits
+	TEST = WORD(9,16)	;but the Binary array only has 8 bits
+	I =
+	IF (TEST) DO INCR I UNTIL (BINARY(I).EQ.TEST)
+	IF (WORD(8,8)) I = I+256	;Here we handle the 9th bit
+	ALPHA = I ,'ZZZZX'
+	DISPLAY (1,'               Typeface Base Value=',ALPHA,' ')
+	TYPEFACE_BASE = I
+
+	IF (.NOT.TYPEFACE_VALUE)
+	   THEN	DISPLAY (1,'Line Printer')
+	   ELSE CASE TYPEFACE_VALUE OF BEGINCASE
+		 3: DISPLAY (1,'Courier')
+		 4: DISPLAY (1,'Helvetica')
+		 5: DISPLAY (1,'TmsRmn')
+		 6: DISPLAY (1,'Letter Gothic')
+		 7: DISPLAY (1,'Script')
+		 8: DISPLAY (1,'Prestige')
+		 9: DISPLAY (1,'Caslon')
+		10: DISPLAY (1,'Orator')
+		11: DISPLAY (1,'Presentations')
+		13: DISPLAY (1,'Serifa')
+		14: DISPLAY (1,'Futura')
+		15: DISPLAY (1,'Palatino')
+		16: DISPLAY (1,'ITC Souvenir')
+		17: DISPLAY (1,'Optima')
+		18: DISPLAY (1,'Garamond')
+		19: DISPLAY (1,'Cooper Black')
+		20: DISPLAY (1,'Coronet Bold')
+		21: DISPLAY (1,'Broadway')
+		22: DISPLAY (1,'Bauer Bodoni Black Condensed')
+		23: DISPLAY (1,'Century Schoolbook')
+		24: DISPLAY (1,'University Roman')
+		ENDCASE
+
+	TYPEFACE_VALUE = TYPEFACE_BASE + TYPEFACE_FAMILY 
+	ALPHA = TYPEFACE_VALUE ,'ZZZZX'
+	DISPLAY (1,13,10,'    Family+Base = TYPEFACE RESULT = ',ALPHA,
+&			' FOR SERIES 2, RESULT=BASE VALUE(only)',13,10)
+
+;
+;--27 = SERIF STYLE ==
+;
+	ptr = 27
+	CALL GET_UB
+	DISPLAY (1,'   27 Serif Style       ',ALPHA,' ')
+	CASE NUM+1 OF BEGINCASE
+	   	DISPLAY (1,'Sans Serif Square',13,10)	;0
+		DISPLAY (1,'Sans Serif Round',13,10)	;1
+		DISPLAY (1,'Serif Line',13,10)		;2
+		DISPLAY (1,'Serif Triangle',13,10)	;3
+		DISPLAY (1,'Serif Swath',13,10)		;4
+		DISPLAY (1,'Serif Block',13,10)		;5
+		DISPLAY (1,'Serif Bracket',13,10)	;6
+		DISPLAY (1,'Rounded Bracket',13,10)	;7
+		DISPLAY (1,'Flair Stroke',13,10)	;8
+		DISPLAY (1,'Script Nonconnecting',13,10);9
+		DISPLAY (1,'Script Joining',13,10)	;10
+		DISPLAY (1,'Script Calligraphic',13,10)	;11
+		DISPLAY (1,'Script Broken Letter',13,10);12
+	ENDCASE ELSE DISPLAY (1,13,10)
+
+;
+;--28 = QUALITY ==
+;
+;;;;;;	ptr = 28
+;;;;;;	CALL GET_UB
+;;;;;;	DISPLAY (1,'   28 Quality (Ignored) ',ALPHA,13,10)
+ 
+;
+;--29 = PLACEMENT ==
+;
+;;;;;;	ptr = 29
+;;;;;;	CALL GET_SB
+;;;;;;	DISPLAY (1,'   29 Placement (Ignor) ',ALPHA,13,10)
+
+
+;
+;--48-63 = FONT NAME ==
+;
+	DISPLAY (1,'48-63 FONT NAME=',BUFFER(49,64),13,10)
+
+	CLOSE 1
+	STOP
+
+;-----------------------------------------------------------------------------
+; Local routines
+;-----------------------------------------------------------------------------
+GET_UB,
+	INCR ptr
+	XCALL DECML (BUFFER(ptr,ptr),NUM)
+	ALPHA = NUM ,'ZZZZX-'
+	RETURN
+GET_SB,	
+	INCR ptr
+	XCALL DECML (BUFFER(ptr,ptr),NUM)
+	IF (NUM.GT.127) NUM = 127 - NUM
+	ALPHA = NUM ,'ZZZZX-'
+	RETURN
+GET_UI,
+	INCR ptr
+	XCALL DECML (BUFFER(ptr,ptr),NUM1)
+	XCALL DECML (BUFFER(ptr+1,ptr+1),NUM2)
+	NUM = NUM1*256 + NUM2
+	ALPHA = NUM ,'ZZZZX-'
+	RETURN
+GET_SI,
+	INCR ptr
+	XCALL DECML (BUFFER(ptr,ptr),NUM1)
+	XCALL DECML (BUFFER(ptr+1,ptr+1),NUM2)
+	NUM = NUM1*256 + NUM2
+	IF (NUM.GT.32767) NUM =  32767 - NUM
+	ALPHA = NUM ,'ZZZZX-'
+	RETURN
+
+END

@@ -1,0 +1,4 @@
+;-- prefix file for HP.SUB to create HPSTRING
+;
+	.define APP
+	.include HP.SUB

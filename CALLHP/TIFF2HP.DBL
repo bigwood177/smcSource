@@ -1,0 +1,523 @@
+.TITLE TIFF2HP
+
+;5-SEP-91	COMPUTER ADVOCACY INC
+;
+;16-JAN-92  -	If you'll be using XCALL HP you might as well pecify "0" for 
+;		resolution since XCALL HP requires you to specify it there.
+;
+;	Converts a TIFF file to a format suitable for direct dumping to
+;	HP LASERJET Series II and III.
+;NOTICE!
+;	This program does NOT comply fully with the Aldus Microsoft Technical
+;	Memorandum regarding TIFF 5.0 "readers".  The following are deviations
+;	from the STANDARD.
+;
+;Colour is not supported
+;
+;"II"vs"MM"		Bytes 0-1 are either <49h 49h> OR <4Dh 4Dh> which 
+;			indicate that words ("short") and double-words ("long")
+;			will be ordered least-significant-first OR 
+;			most-significant-first respectively. HERE, Word & double
+;			word conversions are done with XCALL BTOD regardless.
+;
+;BITS PER SAMPLE	Only 1 bit per sample here. ABORT IF NOT 1
+;
+;COLOR MAP		Ignored
+;
+;COLOR RESPONSE CURVES	Ignored
+;
+;COMPRESSION		Must be = 1 (No compression)
+;
+;GRAY RESPONSE CURVE	Ignored
+;GRAY RESPONSE UNIT	Ignored
+;
+;NEW SUBFILE TYPE	Ignored
+;
+;PHOTOMETRIC INTERPRETATION must be 0 or 1 (no RGB)
+;
+;RESOLUTION UNIT	Ignored
+;
+;SAMPLES PER PIXEL	Must be 1. ABORT IF NOT 1.
+;
+;STRIP BYTE COUNTS	A maximum of 500 strips (see .DEFINE MAX_NUM_STRIPS)
+;			can be output.
+;
+;-----------------------------------------------------------------------------
+
+.DEFINE MAX_NUM_STRIPS	,500
+
+RECORD DATA
+		,A3000
+RECORD BYTES ,X
+	BYTE	,12A1
+RECORD ,X
+	BYTES1	,A1
+	BYTES2	,A2	@1
+	BYTES3	,A3	@1
+	BYTES4	,A4	@1
+	BYTES5	,A5	@1
+	BYTES6	,A6	@1
+	BYTES7	,A7	@1
+	BYTES8	,A8	@1
+	BYTES9	,A9	@1
+	BYTES10	,A10	@1
+	BYTES11	,A11	@1
+	BYTES12	,A12	@1
+
+RECORD
+	INFILE	,A30
+	OUTFILE	,A30
+	LOGFILE	,A30
+	TESTBYTE,A1
+	DEBUG	,D1
+	NULL	,A1
+	BPTR	,D7
+	ALPHA3	,A3
+	NUM3	,D3
+	HP_RESOLUTION	,D3
+
+	ImageWidth	,D8
+	AImageWidth	,A8 @ImageWidth
+
+	ImageLength	,D8
+	AImageLength	,A8 @ImageLength
+
+	BitsPerSample	,D2,1
+	ABitsPerSample	,A2 @BitsPerSample
+
+	Compression	,D1,1
+	ACompression	,A1 @Compression
+
+	PhotoInterpret	,D1,0
+	APhotoInterpret	,A1 @PhotoInterpret
+
+	Threshold	,D1,1
+	AThreshold	,A1 @Threshold
+
+	StripOffset	,MAX_NUM_STRIPS D6	;Byte position strip(I) start
+	AStripOffset	,A6 @StripOffset
+	SPTR		,D3
+
+	SamplesPerPixel	,D1,1
+	ASamplesPerPixel,A1 @SamplesPerPixel
+
+	RowsPerStrip	,D6
+	ARowsPerStrip	,A6 @RowsPerStrip
+
+	StripByteCount	,MAX_NUM_STRIPS D6
+	AStripByteCount	,A6 @StripByteCount
+
+	Xresolv		,2D6
+	AXresolv	,2A6 @Xresolv
+
+	Yresolv		,2D6
+	AYresolv	,2A6 @Yresolv
+
+	ResolvUnit	,D1
+	AResolvUnit	,A1 @ResolvUnit
+
+	IFD_ADDRESS	,D8
+	AIFD_ADDRESS	,A8 @IFD_ADDRESS
+
+	NUM_IFDS	,D4
+	ANUM_IFDS	,A4 @NUM_IFDS
+
+	NUM_STRIPS	,D5
+	ANUM_STRIPS	,A5 @NUM_STRIPS
+
+
+	I	,D4
+	L	,D4
+	TAG_NUM	,D3
+	TAG_TYP	,D3
+	TAG_LEN	,D8
+
+	MAX_HP_WIDTH	,D4
+
+	HP_WIDTH	,D3
+	HP_AWIDTH	,A3
+	ESC1		,A1
+
+; RECORD HP_TRANSFER
+;		ESC1	,A1
+;			,A* ,'*b'
+;		HP_WIDTH,D3
+;			,A* ,'W'
+
+PROC
+	OPEN (15,I,'TT:')
+	XCALL ASCII (27,ESC1)
+	XCALL ASCII (0,NULL)
+
+	XCALL FLAGS (1100000,1)	;no eof at eof. no stop message.
+
+	DISPLAY (15,'	TIFF to HP LaserJetII file conversion.',13,10,
+&			'NAME OF INPUT TIFF FILE: ')
+	READS (15,INFILE)
+	OPEN (1,I,INFILE)
+	DISPLAY (15,	'NAME OF OUTPUT HP FILE:  ')
+	READS (15,OUTFILE)
+	IF (INFILE.EQ.OUTFILE)
+		BEGIN	;-----------------------;
+		DISPLAY (15,'Output file must be different from Input file.')
+		STOP				;
+		END	;-----------------------;
+	OPEN (2,O,OUTFILE)
+
+	DISPLAY (15,	'OUTPUT LOG FILE: [none]  ')
+	READS (15,LOGFILE)
+	IF (LOGFILE.NE.'    ')
+		BEGIN	;---------------;
+		DEBUG = %true		;
+		OPEN (14,O,LOGFILE)	;
+		END	;---------------;
+	DISPLAY (15,13,10,
+&			'You MAY elect to specify a Resolution.  If so,',
+&			'it must be a value of 75,100,150, or 300.',13,10,10)
+GET_RESOLV,
+	DISPLAY (15,	'WHAT RESOLUTION? [none]  ')
+	READS (15,ALPHA3)
+	ONERROR GET_RESOLV
+	HP_RESOLUTION = ALPHA3
+	OFFERROR
+	IF (HP_RESOLUTION.NE.0  .AND.
+&	    HP_RESOLUTION.NE.75	.AND.
+&	    HP_RESOLUTION.NE.100.AND.
+&	    HP_RESOLUTION.NE.150.AND.
+&	    HP_RESOLUTION.NE.300 )	GOTO GET_RESOLV
+
+
+;---------------------------------------------------------------
+;	REMEMBER THAT THE FIRST BYTE IN THE FILE IS BYTE "0"
+;	(Byte offsets are all measured this way.)
+;---------------------------------------------------------------
+
+;
+;-- Bytes 0-1 are "II" or "MM"   Bytes 2-3 are ignored --
+;
+	IF ($TRUE)
+	   THEN	GETS (1,BYTES4,BADEOF)
+	   ELSE	BEGIN	;---------------;
+BADEOF,		DISPLAY (15,'Premature end of file. ')
+QUIT,		DISPLAY (15,'LOG file closed. No output done.')
+		CLOSE 14		;
+		STOP			;
+		END	;---------------;
+	CASE BYTES2 OF BEGINCASE
+	  'II':	IF (DEBUG) DISPLAY (14,'Byte order: low byte 1st',13,10)
+	  'MM':	IF (DEBUG) DISPLAY (14,'Byte order: high byte 1st',13,10)
+	ENDCASE	ELSE
+		BEGIN	;---------------;
+		DISPLAY (15,'Not a TIFF file ')
+		GOTO QUIT		;
+		END	;---------------;
+;
+;-- Bytes 4-7 are byte offset to 1st Image File Directory
+;
+	GETS (1,BYTES4,BADEOF)
+	XCALL BTOD (BYTES4,IFD_ADDRESS)
+	IF (DEBUG) DISPLAY (14,'Image File Dir. Address = ',AIFD_ADDRESS,13,10)
+
+	GET (1,BYTES1,IFD_ADDRESS) [EOF=BADEOF]
+	GETS (1,BYTES2,BADEOF)
+	XCALL BTOD (BYTES2,NUM_IFDS)
+	IF (DEBUG) DISPLAY (14,'Number of entries in IFD =',ANUM_IFDS,13,10)
+
+	FOR I = 1 STEP 1 UNTIL NUM_IFDS DO
+	    BEGIN	;-----------------------------------------------;
+	    IF (DEBUG)							;
+		BEGIN	;-----------------------;			;
+		BYTES3 = I,'ZZX'[LEFT]		;			;
+		DISPLAY (14,'Tag Field#',BYTES3);			;
+		END	;-----------------------;			;
+	    GET (1,BYTES1,IFD_ADDRESS+(I-1)*12+2) [EOF=BADEOF]		;
+	    GETS (1,BYTES12,BADEOF)					;
+	    XCALL BTOD (BYTES2,TAG_NUM)					;
+	    CASE TAG_NUM OF BEGINCASE					;
+;--256=ImageWidth--							;
+	  256:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),ImageWidth)	;	;
+		IF (DEBUG) DISPLAY (14,'Image Width =',AImageWidth,13,10)
+		END	;---------------------------------------;	;
+;--257=ImageLength--							;
+	  257:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),ImageLength)	;	;
+		IF (DEBUG) DISPLAY (14,'Image Length=',AImageLength,13,10)
+		END	;---------------------------------------;	;
+;--258=BitsPerSample--							;
+	  258:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),BitsPerSample)	;	;
+		IF (DEBUG) DISPLAY (14,'Bits/Sample =',ABitsPerSample,13,10)
+		END	;---------------------------------------;	;
+;--259=Compression--							;
+	  259:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),Compression)	;	;
+		IF (DEBUG) DISPLAY (14,'Compression =',ACompression,13,10)
+		IF (Compression.NE.1)				;	;
+			BEGIN	;-----------------------;	;	;
+			DISPLAY (15,'COMPRESSION NOT 1 (uncompressed)')	;
+			STOP				;	;	;
+			END	;-----------------------;	;	;
+		END	;---------------------------------------;	;
+;--262=Photometric Interpretation--					;
+	  262:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),PhotoInterpret)	;	;
+		IF (DEBUG) DISPLAY (14,'Photo Interp=',APhotoInterpret,13,10)
+		IF (PhotoInterpret.NE.0.AND.			;	;
+&		    PhotoInterpret.NE.1 )			;	;
+			BEGIN	;-----------------------;	;	;
+			DISPLAY (15,'PHOTOMETRIC INTERPRETATION NOT 0 OR 1')
+			STOP				;	;	;
+			END	;-----------------------;	;	;
+		END	;---------------------------------------;	;
+;--263=Thresh holding --						;
+	  263:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),Threshold)	;	;
+		IF (DEBUG) DISPLAY (14,'Thresh Hold =',AThreshold,13,10)
+		IF (Threshold.NE.1.AND.				;	;
+&		    Threshold.NE.2 )				;	;
+			BEGIN	;-----------------------;	;	;
+			DISPLAY (15,'THRESH HOLD NOT 1 (bilevel line art) ',
+&				    'OR 2 (dithered scan)')
+			STOP				;	;	;
+			END	;-----------------------;	;	;
+		END	;---------------------------------------;	;
+
+;--273=Strip Offsets --							;
+	  273:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		NUM_STRIPS = TAG_LEN				;	;
+		CALL GET_TAG_LEN				;	;
+		IF (DEBUG) DISPLAY (14,'# of Strips =',ANUM_STRIPS,' ')	;
+		IF (NUM_STRIPS.GE.MAX_NUM_STRIPS)		;	;
+			BEGIN	;-----------------------;	;	;
+			BYTES4 = MAX_NUM_STRIPS		;	;	;
+			NUM_STRIPS = MAX_NUM_STRIPS	;	;	;
+			DISPLAY (15,'Too many strips. Truncated ',BYTES4,13,10)
+	    IF (DEBUG)	DISPLAY (14,'Too many strips. Truncated ',BYTES4,13,10)
+			END	;-----------------------;	;	;
+		IF (TAG_LEN.GT.4)				;	;
+		   THEN	BEGIN	;---------------------------;	;	;
+			XCALL BTOD (BYTES12(9,12),BPTR)     ;	;	;
+			GET (1,BYTES1,BPTR) [EOF=BADEOF]    ;	;	;
+			FOR SPTR = 1 STEP 1 UNTIL NUM_STRIPS DO	;	;
+				BEGIN	;---------------;   ;	;	;
+				IF (TAG_TYP.EQ.3)	;   ;	;	;
+				   THEN	BEGIN	;----;	;   ;	;	;
+					GETS (1,BYTES2,BADEOF)	;	;
+					XCALL BTOD (BYTES2,StripOffset(SPTR))
+					END	;----;	;   ;	;	;
+				   ELSE	BEGIN	;----;	;   ;	;	;
+					GETS (1,BYTES4,BADEOF)	;	;
+					XCALL BTOD (BYTES4,StripOffset(SPTR))
+					END	;----;	;   ;	;	;
+				IF (DEBUG) 		;   ;	;	;
+					BEGIN	;----;	;   ;	;	;
+					ALPHA3 = SPTR ,'ZZX'[LEFT]
+					DISPLAY (14,'Strip Addr#',ALPHA3,
+&						AStripOffset(SPTR),13,10)
+					END	;----;	;   ;	;	;
+				END	;---------------;   ;	;	;
+			END	;---------------------------;	;	;
+		   ELSE	BEGIN	;-----------------------;	;	;
+			XCALL BTOD (BYTES12(9,12),StripOffset)	;	;
+			IF (DEBUG) DISPLAY (14,		;	;	;
+&				'Strip#1 Addr=',AStripOffset,13,10)
+			END	;-----------------------;	;	;
+		END	;---------------------------------------;	;
+
+;--277=Samples per Pixel --						;
+	  277:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),SamplesPerPixel)	;	;
+		IF (DEBUG) DISPLAY (14,'Samples/Pixl=',ASamplesPerPixel,13,10)
+		IF (SamplesPerPixel.NE.1)			;	;
+			BEGIN	;-----------------------;	;	;
+			DISPLAY (15,'Samples per pixel must be only 1')
+			STOP				;	;	;
+			END	;-----------------------;	;	;
+		END	;---------------------------------------;	;
+
+;--278=Rows per Strip --						;
+	  278:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),RowsPerStrip)	;	;
+		IF (DEBUG) DISPLAY (14,'Rows/Strip  =',ARowsPerStrip,13,10)
+		END	;---------------------------------------;	;
+
+;--279=Strip Byte Count --						;
+	  279:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		IF (TAG_LEN.GT.4)				;	;
+		   THEN	BEGIN	;---------------------------;	;	;
+			XCALL BTOD (BYTES12(9,12),BPTR)     ;	;	;
+			GET (1,BYTES1,BPTR) [EOF=BADEOF]    ;	;	;
+			FOR SPTR = 1 STEP 1 UNTIL NUM_STRIPS DO	;	;
+				BEGIN	;---------------;   ;	;	;
+				IF (TAG_TYP.EQ.3)	;   ;	;	;
+				   THEN	BEGIN	;----;	;   ;	;	;
+					GETS (1,BYTES2,BADEOF)	;	;
+					XCALL BTOD (BYTES2,StripByteCount(SPTR))
+					END	;----;	;   ;	;	;
+				   ELSE	BEGIN	;----;	;   ;	;	;
+					GETS (1,BYTES4,BADEOF)	;	;
+					XCALL BTOD (BYTES4,StripByteCount(SPTR))
+					END	;----;	;   ;	;	;
+				END	;---------------;   ;	;	;
+			END	;---------------------------;	;	;
+		   ELSE						;	;
+			XCALL BTOD (BYTES12(9,12),StripByteCount)	;
+		IF (DEBUG) DISPLAY (14,'Strip1 Count=',AStripByteCount,13,10)
+		END	;---------------------------------------;	;
+
+;--282=X Resolution--							;
+	  282:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		GET (1,BYTES1,TAG_LEN) [EOF=BADEOF]		;	;
+		GETS (1,BYTES8,BADEOF)				;	;
+		XCALL BTOD (BYTES4,XRESOLV(1))			;	;
+		XCALL BTOD (BYTES8(5,8),XRESOLV(2))		;	;
+		IF (DEBUG) DISPLAY (14,				;	;
+&			'X Resolution=',AXResolv(1),' over ',AXResolv(2),13,10)
+		END	;---------------------------------------;	;
+;--283=Y Resolution--							;
+	  283:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		GET (1,BYTES1,TAG_LEN) [EOF=BADEOF]		;	;
+		GETS (1,BYTES8,BADEOF)				;	;
+		XCALL BTOD (BYTES4,yRESOLV(1))			;	;
+		XCALL BTOD (BYTES8(5,8),yRESOLV(2))		;	;
+		IF (DEBUG) DISPLAY (14,				;	;
+&			'Y Resolution=',AYResolv(1),' over ',AYResolv(2),13,10)
+		END	;---------------------------------------;	;
+
+;--296=Resolution Unit--						;
+	  296:	BEGIN	;---------------------------------------;	;
+		XCALL BTOD (BYTES12(3,4),TAG_TYP)		;	;
+		XCALL BTOD (BYTES12(5,8),TAG_LEN)		;	;
+		CALL GET_TAG_LEN				;	;
+		XCALL BTOD (BYTES12(9:TAG_LEN),ResolvUnit)	;	;
+		IF (DEBUG) DISPLAY (14,'Resolv.Unit =',AResolvUnit,13,10)
+		END	;---------------------------------------;	;
+									;
+	   ENDCASE	ELSE						;
+			BEGIN	;-------------------------------;	;
+			IF (DEBUG) 				;	;
+				BEGIN	;---------------;	;	;
+				BYTES3 = TAG_NUM ,'ZZX'[LEFT]	;	;
+				DISPLAY (14,'Tag ID ',BYTES3,' Ignored',13,10)
+				END	;---------------;	;	;
+			END	;-------------------------------;	;
+	   END	;-------------------------------------------------------;
+
+;
+;-- End of reading of Image File Directory. Start writing to output file --
+;
+	IF (HP_RESOLUTION)
+		BEGIN	;-----------------------;
+		ALPHA3 = HP_RESOLUTION ,'XXX'	; Set resolution if specified.
+		DISPLAY (2,27,'*t',ALPHA3,'R')	;
+		END	;-----------------------;
+
+	DISPLAY (2,27,'*r1A')		;set left graphic marg=current position
+
+;-------
+;-- In UNCOMPRESSED MODE, there is 1 byte for every 8 bits.  Thus there will 
+;   be:
+;	MAX_HP_WIDTH = (ImageWidth + 7) / 8  bytes for each Raster Line
+;
+;   We will not necessarily transfer that many bytes for EACH line.  After we
+;   have read MAX_HP_WIDTH bytes and set HP_WIDTH=MAX_HP_WIDTH, we will cut
+;   back HP_WIDTH by 1 for every null byte at the end of the line until a
+;   non-null byte is found.
+;-------
+	MAX_HP_WIDTH = (ImageWidth + 7) / 8
+
+;
+;-- Position to beginning of strip --
+;
+	DISPLAY (15,'STRIPS:')
+	FOR SPTR = 1 STEP 1 UNTIL NUM_STRIPS DO
+		BEGIN	;-----------------------------------------------;
+		IF (SPTR/70*70.EQ.SPTR) DISPLAY (15,13,10,'       ')	;
+		DISPLAY (15,'*')					;
+		GET (1,BYTES1,StripOffset(SPTR)) [EOF=BADEOF]		;
+									;
+		FOR I = 1 STEP 1 UNTIL RowsPerStrip DO			;
+			BEGIN	;-------------------------------;	;
+			GETS (1,DATA(1,MAX_HP_WIDTH),OKEOF)	;	;
+			HP_WIDTH = MAX_HP_WIDTH			;	;
+			IF ($FALSE)				;	;
+				BEGIN	;-------;		;	;
+OKEOF,				HP_WIDTH = %RDLEN		;	;
+				END	;-------;		;	;
+			IF (PhotoInterpret.EQ.1)		;	;
+			    FOR L = 1 STEP 1 UNTIL HP_WIDTH DO	;	;
+				BEGIN	;-------;		;	;
+				XCALL DECML (DATA(L,L),NUM3)	;	;
+				NUM3 = 255-NUM3	;		;	;
+				XCALL ASCII (NUM3,DATA(L,L))	;	;
+				END	;-------;		;	;
+			IF (.NOT.HP_WIDTH)			;	;
+				BEGIN	;-------;		;	;
+				HP_WIDTH = 2 	;		;	;
+				SET DATA(1,1),DATA(2,2) = NULL	;	;
+				END	;-------		;	;
+			IF (DATA(HP_WIDTH:1).EQ.NULL)		;	;
+				BEGIN	;---------------;	;	;
+				DO DECR HP_WIDTH 	;	;	;
+				UNTIL (	HP_WIDTH.EQ.1.OR.	;	;
+&					DATA(HP_WIDTH:1).NE.NULL)	;
+				END	;---------------;	;	;
+			HP_AWIDTH = HP_WIDTH ,'ZZX'[LEFT]		;
+			IF ((HP_WIDTH.EQ.1.AND.DATA.EQ.NULL) .OR. .NOT.HP_WIDTH)
+			   THEN	DISPLAY (2,ESC1,'*bW')
+			   ELSE	DISPLAY (2,ESC1,'*b',
+&					HP_AWIDTH(1,%trim(HP_AWIDTH)),'W',
+&					DATA(1,HP_WIDTH))	;	;
+			END	;-------------------------------;	;
+		END	;-----------------------------------------------;
+
+	DISPLAY (2,27,'*rB')
+	CLOSE 2
+STOP
+;-----------------------------------------------------------------------------
+GET_TAG_LEN,
+	CASE TAG_TYP OF BEGINCASE
+		NOP			;1 = BYTE
+		NOP			;2 = ASCII BYTE	
+		TAG_LEN = TAG_LEN*2	;3 = SHORT (WORD)
+		TAG_LEN = TAG_LEN*4	;4 = LONG (WORD)
+		TAG_LEN = TAG_LEN*8	;5 = RATIONALE
+	ENDCASE
+	RETURN
+END

@@ -1,0 +1,48 @@
+SUBROUTINE APPEND
+
+;Appends N1,N2,N3,...Nx (maximum of 10 N's) onto the end of OLD
+
+;SYNTAX	XCALL APPEND (OLD,N1,N2,...)
+
+			OLD	,A
+			N1	,A
+			N2	,A
+			N3	,A
+			N4	,A
+			N5	,A
+			N6	,A
+			N7	,A
+			N8	,A
+			N9	,A
+			N10	,A
+RECORD
+	I	,D2
+	ptr	,D3
+PROC
+	ptr = %trim(OLD)			;How many characters are there
+	IF (ptr.EQ.1 .AND. OLD.EQ.' ') ptr =	;NOW in string OLD?
+
+	INCR ptr				;Position PTR just passed that.
+
+; Before each time we execute the "Append" loop, insure there'll be enough room
+; at the end OLD to do the appending of the next argument to it.
+;
+; NOTE	that if there is NOT space at the end of OLD we stop appending at that
+;	point.  This might produce unexpected results to the caller, but I
+;	don't know what else could be done that might be any better!
+;	Alternatives are: 1. Stop the program (maybe display an error message)
+;			  2. Skip that argument and try appending the next one
+
+	FOR I = 2 STEP 1 UNTIL %numargs DO
+		BEGIN	;---------------------------------------;
+		IF ( ptr + %len(%a(%arg(I))) .LE. %len(OLD) )	;
+		   THEN	BEGIN	;-----------------------;	;
+			OLD(ptr,%len(OLD)) = %a(%arg(I));	;
+			ptr = %trim(OLD)		;	;
+			INCR ptr			;	;
+			END	;-----------------------;	;
+		   ELSE						;
+			RETURN	;Just return if argument won't fit !!!
+		END	;---------------------------------------;
+	RETURN
+END

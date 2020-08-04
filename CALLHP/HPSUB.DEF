@@ -1,0 +1,227 @@
+.IFNDEF cmhpAheight			;---hpsub.def---- 6-SEP-91 --
+;
+;-- COMMON AREA --
+COMMON HP
+	cmhpAheight	,D4
+	cmhpAwidth	,D4
+	cmhpVTHICK	,D2
+	cmhpHTHICK	,D2
+	cmhpDOTS	,D1
+	cmhpCPI		,D4
+	cmhpLPI		,D2
+				;IF cmhpTRAP=$TRUE, the following are trapable:
+	cmhpTRAP	,D1	;(you must check cmhpERNUM yourself) Otherwise,
+				;XCALL HP displays error & traceback and stops.
+	cmhpERNUM	,D2	;	1=Raster Graphics File Not Found
+				;	2=Soft Font file Not Found
+;				;	3=Invalid Graphics Resolution size
+;-- functions --		;	4=invalid temp/switch on soft font load
+;
+.define hpPOS		,32	;cursor position by row & col
+.define hpMOVE		,33	;relative position
+.define hpHLINE		,34	;next parameter is length
+.define hpVLINE		,35	;next parameter is length
+.define hpAREA		,36	;next 2 parms are height & width
+.define hpBOX		,37	;draw box at current position using area
+.define hpFILL		,38	;fill box at current position using area
+.define hpDOTS		,39	;set unit of measurement
+.define hpTHICK		,40	;set hor & vert thickness 1 to 99 (default=1)
+.define hpVTHICK	,41	;set only  vert thickness 1 to 99 (default=1)
+.define hpHTHICK	,42	;set only horiz thickness 1 to 99 (default=1)
+.define hpHTAB		,43	;set horizontal position only
+.define hpVTAB		,44	;set vertical position only
+.define hpPUSH		,45	;save cursor position
+.define hpPOP		,46	;restore cursor position
+.define hpFONT		,47	;set font characteristics (see below)
+.define hpLOAD		,48	;download a soft font
+.define hpGRAPHIC	,49	;followed by FILENAME,RESOLUTION
+.define hpUNDER		,50	;turn on underlining
+.define hpUNDER_OFF	,51	;turn off underlining
+.define hpLPI		,52	;set number of lines to the (vertical) inch
+.define hpFONT_DELETE	,53	;delete a temporary font
+.define hpDEBUG		,54	;enable/disable "display functions mode"
+.define hpFLUSH		,55	;sends out <esc>E
+.define hpMANUAL	,56	;turn on Manual paper feed (hpFLUSH to turn off)
+.define hpSTATIONERY	,57	;designates stationery (paper size)
+.define hpLM		,58	;sets left margin
+
+.PAGE	;--------------------------------- functions continued next page...
+
+;
+;--macro functions --
+;
+
+.define hpMACROstart	,59	;start a macro
+.define hpMACROexecute	,61	;execute a macro	(THERE IS NO 60)
+.define hpMACROcall	,62	;call a macro
+.define hpMACROauto	,63	;make macro an automatic overlay
+.define hpMACROdisable	,64	;disable macro from automatic overlay
+.define hpMACROdel	,67	;delete a macro		(THERE IS NO 65,66)
+.define hpMACROtemp	,68	;stop macro and make macro temporary
+.define hpMACROperm	,69	;stop macro and make macro permanent
+
+.PAGE	;--- end of functions ------------ qualifiers begin next page...
+;
+;-- hpSTATIONERY qualifiers (others may be used. consult laser's documentation)
+;
+.define hpPAPERexec	,1
+.define hpPAPERletter	,2
+.define hpPAPERlegal	,3
+.define hpPAPERa4	,26
+
+.define hpENVletter	,80
+.define hpENVbusiness	,81
+.define hpENVdl		,90
+.define hpENVc5		,91
+
+;
+;-- hpFONT_CONTROL qualifiers --
+;
+.define hpDELall	,0
+.define hpDELtemps	,1
+.define hpDELlast	,2
+.define hpMAKEtemp	,4
+.define hpMAKEperm	,5
+
+.PAGE	;continued next page...
+;
+;-- hpFONT takes one value by summing 0 OR 1 value from each of the following -
+;
+
+;-----------------------------------------------------------------------;
+; ORIENTATION	Position:  1-1	Possible values: 1,2	All values here	;
+; <esc> & l 0 O			Translate to:    0,1			;
+;-----------------------------------------------------------------------;
+.define hpPORT		,100000000000000000
+.define hpLAND		,200000000000000000
+
+;-----------------------------------------------------------------------;
+; SYMBOL SET	Position:  2-5	Possible values:	You may add/change
+;				1st 2 digits = PCL value		;
+;				2nd 2 digits = Ascii# of PCL TERMINATION CHAR.
+; <esc> ( 8U			EG: "8U" = 08 85 (ascii 85 = "U")	;
+;-----------------------------------------------------------------------;
+.define hpMATH7		,000650000000000000 ; 0A
+.define hpTAX		,000660000000000000 ; 0B
+.define hpDANISH	,000680000000000000 ; 0D
+.define hpUK		,001690000000000000 ; 1E
+.define hpFRENCH	,000700000000000000 ; 0F
+.define hpGERMAN	,000710000000000000 ; 0G
+.define hpITALIAN	,000730000000000000 ; 0I
+.define hpMATH8		,008770000000000000 ; 8M
+.define hpECMA94	,000780000000000000 ; 0N
+.define hpMATH8A	,000810000000000000 ; 0Q
+.define hpMATH8B	,001810000000000000 ; 1Q
+.define hpPIA		,002810000000000000 ; 2Q
+.define hpPCLINE	,004810000000000000 ; 4Q
+.define hpECMA7		,010810000000000000 ;10Q
+.define hpECMA8		,011810000000000000 ;11Q
+.define hpSWEDISH	,000830000000000000 ; 0S
+.define hpSPANISH	,001830000000000000 ; 1S
+.define hpASCII		,000850000000000000 ; 0U
+.define hpLEGAL		,001850000000000000 ; 1U
+.define hpROMAN8	,008850000000000000 ; 8U
+.define hpPC8		,010850000000000000 ;10U
+.define hpPC8DN		,011850000000000000 ;11U
+.define hpPC850		,012850000000000000 ;12U
+.define hpPIFONT	,015850000000000000 ;15U
+
+;-----------------------------------------------------------------------;
+; SPACING	Position:  6-6	Possible values: 1,2	All values here	;
+; <esc> ( s 0 P			Translates to:   1,0			;
+;-----------------------------------------------------------------------;
+.define hpPRO		,000001000000000000 ;Proportional
+.define hpFIX		,000002000000000000 ;Fixed
+
+.PAGE	;-- continued next page...
+
+;-----------------------------------------------------------------------;
+; PITCH		Position:  7-9	Possible values:	You may add/change
+; <esc> s 16.7 H		value interpreted XX.X			;
+;-----------------------------------------------------------------------;
+.define hp5CPI		,000000050000000000
+.define hp6CPI		,000000060000000000
+.define hp7CPI		,000000070000000000
+.define hp8CPI		,000000080000000000
+.define hp81CPI		,000000081000000000
+.define hp9CPI		,000000090000000000
+.define hp10CPI		,000000100000000000
+.define hp12CPI		,000000120000000000
+.define hp14CPI		,000000140000000000
+.define hp167CPI	,000000167000000000
+.define hp272CPI	,000000272000000000
+
+;-----------------------------------------------------------------------;
+; POINT SIZE	Position: 10-12	Possible values:	You may add/change
+; <esc> ( s 8.5 V		value interpreted XX.X			;
+;-----------------------------------------------------------------------;
+.define hp4PT		,000000000040000000
+.define hp6PT		,000000000060000000
+.define hp7PT		,000000000070000000
+.define hp8PT		,000000000080000000
+.define hp85PT		,000000000085000000
+.define hp95PT		,000000000095000000
+.define hp10PT		,000000000100000000
+.define hp12PT		,000000000120000000
+.define hp14PT		,000000000140000000
+.define hp144PT		,000000000144000000
+.define hp18PT		,000000000180000000
+.define hp24PT		,000000000240000000
+.define hp30PT		,000000000300000000
+.define hp36PT		,000000000360000000
+
+;-----------------------------------------------------------------------;
+; STYLE		Position: 13-13	Possible values: 1,2	All values here	;
+; <esc> ( s 1 S			Translates to:   0,1			;
+;-----------------------------------------------------------------------;
+.define hpUPRIGHT	,000000000000100000
+.define hpITALIC	,000000000000200000
+
+;-----------------------------------------------------------------------;
+; WEIGHT	Position: 14-14	Possible values:	You may add/change
+;				value used is this number		;
+;				AFTER subtracting 5 NOTE that this gives;
+;				possible range of -4 to +4 eventhough HP;
+; <esc> ( s 3 B			can actually handle range of -7 to +7	;
+;-----------------------------------------------------------------------;
+.define hpLIGHT		,000000000000020000
+.define hpMEDIUM	,000000000000050000
+.define hpBOLD		,000000000000080000
+.PAGE	;-- continued next page...
+
+;-----------------------------------------------------------------------;
+; TYPEFACE	Position: 15-18	Possible values:	You may add/change
+;				value used is this number		;
+;				EXCEPTION is LINEPRINT hardcoded as "1"	;
+;				(Note that HP III scalable fonts are 4	;
+; <esc> s 4 T			 digits long, typically 41xx)		;
+;-----------------------------------------------------------------------;
+.define hpLINEPRINT	,000000000000000001	;[see exception note]
+.define hpCOURIER	,000000000000000003
+.define hpHELV		,000000000000000004
+.define hpTIMES		,000000000000000005
+.define hpGOTHIC	,000000000000000006
+.define hpSCRIPT	,000000000000000007
+.define hpPRESTIGE	,000000000000000008
+.define hpCASLON	,000000000000000009
+.define hpORATOR	,000000000000000010
+.define hpPRESENT	,000000000000000011
+.define hpSERIFA	,000000000000000013
+.define hpFUTURA	,000000000000000014
+.define hpPALATINO	,000000000000000015
+.define hpSOUVENIR	,000000000000000016
+.define hpOPTIMA	,000000000000000017
+.define hpGARAMOND	,000000000000000018
+.define hpCOOPER	,000000000000000019
+.define hpCORONET	,000000000000000020
+.define hpBROADWAY	,000000000000000021
+.define hpBAUER		,000000000000000022
+.define hpCENTURY	,000000000000000023
+.define hpUNIVERSITY	,000000000000000024
+.define hpCGTIMES	,000000000000004101	;(HP III only - scalable)
+.define hpUNIVERS	,000000000000004148	;(HP III only - scalable)
+
+
+;----------------------------- End of HPSUB.DEF -------------------------------
+.ENDC
+

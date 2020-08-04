@@ -1,0 +1,105 @@
+.title bit2hp
+
+RECORD
+	LINE	,A2400
+	LEN	,D4
+	INFILE	,A30
+	OUTFILE	,A30
+	MAX_WIDTH	,D5
+	AMAX_WIDTH	,A5 @MAX_WIDTH
+	MAX_HEIGHT	,D5
+	AMAX_HEIGHT	,A5 @MAX_HEIGHT
+	I	,D4
+	J	,D4
+	K	,D4
+	NUM	,D3
+RECORD BITS
+	BIT8	,D1
+	BIT7	,D1
+	BIT6	,D1
+	BIT5	,D1
+	BIT4	,D1
+	BIT3	,D1
+	BIT2	,D1
+	BIT1	,D1
+RECORD OUT
+	HEX	,300A1
+RECORD HPWIDTH
+	ESC1	,A1		;HOLDS ESCAPE
+		,A2 ,'*b'
+	WIDTH	,D4
+		,A1 ,'W'
+RECORD HPFINI
+	ESC2	,A1
+		,A* ,'*rB'
+
+PROC
+	OPEN (15,I,'TT:')
+	xcall ascii (27,ESC1)
+	ESC2 = ESC1
+	XCALL FLAGS (1100000,1)	;NO EOF CHARACTER AT END OF FILE. NO STP MSG.
+
+	DISPLAY (15,9,
+&'READ AN INPUT PSEUDO "BIT" FILE AND OUTPUT A RASTER FILE',13,10,10,9,
+&'The input file (a standard text file) must consist of lines whose',13,10,9,
+&'characters are all digits (or blanks).  Whenever a non-zero digit',13,10,9,
+&'is found, a "dot" is registered. Zeros/blanks register a "blank".',13,10,9,
+&'The program works by converting groups of 8 dots or blanks into',13,10,9,
+&'bytes which form the basis of raster graphics files.',13,10,10,9,
+&	'NAME OF INPUT "BIT" FILE:    ')
+
+	READS (15,INFILE)
+	IF (INFILE.EQ.' ') STOP
+	OPEN (1,I,INFILE)
+
+	DISPLAY (15,9,'NAME OF OUTPUT RASTER FILE:  ')
+	READS (15,OUTFILE)
+	IF (INFILE.EQ.OUTFILE)
+		BEGIN
+		DISPLAY (15,'Output file must different from input file')
+		STOP
+		END
+	OPEN (2,O,OUTFILE)
+
+LOOP,
+	READS (1,LINE,EOF)
+	LEN = %trim(LINE)
+	IF (LEN.EQ.1.AND.LINE.EQ.' ')
+		BEGIN	;-------;
+		WIDTH =		;
+		PUTS (2,HPWIDTH);
+		GOTO LOOP	;
+		END	;-------;
+
+	LEN = (LEN+7)/8*8			;make LEN a multiple of 8
+	CLEAR OUT, WIDTH
+	FOR I = 1 STEP 8 UNTIL LEN DO
+		BEGIN
+		NUM =
+		INCR WIDTH
+		BITS = LINE(I:8)
+		IF (BIT1) NUM = NUM + 1
+		IF (BIT2) NUM = NUM + 2
+		IF (BIT3) NUM = NUM + 4
+		IF (BIT4) NUM = NUM + 8
+		IF (BIT5) NUM = NUM + 16
+		IF (BIT6) NUM = NUM + 32
+		IF (BIT7) NUM = NUM + 64
+		IF (BIT8) NUM = NUM + 128
+		XCALL ASCII (NUM,HEX(WIDTH))
+		IF (WIDTH.GT.MAX_WIDTH) MAX_WIDTH = WIDTH
+		END
+	PUTS (2,HPWIDTH)
+	PUTS (2,OUT(1:WIDTH))
+	DISPLAY (15,'*')
+	INCR MAX_HEIGHT
+	IF (MAX_HEIGHT/75*75.EQ.MAX_HEIGHT) DISPLAY (15,13,10)
+	GOTO LOOP
+EOF,
+	PUTS (2,HPFINI)
+	CLOSE 2
+	DISPLAY (15,13,10,'NUMBER OF RASTER LINES =',AMAX_HEIGHT,
+&		    13,10,'WIDTH OF LARGEST LINE  =',AMAX_WIDTH,13,10)
+	STOP
+END
+
