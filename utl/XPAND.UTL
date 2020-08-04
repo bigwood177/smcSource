@@ -1,0 +1,558 @@
+;  XPAND / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		EXPANDS OR REDUCES FILE SIZE
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD RECRD
+		,A1536
+COMMON
+			.INCLUDE 'DEF:COM001.DEF'
+RECORD DEVICE
+			.INCLUDE 'DEF:DEV001.DEF'
+RECORD COMPNY
+			.INCLUDE 'DEF:CMP001.DEF'
+RECORD BRACKS
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A50,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+		,A36,']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]'
+RECORD CTLREC			; USED TO STORE CONTROL RECORD OF SHPORD OR
+		,A170		; JOBCST WHEN EXPANDING THEIR INDEXES
+
+RECORD SHPREC			; USED TO OPEN SHPREC OR JOBCST WHEN EXPANDING
+	SHPDEV	,A3		; THEIR INDEXES
+		,A1,	':'
+	SHPNAM	,A6
+		,A1,	'.'
+	SHPEXT	,A3
+
+RECORD OUTFIL			; USED TO OPEN OUTPUT FILE
+	OUTDEV	,A3
+		,A1	,':'
+	OFILEN	,A6
+		,A1	,'.'
+	OUTEXT	,A3
+RECORD INFIL			; STORES THE ORIGINAL FILE NAME AND LOCATION
+	INDEV	,A3
+		,A1	,':'
+	IFILEN	,A6
+		,A1	,'.'
+	INEXT	,A3
+RECORD RENFIL
+		,A11
+	RENEXT	,A3,'111'
+RECORD MESAG
+		,A24,'?UT-NOT ENOUGH ROOM FOR '
+	FILENM	,A14
+		,A5,' FILE'
+RECORD ERRMSG
+		,A16,	'?UT-FILE ERROR #'
+	ERRA	,A3
+		,A9,	' ON FILE '
+	ERRFIL	,A14
+RECORD
+				; EACH POSITION IN THE FOLLOWING ARRAY
+				; CORRESPONDS TO A RECORD IN THE DEVICE
+				; FILE. WHEN FILE # 100 IN THE DEVICE
+				; FILE IS FOUND THEN POSITION 100 IS
+				; CHECKED, ETC.
+				; SWITCH VALUE OF 0 = EXPANDABLE
+				; SWITCH VALUE OF 1 = NOT EXPANDABLE
+		,10D1	,0,1,0,0,0,0,0,0,1,1	; FILES 1 - 10
+		,10D1	,0,1,0,0,1,0,0,1,0,0	; FILES 11 - 20
+		,10D1	,0,1,0,1,0,1,0,1,1,0	; FILES 21 - 30
+		,10D1	,0,1,0,0,1,1,1,1,1,0	; FILES 31 - 40
+		,10D1	,0,1,0,1,1,0,0,1,1,0	; FILES 41 - 50
+		,10D1	,1,1,0,1,0,1,0,0,1,1	; FILES 51 - 60
+		,10D1	,0,0,0,0,0,0,0,1,0,1	; FILES 61 - 70
+		,10D1	,0,0,0,0,0,0,0,0,1,0	; FILES 71 - 80
+		,10D1	,1,1,1,1,0,0,1,1,1,1	; FILES 81 - 90
+		,10D1	,0,1,1,0,1,0,1,0,1,1	; FILES 91 - 100
+		,10D1	,0,0,0,0,0,0,1,0,0,1	; FILES 101 - 110
+		,10D1	,1,1,1,1,1,1,1,1,0,1	; FILES 111 - 120
+		,10D1	,0,1,1,1,1,1,0,0,0,1	; FILES 121 - 130
+		,10D1	,1,0,1,0,0,1,1,1,1,0	; FILES 131 - 140
+		,10D1	,0,0,0,1,1,1,1,1,1,1	; FILES 141 - 150
+		,10D1	,0,0,0,0,1,0,1,0,0,0	; FILES 151 - 160
+		,10D1	,0,1,0,0,1,1,0,0,0,0	; FILES 161 - 170
+		,10D1	,0,0,1,0,0,0,0,0,0,0	; FILES 171 - 180
+		,10D1	,0,0,0,0,0,0,0,0,0,0	; FILES 181 - 190
+		,10D1	,0,0,0,0,0,0,0,0,1,0	; FILES 191 - 200
+RECORD	,X
+	INVARY	,200D1
+RECORD CTL
+	ROW	,D2
+		,A1
+	COL	,D2
+		,A1
+	MAX	,D2
+		,A1
+	MIN	,D2
+		,A1
+	TYPE	,A2
+		,A1
+	FCTYPE	,A4
+RECORD
+	ALPHA	,A5
+	BLANKS	,A7
+	BLOCKS	,D5
+	ENTRY	,A7
+	ERRSWT	,D1
+	INXCTL	,D1
+	SIZE	,D4
+	CHAR	,A1
+	NEWMAX	,D5
+	MAXCNT	,D5
+	RECCNT	,D5
+	NEWIMX	,D5
+	SAVMAX	,D5
+	IMAXCT	,D5
+	IRECCT	,D5
+	CNGCTL	,D1
+	WHATNO	,D1
+	LOKCTL	,D1
+	MASKX	,A5,	'XXXXX'
+	MASKZ	,A5,	'ZZZZX'
+	NAME	,A6
+	CPYEXT	,A3
+	CPNTR	,D1
+	FILCNT	,D3
+	COUNT	,D3
+	XPAND	,D1
+	WODEV	,A3
+	LINE	,D4
+	ACOUNT	,D5
+	SWITCH	,D1
+	IDXSW	,D1
+PROC
+	CNPOS = -1
+	XCALL TERID
+	ERRSWT =
+	ERRFIL = 'UT:COMPNY.DDF'
+	XCALL OPENF (11,'I',ERRFIL,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO FILERR
+	READ (11,COMPNY,1)
+BEGIN,
+	CLOSE 11
+	XCALL OUTPT (1,1,2,'EXPAND OR REDUCE FILE SIZE')
+	XCALL OUTPT (6,8,0,'PLEASE ENTER')
+	XCALL OUTPT (8,13,0,'NAME OF FILE')
+	XCALL OUTPT (10,13,0,'COMPANY CODE')
+	XCALL OUTPT (8,49,0,'CURRENT DEVICE:')
+	XCALL OUTPT (10,46,0,'CURRENT FILE SIZE:')
+	XCALL OUTPT (12,49,0,'ACTIVE RECORDS:')
+	XCALL OUTPT (12,13,0,'NEW OUTPUT DEVICE')
+	XCALL OUTPT (14,13,0,'EXPAND OR REDUCE ?')
+	XCALL OUTPT (16,13,0,'NEW FILE SIZE')
+	ERRFIL = 'UT:DEVICE.DDF'
+	XCALL OPENF (11,'I',ERRFIL,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO FILERR
+FILNAM,
+	IF (IDXSW.EQ.1) GO TO RESTRT
+	LOKCTL =
+	CTL = '08,33,06,04,A ,FE  '
+	CALL INPUT
+	GO TO (BEGIN,END), INXCTL
+	NAME = ENTRY(1,6)
+RESTRT,
+	XCALL OUTPT (08,33,0,NAME)
+	IDXSW =
+	XCALL WATE (3)
+	FILCNT =
+FIND,
+	INCR FILCNT
+	IF (FILCNT.GT.199) GO TO INVALD
+	READ (11,DEVICE,FILCNT)
+	IF (NAME.NE.FILNAM) GO TO FIND
+	IF (INVARY(FILCNT).EQ.1) GO TO NOXPND
+INPTCE,
+	CLOSE 11
+	XCALL OUTPT (24,1,1,'\')
+	CTL = '10,33,03,03,A ,FU  '
+	CALL INPUT
+	GO TO (BEGIN,BEGIN,BEGIN,BEGIN), INXCTL
+	CPYEXT = ENTRY(1,3)
+	CPNTR =
+CPLOOP,
+	INCR CPNTR
+	IF (CPNTR.GT.8) GO TO INVCMP
+	IF (CPYEXT.NE.COMCOD(CPNTR)) GO TO CPLOOP
+	IF (STATUS(CPNTR).GT.0) GO TO INUSE
+OUTDEV,
+	XCALL OUTPT (8,65,0,DEVNAM(CPNTR))
+	ENTRY = DEVNAM (CPNTR)
+	CTL = '12,33,03,00,A ,U '
+	CALL INPUT
+	GO TO (BEGIN,BEGIN,BEGIN,INPTCE), INXCTL
+	WODEV = ENTRY(1,3)
+	INDEV = DEVNAM(CPNTR)
+	OUTDEV = DEVNAM(CPNTR)
+	SHPDEV = DEVNAM (CPNTR)
+	IF (WODEV.NE.'   ') OUTDEV = WODEV
+	XCALL OUTPT (12,33,0,OUTDEV)
+	IFILEN = FILNAM
+	OFILEN = FILNAM
+	INEXT = COMCOD(CPNTR)
+	OUTEXT = COMCOD(CPNTR)
+	SHPEXT = COMCOD(CPNTR)
+	ERRFIL = INFIL
+	XCALL OPENF (2,'I',INFIL,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO FILERR
+	READS (2,RECRD)
+	CLOSE 2
+	XCALL RSTAT (SIZE,CHAR)
+	IF (FILNAM.EQ.'JOBIDX') GO TO JOBREC
+	IF (FILNAM.EQ.'SHPIDX') GO TO SHPREC
+	MAXCNT = RECRD(SIZE-7,SIZE-3)
+	RECCNT = RECRD(SIZE-12,SIZE-8)
+	GO TO SMLRTN
+JOBREC,
+	SHPNAM = 'JOBCST'
+	CALL REDCTL
+	IF (LOKCTL.EQ.1) GO TO FILNAM
+	MAXCNT = CTLREC (104,108)
+	RECCNT = CTLREC (99,103)
+	GO TO SMLRTN
+SHPREC,
+	SHPNAM = 'SHPORD'
+	CALL REDCTL
+	IF (LOKCTL.EQ.1) GO TO FILNAM
+	MAXCNT = CTLREC (148,152)
+	RECCNT = CTLREC (143,147)
+	GO TO SMLRTN
+INUSE,
+	XCALL OUTPT (24,1,1,'THIS FILE IS MARKED AS ')
+	IF (STATUS(CPNTR).EQ.99) DISPLAY (15,'"PROTECTED"')
+	IF (STATUS(CPNTR).LT.99) DISPLAY (15,'"IN USE"')
+	DISPLAY (15,'. CONTINUE ANYWAY ?')
+	CTL = '24,56,01,00,YN,  '
+	CALL INPUT
+	XCALL OUTPT (24,1,1,'\')
+	GO TO (BEGIN), INXCTL
+	IF (ENTRY.EQ.'Y') GO TO OUTDEV
+	IF (ENTRY.EQ.'N') GO TO BEGIN
+	GO TO INUSE
+SMLRTN,
+	MAXCNT = MAXCNT - 1
+	ALPHA = MAXCNT, MASKZ
+	XCALL OUTPT (10,65,0,ALPHA)
+	RECCNT = RECCNT - 1
+	ALPHA = RECCNT, MASKZ
+	XCALL OUTPT (12,65,0,ALPHA)
+	RECCNT = RECCNT + 1
+XORR,
+	ENTRY = 'X'
+	XCALL OUTPT (24,1,1,'"X"=EXPAND   "R"=REDUCE')
+	CTL = '14,33,01,00,A ,U'
+	CALL INPUT
+	GO TO (BEGIN,BEGIN,BEGIN,OUTDEV), INXCTL
+	IF (ENTRY(1,1).NE.'X'.AND.ENTRY(1,1).NE.'R') GO TO XORR
+	XPAND =
+	IF (ENTRY(1,1).EQ.'X') XPAND = 1
+	XCALL OUTPT (24,1,1,'\')
+NEWMAX,
+	CTL = '16,33,05,01,# ,FU'
+	CALL INPUT
+	GO TO (BEGIN,BEGIN,BEGIN,XORR), INXCTL
+	NEWMAX = ENTRY(1,5)
+	XCALL DSPLY (16,33,5,NEWMAX,5,0)
+	IF (NEWMAX.NE.99999) INCR NEWMAX
+	IF (XPAND.AND.NEWMAX.LT.MAXCNT+1) GO TO BADNM1
+	IF (XPAND.EQ.0.AND.NEWMAX.LT.RECCNT) GO TO BADNM2
+	IF (XPAND.EQ.0.AND.NEWMAX.GT.MAXCNT+1) GO TO BADNM3
+
+;-------ALLOW CHANGE ---------------------------------------------------------
+
+ANYCNG,
+	CNGCTL = 5
+	XCALL ANYCN (CNGCTL,WHATNO,0,0,0,0)
+	GO TO (BEGIN,BEGIN), CNGCTL
+	XCALL WATE (4)
+
+;-----------------------------------------------------------------------------
+;------ SETS NEW MAXIMUM COUNT, OPENS OUTPUT FILE AND XPANDS FILE ------------
+SETREC,
+	RECRD(SIZE-7,SIZE-3) = NEWMAX, MASKX		;SET NEW MAXIMUM COUNT
+	IF (FILNAM(4,6).EQ.'IDX') RECRD =
+OPEN,
+	RECCNT =
+	BLOCKS = (((SIZE+2)*(NEWMAX+1)+2)/512) + 1
+	RENFIL (1,11) = INFIL (1,11)
+	CLOSE 13
+	ERRFIL = INFIL
+	XCALL RENAM (13,RENFIL,INFIL)
+RENAMD,
+	ERRSWT = 1
+	ERRFIL = OUTFIL
+	XCALL OPENF (1,'O',OUTFIL,BLOCKS,SIZE,SWITCH)
+	IF (SWITCH) GO TO FILERR
+	ERRFIL = RENFIL
+	XCALL OPENF (2,'I',RENFIL,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO FILERR
+	ERRFIL = OUTFIL
+	WRITES (1,RECRD(1,SIZE))
+	READS (2,RECRD)
+	INCR RECCNT
+	IF (XPAND) GO TO REBLD1
+REBLD,
+	IF (RECCNT.GE.NEWMAX+1) GO TO STOP
+	READS (2,RECRD,STOP)
+	WRITES (1,RECRD(1,SIZE))
+	INCR RECCNT
+	GO TO REBLD
+REBLD1,
+	READS (2,RECRD,WRBRKS)
+	WRITES (1,RECRD(1,SIZE))
+	INCR RECCNT
+	GO TO REBLD1
+WRBRKS,
+	IF (RECCNT.GE.NEWMAX+1) GO TO STOP
+	WRITES (1,BRACKS(1,SIZE))
+	INCR RECCNT
+	GO TO WRBRKS
+
+;-----------------------------------------------------------------------------
+;------ CLOSE CHANNELS AND START SPECIAL -------------------------------------
+;------ HANDLING FOR FILES THAT HAVE INDEXES ---------------------------------
+STOP,
+	CLOSE 1
+	CLOSE 2
+	CLOSE 13
+	XCALL DELET (13,RENFIL)
+	IF (FILNAM.EQ.'SHPORD'.OR.FILNAM.EQ.'JOBCST') GO TO NEWIDX
+	CLOSE 11
+	LOKCTL =
+	IF (FILNAM.EQ.'SHPIDX') CALL REDCTL
+	IF (FILNAM.EQ.'SHPIDX'.AND.LOKCTL.EQ.1) GO TO BEGIN	;IF READ FAILS
+	IF (FILNAM.EQ.'SHPIDX') CALL WRTCTL
+	LOKCTL =
+	IF (FILNAM.EQ.'JOBIDX') CALL REDCTL
+	IF (FILNAM.EQ.'JOBIDX'.AND.LOKCTL.EQ.1) GO TO BEGIN	;IF READ FAILS
+	IF (FILNAM.EQ.'JOBIDX') CALL WRTCTL
+	IF (FILNAM.EQ.'CUSMAS') GO TO INDEX
+	IF (FILNAM.EQ.'VENMAS') GO TO INDEX
+	IF (FILNAM.EQ.'EMPMAS') GO TO INDEX
+	IF (FILNAM.EQ.'GLAMAS') GO TO INDEX
+	IF (FILNAM.EQ.'ITMMAS') GO TO INDEX
+	IF (FILNAM.EQ.'SLSSUM') GO TO INDEX
+	IF (FILNAM.EQ.'JOBCST') GO TO INDEX
+	IF (FILNAM.EQ.'ESTCST') GO TO INDEX
+	IF (FILNAM.EQ.'PRDSTR') GO TO INDEX
+	IF (FILNAM.EQ.'SHPORD') GO TO INDEX
+	IF (FILNAM.EQ.'SHPIDX') GO TO INDEX
+	IF (FILNAM.EQ.'CSTMAS') GO TO INDEX
+	IF (FILNAM.EQ.'ROUTMS') GO TO INDEX
+	IF (FILNAM.EQ.'ASTMAS') GO TO INDEX
+	CLOSE 11
+	GO TO BEGIN
+
+;-----------------------------------------------------------------------------
+;------ EXIT TO MSMENU WHEN LEAVING XPAND ------------------------------------
+END,
+	CLOSE 11
+	XCALL PGCHN ('UT:MSMENU',2)
+
+;-----------------------------------------------------------------------------
+;------ SETS UP FIELDS FOR EXPANDING AN INDEX FILE ---------------------------
+INDEX,
+	ERRFIL = 'UT:DEVICE.DDF'
+	XCALL OPENF (11,'I',ERRFIL,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO FILERR
+	ERRSWT =
+	INCR FILCNT
+	IF (FILNAM.EQ.'SHPIDX') FILCNT = 107	; JOBREF FILE
+	READ (11,DEVICE,FILCNT)
+	INDEV = DEVNAM(CPNTR)
+	OUTDEV = DEVNAM(CPNTR)
+	IF (WODEV.NE.'   ') OUTDEV = WODEV
+	IFILEN = FILNAM
+	OFILEN = FILNAM
+	INEXT = COMCOD(CPNTR)
+	OUTEXT = COMCOD(CPNTR)
+	ERRFIL = INFIL
+	XCALL OPENF (1,'I',INFIL,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO FILERR
+	READS (1,RECRD)
+	XCALL RSTAT (SIZE,CHAR)
+	CLOSE 1
+	RECCNT =
+	IF (FILNAM.EQ.'JOBREF') GO TO SETREC
+	GO TO OPEN
+
+;-----------------------------------------------------------------------------
+FILERR,
+	IF (ERRSWT.NE.1) GO TO RENMD2
+	CLOSE 13
+	XCALL RENAM (13,INFIL,RENFIL)
+RENMD2,
+	IF (SWITCH.EQ.1) BLOCKS = 18
+	IF (SWITCH.EQ.2) BLOCKS = 24
+	IF (BLOCKS.EQ.24) GO TO NORM1
+	IF (BLOCKS.EQ.17.OR.BLOCKS.EQ.19) GO TO NORM2
+	ERRA = BLOCKS
+	XCALL MESAG (ERRMSG,2)
+	CLOSE 11
+	ERRSWT =
+	CLOSE 1
+	CLOSE 2
+	GO TO BEGIN
+NORM1,
+	FILENM = OUTFIL(1,14)
+	XCALL MESAG (MESAG,2)
+	CLOSE 11
+	GO TO BEGIN
+NORM2,
+	XCALL MESAG ('?UT-BAD OUTPUT DEVICE',2)
+	CLOSE 11
+	GO TO BEGIN
+;-----------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
+INPUT,
+	XCALL INPUT (ROW,COL,MAX,MIN,TYPE,FCTYPE,ENTRY,INXCTL)
+	RETURN
+
+;-----------------------------------------------------------------------------
+;-----------------------------------------------------------------------------
+NEWIDX,
+	XCALL OUTPT (1,1,2,'EXPAND OR REDUCE FILE SIZE')
+	XCALL OUTPT (8,10,0,'THE INDEX FOR THIS FILE DOES NOT NEED TO HAVE')
+	XCALL OUTPT (10,10,0,'AS MANY RECORDS AS THE MASTER FILE.')
+	XCALL OUTPT (12,10,0,'THE INDEX FOR THE ')
+	XCALL OUTPT (12,28,0,FILNAM)
+	XCALL OUTPT (12,35,0,'FILE MUST BE EXPANDED SEPARATELY.')
+	XCALL OUTPT (14,10,0,'DO YOU WISH TO EXPAND IT AT THIS TIME ?')
+	XCALL INPUT (14,50,1,0,'YN','E',ENTRY,INXCTL)
+	IF (FILNAM.EQ.'SHPORD') NAME = 'SHPIDX'
+	IF (FILNAM.EQ.'JOBCST') NAME = 'JOBIDX'
+	IDXSW =
+	IF (INXCTL.EQ.1) IDXSW = 1
+	GO TO BEGIN
+
+;-----------------------------------------------------------------------------
+;---- READS CONTROL RECORD OF JOBCST OR SHPORD WHEN THEIR INDEXES ARE EXPANDED
+REDCTL,
+	IF (FILNAM.EQ.'SHPIDX') SHPNAM = 'SHPORD'
+	IF (FILNAM.EQ.'JOBIDX') SHPNAM = 'JOBCST'
+	XCALL OPENF (3,'U',SHPREC,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO BADO2
+	READ (3,CTLREC,1)
+	CLOSE 3
+	RETURN
+
+;-----------------------------------------------------------------------------
+;------ WRITES CONTROL RECORD OF SHPORD OR JOBCST WITH NEW MAX ---------------
+WRTCTL,
+	ERRFIL = SHPREC
+	XCALL OPENF (3,'U',SHPREC,BLOCKS,0,SWITCH)
+	IF (SWITCH) GO TO BADO2
+	IF (FILNAM.EQ.'SHPIDX') CTLREC(148,152) = NEWMAX
+	IF (FILNAM.EQ.'JOBIDX') CTLREC(104,108) = NEWMAX
+	SIZE = 170
+	IF (FILNAM.EQ.'JOBIDX') SIZE = 126
+	WRITE (3,CTLREC(1,SIZE),1)
+	CLOSE 3
+	RECRD =
+	RETURN
+
+;-----------------------------------------------------------------------------
+;------- DISPLAYS ERROR MESSAGE IF JOBCST OR SHPORD NOT FOUND ----------------
+BADO2,
+	XCALL OUTPT (22,1,2,'?UT-CANNOT UPDATE ')
+	DISPLAY (15,INFIL,'...',SHPREC,' CONTROL RECORD NOT FOUND')
+	XCALL MESAG (' ',1)
+	CLOSE 3
+	LOKCTL = 1
+	RETURN
+
+;---------------------------------------------------------------------------
+INVALD,
+	XCALL MESAG ('?UT-FILE NOT FOUND IN DEVICE TABLE',2)
+	GO TO FILNAM
+
+;---------------------------------------------------------------------------
+NOXPND,
+	XCALL MESAG ('?UT-FILE SIZE CANNOT BE CHANGED',2)
+	GO TO FILNAM
+
+;---------------------------------------------------------------------------
+INVCMP,
+	XCALL MESAG ('?UT-INVALID COMPANY CODE',2)
+	GO TO INPTCE
+
+;---------------------------------------------------------------------------
+BADNM1,
+	XCALL MESAG
+&	('?UT-NEW SIZE MUST BE GREATER THAN OR EQUAL TO CURRENT SIZE',2)
+	GO TO NEWMAX
+
+;---------------------------------------------------------------------------
+BADNM2,
+	XCALL MESAG
+&	('?UT-NEW SIZE CANNOT BE LESS THAN CURRENT # OF ACTIVE RECORDS',2)
+	GO TO NEWMAX
+
+;---------------------------------------------------------------------------
+BADNM3,
+	XCALL MESAG
+&	('?UT-NEW SIZE MUST BE LESS THAN OR EQUAL TO CURRENT SIZE',2)
+	GO TO NEWMAX
+;---------------------------------------------------------------------------
+END

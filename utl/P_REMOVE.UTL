@@ -1,0 +1,37 @@
+;p_remove.utl
+;
+;	remove all passwords
+;  MSMENU / UTL 
+;
+;	9-30-98 ssq: security is in logon.utl, logon.wsc, backing
+;	out of this menu does not remove security
+;
+;		OVERALL MASTER MENU FOR APPLICATION SELECTION
+
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD,X
+			.INCLUDE 'DEF:MES002.DEF'
+
+RECORD	VARS
+	IDX	,D4
+
+PROC
+
+	OPEN (13,U,'UT:MESARA.DDF')
+
+	IDX = 2		;SKIP FIRST 2 MESARA RECORDS
+LOOP,
+	INCR IDX
+	READ (13,MESARA,IDX) [ERR=EOF]
+	IF (MESARA .EQ. ']]]]]]') GOTO EOF
+	CMPCOD =
+	CMPPOS =
+	SECREC =
+	SPOLDV =
+	WRITE (13,MESARA,IDX)
+	GOTO LOOP
+EOF,
+	CLOSE 13
+	STOP
+	END

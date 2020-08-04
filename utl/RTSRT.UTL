@@ -1,0 +1,38 @@
+SUBROUTINE RTSRT; (TSXSRT)
+;
+;  RTSRT / UTL
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		ROUTINE FOR TRAPPING INVALID USE OF 
+;		RTSORT WHILE RUNNING UNDER CTS-300
+;
+	TSXSRT	,A
+PROC	
+	XCALL OUTPT 
+&	(10,15,3,'***  RTSORT NOT FOR USE UNDER CTS-300 ENVIROMENT ***')
+	STOP
+END

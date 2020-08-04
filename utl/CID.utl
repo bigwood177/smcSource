@@ -1,0 +1,53 @@
+SUBROUTINE	CID
+	CMPCOD	,A
+
+
+	.include 'wnd:tools.def'
+
+record	coptbl
+	.include 'def:rd182a.def'
+
+RECORD	ICOFIL
+		,A3,	'UT:'
+	ICONAM	,A3
+		,A4,	'.ICO'
+
+RECORD	VARS
+	SWITCH	,D1
+	PGNAME	,A63
+	STATUS	,D1
+	TL	,D6
+	EL	,D6
+PROC
+
+;get the company info...
+;;;	SWITCH = 5
+;;;	XCALL FILES (10,'SI',182,SWITCH)
+;;;	CLEAR TBL_KEY
+;;;	TBLCOD = 'CO'
+;;;	C1_CODE = CMPCOD
+;;;	C1_REC = 1
+
+	xcall jbnam(pgname)
+	TL = %INSTR(1,PGNAME,'$')	;FIND THE $ (MAIN$ORDMNT)
+	TL = TL + 1
+	EL = %TRIM (PGNAME)
+	IF (TL .GT. EL) EL = TL
+;;;	read (10,coptbl,tbl_key) [err=no_table]
+
+	xcall u_start(,,,,,,,253)
+;;;	xcall e_sect(C1_NAME ,D_CAPTION)
+;;;	xcall e_sect(C1_NAME+ ' ' + pgname,D_CAPTION)
+	xcall e_sect(CMPCOD ,D_CAPTION)
+	xcall e_sect(pgname(TL,EL) ,D_CAPTION, D_NOCLEAR, D_POSITION,1,5)
+
+
+	ICONAM = CMPCOD
+	status = %u_icon(D_ICONSET,ICOFIL,1)
+	xcall u_finish()
+no_table,
+;;;	CLOSE 10
+
+	RETURN
+	END
+

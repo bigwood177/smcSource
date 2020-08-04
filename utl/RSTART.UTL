@@ -1,0 +1,51 @@
+;  RSTART / UTL 
+;
+;
+
+RECORD
+	ENTRY	,A1
+	INXCTL	,D1
+COMMON
+			.INCLUDE 'DEF:COM001.DEF'
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+PROC
+	XCALL TERID
+	OPEN (1,I,'UT:MESARA.DDF')
+	READ (1,MESARA,TNMBR+1)
+	CLOSE 1
+MAINMU,
+	XCALL OUTPT (1,1,2,'PROGRAM RESTART')
+	IF (RESTRT.EQ.0) GO TO NOSTRT
+	XCALL OUTPT (9,4,0,'The last program executed was ')
+	XCALL OUTPT (0,0,0,LASTPG)
+	XCALL OUTPT (0,0,0,'.')
+	XCALL OUTPT (10,4,0,'It attempted to run the program ')
+	XCALL OUTPT (0,0,0,NEXTPG)
+	XCALL OUTPT (0,0,0,', but this program')
+	XCALL OUTPT (11,4,0,
+&	'failed to execute.  This program may be re-started.')
+	XCALL OUTPT (24,1,0,'DO YOU WISH TO RESTART THE PROGRAM ?')
+	XCALL INPUT (24,39,1,0,'YN',' ',ENTRY,INXCTL)
+;;;	IF (ENTRY.EQ.'N') XCALL PGCHN ('UT:MSMENU',2)
+	IF (ENTRY.EQ.'N') STOP
+	XCALL PGCHN (NEXTPG,2)
+;****************************************
+NOSTRT,
+	XCALL OUTPT (8,4,0,'The last program executed was ')
+	XCALL OUTPT (0,0,0,LASTPG)
+	XCALL OUTPT (0,0,0,'.')
+	XCALL OUTPT (9,4,0,'It attempted to run ')
+	XCALL OUTPT (0,0,0,NEXTPG)
+	XCALL OUTPT (0,0,0,', but this program failed to')
+	XCALL OUTPT (10,4,0,
+&	'execute.  This next program is a process that is not re-startable.')
+	XCALL OUTPT (11,4,0,
+&	'Please make note of these program names. Refer to your operator')
+	XCALL OUTPT (12,4,0,
+&	'instructions or call your SOFTWARE SOURCE for further information.')
+	XCALL MESAG (' ',1)
+;;;	XCALL PGCHN ('UT:MSMENU',2)
+	STOP
+;*******************************************************************************
+END

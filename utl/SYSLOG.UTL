@@ -1,0 +1,54 @@
+;syslog.utl
+;
+;	logon, system security
+;
+
+	.include 'wnd:tools.def'
+common
+	.include 'def:com001.def'
+
+record	m_menu
+	i_pgm	,d2
+
+record	vars
+	inp_1	,i4
+	gen_col	,i4
+	done	,i4
+	abort	,d1
+	company	,a3
+.proc
+	open (14,i,'ut:device.ddf')
+	xcall u_start("lib:smc_wnd",,,,22,78,,15)
+	xcall e_sect ("Logon", D_CAPTION)
+	xcall m_ldcol(gen_col, g_utlib, "general")
+
+	done = FALSE
+	do begin
+	   xcall m_process()
+	   ;;;xcall i_input(inp_1,,i_pgm)
+	   ;;;if (g_setsts)
+	   if (g_select) call menu_choices
+	   end
+	until (done)
+
+	xcall u_finish
+	close 14
+	stop
+
+menu_choices,
+	using g_entnam select
+	("G_LOGON"),	begin
+			xcall logon (company, abort)
+			end
+	("O_EXIT"),	done = TRUE
+	endusing
+	return
+;--------------------------------------------
+
+break_fields,
+	done = TRUE
+	return
+;--------------------------------------------
+
+.end
+;

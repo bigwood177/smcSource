@@ -1,0 +1,50 @@
+;main_mm.utl
+;	main menu, to set tnmbr...
+;	DON'T LINK W/ UTIL20 - LINK W/ UT:UTIL.ELB
+;
+; 16-MAR-1998 SSQ:	TNMBR LOGIC: Get unique tnmbr for each
+;				instance of msmenu.
+;
+record	term_no
+	tno	,d4
+record	tn_file
+		,a10,	'term_no.'
+	tn_ext	,a3
+
+record	tn_vars
+	tn_stat	,d6
+	len	,d6
+	tno_alpha	,a6
+proc
+	goto fini
+;
+;	multi-tno logic will have to wait ...
+;-----------------------------------------------
+	xcall getlog("tnmbr",tno_alpha,len)
+	tno = tno_alpha
+	clear tn_stat
+t_loop,
+	incr tn_stat
+	if (tn_stat .ge. 6)
+		begin
+;;;		xcall mesag("Too many MSMENU instances",2)
+		stop
+		end
+	tn_ext = tno,	'XXX'
+	onerror no_term
+	open (11,i,tn_file)
+	offerror
+	incr tno
+	goto t_loop
+no_term,	;;; next available terminal # for this workstation
+	offerror
+	close 11
+	open (11,o,tn_file)
+	xcall setlog("TNMBR",TN_EXT,TN_STAT)
+	writes (11,term_no)
+	close 11
+;-----------------------------------------------
+fini,
+	stop "ut:msmenu"
+	end
+

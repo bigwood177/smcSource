@@ -1,0 +1,101 @@
+SUBROUTINE SNMSG; (MSG,SWITCH)
+;
+;  SNMSG / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		ROUTINE TO REPLACE DIBOL "SEND" & "RECV" STATEMENTS
+;
+	MSG	,A	; SENT/RECEIVED MESSAGE
+	SWITCH	,D	; 1 = READ MESSAGE
+			; 2 = WRITE MESSAGE
+			; 3 = CLEAR MESSAGE
+			; 4 = CLEAR ALL MESSAGES
+			; 5 = CLEAR ALL MESSAGES AND WRITE MESSAGE
+			; 9 = MESSAGE ERROR
+COMMON
+	TNMBR	,D2
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD
+	CNT	,D1
+	BLANKS	,A50
+PROC
+	OPEN (11,U,'UT:MESARA.DDF')
+	CNT = 0
+	ON ERROR LOKLUP
+READDV,
+	READ (11,MESARA,TNMBR+1)
+READOK,
+	OFF ERROR
+	GO TO (READ,WRITE,CLEAR,CLRALL,CLRALL), SWITCH
+	GO TO ERROR
+READ,
+	MSG = MESSGE(1)
+	IF (MSG.EQ.BLANKS) GO TO ERROR
+	GO TO RETURN
+WRITE,
+	CNT = 0
+WRITE1,
+	INCR CNT
+	IF (CNT.GT.4) GO TO ERROR
+	IF (MESSGE(CNT).NE.BLANKS) GO TO WRITE1
+	MESSGE(CNT) = MSG
+	GO TO RETRN1
+CLEAR,
+	MESSGE(1) = MESSGE(2)
+	MESSGE(2) = MESSGE(3)
+	MESSGE(3) = MESSGE(4)
+	MESSGE(4) =
+	GO TO RETRN1
+
+CLRALL,
+	MESSGE (1,200) =
+	IF (SWITCH.EQ.5) GO TO WRITE
+	GO TO RETRN1
+ERROR,
+	SWITCH = 9
+	GO TO RETURN
+RETRN1,
+	WRITE (11,MESARA,TNMBR+1)
+RETURN,
+	CLOSE 11
+	IF (CNT.NE.0) XCALL OUTPT (24,1,1,'\')
+	RETURN
+LOKLUP,
+	INCR CNT
+	IF (CNT.GE.9) GO TO LOKMSG
+	SLEEP 1
+	READ (11,MESARA,TNMBR+1)
+	CNT = 0
+	GO TO READOK
+LOKMSG,
+	XCALL OUTPT (24,1,1,
+&	'RECORD TEMPORARILY IN USE IN UT:MESARA.DDF - PLEASE WAIT')
+	ON ERROR LOKLUP
+	CNT = 0
+	GO TO READDV
+END

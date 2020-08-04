@@ -1,0 +1,115 @@
+SUBROUTINE LPON; (LPSW,SPLFIL)  ;SMC VERSION
+;
+			;
+;changed 5-20-98 lpsw returned as printer number
+
+	LPSW	,D
+	SPLFIL	,A
+
+;-------- LPSW VALUES ---------
+
+
+record  s_filnam
+		,a4,    'spl:'
+	f_letr	,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+record  time
+	hh      ,a2
+	mm      ,a2
+	ss      ,a2
+
+RECORD	COMPRES
+	C_CHAR	,A1		;<ESC>
+		,A4,	"&k2S"	;pitch mode = 2 = 16.5-16.7 (compressed)
+
+RECORD	COMP14
+	O_CHAR	,A1		;<ESC>
+		,a4,	"&l1O"	;landscape mode
+	ESC_12	,A1		;<ESC>
+		,A4,	"&l8D"	;vertical spacing, 8 lines/inch
+	ESC_13	,A1		;<ESC>
+		,A8,	"(s13.00H"	;pitch 14 CPI
+
+RECORD	VARS
+	ENTRY	,A30
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	OPT	,D1
+	I	,D5
+
+PROC
+	IF (LPSW .EQ. 6)	;PRINT TO LOCAL PRINTER
+		BEGIN
+		OPT = LPSW
+		GOTO PROCES
+		END
+DISPLA,
+	XCALL OUTPT (3,1,2,'\')
+	XCALL OUTPT (12,20,0,'REPORT DESTINATION')
+	XCALL OUTPT (13,25,0,'1. Local Printer')
+	XCALL OUTPT (14,25,0,'2. Local Printer - Compressed')
+	XCALL OUTPT (15,25,0,'3. Local Printer - Landscape')
+	XCALL OUTPT (16,25,0,'4. Edit')
+	XCALL OUTPT (17,25,0,'5. Okidata ML 395')
+;;;	XCALL OUTPT (19,25,0,'7. Traffic',1)
+ASK,
+	XCALL INPUT (12,40,01,00,'#E',' ',ENTRY,INXCTL)
+	GOTO (DISPLA,SPL_ERR),INXCTL
+	OPT = ENTRY(1,1)
+	IF (OPT .EQ. 0)
+		BEGIN
+		OPT = 1
+		XCALL OUTPT (12,40,0,'1',1)
+		END
+	IF (OPT.LT.1 .OR. OPT.GT.5) GOTO ASK
+
+ANYCNG,
+	CNGCTL = 2
+	XCALL ANYCN (CNGCTL,WHATNO)
+	GOTO (ASK),CNGCTL
+
+PROCES,
+	;;; Create a unique file name and open for output
+	xcall tnmbr (fter)
+	xcall time (time)
+	ftime(1,2) = hh
+	ftime(3,4) = mm
+
+	f_letr = "s"
+;;;	onerror spl_err
+	open (13,o,s_filnam)            ;print output file
+	offerror
+
+	s_name(1,1) = OPT,'X'           ;save the printer # selected
+	splfil = s_name                 
+
+	
+	USING OPT SELECT
+	(2),	BEGIN			;local laser compressed
+		XCALL ASCII(27,C_CHAR)
+		WRITES (13,COMPRES)
+		END
+	(3),	BEGIN			;local laser landscape
+		XCALL ASCII(27,O_CHAR)
+		ESC_12 = O_CHAR
+		ESC_13 = O_CHAR
+		WRITES (13,COMP14)
+		END
+	ENDUSING
+
+;;;	LPSW = 1
+	LPSW = OPT		;5-20-98
+	RETURN
+
+spl_err,
+	offerror
+	lpsw = 0		;error or <end>
+	RETURN
+END

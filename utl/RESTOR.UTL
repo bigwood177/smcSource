@@ -1,0 +1,20 @@
+;*****************************************************************************
+; RESTOR.UTL
+;
+;	COMMAND FILE TO RESTORE THE MCBA SAMPLE SECURITY SYSTEM
+;	DATA FILES TO THEIR "AS SHIPPED" STATE.  
+;
+;*****************************************************************************
+.ENABLE GLOBAL
+.ENABLE SUBSTITUTION
+.DISABLE SUFFIX
+;
+;	Please enter the name of the device to which you wish to restore
+.ASKS [0:4:"UT:"] DEV 	your sample data files [UT]
+ASSIGN 'DEV' OUT
+;
+.ASK ONE	Do you wish to restore the CONAME file for Company One ?
+;
+COPY/NOPROTECTION IN:*.DDE OUT:*.DDF
+COPY/NOPROTECTION IN:CONAME.MC OUT:CONAME.MCB
+.IFT ONE COPY/NOPROTECTION IN:CONAME.ONE OUT:CONAME.ONE

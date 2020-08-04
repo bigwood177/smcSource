@@ -1,0 +1,369 @@
+;logon.utl	login/logoff part of msmenu
+subroutine logon
+	r_cmpcod	,a	;company code selected
+	abort	,d	;0=ok (logged on), 1=abort (logged off)
+	
+
+	.include 'wnd:tools.def'
+
+COMMON
+			.INCLUDE 'DEF:COM001.DEF'
+RECORD SECURE
+			.INCLUDE 'DEF:SEC001.DEF'
+RECORD WSECUR ,X
+			.INCLUDE 'DEF:SEC002.DEF'
+RECORD SECCTL
+			.INCLUDE 'DEF:SEC003.DEF'
+RECORD DEVICE
+			.INCLUDE 'DEF:DEV001.DEF'
+RECORD MESARA
+			.INCLUDE 'DEF:MES001.DEF'
+RECORD,X
+			.INCLUDE 'DEF:MES002.DEF'
+RECORD CONAM2
+			.INCLUDE 'DEF:RD099B.DEF'
+RECORD CONAM3
+			.INCLUDE 'DEF:RD099D.DEF'
+RECORD ,X
+			.INCLUDE 'DEF:RD099E.DEF'
+RECORD COMPNY
+			.INCLUDE 'DEF:CMP001.DEF'
+RECORD SPWORD
+	WPWORD	,9A1
+RECORD EXE
+	EXEPGM	,A9
+	EXTENT	,A4
+
+RECORD REDFIL
+		,A14
+RECORD
+	ROW	,4D2,	12,12,03,04
+	COL	,4D2,	43,70,35,35
+	MAX	,4D2,	01,03,02,01
+	MIN	,4D2,	00,03,01,01
+	TYPE	,4A4,	'YN  ','A   ','N 00','N 00'
+	FCTYPE	,4A3,	'E  ','E  ','FE1','FE1'
+RECORD
+		,A30,	' !"#$%&''()*+,-./0123456789:;<='
+		,A35,	'>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`'
+RECORD,X
+	DECODE	,65A1
+RECORD
+		,A30,	'VHA. WIB/!XJC0"YKD1#ZLE2$[MF3%'
+		,A35,	'\NG4&]O5''^P6(_Q7)`R8*S9+T:,U;-<=>?@'
+RECORD,X
+	CODE	,65A1
+RECORD
+	ASTRIX	,A32,'********************************'
+	BSMID	,D5
+	COMCTR	,D1
+	CTL	,D1
+	DPNTR	,D3
+	DSPCOM	,A3		;DISPLAY OF COMPANY CODE
+	ENTRY	,A10
+	ERROR	,A3		;RETURNING POSSIBLE ERROR MESSAGE (OPENF)
+	FCMENU	,D1		;0-FRONT MENU 1-BACK MENU
+	HPWORD	,4A1
+	INXCTL	,D1
+	KEYA	,A12
+	LOKCTL	,D1
+	PGM	,D2
+
+	MAXFIL	,D2,	19
+	STROW	,D2,	03
+	ORGCNT	,D5
+	READ	,D1	,0
+	RECCNT	,D5
+	REENTR	,D1
+	SCMPNY	,A3
+	SRCCTL	,D1
+	SWITCH	,D1
+	SECCTR	,D1	,0
+	SUB	,D2
+	TERM	,D4		;SAVES THE VALUE OF TNMBR + 1
+	TODAY	,D6
+	WRITE	,D1	,1
+
+Record	company
+	c_cmpcod	,a3
+	c_password	,a9
+
+record	current
+	cur_code	,a3
+
+record	channel
+	ch_01	,d2
+	ch_02	,d2
+	ch_03	,d2
+	ch_04	,d2
+	ch_13	,d2
+	ch_14	,d2
+
+record	vars
+	sts	,i4
+	done	,i4
+	valid_pword	,i4
+	inp_1	,i4
+	logged_on	,d1
+	logged_off	,d1
+	tno	,d4
+
+.proc
+	call pre_process
+	if (abort) xreturn
+
+	xcall e_enter
+
+	xcall i_ldinp(inp_1, g_utlib, "inp_logon", D_NOPLC)
+	if (logged_on) xcall i_display(inp_1, "cur_code", current, "cur_code")
+
+	xcall u_window(D_PLACE, inp_1)
+
+	do  begin
+	    xcall i_input(inp_1, "set_logon", company)
+	    if(g_setsts)
+	    then  call menu_choices
+	    else  call break_fields		
+	    end
+	until ((logged_on.and.valid_pword) .or. logged_off)
+
+	xcall e_exit
+
+	if (ch_01) xcall u_close (ch_01)
+	if (ch_02) xcall u_close (ch_02)
+	if (ch_13) xcall u_close (ch_13)
+	if (ch_14) xcall u_close (ch_14)
+
+	xreturn
+;============================================
+
+menu_choices,
+	using g_entnam select
+	("L_ON"), begin
+		   call logon
+		   if (.not. logged_on)xcall u_message("Could not log on !")
+		   end
+	("L_OFF"),begin
+		   call logoff
+		   end
+	endusing
+
+	return
+;------------------------------------------------------
+
+break_fields,	
+	return
+;------------------------------------------------------
+
+
+val_password,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; Validate password/company code
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	valid_pword = FALSE
+
+	upcase c_password
+	upcase c_cmpcod
+	spword = c_password
+	scmpny = c_cmpcod
+
+	CALL SCRMBL
+	CALL CODE
+	KEYA(1,9) = SPWORD
+	KEYA(10,12) = SCMPNY
+READSF,
+	SRCCTL = 2
+	XCALL SERCH (ch_01,SECURE,KEYA,1,12,ORGCNT,BSMID,SRCCTL,1,13,18,0,0,0,0)
+	IF (SRCCTL.EQ.0) 
+		BEGIN
+		VALID_PWORD = TRUE
+		RETURN
+		END
+
+	xcall u_message("Password/Company Invalid")
+	return
+;------------------------------------------------------
+
+logon,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;; company code and password have been 
+	;;; validated, update files.
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	logged_on = FALSE
+
+	call val_password
+	if (.not. valid_pword) return
+
+;------------------------------------------------------
+	SECREC = BSMID
+	ACCES (1,200) = ACCESS (1,200)
+	xcall u_open(ch_03,"i:r", "ut:compny.ddf",,,sts)
+	if (sts)
+		begin
+		xcall u_message ("Error on ut:compny.ddf")
+		return
+		end
+	LOKCTL = 1
+	XCALL IO (ch_03,COMPNY,1,READ,LOKCTL)
+	xcall u_close (ch_03)
+
+	for comctr from 1 thru 8
+		begin
+		if (comcod(comctr) .eq. compnm) goto co_found
+		end
+	return
+
+co_found,
+	CMPPOS = COMCTR
+	CMNME = COMCOD (COMCTR)
+	CMPCOD = COMCOD (COMCTR)
+	LOKCTL = 1
+	XCALL IO (ch_13,MESARA,TERM,WRITE,LOKCTL)
+
+	XCALL FFILE (99,REDFIL,SWITCH)
+	IF (SWITCH.EQ.1) 
+		begin
+		xcall u_message ("Error reading device 99")
+		return
+		end
+
+	xcall u_open (ch_04,"i:r",redfil,,,sts)
+	if (sts)
+		begin
+		xcall u_message ("Error reading coname file")
+		return
+		end
+
+	READ (ch_04,CONAM3,3)	
+	READ (ch_04,CONAM2,2)
+	xcall u_close (ch_04)
+
+	r_cmpcod = cmpcod
+	logged_on = TRUE
+	return
+;------------------------------------------------------
+
+logoff,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	logged_off = FALSE
+;*************************LOGOFF***********************
+ENDOFF,
+	LOKCTL = 1
+	XCALL IO (ch_13,MESARA,TERM,READ,LOKCTL)
+	CMPCOD =
+	CMPPOS =
+	SECREC =
+	SPOLDV =
+	LOKCTL = 1
+	XCALL IO (ch_13,MESARA,TERM,WRITE,LOKCTL)
+	logged_off = TRUE
+	return
+;------------------------------------------------------
+pre_process,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		;;; all pre input processing
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	abort = TRUE
+	clear company, r_cmpcod, cur_code
+
+	cnpos = -1
+	xcall tnmbr(tno)
+	tno = tno + 1
+	if (tno .eq. 0)
+		begin
+		xcall u_message ("No term # has been assigned to your PC")
+		return
+		end
+
+	term = tno + 1
+	xcall rdate(today)
+	if (today.eq.0)
+		begin
+		xcall u_message ("No system date on your PC")
+		return
+		end
+
+	xcall u_open (ch_01,"i:r", "ut:secure.ddf",,, sts)
+	if (sts) 
+		begin
+		xcall u_message ("Error on ut:secure.ddf")
+		call p_close
+		return
+		end
+	xcall io (ch_01, secctl,1,read,lokctl)
+	orgcnt = orgsec
+	reccnt = recsec
+
+	xcall u_open (ch_13,"u:r", "ut:mesara.ddf",,,sts)
+	if (sts) 
+		begin
+		xcall u_message ("Error on ut:mesara.ddf")
+		call p_close
+		return
+		end
+	xcall io (ch_13, mesara,term,read,lokctl)
+	if (cmppos .le. 0)
+	then	logged_on = FALSE
+	else	begin
+		logged_on = TRUE
+		cnpos = cmppos
+		cur_code = cmpcod
+		end
+		
+	abort =  FALSE
+	return
+
+p_close,	
+	if (ch_01) xcall u_close (ch_01)
+	if (ch_02) xcall u_close (ch_02)
+	if (ch_13) xcall u_close (ch_13)
+	if (ch_14) xcall u_close (ch_14)
+	return
+;------------------------------------------------------
+
+SCRMBL,	;****************UNSCRAMBLE PASSWORD*********
+	HPWORD(1) = WPWORD(1)
+	HPWORD(2) = WPWORD(3)
+	HPWORD(3) = WPWORD(5)
+	HPWORD(4) = WPWORD(7)
+	WPWORD(1) = WPWORD(2)
+	WPWORD(3) = WPWORD(4)
+	WPWORD(5) = WPWORD(6)
+	WPWORD(7) = WPWORD(8)
+	WPWORD(2) = HPWORD(1)
+	WPWORD(4) = HPWORD(2)
+	WPWORD(6) = HPWORD(3)
+	WPWORD(8) = HPWORD(4)
+	HPWORD(1) = WPWORD(1)
+	HPWORD(2) = WPWORD(2)
+	WPWORD(1) = WPWORD(8)
+	WPWORD(2) = WPWORD(9)
+	WPWORD(8) = HPWORD(1)
+	WPWORD(9) = HPWORD(2)
+	RETURN
+;---------------------------------
+
+CODE,
+	SUB =
+CODELP,
+	IF (SUB.GE.9) RETURN
+	INCR SUB
+	XCALL DECML (WPWORD(SUB),DPNTR)
+	DPNTR = DPNTR - 31
+	WPWORD (SUB) = CODE (DPNTR)
+	GO TO CODELP
+
+;;;\\\\\\\\\\\\\\\\\\\\\\\
+
+.end
+
+.subroutine	cmd_logon
+.proc
+	xcall m_signal ("L_ON")
+	xreturn
+.end
+
+.subroutine	cmd_logoff
+.proc
+	xcall m_signal ("L_OFF")
+	xreturn
+.end
+

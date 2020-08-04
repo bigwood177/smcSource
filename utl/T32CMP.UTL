@@ -1,0 +1,101 @@
+!*******************************************************************
+!    T32CMP.UTL for TSX-32
+!                   
+!          COMMAND FILE TO COMPILE UTILITY PROGRAMS AND
+!          SUBROUTINES AND BUILD UTIL20.OBJ LIBRARY
+!
+!	assignments
+!
+assign c:\mcba\source\def\ def
+assign c:\mcba\source\temp\ obj
+assign c:\mcba\execute\ut\ ut
+!
+!	compile
+!
+dbl /obj=UT:ANYCN.tm2/r:debug ANYCN.UTL
+dbl /obj=UT:DSPLY.tm2/r:debug DSPLY.UTL
+dbl /obj=UT:FFILE.tm2/r:debug FFILE.UTL
+dbl /obj=UT:FILES.tm2/r:debug FILES.UTL
+dbl /obj=UT:FRMAT.tm2/r:debug FRMAT.UTL
+dbl /obj=UT:GETAC.tm2/r:debug GETAC.UTL
+dbl /obj=UT:INPT3.tm2/r:debug INPT3.UTL
+dbl /obj=UT:INPUT.tm2/r:debug INPUT.UTL
+dbl /obj=UT:IO.tm2/r:debug IO.UTL
+dbl /obj=UT:IOS.tm2/r:debug IOS.UTL
+dbl /obj=UT:ISIO.tm2/r:debug ISIO.UTL
+dbl /obj=UT:LEFTJ.tm2/r:debug LEFTJ.UTL
+dbl /obj=UT:LINFD.tm2/r:debug LINFD.UTL
+dbl /obj=UT:LPOFF.tm2/r:debug LPOFF.UTL
+dbl /obj=UT:LPON.tm2/r:debug LPON.UTL
+dbl /obj=UT:LPOUT.tm2/r:debug LPOUT.UTL
+dbl /obj=UT:MESAG.tm2/r:debug MESAG.UTL
+dbl /obj=UT:MMENU.tm2/r:debug MMENU.UTL
+dbl /obj=UT:MOUNT.tm2/r:debug MOUNT.UTL
+dbl /obj=UT:NSMNU.tm2/r:debug NSMNU.UTL
+dbl /obj=UT:OFILE.tm2/r:debug OFILE.UTL
+dbl /obj=UT:OPENF.tm2/r:debug OPENF.UTL
+dbl /obj=UT:OUTPT.tm2/r:debug OUTPT.UTL
+dbl /obj=UT:PGCHN.tm2/r:debug PGCHN.UTL
+dbl /obj=UT:PGMND.tm2/r:debug PGMND.UTL
+dbl /obj=UT:PRSPL.tm2/r:debug PRSPL.UTL
+dbl /obj=UT:RDATE.tm2/r:debug RDATE.UTL
+dbl /obj=UT:SERCH.tm2/r:debug SERCH.UTL
+dbl /obj=UT:SNMSG.tm2/r:debug SNMSG.UTL
+dbl /obj=UT:SRCHQ.tm2/r:debug SRCHQ.UTL
+dbl /obj=UT:STENO.tm2/r:debug STENO.UTL
+dbl /obj=UT:TERID.tm2/r:debug TERID.UTL
+dbl /obj=UT:TMENU.tm2/r:debug TMENU.UTL
+dbl /obj=UT:TTNO.tm2/r:debug TTNO.UTL
+dbl /obj=UT:WATE.tm2/r:debug WATE.UTL
+^C
+!
+! create library
+!
+DBLIBR /output=UT:util20 UT:ANYCN.TM2 UT:DSPLY.TM2 UT:FFILE.TM2 UT:FILES.TM2 -
+ UT:FRMAT.TM2 UT:GETAC.TM2 UT:INPT3.TM2 UT:INPUT.TM2
+DBLIBR /output=UT:util20 UT:util20/lib UT:IO.TM2 UT:IOS.TM2 UT:ISIO.TM2 -
+ UT:LEFTJ.TM2 UT:LINFD.TM2 UT:LPOFF.TM2 UT:LPON.TM2
+DBLIBR /output=UT:util20 UT:util20/lib UT:LPOUT.TM2 UT:MESAG.TM2 UT:MMENU.TM2 -
+ UT:MOUNT.TM2 UT:NSMNU.TM2 UT:OFILE.TM2 UT:OPENF.TM2
+DBLIBR /output=UT:util20 UT:util20/lib UT:OUTPT.TM2 UT:PGCHN.TM2 UT:PGMND.TM2 -
+ UT:PRSPL.TM2 UT:RDATE.TM2 UT:SERCH.TM2 UT:SNMSG.TM2
+DBLIBR /output=UT:util20 UT:util20/lib UT:SRCHQ.TM2 UT:STENO.TM2 UT:TERID.TM2 -
+ UT:TMENU.TM2 UT:TTNO.TM2 UT:WATE.TM2
+!
+! compile the utility programs
+!
+dbl /obj=OBJ:CLRFIL.TMP/r:debug CLRFIL.UTL
+dbl /obj=OBJ:CLRSEC.TMP/r:debug CLRSEC.UTL
+dbl /obj=OBJ:CLROF2.TMP/r:debug CLROF2.UTL
+dbl /obj=OBJ:CNVSEC.TMP/r:debug CNVSEC.UTL
+dbl /obj=OBJ:CONMNT.TMP/r:debug CONMNT.UTL
+dbl /obj=OBJ:INITMF.TMP/r:debug INITMF.UTL
+dbl /obj=OBJ:LKSEE.TMP/r:debug LKSEE.UTL
+dbl /obj=OBJ:MSGMNT.TMP/r:debug MSGMNT.UTL
+dbl /obj=OBJ:MSMENU.TMP/r:debug MSMENU.UTL
+dbl /obj=OBJ:ORGSEC.TMP/r:debug ORGSEC.UTL
+dbl /obj=OBJ:PRTACS.TMP/r:debug PRTACS.UTL
+dbl /obj=OBJ:PRTDEV.TMP/r:debug PRTDEV.UTL
+dbl /obj=OBJ:PRTPAS.TMP/r:debug PRTPAS.UTL
+dbl /obj=OBJ:RSTART.TMP/r:debug RSTART.UTL
+dbl /obj=OBJ:SECMNT.TMP/r:debug SECMNT.UTL
+dbl /obj=OBJ:SECFL.TMP/r:debug SECFL.UTL
+dbl /obj=OBJ:SECPS.TMP/r:debug SECPS.UTL
+dbl /obj=OBJ:SECDV.TMP/r:debug SECDV.UTL
+dbl /obj=OBJ:SECCM.TMP/r:debug SECCM.UTL
+dbl /obj=OBJ:SECSC.TMP/r:debug SECSC.UTL
+dbl /obj=OBJ:XPAND.TMP/r:debug XPAND.UTL
+!
+!	sort generator
+!
+dbl /obj=OBJ:GSORT.TMP/r:debug GSORT.UTL
+dblink /output=UT:gsort obj:gsort.tmp UT:util20/olb 
+!
+dbr ut:gsort
+srtsec.utl
+obj:SRTSEC.dbl
+dbl /obj=OBJ:SRTSEC.TMP/r:debug obj:SRTSEC.DBL
+del obj:srtsec.dbl/noq
+!
+! end of T32CMP.UTL
+!

@@ -1,0 +1,191 @@
+SUBROUTINE PGCHN ; (PRGNAM,RESTAR)
+;
+;  PGCHN / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		ROUTINE TO HANDLE CHAINING BETWEEN PROGRAMS.
+;		USES CHANNEL 11 FOR MESARA AND TEST OPENING OF PROGRAM
+;
+	PRGNAM	,A	;Name of next program to chain to.
+	RESTAR	,D	;Re-start switch.
+			; 0 = Next program, if aborted, is not re-startable.
+			; 1 = Next program is unconditionally re-startable.
+			; 2 = Do not disturb the LASTPG, NEXTPG or RESTRT
+			;     variables when chaining to the next program.
+			; 3 = This is the only argument value for RESTAR
+			;     that causes this routine to return to the
+			;     calling program.
+			;	A RESTAR value of "3" returns RESTAR:
+			;	 "0" if the program is found to exist,
+			;	 "1" if the program cannot be found on the
+			;	     device specified.
+COMMON
+		.INCLUDE 'DEF:COM001.DEF'
+RECORD MESARA
+		.INCLUDE 'DEF:MES001.DEF'
+RECORD ,X
+		.INCLUDE 'DEF:MES002.DEF'
+RECORD CHAIN
+	CHNASN	,A3
+	COLON	,A1	,':'
+	CHNPGM	,A6
+RECORD
+	CNT1	,D2
+	CNT2	,D2
+	COUNTR	,D1
+	TSTPGM	,A14
+	LENGTH	,D2
+	BLANKS	,A10
+	SAVPRG	,A10
+	SUB	,D2
+	DCHAR	,D3
+PROC
+	CHAIN = '   :'
+	TSTPGM = PRGNAM
+	SAVPRG =
+	CLOSE 11
+	OPEN (11,U,'UT:MESARA.DDF')
+	IF (TSTPGM(3,3).NE.':') GO TO NOASN
+;****************************************
+; FIND LOGICAL ASSIGNMENT
+	COUNTR = 0
+	ONERROR LOKLUP
+FNDDEV,
+	READ (11,MESARA,1)
+READOK,
+	OFFERROR
+	UNLOCK 11
+
+	SUB =
+FLOOP,
+	INCR SUB
+	IF (SUB.GT.27) GO TO NOASN
+	IF (LOGASS(SUB).NE.TSTPGM(1,2)) GO TO FLOOP
+	CHNASN = PHYASS(SUB)
+	COLON = ':'
+	CHNPGM = TSTPGM(4,9)
+	CNT1 =
+	CNT2 =
+SQZLUP,
+	IF (CNT1.GE.10) GO TO NOASN
+	INCR CNT1
+	IF (CHAIN(CNT1,CNT1).EQ.' ') GO TO SQZLUP
+	INCR CNT2
+	SAVPRG (CNT2,CNT2) = CHAIN (CNT1,CNT1)
+	GO TO SQZLUP
+NOASN,
+	CHAIN = SAVPRG
+	IF (RESTAR.EQ.3) GO TO LOCAT
+	IF (RESTAR.EQ.2) GO TO NOUPDT
+
+;****************************************
+; UPDATE LAST PROGRAM INFORMATION
+
+	COUNTR = 0
+	ON ERROR LOKLP2
+UPDMES,
+	READ (11,MESARA,TNMBR+1)
+RED2OK,
+	OFF ERROR
+	LASTPG = NEXTPG
+	NEXTPG = PRGNAM
+	RESTRT = RESTAR
+	WRITE (11,MESARA,TNMBR+1)
+NOUPDT,
+
+;****************************************
+; "STOP" TO PROGRAM DEVICE/NAME
+
+	CLOSE 11
+	XCALL OUTPT (24,1,1,'PLEASE WAIT ...');MESSAGE UNLESS IN PROG. DEVELOP
+	IF (DEVLP.NE.1) GO TO STOP2		;NORMALLY DON'T DISPLAY CHAINING
+	XCALL OUTPT (24,55,0,' Chaining to ')	;ING FAZE.
+	XCALL OUTPT (0,0,0,PRGNAM)
+	XCALL OUTPT (24,1,0,'\')
+STOP2,
+	IF (CHNASN.NE.BLANKS) STOP CHAIN
+	STOP PRGNAM
+
+;****************************************
+LOKLUP,
+	INCR COUNTR
+	IF (COUNTR.GE.9) CALL LOKMSG
+	SLEEP 1
+	READ (11,MESARA,1)
+	XCALL OUTPT (24,1,1,'\')
+	GO TO READOK
+LOKLP2,
+	INCR COUNTR
+	IF (COUNTR.GE.9) CALL LOKMSG
+	SLEEP 1
+	READ (11,MESARA,TNMBR+1)
+	XCALL OUTPT (24,1,1,'\')
+	GO TO RED2OK
+LOKMSG,
+	XCALL OUTPT (24,1,1,
+&	'RECORD TEMPORARILY IN USE IN UT:MESARA.DDF - PLEASE WAIT')
+	COUNTR = 0
+	RETURN
+;***************************************
+; DETERMINE IF PROGRAM PHYSICALLY EXISTS
+
+LOCAT,
+	TSTPGM = PRGNAM
+	IF (CHNASN.NE.BLANKS) TSTPGM = CHAIN
+	RESTAR = 1
+	IF (SUB.GT.27 .AND. TSTPGM(1,2).NE.'UT' .AND. TSTPGM(1,2).NE.'SY')
+&		GO TO NOTFND
+	LENGTH = 11
+LOCAT1,
+	LENGTH = LENGTH - 1
+	IF (LENGTH.EQ.0) GO TO NOTFND
+	IF (TSTPGM(LENGTH,LENGTH).EQ.' ') GO TO LOCAT1
+	TSTPGM(LENGTH+1,LENGTH+4) = '.DBR'
+	CLOSE 11
+	ONERROR TRYSAV
+	OPEN (11,I,TSTPGM)
+	CLOSE 11
+	GO TO FOUND
+TRYSAV,
+	TSTPGM(LENGTH+1,LENGTH+4) = '.SAV'
+	CLOSE 11
+	ONERROR TRYTSD
+	OPEN (11,I,TSTPGM)
+	CLOSE 11
+	GO TO FOUND
+TRYTSD,
+	TSTPGM(LENGTH+1,LENGTH+4) = '.TSD'
+	CLOSE 11
+	ONERROR NOTFND
+	OPEN (11,I,TSTPGM)
+	CLOSE 11
+	GO TO FOUND
+FOUND,
+	RESTAR = 		;INDICATE "EXISTS"
+NOTFND,
+	RETURN			;RETURN TO CALLING PROGRAM
+END

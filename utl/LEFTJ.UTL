@@ -1,0 +1,47 @@
+SUBROUTINE LEFTJ ;(NUMBER,SIZE)
+;
+;  LEFTJ / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		LEFT JUSTIFIES A NUMBER IN AN ALPHA FIELD
+;
+	NUMBER	,A	;ALPHANUMERIC FIELD TO BE LEFT-JUSTIFIED
+	SIZE	,D	;NUMERIC SIZE OF PASSING FIELD
+RECORD
+	FIELD	,A18
+	SUB	,D2
+PROC
+	FIELD = NUMBER
+	SUB = 0
+LOOP,
+	INCR SUB
+	IF (SUB.GE.SIZE) GO TO DONE
+	IF (FIELD(SUB,SUB).EQ.' ') GO TO LOOP
+DONE,
+	NUMBER(1,SIZE) = FIELD(SUB,SIZE)
+	RETURN
+END

@@ -1,0 +1,104 @@
+;   CLROF2 / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		"CLROF2" DISPLAYS A MESSAGE INDICATING THAT THE DEVICE FILE
+;		INDICATES THAT SOMEONE ELSE IS USING A FILE (OR FILES)
+;		WHICH ARE REQUIRED FOR EXCLUSIVE USAGE.  IT ALLOWS THE PROGRAM
+;		TO CONTINUE AFTER THE FILE STATUS IN THE DEVICE
+;		FILE IS CLEARED.
+;
+RECORD
+	,A64,'THIS MATERIAL CONTAINS THE VALUABLE PROPERTIES AND TRADE SECRETS'
+	,A62,'OF MCBA, EMBODYING CONFIDENTIAL INFORMATION AND IDEAS, NO PART'
+	,A56,'OF WHICH MAY BE USED AND/OR DISCLOSED WITHOUT MCBAs DULY'
+	,A55,'AUTHORIZED LICENSE AGREEMENT AND/OR WRITTEN PERMISSION.'
+	,A61,'COPYRIGHT (C) MCBA, AN UNPUBLISHED WORK. ALL RIGHTS RESERVED.'
+
+RECORD REDFIL
+		,A14
+COMMON
+		.INCLUDE 'DEF:COM001.DEF'
+RECORD RCVMSG
+	FILNUM	,D3	; NUMBER OF FILE TO BE CLEARED OFF, ON DEVICE FILE
+		,A1
+	PGM1	,A10	; PROGRAM TO RETURN CONTROL TO
+RECORD
+	ENTRY	,A6	; PARAMETERS
+	INXCTL	,D1	; FOR INPUT
+	BLANKS	,A10
+	SWITCH	,D1
+PROC
+	XCALL TERID
+	SWITCH = 1
+	XCALL SNMSG (RCVMSG,SWITCH)	; RECEIVE DATA FROM CALLING PROGRAM
+	IF (SWITCH.EQ.9) GO TO MSGERR
+	XCALL FFILE (FILNUM,REDFIL,SWITCH)
+	XCALL OUTPT (2,1,2,PGM1)
+	XCALL OUTPT (6,9,0,'The next program, ')
+	XCALL OUTPT (0,0,0,PGM1)
+	XCALL OUTPT (0,0,0,', requires exclusive use of the')
+	XCALL OUTPT (8,9,0,REDFIL)
+	XCALL OUTPT (0,0,0,
+&		', which is currently in use by other terminals.')
+	XCALL OUTPT (10,9,0,
+&	  'Please have these other users end off as soon as possible,')
+	XCALL OUTPT (12,9,0,
+&		'or run the CLEAR FILE STATUS FLAGS option on the SYSTEM')
+	XCALL OUTPT (14,9,0,
+&	  'FUNCTIONS menu.  When the status is "cleared", type READY below.')
+	GO TO ACCEPT
+REPEAT,			; "READY" TYPED BUT SOMEONE IS STILL USING FILE
+	XCALL OUTPT (6,9,2,'The ')
+	XCALL OUTPT (0,0,0,REDFIL)
+	XCALL OUTPT (0,0,0,' file is still in use by one or more other')
+	XCALL OUTPT (8,9,0,
+&		'terminals.  Have these other terminals end off as soon as')
+	XCALL OUTPT (10,9,0,'possible, then type "READY" below.')
+	XCALL OUTPT (12,9,0,
+&		'(Or, optionally run CLEAR FILE STATUS FLAGS from the ')
+	XCALL OUTPT (14,9,0,' SYSTEM FUNCTIONS menu).')
+ACCEPT,
+	XCALL INPUT (18,9,5,5,'A ','EF',ENTRY,INXCTL)	; ACCEPT "READY"
+	GO TO (ACCEPT,GETOUT), INXCTL
+	IF (ENTRY(1,5).NE.'READY') GO TO ACCEPT
+	SWITCH = 2
+	XCALL FILES (1,'I',FILNUM,SWITCH)
+	IF (SWITCH.EQ.9) GO TO REPEAT
+	SWITCH = 4
+	XCALL FILES (1,'I',FILNUM,SWITCH)
+	XCALL OUTPT (2,1,1,'\')	; CLEAR LINE DISPLAYING PROGRAM NAME
+	XCALL WATE (4)
+	SWITCH = 3
+	XCALL SNMSG (BLANKS,SWITCH)
+	XCALL PGCHN (PGM1,1)
+GETOUT,					; STOP ON AN ESCAPE KEY/ABORT
+	XCALL PGCHN ('UT:MSMENU',2)
+MSGERR,
+	XCALL OUTPT (24,1,1,'MESSAGE ERROR IN "CLROF2"')
+	DISPLAY (15,7)
+	STOP
+END

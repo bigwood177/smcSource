@@ -1,0 +1,87 @@
+SUBROUTINE LPOFF ;(LPSW,SLPFIL,PGCNT,QUE_NAME)	;smc version
+; use this version as of 3-30-98, .smc no longer updated.
+;
+; Print selections are hard-coded into LPON.MAN and this routine.
+; Current selections are:
+;	1. Local Printer
+;	2. Local Printer (Compressed)
+;	3. Local Printer (Landscape)
+;	4. Edit
+;	5. Epson ML 395  (name=Epson LQ-2500)
+;	6. Don't prompt for printer, use Local Printer (Not compressed)
+
+
+	LPSW	,D
+	SPLFIL	,A
+	PGCNT	,D
+	QUE_NAME,A
+
+record  s_filnam
+		,a4,    'spl:'
+		,a1,    's'
+	fter    ,d3             ;terminal #
+	ftime   ,a4             ;hhmm of current time
+		,a4,    '.spl'
+record,x
+		,a4
+	s_name          ,a12
+
+
+RECORD	VARS
+	que_passed	,d1
+	QUEN	,A40
+	LN	,D2
+	ENTRY	,A1
+	INXCTL	,D1
+	CNGCTL	,D1
+	WHATNO	,D2
+	ROW	,D2
+	I	,D3
+	OPT	,D1
+
+PROC
+	IF (LPSW.EQ.0) RETURN
+;;;	CLOSE 14
+
+	IF (^PASSED(QUE_NAME))
+	THEN	BEGIN
+		QUEN = QUE_NAME
+		LN = %TRIM(QUEN)
+		QUE_PASSED = 1
+		END
+	ELSE	QUE_PASSED = 0
+
+	s_name = splfil         ;restore printer output file name
+	OPT = s_name(1,1)	;printer number
+	s_name(1,1) = 's'       ;always first char of printer output file name
+
+
+	USING OPT SELECT
+	(1,2,3),	begin	; Local laser 
+			CLOSE 13
+			lpque (s_filnam,copies:1,delete)
+			end
+	(4),	BEGIN			;EDIT
+		close 13
+		xcall spedit (s_filnam)
+		xcall delet (s_filnam)
+		END
+
+	(5),	begin	; Epson ML 295
+		if (pgcnt .ge. 0) forms (13,0)		;final ff
+		CLOSE 13
+		lpque (s_filnam,lpnum:"Epson LQ-2500",copies:1,delete)
+		end
+	(6),	begin
+		close 13
+		if (que_passed) 
+		then	lpque(s_filnam,copies:1,lpnum:quen(1,ln),delete)
+		else	lpque (s_filnam,copies:1,delete)
+		end
+	ENDUSING
+
+	LPSW =
+	RETURN
+
+
+END

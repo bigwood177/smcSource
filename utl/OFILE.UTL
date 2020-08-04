@@ -1,0 +1,122 @@
+SUBROUTINE OFILE ; (CHANEL,FILNUM,BLOCKS,RECSIZ,SWITCH)
+;
+;  OFILE / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SUBROUTINE TO OPEN A FILE FOR OUTPUT WITH A
+;		SPECIFIED BLOCK SIZE
+;
+;		OFILE requires 'I' access only, since, if the file
+;		must have 'U' access, this has been checked in the
+;		FILES subroutine before entering OFILE. It is assumed that
+;		all files created with this subroutine have been protected
+;		using the FILES subroutine prior to creation.
+;
+;
+	CHANEL	,D		;CHANNEL TO OPEN OR CLOSE FILE ON
+	FILNUM	,D		;RECORD NUMBER ON DEVICE FILE
+	BLOCKS	,D		;SIZE OF OUTPUT FILE DESIRED
+	RECSIZ	,D		;LENGTH OF RECORDS TO BE WRITTEN
+				;NOT USED IN RT11/TSX BUT REQUIRED FOR SOURCE
+	SWITCH	,D		;INCOMING CODES:  NONE
+				;OUTGOING CODES:  0 - OPENED SUCCESSFULLY
+				;		  1 - OPEN FAILED (NO SPACE)
+				;		  9 - FILE NOT AVAILABLE
+COMMON
+			.INCLUDE 'DEF:COM001.DEF'
+RECORD DEVICE
+			.INCLUDE 'DEF:DEV001.DEF'
+RECORD REDFIL
+	REDDEV	,A3
+		,A1	,':'
+	RDFILE	,A6
+		,A1	,'.'
+	REDEXT	,A3
+		,A1,	'['
+	SIZE	,D5
+		,A1,	']'
+RECORD COMPNY
+			.INCLUDE 'DEF:CMP001.DEF'
+RECORD
+	AERR	,A2
+	ERR	,D2
+	FILBL	,A21
+	LINE	,D5
+	LNGTH	,D2
+	SUB	,D2
+	TCHAR	,D3
+	TERMNO	,D2
+PROC
+	ON ERROR REDDEV
+REDDEV,
+	READ (14,DEVICE,FILNUM)
+	OFF ERROR
+	UNLOCK 14
+	IF (ACCES(FILNUM).EQ.' ') GO TO UNAVBL
+	REDDEV = DEVNAM (CNPOS)
+	RDFILE = FILNAM
+	REDEXT = CMNME
+	SIZE = BLOCKS
+	CALL SQUEZ
+	ON ERROR NOROOM
+	OPEN (CHANEL,O,FILBL)
+	OFF ERROR
+	SWITCH =
+	GO TO EXIT
+;*****************SQUEEZE OUT SPACES FROM FILE SPECIFICATION **********
+SQUEZ,
+	SUB =
+	LNGTH =
+	FILBL =
+LOOP,
+	IF (SUB.GE.21) RETURN
+	INCR SUB
+	IF (REDFIL(SUB,SUB).EQ.' ') GO TO LOOP
+	INCR LNGTH
+	FILBL (LNGTH,LNGTH) = REDFIL (SUB,SUB)
+	GO TO LOOP
+UNAVBL,
+	SWITCH = 9
+	GO TO EXIT
+;***************************************************************************
+NOROOM,
+	SWITCH = 1
+	XCALL ERROR (ERR,LINE)
+	AERR = ERR
+	XCALL OUTPT (24,1,1,'?OFILE-FILE "')
+	DISPLAY (15,REDFIL,'" ERROR # ',AERR,' - PRESS RETURN')
+	CALL ACPTCR
+EXIT,
+	RETURN			;RETURN TO CALLING PROGRAM
+ACPTCR,
+	IF (SYSTM.EQ.1) DISPLAY (15,29,'F',29,'Q',1)
+	ACCEPT (15,TCHAR)
+	IF (TCHAR.NE.13) GO TO ACPTCR
+	IF (SYSTM.NE.1) ACCEPT (15,TCHAR)
+	IF (SYSTM.EQ.1) DISPLAY (15,29,'E')
+	RETURN
+END

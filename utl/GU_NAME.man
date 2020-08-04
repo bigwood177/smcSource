@@ -1,0 +1,24 @@
+.function gu_name ;,a
+.align
+stack record
+	username	,a256
+	size		,i4
+	dll_hndl	,i4
+record	vars
+	alpha	,a1
+.proc
+	dll_hndl=%dll_open("advapi32")
+	size=^size(username)
+;;;	if(.not.%dll_subr(dll_hndl,"GetUserNameA",^addr(username),^addr(size)))
+	if(.not.%dll_call(dll_hndl,,"GetUserNameA",^addr(username),^addr(size)))
+		begin
+		display(15,$scr_pos(2,1),'Could not retrieve username')
+		reads(15,alpha)
+		clear size, username
+		end
+
+	xcall dll_close(dll_hndl)
+	if (size .gt. 1) freturn username(1:size-1)
+	
+	freturn ""
+.end

@@ -1,0 +1,51 @@
+SUBROUTINE ENVRN; (SYSTEM)
+;
+;  ENVRN / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SUBROUTINE TO IDENTIFY OPERATING SYSTEM ENVIRONMENT
+;
+;		LINKS EXTERNALLY FOR DIBOL (DICOMP COMPILED PROGRAMS) ONLY.
+;		DO NOT USE THIS ENVRN WHEN LINKING WITH DBL'S DLIB.OBJ.
+;		OTHERWISE, WHEN USING DATA BUSINESS LANGUAGE (DBL), ENVRN
+;		IS INCORPORATED IN THE DBL UTILITY LIBRARY, DLIB.OBJ,
+;		(TRANSPARENT TO THE USER) AND RETURNS A VALUE OF 0 OR 1
+;		AS DESCRIBED BELOW.
+;
+;			RETURN CODES:	-6 = SOFTBOL
+;					-5 = SIBOL
+;					-4 = VAX-11 DIBOL 
+;					-3 = RSTS/E DIBOL (CTS-500)
+;					-1 = SINGLE USER DIBOL OR TSD
+;					 0 = SINGLE USER DBL
+;					 1 = MULTI USER (DBL OR DIBOL) IN TSX
+;
+	SYSTEM	,D
+PROC
+	SYSTEM = -1
+	RETURN
+END

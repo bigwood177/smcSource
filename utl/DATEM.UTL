@@ -1,0 +1,67 @@
+SUBROUTINE DATEM
+;
+;  DATEM / UTL 
+;
+;
+;		::PCPYUTL.DEF::
+;*****************************************************************************
+;		SECURITY SYSTEM UTILITIES AND SUBROUTINES 
+;		DIBOL FOR RT-11
+;		
+;		RELEASED: JANUARY 1, 1985
+;*****************************************************************************
+;
+;
+;		PROPRIETARY RIGHTS NOTICE:  All rights reserved.  This
+;		material contains the valuable properties and trade secrets
+;		of MCBA, Glendale, California, USA embodying substantial
+;		creative effort and confidential information and ideas, no
+;		part of which may be used and/or disclosed without MCBA's
+;		duly authorized license agreement and/or written permission.
+;
+;		COPYRIGHT NOTICE:  Copyright <C> 1978, 1981, 1982, 1983, 1984,
+;		1985, MCBA, AN UNPUBLISHED WORK.  ALL RIGHTS RESERVED.
+;
+;
+;		COMPILE & LINK PER INSTALLATION OR TECHNICAL NOTES.
+;
+;:
+;
+;		SUBROUTINE TO RECEIVE DATE FIELD IN EITHER YYMMDD OR MMDDYY
+;		FORMAT AND RETURN IT MASKED IN MMDDYY FORMAT
+;		MODIFIABLE TO REPLACE MMDDYY WITH DDMMYY FORMAT (EUROPEAN)
+;
+	DATEIN,	D	;Incoming date field
+	DATOUT, A	;Outgoing date field masked and in MMDDYY format
+	DATCTL,	D	;Date control switch
+			; 0 = Date passed in YYMMDD format and is converted
+			; 1 = Date is not to be converted before formatting
+RECORD
+	Y	,D2
+	M	,D2
+	D	,D2
+RECORD,X
+	YYMMDD	,D6
+;RECORD				;USE THIS RECORD IN PLACE OF THE FOLLOWING
+;	DD	,D2		;RECORD DEFINITION FOR CONVERSION TO DDMMYY
+;	MM	,D2		;DATE FORMAT
+;	YY	,D2
+RECORD
+	MM	,D2
+	DD	,D2
+	YY	,D2
+RECORD,X
+	MMDDYY	,D6
+RECORD
+	DATMSK	,A8,	'XX/XX/XX'
+PROC
+	MMDDYY = DATEIN
+	IF (DATCTL) GO TO CNVDON
+	YYMMDD = DATEIN
+	YY = Y
+	MM = M
+	DD = D
+CNVDON,
+	DATOUT = MMDDYY, DATMSK
+	RETURN
+END

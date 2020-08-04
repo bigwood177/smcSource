@@ -1,0 +1,37 @@
+.script
+.date_generated "09/30/1998, 11:58"
+.version "6.3"
+
+.column general, "General"
+.entry o_exit, "Exit", key(esc)
+.entry g_logon, "Logon"
+.end
+
+.input inp_logon, 8, 30
+.placement 3, 5
+.field cur_code, a3, pos(1, 4), prompt("Current Company"), fpos(1, 21)
+.field c_cmpcod, a3, pos(6, 5), prompt("Company Code"), fpos(6, 19)
+.field c_password, a9, pos(4, 5), prompt("Password"), fpos(4, 15), -
+     noecho("*")
+.button Logon, text("Log On"), method("cmd_logon")
+.button logoff, text("Log Off"), method("cmd_logoff")
+.structure Company, c_cmpcod, c_password
+.set set_logon, Company, c_password, c_cmpcod
+.structure Current, cur_code
+.set cur_code, Current,cur_code
+.end
+
+.input inp_menu, 19, 56
+.placement 2, 14
+.text Text2, pos(5, 13), margin(12, 14)
+ 1. Customer Order Processing
+.text Text3, pos(7, 13), margin(12, 15)
+ 2. Inventory Management
+.text Text4, pos(9, 13), margin(12, 15)
+10. Accounts Receivable
+.text Text5, pos(11, 13), margin(12, 16)
+11. Accounts Payable
+.text Text6, pos(13, 13), margin(12, 15)
+13. General Ledger
+.field i_pgm, d2, pos(3, 9), prompt("Please Select"), fpos(3, 24)
+.end

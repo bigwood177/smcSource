@@ -1,0 +1,91 @@
+;****************************************************************************
+;  TSXBLD.UTL
+;		
+;  Command file to build Release 7 Utililty programs and subroutines (.UTL) 
+;  and package subroutines (.MAN) and the UTIL.OBJ and UTIL20.OBJ libraries.
+;
+;  The device containing the utility source code must be manually
+;  assigned the logical name "UTL" before running this command file.
+.;
+.;  Execute by typing "IND UTL:TSXBLD.UTL" from the TSX-Plus or RT-11 monitor.
+.;
+;****************************************************************************
+;
+;
+.ENABLE GLOBAL
+.ENABLE SUBSTITUTION
+.DISABLE SUFFIX
+.SETN TST 1
+.;
+.;	LOG FILE QUERY
+.;
+.ASK LOGFIL DO YOU WISH TO CREATE A LOG FILE OF THIS BUILD BATCH ?
+.IFF LOGFIL .GOTO ASSIGN
+.ASKS [0:14:"LP:"] FILE ENTER LOG FILE NAME [LP:]
+SET LOG FILE='FILE'
+.;
+.;	LOGICAL ASSIGNMENT SECTION
+.;
+.ASSIGN:
+.ASK DO ENTER THE LOGICAL ASSIGNMENTS NOW [N] ?
+.IFF DO  .GOTO BUILD
+;
+;* ENTER THE PHYSICAL DEVICES THAT CONTAIN THE FOLLOWING:
+;
+.ASKS [0:4:"DK:"] LOG 	FILE DEFINITIONS [DK]
+ASSIGN 'LOG' DEF
+;
+.ASKS [0:4:"DK:"] LOG 	UTILITY OBJECT CODE DESTINATION [DK]
+ASSIGN 'LOG' OBJ
+;
+.ASKS [0:4:"DK:"] LOG 	UTILITY EXECUTABLE (UT:) CODE DESTINATION [DK]
+ASSIGN 'LOG' UT
+.;
+.;	COMPILE AND LINK SECTION
+.;
+;
+.BUILD:
+.ASK MAN CREATE THE PACKAGE SUBROUTINE OBJECT LIBRARY (UTIL.OBJ) [N] ?
+;
+.IFT MAN .ASK DELTM1 DELETE PACKAGE SUBROUTINE OBJECT CODE [N] ?
+.IFF MAN .SETL DELTM1 <FALSE>
+;
+.ASK UTL COMPILE UTILITY PROGRAMS AND SUBROUTINES (.UTL) [N] ?
+;
+.IFT UTL .ASK DEL DELETE UTILITY PROGRAM OBJECT CODE [N] ?
+.IFF UTL .SETL DEL <FALSE>
+;
+.IFT UTL .ASK DELTM2 DELETE UTILITY SUBROUTINE OBJECT CODE [N] ?
+.IFF UTL .SETL DELTM2 <FALSE>
+;
+.ASK LINK LINK UTILITY PROGRAMS [N] ?
+;
+.;
+.;	EXECUTE COMPILE & LINK COMMAND FILES	
+.;
+.IFT UTL .GOTO UTIL
+.IFF LINK .GOTO UTIL
+.TESTFILE UT:UTIL20.OBJ
+.IF <FILERR> EQ TST .GOTO UTIL
+;
+;	UTIL20.OBJ library not found on logical device UT:.
+;
+;	Please re-run this build batch and properly assign UT: or select
+;	the option of compiling the utility programs and subroutines.
+;
+.GOTO END
+.UTIL:
+.IFT MAN $@UTL:TSXCMP.MAN
+.IFT UTL $@UTL:TSXCMP.UTL
+.IFT LINK $@UTL:TSXLNK.UTL
+.;****************************************************************************
+.;	DELETE TEMPORARY FILES
+.;     
+.IFT DELTM1 DELETE/NOQUERY UT:*.TM1
+.IFT DELTM2 DELETE/NOQUERY UT:*.TM2
+.IFF DEL .GOTO END
+DELETE/NOQUERY OBJ:*.TMP
+DELETE/NOQUERY OBJ:*.DBL
+.END:
+.IFT LOGFIL SET LOG CLOSE
+.STOP
