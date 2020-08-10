@@ -2,6 +2,7 @@ subroutine mkinv	;mkinv.cp
 	order	,a	;order # (now ordhdr record 11-16-11)
 	c_mail	,a	;recpient email address
 	cmpcod	,a	;company code can be input in inquir 5-11-11
+	no_dollars	,d	;8-10-20
 ;
 ;
 ;	create pdf of invoice from current years history
@@ -735,6 +736,13 @@ PRTLIN,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	  PLINE (85,94) = EXEPRC, MASK
 	  TOTSAL = TOTSAL + EXEPRC
 	END
+	
+	IF (NO_DOLLARS)				;8-10-20
+		BEGIN
+		PLINE (69,77) = 
+		PLINE (85,95) = 
+		END
+	
 	CALL PRINT
 	RETURN
 ;-----------------------------------------------------------
@@ -1198,6 +1206,12 @@ PRTDUC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	PLINE (80,81) = 'LB'
 	PLINE (85,94) = DECMAL,MASK
 	TOTSAL = TOTSAL + DECMAL		;DUCT
+	IF (NO_DOLLARS)				;8-10-20
+		BEGIN
+		PLINE (69,77) = 
+		PLINE (85,95) = 
+		END
+	
 	CALL PRINT
 
 	PLINE (  1,6  ) = POUNDS,MASK1
@@ -1215,6 +1229,12 @@ PRTDUC,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	DECMAL = ( LINPRC * SQFLIN ) # 1
 	PLINE (85,94) = DECMAL,MASK
 	TOTSAL = TOTSAL + DECMAL		;LINER
+	IF (NO_DOLLARS)				;8-10-20
+		BEGIN
+		PLINE (69,77) = 
+		PLINE (85,95) = 
+		END
+
 	CALL PRINT
 
 	FLG175 = 2

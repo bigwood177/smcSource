@@ -3748,7 +3748,8 @@ em_send,
 	('O'),	if (fselec.eq.1)
 	;;;	then xcall mkord (oordno, email)
 		then xcall mkord (oordno, email,no_dollars)	;2-17-20
-		else xcall mkinv (ordhdr, email, cmpcod)	;5-11-11
+		else xcall mkinv (ordhdr, email, cmpcod, no_dollars)	;8-10-20
+	;;;	else xcall mkinv (ordhdr, email, cmpcod)	;5-11-11
 	endusing
 
 em_end,

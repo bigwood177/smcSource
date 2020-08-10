@@ -4,7 +4,8 @@
 ;
 ; 6-6-18 SSQ: MAKE CUSMAS ISAM
 ;12-16-19 ssq: cash_cust
-
+; 8-5-20 ssq: emfile.dat is now opened in output mode in invoic.cp,
+;		just read through the file, no need to check "processed" flag or update.
 
 ; 12-10-12 ssq: new stuff
 ;
@@ -214,15 +215,18 @@ record	vars
 	filen(1,3) = cmpcod
 	filen(4,4) = ':'
 	filen(5,14) = 'emfile.dat'
-	OPEN (44,u,filen)
+	OPEN (44,i,filen)			;8-5-20
+;;;	OPEN (44,u,filen)
 
 
 	clear chmail
 	reccnt = 0
 eml,
-	incr reccnt
-	read (44, EMFILE, reccnt) [err=eof]	;any email files not processed?
-	if (ef_proc .ne. 0) goto eml
+	reads (44, EMFILE, EOF) [ERR=EOF]	;8-5-20
+
+;;;	incr reccnt
+;;;	read (44, EMFILE, reccnt) [err=eof]	;any email files not processed?
+;;;	if (ef_proc .ne. 0) goto eml
 
 	CLOSE 44
 	open (44,su,ef_file)
@@ -519,13 +523,15 @@ eof,
 	if (savcus .ne. -1) call newcus
 ;;;	if (savkey .ne. -1) call newcus
 
-	if (chmail .gt. 0)
-		begin
-		close chmail
-		OPEN (chmail,u,filen)
-		ef_proc = 1
-		write (chmail, emfile, reccnt)	;mark as processed
-		end
+; 8-5-20 - this file gets created new for each invoice run
+;;;	if (chmail .gt. 0)
+;;;		begin
+;;;		close chmail
+;;;		OPEN (chmail,u,filen)
+;;;		ef_proc = 1
+;;;		write (chmail, emfile, reccnt)	;mark as processed
+;;;		end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 endoff,

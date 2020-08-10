@@ -1903,9 +1903,11 @@ END3,
 
 ; mailin needs name of email file...
 	filen(1,3) = cmpcod
-	filen(4,4) = ':'
+	filen(4,4) = ':'	
 	filen(5,14) = 'emfile.dat'
-	OPEN (CHMAIL,A,filen)
+	OPEN (CHMAIL,O,filen)		;8-05-20 new file every time
+;;;	OPEN (CHMAIL,A,filen)
+
 	WRITES (CHMAIL, EMFILE)
 	CLOSE CHMAIL
 

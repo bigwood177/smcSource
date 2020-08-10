@@ -367,7 +367,14 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	IF (XXYY .LE. BBCC)
 	THEN	PARTNO = 'FOEB' + ^A(XXYY)
-	ELSE	PARTNO = 'FOEB' + ^A(BBCC)
+	ELSE	IF (BBCC.LT.99)		;MUST BE AN "RD" 
+		THEN 	BEGIN
+			A4 = BBCC, 'ZZZZ' [LEFT]
+			PARTNO = 'EB' + A4
+			END
+		ELSE	PARTNO = 'FOEB' + ^A(BBCC)
+		
+;;;	ELSE	PARTNO = 'FOEB' + ^A(BBCC)
 	call new_line
 
 	PARTNO = 'FOEFI' + ^A(SAV_XXYY)
