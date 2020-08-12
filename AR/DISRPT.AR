@@ -241,6 +241,7 @@ READ,
 	IF (ADSCUS .EQ. 63340) GOTO read			;skip rockford
 	IF (ADSCUS .EQ. 68780) GOTO read			;skip smp 
 	IF (ADSCUS .EQ. 68781) GOTO read			;skip phd
+	IF (ADSCUS .EQ. 65545) GOTO READ			;8-5-20 skip smc
 ;7-6-20 ------------------------------------
 
 
