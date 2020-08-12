@@ -3,5 +3,8 @@ created in branch master
 and stashed.
 no changed in master but not "added"
 committed in branch master
+-------------------------------------
+"stashed" in master, now adding this in branch mytest
+
 
 
