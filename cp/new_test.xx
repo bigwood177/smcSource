@@ -1,13 +1,5 @@
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-this is new_test.xx created in branch "master"
-after a file with the same name was "stashed" in branch "mytest"
-added in branch mytest
 
-=======
-this is new_test.xx created in branch "mytest"
->>>>>>> Stashed changes
 =======
 this is new_test.xx created in branch "mytest"
 >>>>>>> Stashed changes
