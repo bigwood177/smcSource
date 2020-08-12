@@ -124,6 +124,7 @@ record	nine_values
 	xx	,d1,	0	;anything else
 
 record	vars
+	jeb_only	,d1	;1=regular EB (JEB) clamp instead of fo_. this is for FOR251612RD type items.
 	sav_xxyy	,d4
 	sav_bbcc	,d4
 
@@ -323,6 +324,7 @@ NEW_LINE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	ordlin = savlin			;fresh copy each time...
 
 	call read_itmmas
+	clear jeb_only
 	if (lokctl) return
 
 	clear lcpflg			
@@ -371,6 +373,7 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		THEN 	BEGIN
 			A4 = BBCC, 'ZZZZ' [LEFT]
 			PARTNO = 'EB' + A4
+			jeb_only = 1
 			END
 		ELSE	PARTNO = 'FOEB' + ^A(BBCC)
 		
@@ -380,6 +383,13 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	PARTNO = 'FOEFI' + ^A(SAV_XXYY)
 	call new_line
 	PARTNO = 'FOEFI' + ^A(SAV_BBCC)
+	IF (SAV_BBCC.LT.99)
+		BEGIN
+		A4 = SAV_BBCC, 'ZZZZ' [LEFT]
+		PARTNO = 'EFI' + A4
+		JEB_ONLY = 1
+		END
+
 	call new_line
 
 	call gasket
@@ -591,6 +601,24 @@ read_itmmas,	;;;;;;;;;;;;;;;;;;
 	CLEAR ITMKEY		;don't need itmkey for these items as they
 				;are not affected by f* notes
 
+	if (jeb_only)
+		begin
+		read (chn041, itmmas, partno) [err=baditm]
+		lprice = price
+		clear ldampr
+		litmno = itemno
+		lcfgim = itemno		;ssq 11-18-04
+		ldescr = descr
+		lstokt = stock
+
+		luofm = suofm
+		lprdcd = prdcat
+		ldept = usrdef
+		lsrtsq = priccd
+		if (txflag .eq. 'Y') ltxflg = 1
+		lpwgt = ip_wgt
+		goto jeb_only
+		end
 
 	xcall fo_cfg (chn182, partno, f_itm, f_mlt, f_descr, f_err, segs)
 	f_itm = 'J' + f_itm
@@ -602,10 +630,11 @@ ri_gasket,
 
 
 	clear ldampr
-	litmno = 'J' + partno			;flat oval actual item
-	lcfgim = 'J' + partno	
 	ldescr = f_descr		;flat oval descr
 
+jeb_only,
+	litmno = 'J' + partno			;flat oval actual item
+	lcfgim = 'J' + partno	
 	if (mat_sel .gt. galv) call chk_m_desc
 
 	lstokt = stock
@@ -633,18 +662,17 @@ ri_gasket,
 	if (txflag .eq. 'Y') ltxflg = 1
 
 ; 1-21-19: get the weight...
-	using itemno select
-	('JEB'),	KEY = itemno(2,15)	
-	('JEFI'),	KEY = itemno(2,3) + itemno(5,15)	;11-1-17: this first
-	('JEF'),	KEY = itemno(2,15)			;11-1-17: then this
-	('JJG'),	KEY = itemno(2,15)	
-	('JTG'),	KEY = itemno(2,15)	
-	(),		return
-	endusing
+;;;	using itemno select
+;;;	('JEB'),	KEY = itemno(2,15)	
+;;;	('JEFI'),	KEY = itemno(2,3) + itemno(5,15)	;11-1-17: this first
+;;;	('JEF'),	KEY = itemno(2,15)			;11-1-17: then this
+;;;	('JJG'),	KEY = itemno(2,15)	
+;;;	('JTG'),	KEY = itemno(2,15)	
+;;;	(),		return
+;;;	endusing
+;;;	read (chn041, itmmas, key) [err=baditm]
+;;;	lpwgt = ip_wgt
 
-
-	read (chn041, itmmas, key) [err=baditm]
-	lpwgt = ip_wgt
 	return
 ;---------------------------------
 baditm,
