@@ -6,6 +6,7 @@ subroutine fo_cfg
 	P_descr	,a
 	P_err	,d	;1=error
 	p_segs	,a	;XXYY, OPTIONAL
+	p_lf3	,d	;ordlin OPTIONAL
 
 RECORD DESCRS
 Spiral_Pipe,	a*,	"XX.XxYY gaGA x BB'LNG FLT-OVAL"
@@ -34,6 +35,7 @@ EF,		a*,	'XX.XxYY EZ-FLANGE'
 RECORD	COPTBL
 	.INCLUDE 'DEF:RD182A.DEF'
 
+
 RECORD	SCX
 	DPND	,D6
 	DSIZ	,D3
@@ -47,6 +49,7 @@ record	segs
 	s_bbcc	,d4
 
 record	vars
+	LF3	,D5	;ORDLIN.LF3
 	KITMNO	,A15
 	GD	,D1	;1=GOT DOT
 	RDR	,D1	;1= IS RD REDUCER
@@ -77,6 +80,10 @@ proc
 	CLEAR P_ERR, RDR, XXYY, BBCC
 	CLEAR BB, CC, XX, YY
 	CLEAR FLAG
+
+	if (%passed(p_lf3)) 
+	then	lf3 = p_lf3
+	else	clear lf3
 
 	CLEAR COPTBL
 	TBLCOD = 'FO'
@@ -219,6 +226,11 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 				CC =
 				ACC =
 				BBCC(3,4) = 
+				IF(BB.LT.6 .AND. LF3.EQ.3)	;F3=3 not allowed for less than 6"
+					BEGIN
+					FLAG = 1
+					RETURN
+					END
 				END
 		(),		BEGIN
 				FLAG = 1

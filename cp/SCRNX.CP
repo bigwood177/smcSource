@@ -396,6 +396,7 @@ RECORD,X
 	SARA	,5D2
 
 RECORD	VARS
+	xf3	,d5
 	xf1	,d3
 	witmno	,a15
 	a_lf1	,a3
@@ -4230,6 +4231,7 @@ D_SIZE,	;---------------------------------------
 
 	ONERROR BADDIG
 	DAMP = PARTNO(FL, FL+1)
+	IF (DAMP .GE. 26) GOTO BADDIG	;SSQ 8-18-20, 26" AND OVER NOT ALLOWED
 	OFFERROR
 
 ;check damper price...
@@ -6536,7 +6538,10 @@ flat_oval,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	using litmno select
 	('FOSP'),	NOP
 	('FO'),		begin
-			xcall fo_cfg (chn182, litmno, f_itm, f_mlt, f_descr, f_err)
+			if (f3_idx.gt.0)
+			then xf3 = f3_key(f3_idx)
+			else xf3 =
+			xcall fo_cfg (chn182, litmno, f_itm, f_mlt, f_descr, f_err, ,xf3)
 			if (f_err) 
 				begin
 				XCALL OLMSG(WND_1, 23,'INVALID FLAT OVAL ITEM',2)
