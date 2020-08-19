@@ -20,7 +20,12 @@ RECORD	PVARS
 	HD	,A6,	'NO HDR'
 	LG	,A9,	'NO LEGEND'
 
+RECORD	CHANNEL
+	CHN041	,D2
+	CHN182	,D2
+
 RECORD	VARS
+	OPNOK	,D1
 	BF	,D1
 	D_PRICE	,D8
 	P_PRICE	,D8
@@ -50,7 +55,7 @@ RECORD	VARS
 	STXCTL	,D1
 	LOCCTR	,D2,	02
 	BLANKS	,A15
-	SWITCH	,D1,	1
+	SWITCH	,D1
 	V	,D1
 	READ	,D1	,0
 	WRITE	,D1	,1
@@ -69,6 +74,9 @@ MENU,
 	XCALL OUTPT (1,1,0,'ITEM MASTER FILE MAINTENANCE',V)
 	XCALL OUTPT (2,1,2,'PRINT OUT',1)
 
+	CALL OPENS
+	IF (.NOT. OPNOK) GOTO ENDOFF
+
 BEGIN,
 	STRTNO =
 	ENDNO =
@@ -76,10 +84,15 @@ BEGIN,
 	ENDCAT =
 	XCALL OUTPT (1,1,2,'ITEM MASTER PRICE LIST',V)
 
-	IF (FILFLG.EQ.1) GO TO ITEMS
-	SWITCH = 1
-	XCALL FILES (12,'I',041,SWITCH)
-	IF (SWITCH.EQ.9) GO TO END
+;;;	IF (FILFLG.EQ.1) GO TO ITEMS
+;;;	SWITCH = 5
+;;;	XCALL FILES (12,'SI',041,SWITCH)
+;;;	IF (SWITCH.EQ.9) GO TO END
+;;;
+;;;	SWITCH = 5
+;;;	XCALL FILES (17,'SI', 182, SWTICH)
+
+
 
 ITEMS,
 	STXCTL = 0
@@ -95,13 +108,12 @@ ITEMS,
 	GO TO (END), STXCTL
 	XCALL WATE (4,V)
 
-	IF (FILFLG.EQ.1) GO TO NOOPEN
+;;;	IF (FILFLG.EQ.1) GO TO NOOPEN
+;;;	SWITCH = 1
+;;;	XCALL FILES (1,'SI',41,SWITCH)		;FILE # 41 -- ITMMAS FILE
+;;;	IF (SWITCH.EQ.9) GO TO CLOSE
+;;;	FILFLG = 1
 
-
-	SWITCH = 1
-	XCALL FILES (1,'SI',41,SWITCH)		;FILE # 41 -- ITMMAS FILE
-	IF (SWITCH.EQ.9) GO TO CLOSE
-	FILFLG = 1
 NOOPEN,
 	ITMCNT =
 	find (1, itmmas, STRTNO) [err=read]
@@ -202,10 +214,16 @@ CLOS,
 
 ;********************************************************
 
-CLOSE,
-	XCALL FILES (2,'I',42,4)
+;;;CLOSE,
+;;;	XCALL FILES (2,'I',42,4)
+;;;	CLOSE 1
+;;;	CLOSE 17
+
 END,
-	IF (FILFLG.EQ.1) CALL CLOSE2
+ENDOFF,
+	CALL CLOSE 
+
+;;;	IF (FILFLG.EQ.1) CALL CLOSE2
 	IF (LPFLAG.EQ.1) XCALL LPOFF (LPSW,SPLFIL,PGCNT)
 
 	STFLG = 1
@@ -213,11 +231,33 @@ END,
 
 ;********************************************************
 
-CLOSE2,
-	XCALL FILES (1,'I',41,4)
-	XCALL FILES (2,'I',42,4)
-	FILFLG =
+OPENS,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	OPNOK =
+
+	SWITCH = 5
+	XCALL FILES (1,'SI',41, SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+
+	SWITCH = 5
+	XCALL FILES (17,'SI',182,SWITCH)
+	IF (SWITCH .EQ. 9) RETURN
+
+	OPNOK = 1
 	RETURN
+;------------------------------------------------------------
+
+CLOSE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	IF (CHN041) CLOSE CHN041
+	IF (CHN182) CLOSE CHN182
+	RETURN
+;-------------------------------------------------
+;;;CLOSE2,
+;;;	XCALL FILES (1,'I',41,4)
+;;;	XCALL FILES (2,'I',42,4)
+;;;	FILFLG =
+;;;	RETURN
+
 END
 
 ;ITEM #          DESCRIPTION                    UM        PRICE

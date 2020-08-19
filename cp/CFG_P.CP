@@ -144,6 +144,7 @@ record	vars
 	call get_mat
 
 	call item
+	if (ivflag .eq. 0) goto endoff		;8-18-20
 
 	call cfg_price_routine
 	
@@ -222,6 +223,7 @@ item,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	GOTO (REG_ITEM),CFG_ITEM -1
 
 	CALL GETITM			;check if cfg item is in itmmas...
+	GOTO (SKIP_CFG,CALL_CONFIG),IVFLAG+1	;8-18-20
 ;;;	GOTO (SKIP_CFG,CALL_CONFIG,ITEM),IVFLAG+1	;(found,not-found,abort)
 CALL_CONFIG,
 	CALL CONFIG			;call the configurator
