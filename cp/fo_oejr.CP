@@ -12,7 +12,7 @@ subroutine fo_oejr
 ;	create bc, flange & gasket line items...
 ;	modifications:
 ;
-;
+;	changed for "RD" reducers
 			
 record	f_data			;flat oveal
 	f_in	,a15		;input item
@@ -383,7 +383,7 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	PARTNO = 'FOEFI' + ^A(SAV_XXYY)
 	call new_line
 	PARTNO = 'FOEFI' + ^A(SAV_BBCC)
-	IF (SAV_BBCC.LT.99)
+	IF (SAV_BBCC.GT.24 .AND. SAV_BBCC.LT.99)
 		BEGIN
 		A4 = SAV_BBCC, 'ZZZZ' [LEFT]
 		PARTNO = 'EFI' + A4
