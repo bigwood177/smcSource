@@ -36,6 +36,9 @@ record	ordhdr
 record	coinfo
 	.include 'def:coinfo.def'
 
+record	coptbl
+	.include 'def:rd182a.def'
+
 record	data
 		,a2048	
 record	bfile
@@ -45,6 +48,7 @@ record	channel
 	chn195	,d3
 
 record	vars
+	routine	,a50		;8-24-20
 	d_path	,a512
 	ln	,d6
 	sts	,d6
@@ -61,12 +65,32 @@ record	vars
 	field	,a512
 	lot	,a10
 	entry	,a30
+	read	,d1,0
+	lokctl	,d1
 	whatno	,d2
 	switch	,d1
 ;
 proc
 
 	if (numlbl .le. 0) return
+
+	xcall modname (1, routine)
+	upcase routine
+	using routine select
+	('S_ORDADD'),	nop
+	('S_CHANGE'),	nop
+	(),	goto dontCheck
+	endusing
+
+;check print flag in table
+	clear coptbl
+	tblcod = 'SL'
+	xcall isio (chn182, coptbl, tbl_key, read, lokctl)
+	unlock chn182
+	if (lokctl .ne. 0) goto dontCheck
+	if (sl_prnt .eq. 'N') xreturn
+
+dontCheck,
 
 ;-----------------------------------------------------------
 ; don't print labels for orders on hold.

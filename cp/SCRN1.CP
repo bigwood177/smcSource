@@ -444,9 +444,13 @@ FINIS,
 	CALL C_CARD		;GET CC INFO IF NEC.
 	IF (OPT .EQ. 9) GOTO DISPLA	;ABORT
 
+	ALPHA = CRDLMT
+	IF (%INSTR(1,ALPHA,'123') )CALL ASK_CONTR
+
 	IF (OCUSNO .EQ. 10)
 		BEGIN
-		CONTR = 2			;11-27-19 CASH CUST NOT CONT
+	;;;	CONTR = 2			;11-27-19 CASH CUST NOT CONT
+						;8-24-20 - ask, per brandon
 		if (cngctl .eq. 1)
 			begin
 			if (omicus.ne.savmis) 
@@ -456,8 +460,9 @@ FINIS,
 		GOTO SALMAN			;11-27-19 CASH CUST
 		END
 
-	ALPHA = CRDLMT
-	IF (%INSTR(1,ALPHA,'123') )CALL ASK_CONTR
+; 8-24-20 ssq: ask for cust 10, too
+;;;	ALPHA = CRDLMT
+;;;	IF (%INSTR(1,ALPHA,'123') )CALL ASK_CONTR
 
 
 ;;;	GO TO (ANYCNG), CNGCTL
