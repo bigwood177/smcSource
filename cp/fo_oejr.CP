@@ -78,7 +78,6 @@ RECORD	SEGS
 RECORD,X
 	XXYY	,D4
 	BBCC	,D4
-
 record
 	tkey	,a5
 record,x
@@ -123,10 +122,16 @@ record	nine_values
 
 	xx	,d1,	0	;anything else
 
+RECORD	
+	SAV_BBCC	,D4
+RECORD,X
+	N_BB	,D2
+	N_CC	,D2
+
 record	vars
 	jeb_only	,d1	;1=regular EB (JEB) clamp instead of fo_. this is for FOR251612RD type items.
 	sav_xxyy	,d4
-	sav_bbcc	,d4
+;;;	sav_bbcc	,d4
 
 	xdia	,d2	;for dual wall
 	dl_wall	,d2	;if dual wall add 2 or 4 inches to barrel clamps
@@ -232,6 +237,8 @@ d_loop,
 	('JFOEB'),	call del45	;barrel clamps
 	('JFOEF'),	call del45	;e-z flange, all types
 	('JJG'),	call del45	;gasket
+	('JEB'),	call del45	;"RD" barrel clamps
+	('JEFI'),	call del45	;"RD" ez flange
 	endusing
 	orig_ext = orig_ext + (lqtysh*lprice)#1
 
@@ -369,10 +376,10 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	IF (XXYY .LE. BBCC)
 	THEN	PARTNO = 'FOEB' + ^A(XXYY)
-	ELSE	IF (BBCC.LT.99)		;MUST BE AN "RD" 
+;;;	ELSE	IF (BBCC.LT.99)		;MUST BE AN "RD" 
+	ELSE	IF (N_CC.LE.0)		;MUST BE AN "RD" 
 		THEN 	BEGIN
-			A4 = BBCC, 'ZZZZ' [LEFT]
-			PARTNO = 'EB' + A4
+			PARTNO = 'EB' + ^A(N_BB)
 			jeb_only = 1
 			END
 		ELSE	PARTNO = 'FOEB' + ^A(BBCC)
@@ -382,15 +389,19 @@ REDUCER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	PARTNO = 'FOEFI' + ^A(SAV_XXYY)
 	call new_line
-	PARTNO = 'FOEFI' + ^A(SAV_BBCC)
-	IF (SAV_BBCC.GT.24 .AND. SAV_BBCC.LT.99)
-		BEGIN
-		A4 = SAV_BBCC, 'ZZZZ' [LEFT]
-		PARTNO = 'EFI' + A4
-		JEB_ONLY = 1
-		END
+;;;	PARTNO = 'FOEFI' + ^A(SAV_BBCC)
+	IF (N_CC .LE. 0)			;RD
+	THEN	IF (N_BB.GT.24)			;NO EFI if less than 24"
+			BEGIN
+			PARTNO = 'EFI' + ^A(N_BB)
+			JEB_ONLY = 1
+			CALL NEW_LINE
+			END
 
-	call new_line
+	ELSE	BEGIN
+		PARTNO = 'EFI' + ^A(SAV_BBCC)
+		CALL NEW_LINE
+		END
 
 	call gasket
 	;JG (RW202220) – figured on the 20” size

@@ -117,7 +117,9 @@ proc
 
 	ONERROR NOTNUM
 	s_xxyy = xxyy
-	s_bbcc = bbcc
+;;;	s_bbcc = bbcc
+	s_bbcc(1,2) = bbcc(1,2)
+	s_bbcc(3,4) = bbcc(3,4)
 	OFFERROR
 
 	IF (%PASSED(P_SEGS)) P_SEGS = SEGS
