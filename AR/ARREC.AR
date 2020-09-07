@@ -486,71 +486,71 @@ PRINT_OUT,
 	PLINE (39,52) = CASH,	'$$,$$$,$$X.XX'
 	CALL PRINT
 
-	PLINE (30,36) = 'SMC/ROC'
-	PLINE (39,52) = SMCROC,	'$$,$$$,$$X.XX'
-;;;	pline (55,65) = smcfrt,	'$$$,$$$.XX'
+;;;	PLINE (30,36) = 'SMC/ROC'
+;;;	PLINE (39,52) = SMCROC,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+
+;;;	PLINE (30,36) = 'SMC/SMP'
+;;;	PLINE (39,52) = SMCCAT,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+
+;;;	PLINE (30,36) = 'SMC/PHD'
+;;;	PLINE (39,52) = SMCPHD,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+
+;;;	PLINE (30,36) = 'ROC/SMC'
+;;;	PLINE (39,52) = ROCSMC,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+;;;	PLINE (30,36) = 'ROC/SMP'
+;;;	PLINE (39,52) = ROCCAT,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+;;;	PLINE (30,36) = 'ROC/PHD'
+;;;	PLINE (39,52) = ROCPHD,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+
+;;;	PLINE (30,36) = 'SMP/SMC'
+;;;	PLINE (39,52) = CATSMC,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+;;;	PLINE (30,36) = 'SMP/ROC'
+;;;	PLINE (39,52) = CATROC,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+;;;	PLINE (30,36) = 'SMP/PHD'
+;;;	PLINE (39,52) = CATPHD,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+
+;;;	PLINE (30,36) = 'PHD/SMC'
+;;;	PLINE (39,52) = PHDSMC,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+;;;	PLINE (30,36) = 'PHD/ROC'
+;;;	PLINE (39,52) = PHDROC,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+;;;	PLINE (30,36) = 'PHD/SMP'
+;;;	PLINE (39,52) = PHDCAT,	'$$,$$$,$$X.XX'
+;;;	CALL PRINT
+
+;;;	PLINE (39,52) = '=============='
+;;;	CALL PRINT
+
+;;;	TOTAL2 = SMCROC+SMCCAT+SMCPHD+ROCSMC+ROCCAT+ROCPHD+CATROC+CATPHD+CATSMC+PHDROC+PHDCAT+PHDSMC
+;;;	PLINE (39,52) = TOTAL2,	'$$,$$$,$$X.XX'
+;;;	PLINE (55,59) = 'Total'
+;;;	CALL PRINT
 	CALL PRINT
 
-	PLINE (30,36) = 'SMC/SMP'
-	PLINE (39,52) = SMCCAT,	'$$,$$$,$$X.XX'
-	CALL PRINT
 
-	PLINE (30,36) = 'SMC/PHD'
-	PLINE (39,52) = SMCPHD,	'$$,$$$,$$X.XX'
-	CALL PRINT
+;;;	PLINE (39,52) = '=============='
+;;;	CALL PRINT
+;;;	TOTAL2 = TOTAL2 + CASH
+;;;	PLINE (39,52) = TOTAL2,	'$$,$$$,$$X.XX'
+;;;	PLINE (55,80) = 'Total  Cash + Inter'
+;;;	CALL PRINT
+;;;	CALL PRINT
 
-	PLINE (30,36) = 'ROC/SMC'
-	PLINE (39,52) = ROCSMC,	'$$,$$$,$$X.XX'
-	CALL PRINT
-	PLINE (30,36) = 'ROC/SMP'
-	PLINE (39,52) = ROCCAT,	'$$,$$$,$$X.XX'
-	CALL PRINT
-	PLINE (30,36) = 'ROC/PHD'
-	PLINE (39,52) = ROCPHD,	'$$,$$$,$$X.XX'
-	CALL PRINT
-
-	PLINE (30,36) = 'SMP/SMC'
-	PLINE (39,52) = CATSMC,	'$$,$$$,$$X.XX'
-	CALL PRINT
-	PLINE (30,36) = 'SMP/ROC'
-	PLINE (39,52) = CATROC,	'$$,$$$,$$X.XX'
-	CALL PRINT
-	PLINE (30,36) = 'SMP/PHD'
-	PLINE (39,52) = CATPHD,	'$$,$$$,$$X.XX'
-	CALL PRINT
-
-	PLINE (30,36) = 'PHD/SMC'
-	PLINE (39,52) = PHDSMC,	'$$,$$$,$$X.XX'
-	CALL PRINT
-	PLINE (30,36) = 'PHD/ROC'
-	PLINE (39,52) = PHDROC,	'$$,$$$,$$X.XX'
-	CALL PRINT
-	PLINE (30,36) = 'PHD/SMP'
-	PLINE (39,52) = PHDCAT,	'$$,$$$,$$X.XX'
-	CALL PRINT
 
 	PLINE (39,52) = '=============='
 	CALL PRINT
-
-	TOTAL2 = SMCROC+SMCCAT+SMCPHD+ROCSMC+ROCCAT+ROCPHD+CATROC+CATPHD+CATSMC+PHDROC+PHDCAT+PHDSMC
-	PLINE (39,52) = TOTAL2,	'$$,$$$,$$X.XX'
-	PLINE (55,59) = 'Total'
-	CALL PRINT
-	CALL PRINT
-
-
-	PLINE (39,52) = '=============='
-	CALL PRINT
-	TOTAL2 = TOTAL2 + CASH
-	PLINE (39,52) = TOTAL2,	'$$,$$$,$$X.XX'
-	PLINE (55,80) = 'Total  Cash + Inter'
-	CALL PRINT
-	CALL PRINT
-
-
-	PLINE (39,52) = '=============='
-	CALL PRINT
-	PLINE (39,52) = (TOTAL1-TOTAL2),	'$$,$$$,$$X.XX'
+;;;	PLINE (39,52) = (TOTAL1-TOTAL2),	'$$,$$$,$$X.XX'
+	PLINE (39,52) = (TOTAL1-CASH),	'$$,$$$,$$X.XX'
 	PLINE (55,80) = 'Grand Total'
 	CALL PRINT
 
