@@ -16,7 +16,16 @@ RECORD	D_STUFF
 	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
 	D_SW	,A2		;"99" = DATE CONVERSION ERROR
 
-
+record	f_data			;flat oveal
+	f_in	,a15		;input item
+	f_itm	,a15		;resultant smc item #
+	f_mlt	,d3			;price multiplier
+	f_descr	,a30		;resultant description
+	f_err	,d1
+	fo_item	,a20
+;
+RECORD	F_MEMO
+	.INCLUDE 'DEF:CPMEMO.DEF'
 RECORD	ORDCM2
 	.INCLUDE 'DEF:RD135A.DEF'
 
@@ -157,6 +166,7 @@ record	m_msg
 		,a*, 'not copied!!'
 
 RECORD	VARS
+	xf3	,d5
 	GOT_CM2	,D1
 	OPNOK	,D1
 	config_price	,d8
@@ -331,6 +341,12 @@ CL_LOOP,
 	CLEAR LQTYSH, LQTYBO, LCOMPS, LFLAG
 	CLEAR LROCPO
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 9-16-20 flat oval
+	call flat_oval
+	goto (cl_loop), f_err
+;------------------------------------------------------------
+
 	xcall gtitm (litmno, lf1, lf2, lf3, itmrfa, ivflag, vanflg, vanrfa)
 
 	clear swfab
@@ -368,6 +384,13 @@ CL_LOOP,
 	unlock roc041
 
 WRTLIN,
+	if (fo_item .ne. blanks) 	;9-16-20
+		begin
+		litmno = fo_item
+		lcfgim = fo_item
+		ldescr = f_descr
+		end
+
 	LORDNO = OORDNO
 	XCALL ISIO (CHN045, ORDLIN, ORDKEY, STORE, LOKCTL)
 	GOTO CL_LOOP
@@ -384,6 +407,32 @@ iv_err,
 CL_EOF,
 	RETURN
 ;--------------------------------------------------
+
+flat_oval,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	clear f_data
+
+	using litmno select
+	('FOSP'),	NOP
+	('FO'),		begin
+			if (f3_idx.gt.0)
+			then xf3 = f3_key(f3_idx)
+			else xf3 =
+			xcall fo_cfg (chn182, litmno, f_itm, f_mlt, f_descr, f_err, ,xf3)
+			if (f_err) 
+				begin
+				XCALL mesag ('INVALID FLAT OVAL ITEM',2)
+				return
+				end
+			fo_item = litmno	;save fo item
+			litmno = f_itm		;use this item until the end of routine
+			end
+	endusing
+
+
+	return
+;----------------------------------------------------------------------------------
+
 find_default,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		;;; first array element is always the default
 		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
