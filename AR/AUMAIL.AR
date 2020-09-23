@@ -131,7 +131,7 @@ displa,
 ;;; Marty retired 6/10/20
 ;;;	c_mail = 'MARTYW@smcduct.com'
 ;;;	c_mail = 'wood@smcduct.com'
-	xcall mail (c_mail,c_subj,c_body,rptdir(1,tl),,,,,,,send)
+;;;	xcall mail (c_mail,c_subj,c_body,rptdir(1,tl),,,,,,,send)
 ;;;	xcall xmail (c_mail, c_subj, rptdir(1,tl) )
 
 ;------------------------------------------------------------------
