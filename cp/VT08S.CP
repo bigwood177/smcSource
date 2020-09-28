@@ -180,6 +180,7 @@ RECORD	VARS
 	SS_RL		,D6	;L for reducer
 	sav_pp	,d1	;1 = valid mat'l for pressed parts
 	ladd	,d4
+	add_st	,d5	;9-23-20
 	x_lf3	,d5
 	ezjr_t	,d1
 	ezjr_b	,d1
@@ -519,8 +520,28 @@ GOT_TBL,
 	ENDUSING
 
 
-	call bx_add		;7-17-19
+;;;	call bx_add		;7-17-19
+	if (lf3.eq.3 .and. (ga.ge.22.and.ga.le.26))		;9-23-20 more ez-flange mods
+	then	bx_add = 0
+	else	call bx_add	
+	
 	L = L + BX_ADD		;7-17-19
+
+; 9-23-20 new code for T4 & T4R ez-flange
+	if (lf3 .eq. 3)		;ez-flange
+		begin
+		using ga select
+		(22 thru 26),	begin
+				if (t_key.eq.'T4') L = (BC*1414) + 9000
+				if (t_key.eq.'T4R') L = (BC*1414) + 9000
+				end
+		(16 thru 20),	begin
+				if (t_key.eq.'T4') L = (BC*1414) + 9000
+				if (t_key.eq.'T4R') L = (BC*1414) + 5000
+				end
+		endusing
+		end
+
 
 	L_LINE = L,	'L= ZZ.XXX;' [left]		;
 
@@ -1316,7 +1337,19 @@ CONR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	VLINE = WT,	'WT= ZZ.XXX;' [left]		;.XXX
 	WRITES (chnwrk, VLINE)
 
-	ST = 0
+;9-23-20 more ez-flange mods...
+;;;	ST = 0
+	if (lf3.eq.3 .and. (ga.ge.16 .and. ga.le.20) .and. (szb.ge.6 .and. szb.le.24) )
+	then	begin
+		st = 3000
+		add_st = 3000
+		end
+	else	begin
+		st = 0
+		add_st = 0
+		end
+
+
 	IF (SS_ST .GT. 0) ST = SS_ST
 	VLINE = ST,	'ST= ZZ.XXX;' [left]
 ;;;	VLINE = 'ST= 0;'
@@ -1357,7 +1390,7 @@ CONR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	ENDUSING
 		
 	L = L*1000 + LADD			;12-16-09
-
+	L = L + ADD_ST				;9-23-20
 	IF (SS_RL .GT. 0) L = SS_RL
 	VLINE = L,	'L= ZX.XXX;' [left]
 	WRITES (chnwrk, VLINE)
@@ -1531,12 +1564,27 @@ FINISH_CROSS,	;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; if this works, remove all of the ow calcs above
 ;---------------------------------------------------
 
-
+; 9-23-20 OW = 6 for ez-flange T4 or T4R
+; 9-23-20 new code for T4 & T4R ez-flange
+	if (lf3 .eq. 3)		;ez-flange
+		begin
+		using ga select
+		(22 thru 26),	begin
+				if (t_key.eq.'T4') ow = 6000
+				if (t_key.eq.'T4R') ow = 6000
+				end
+		(16 thru 20),	begin
+				if (t_key.eq.'T4') ow = 6000
+				if (t_key.eq.'T4R') ow = 2000
+				end
+		endusing
+		end
 
 	VLINE = OW,	'OW= ZX.XXX;' [left]
 	WRITES (chnwrk, VLINE)
 
 	OD = 0
+
 	IF (SS_OD .GT. 0) OD = SS_OD
 	VLINE = OD,	'OD= ZX.XXX;' [left]
 	WRITES (CHNWRK, VLINE)
