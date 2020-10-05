@@ -2260,6 +2260,7 @@ skip_keys,
 		litmno = fo_item
 		lcfgim = fo_item
 		ldescr = f_descr
+		ldept = prdcat		;9-30-20
 		end
 
 	XCALL ISIO (5,ORDLIN,ORDKEY,STORE,LOKCTL)
