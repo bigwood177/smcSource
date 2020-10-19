@@ -23,7 +23,8 @@ external function
 
 record	smtp_defines
 ;;;	server	,a*,	'192.168.1.13'
-	server	,a*,	'192.168.1.4'
+;;;	server	,a*,	'192.168.1.4'
+	server	,a*,	'192.168.1.203'		;10-14-20 this is temporary!!
 	domain	,a*,	'smcduct.com'
 	sender	,a*,	'AccountsReceivable@SMCduct.com'
 	senderName,	a*,	'Sheet Metal Connectors'
