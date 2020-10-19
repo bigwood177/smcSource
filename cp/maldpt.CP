@@ -72,7 +72,7 @@ record
 
 
 record	smtp_defines
-	server	,a*,	'192.168.1.4'
+	server	,a*,	'192.168.1.203'
 	domain	,a*,	'smcduct.com'
 	sender	,a*,	'Orders@SMCduct.com'
 	senderName,	a*,	'Sheet Metal Connectors'
