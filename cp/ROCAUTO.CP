@@ -484,7 +484,9 @@ shell_batch_job,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;	open (22,o,'\\tsclient\c\fab\vt2.bat')
 
-	writes (23, 'path=%path%;c:\Program Files\QuickPen\Vulcan')
+;;;	writes (23, 'path=%path%;c:\Program Files\QuickPen\Vulcan')
+	writes (23, 'path=%path%;c:\Program Files\Trimble\TrimbleFabShop')
+;;;c:\Program Files\Trimble\Trimble®FabShop
 	smcOrder = oordno
 	smcName = ocusnm
 
