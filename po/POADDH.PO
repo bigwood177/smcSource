@@ -94,7 +94,7 @@ xcall outpt(1,1,2,' ',1)
 	('MARTYW'),	UCDE = 'MW'	;MARTY W
 	('MIKEM'),	UCDE = 'MM'	;MIKE M
 	('STEVEE'),	UCDE = 'SE'	;STEVE E
-	('JESSIER'),	UCDE = 'JR'	;JESSIE RICHARDSON
+	('JESSIEH'),	UCDE = 'JR'	;JESSIE RICHARDSON
 	(),		UCDE = 'PO'	;EVERYONE ELSE
 	ENDUSING
 
@@ -132,7 +132,7 @@ HDLOOP,
 			XCALL W_UPDT
 			CTL = '24,14,01,01,YN'
 			CALL INPUT
-;			IF(INXCTL.EQ.1) xcall faxpo(pohedr,channel)
+			IF(INXCTL.EQ.1) xcall faxpo(pohedr,channel)
 			END
 		end
 	(4),	call email
