@@ -125,7 +125,8 @@ open_error,
 
 .end
 
-.subroutine	uifax_send
+;;;.subroutine	uifax_send
+.subroutine	po_uifax_send
 	id	,i
 
 .proc
@@ -134,7 +135,8 @@ open_error,
 .end
 ;---------------------------------
 
-.subroutine	uifax_cancel
+;;;.subroutine	uifax_cancel
+.subroutine	po_uifax_cancel
 	id	,i
 
 .proc
@@ -143,7 +145,8 @@ open_error,
 .end
 ;---------------------------------
 
-.subroutine	uifax_rolo
+;;.subroutine	uifax_rolo
+.subroutine	po_uifax_rolo
 	id	,i
 
 .proc
