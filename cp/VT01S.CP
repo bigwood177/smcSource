@@ -70,6 +70,7 @@ RECORD	ARAY
 	WD4	,4D4
 
 RECORD	VARS
+	xm3_note,	a16	;11-2-20 in case f3 switched
 	is_307	,d1		;1=is a 307-i, 0= not a 307-i
 	alf3	,a5
 	cmpcod	,a3
@@ -121,9 +122,20 @@ PROC
 
 	XCALL ALPDC (LITMNO(3,4), SZ, BF)
 	IF (BF) XRETURN
-	
+
+	xm3_note = m3_note			;11-2-20	
 	using code select
 	('GE'),	if (sz .gt. 36) xreturn		;6-7-16	BK
+	('EG'),	using lf3 select		;11-2-20 bk
+		(42),	begin
+			lf3 = 24
+			xm3_note = 'LE/SP - switched'
+			end
+		(43),	begin
+			lf3 = 34
+			xm3_note = 'EZ/SP - switched'
+			end
+		endusing
 	endusing
 		
 
@@ -240,7 +252,8 @@ GOT_TBL,
 
 	if (m3_note .ne. '   ')
 		begin
-		vline = '// ' + 'F3: ' + m3_note
+		vline = '// ' + 'F3: ' + xm3_note
+	;;;	vline = '// ' + 'F3: ' + m3_note
 		writes (chnwrk, vline)
 		end
 

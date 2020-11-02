@@ -322,6 +322,15 @@ NOT_ALUM,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	VLINE = ((SZ * 1000) + WD4(1)), 'W= ZZ.XXX;' [left]		;.XXX
+
+;10-28-20: special case for end caps
+
+	USING LITMNO SELECT
+	('EC0326S','EC0426S','EC0424S'), IF(LF3.EQ.4) VLINE = ((SZ * 10000) + 625), 'W= ZZ.XXXX;' [left]		;.XXX	
+	('EC0326L','EC0426L','EC0424L'), IF(LF3.EQ.2) VLINE = ((SZ * 1000) + 125), 'W= ZZ.XXX;' [left]		;.XXX	
+	ENDUSING
+
+
 	WRITES (chnwrk, VLINE)
 
 ;;;	WRITES (chnwrk, 'L= 2;')
