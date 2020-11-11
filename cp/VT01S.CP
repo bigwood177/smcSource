@@ -70,6 +70,7 @@ RECORD	ARAY
 	WD4	,4D4
 
 RECORD	VARS
+	tl	,d6
 	xm3_note,	a16	;11-2-20 in case f3 switched
 	is_307	,d1		;1=is a 307-i, 0= not a 307-i
 	alf3	,a5
@@ -327,6 +328,12 @@ GOT_TBL,
 	if (dampr)
 	then	VLINE (9,47) = LDESCR(1,%trim(ldescr)) + ' W/DAMPER'
 	else	VLINE (9,38) = LDESCR
+
+	if (lf2 .eq. 32)
+		begin
+		tl = %trim(vline) + 1
+		vline(tl, tl+11) =  ' FULL SWEEP'	;11-9-20
+		end
 ;;;	VLINE (9,38) = LDESCR
 
 	LN = %TRIM(VLINE)
