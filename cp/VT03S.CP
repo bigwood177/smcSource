@@ -68,6 +68,7 @@ record,x
 	f3ks		,5d1
 
 RECORD	VARS
+	CMPCOD	,A3		;11-10-20
 	brt		,a1	;B/R/T for get_seam
 	key17		,a17
 	a15		,a15
@@ -139,7 +140,7 @@ RECORD	VARS
 	LOKCTL	,D1
 ;
 PROC
-
+	XCALL WHO (CMPCOD)
 	ERR = 1			;ASSUME ERROR
 
 	ORDLIN = LINE
@@ -637,6 +638,7 @@ not_sc,
 	WRITES (chnwrk, VLINE)
 
 	VLINE = 'OW= 0;'		;always 0
+	IF (CMPCOD.EQ.'ROC') VLINE = 'OW= 9;'	;11-10-20 BRANDON
 	WRITES (chnwrk, VLINE)
 
 	VLINE = 'OD= 0;'		;always 0
