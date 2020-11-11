@@ -1,9 +1,7 @@
+
+
 ;scrnx.tst - in test for lighting up default key mod
 ;SCRNX.DBL	;isam
-
-
-
-
 SUBROUTINE SCRNX
 ;
 ;	16-MAY-1997 SSQ: ADD QTY BREAK PRICING.
@@ -397,6 +395,7 @@ RECORD,X
 	SARA	,5D2
 
 RECORD	VARS
+	fo_savpr	,d8	;save fo_price
 	xf3	,d5
 	xf1	,d3
 	witmno	,a15
@@ -829,16 +828,22 @@ ITEM,
 		IF (CNG_LI)
 		THEN	BEGIN
 			ORDLIN = SAV045
-		if (clvl1.ne.lmsq1.or.clvl2.ne.lmsq2.or.clvl3.ne.lmsq3) 
+			call flat_oval		;11-2-20
+			goto (item), f_err	;11-2-20
+			
+			if (clvl1.ne.lmsq1.or.clvl2.ne.lmsq2.or.clvl3.ne.lmsq3) 
 				begin
 				kitmno = litmno
-				litmno = lcfgim
+				if (fo_item.eq.blanks)litmno = lcfgim
 				call check_pressed	;5-24-10
 				call getitm
-				litmno = kitmno
+				if (fo_item.eq.blanks) litmno = kitmno
 				end
 
-			XCALL W_DISP(W_ID, WD_POS,ROW,1,LITMNO)
+			if (fo_item.ne.blanks)	;11-2-20
+			then	XCALL W_DISP(W_ID, WD_POS,ROW,1,fo_item)
+			else	XCALL W_DISP(W_ID, WD_POS,ROW,1,LITMNO)
+
 			KITMNO = LITMNO		;ssq 9/23/02
 			SAVPRC = LSAVPR			;SSQ 8-10-04
 			CALL CHK_F6_MATL		;SSQ 5-14-03
@@ -5527,6 +5532,7 @@ skip_key2,
 		litmno = fo_item
 		lcfgim = fo_item
 		ldescr = f_descr
+		if (lsavpr.eq.0) lsavpr = fo_savpr
 		end
 
 	WRITE (CHN045, ORDLIN, RFA=PARRFAL(PIL)) ;;;>[ERR=CNG_LI_ERR]	
@@ -5817,7 +5823,8 @@ ADD_MATL_MULT,	;;;;;;;;;;;;;;;;;;;;;;;;;
 ;---------------------------------------------------	
 
 ADD_FO_MULT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	
+
+	FO_SAVPR = SAVPRC		;11-9-20	
 	LPRICE = (SAVPRC*F_MLT)#2
 	CONFIG_PRICE=LPRICE
 	CALL ROUND_NICKLE
