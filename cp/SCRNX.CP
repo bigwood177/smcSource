@@ -395,6 +395,7 @@ RECORD,X
 	SARA	,5D2
 
 RECORD	VARS
+	jr_has_ssefi	,d1	;11-11-20
 	fo_savpr	,d8	;save fo_price
 	xf3	,d5
 	xf1	,d3
@@ -3203,7 +3204,12 @@ EOF_DM,
 
 ;count bc, ef, gasket...
 	XCALL OEJR(OORDNO,CHN041,CHN045,runtot,taxtot,oloc,has_ssefi,cmx)
+	if (has_ssefi)		;11-11-20
+	then	jr_has_ssefi = 1
+	else	jr_has_ssefi = 0
+
 	XCALL fo_OEJR(OORDNO,CHN041,CHN045,runtot,taxtot,oloc,has_ssefi,cmx)
+	if (jr_has_ssefi) has_ssefi = 1		;in case fo_oejr has reset has_ssefi to 0
 
 ;10-03-11 determine if "full assembly fitting needed...
 
