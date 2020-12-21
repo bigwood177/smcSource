@@ -43,9 +43,11 @@ PROC
 		PXNAM = NAME
 		PXPO = HPONUM
 		PXPORL = HRLNUM
+		PXPODT = HPODTE			;12-7-20
+		LOKCTL = 1
+		XCALL ISIO (CHN192, PORNXF, PXKEY, WRITE, LOKCTL)
+		END
 
-	LOKCTL = 1
-	XCALL ISIO (CHN192, PORNXF, PXKEY, WRITE, LOKCTL)
 	GOTO FINI
 
 ADD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,7 +61,7 @@ ADD,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	PXNAM = NAME
 	PXPO = HPONUM
 	PXPORL = HRLNUM
-	
+	PXPODT = HPODTE				;12-7-20
 
 	K1NAM = NAME
 	K1PO = PXPO
