@@ -337,6 +337,7 @@ loop,
 	(59,62,63),	mat_sel = 5	;vinyl/pvc
 	(80,81),	dl_wall = 2
 	(82,83),	dl_wall = 4
+	(86,87),	dl_wall = 6	;12-23-20
 	endusing
 
 	if (mat_sel .gt. galv) call chk_f6_matl
@@ -544,14 +545,16 @@ add_work,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 				end
 
 			call bc		;jr barrel clamps
-			if(bc_cnt.gt.0)jg_len = jg_len + (dia*35*lqtyor)	;this is off by 10
-			if(sbc_cnt.gt.0)sjg_len = sjg_len + (dia*35*lqtysh)	;this is off by 10
+			if(bc_cnt.gt.0)jg_len = jg_len + (xdia*35*lqtyor)	;this is off by 10
+			if(sbc_cnt.gt.0)sjg_len = sjg_len + (xdia*35*lqtysh)	;this is off by 10
 			end
 		else	begin
 			call efi	;ef ez-flange installed
 			call bc		;ef barrel clamps
-			if(bc_cnt.gt.0)tg_len = tg_len + (dia*35*lqtyor)	;this is off by 10
-			if(sbc_cnt.gt.0)stg_len = stg_len + (dia*35*lqtysh)	;this is off by 10
+			if(bc_cnt.gt.0)tg_len = tg_len + (xdia*35*lqtyor)	;this is off by 10
+			if(sbc_cnt.gt.0)stg_len = stg_len + (xdia*35*lqtysh)	;this is off by 10
+		;;;	if(bc_cnt.gt.0)tg_len = tg_len + (dia*35*lqtyor)	;this is off by 10
+		;;;	if(sbc_cnt.gt.0)stg_len = stg_len + (dia*35*lqtysh)	;this is off by 10
 			end
 		end
 
@@ -564,13 +567,13 @@ add_work,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		using dia select
 		(6 thru 24),	
 			begin
-			if(bc_cnt.gt.0)jg_len = jg_len + (dia*35*lqtyor)	;this is off by 10	;ssq 12-13-05
-			if(sbc_cnt.gt.0)sjg_len = sjg_len + (dia*35*lqtysh)	;this is off by 10
+			if(bc_cnt.gt.0)jg_len = jg_len + (xdia*35*lqtyor)	;this is off by 10	;ssq 12-13-05
+			if(sbc_cnt.gt.0)sjg_len = sjg_len + (xdia*35*lqtysh)	;this is off by 10
 			end
 		(.gt.24),
 			begin
-			if(bc_cnt.gt.0)tg_len = tg_len + (dia*35*lqtyor)	;this is off by 10	;ssq 12-13-05
-			if(sbc_cnt.gt.0)stg_len = stg_len + (dia*35*lqtysh)	;this is off by 10
+			if(bc_cnt.gt.0)tg_len = tg_len + (xdia*35*lqtyor)	;this is off by 10	;ssq 12-13-05
+			if(sbc_cnt.gt.0)stg_len = stg_len + (xdia*35*lqtysh)	;this is off by 10
 			end
 		endusing
 		end
@@ -802,6 +805,10 @@ read_itmmas,	;;;;;;;;;;;;;;;;;;
 			using dl_wall select				;4-26-17
 			(2),	if (dia.ge.24) lprice = (lprice*25)#1
 			(4),	if (dia.ge.22) lprice = (lprice*25)#1
+			(6),	using dia select
+				(6 thru 24),	lprice = (lprice*30)#1	;12-23-20
+				(.ge. 26),	lprice = (lprice*40)#1	;12-23-20
+				endusing
 			endusing
 		;;;	if (dia.gt.24 .and. dl_wall.gt.0) lprice = (lprice*25)#1
 			end

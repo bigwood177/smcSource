@@ -41,6 +41,7 @@ SUBROUTINE SCRNX
 ;	18-may-2020 ssq: flat oval
 ;	6-17-20: ordlin.lpwnw = 1 => ordlin.lpwgt is XXX,XXX instead of X,XXX.XX
 ;	9-7-20:	check for need_fosp
+;	12-21-20: add f1: 86 & 87
 
 ;		HANDLES SECOND SCREEN IN ADD MODE OF OE
 ;
@@ -3044,6 +3045,7 @@ W_LOOP,
 
 			USING LF1 SELECT
 			(80 THRU 83),	HAS_DW = 1
+			(86,87),	HAS_DW = 1	;12-21-20
 			ENDUSING
 
 			END
@@ -4239,6 +4241,7 @@ SPIRAL,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 		USING XF1 SELECT
 		(80 THRU 83), SP_SIZE = 0	;FORCE PRICE TO ZERO
+		(86 THRU 87), SP_SIZE = 0	;FORCE PRICE TO ZERO (12-21-20)
 		ENDUSING
 		END
 
