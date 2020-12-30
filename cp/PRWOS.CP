@@ -1615,6 +1615,7 @@ PRTHDR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	xcall rbox (6, 0, ldig)					;ldig is last dig of order (ord_fmt)
 	IF (OXPRS .EQ. 'Y') xcall exprs (6,1)	;print "EXPRESS" in read under rbox
 	IF (OXSTK .EQ. 'Y') xcall stk (6,1)	;print "STOCK" in read under rbox
+	IF (OXPRF .EQ. 'Y') xcall prfab (6,1)	;print "PRE FAB" in red undr rbox 12-30-20
 
 	xcall hp (14,hpPOS, 1, 1, 0, ' ')
 

@@ -2478,9 +2478,9 @@ PRTHDR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	OF_ORD = OORDNO,	'ZZZZZX'
 	OF_NUM = OPRTF
 	xcall rbox (6, 0, ldig)			;ldig is last dig of order (ord_fmt)
-	IF (OXPRS .EQ. 'Y') xcall exprs (6,1)	;print "EXPRESS" in read under rbox
-	IF (OXSTK .EQ. 'Y') xcall stk (6,1)	;print STOCK" in read under rbox
-
+	IF (OXPRS .EQ. 'Y') xcall exprs (6,1)	;print "EXPRESS" in red under rbox
+	IF (OXSTK .EQ. 'Y') xcall stk (6,1)	;print STOCK" in red under rbox
+	IF (OXPRF .EQ. 'Y') xcall prfab (6,1)	;print "PRE FAB" in red undr rbox 12-30-20
 	xcall hp (14,hpPOS, 1, 1, 0, ' ')
 
 	XCALL HP (14,hpFONT,hp10CPI+hpMEDIUM)		;ssq 5-2-16
@@ -2720,7 +2720,8 @@ PRTHDR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;	XCALL HP (14,hpFONT,hp12CPI+hpMEDIUM)	;ssq 5-2-16: need room for pick seq
 	USING WDEPT SELECT
 ;;;	('O','P'),	WRITES (14, H_LINED)
-	('Y','Z'),	begin
+;;;	('Y','Z'),	begin
+	('Y'),		begin			;12-30-20 only "O" is duct now
 			WRITES (14, H_LINED)
 			incr lincnt
 			end

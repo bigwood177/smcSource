@@ -1810,7 +1810,8 @@ PRTHDR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	display (14, medium)
 
 ;;;	IF (OXPRS .EQ. 'Y')
-	IF (OXPRS.EQ.'Y' .OR. OXSTK.EQ.'Y') 			;7-20-20
+;;;	IF (OXPRS.EQ.'Y' .OR. OXSTK.EQ.'Y') 			;7-20-20
+	IF (OXPRS.EQ.'Y' .OR. OXSTK.EQ.'Y' .OR. OXPRF.EQ.'Y') 			;12-30-20
 			begin	
 			isidx = 4	;red
 			display (14, idx_sel)
@@ -1831,7 +1832,8 @@ PRTHDR,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	writes (14, pline)
 ;;;	IF (OXPRS .EQ. 'Y')
-	IF (OXPRS.EQ.'Y' .OR. OXSTK.EQ.'Y') 			;7-20-20
+;;;	IF (OXPRS.EQ.'Y' .OR. OXSTK.EQ.'Y') 			;7-20-20
+	IF (OXPRS.EQ.'Y' .OR. OXSTK.EQ.'Y' .OR. OXPRF.EQ.'Y') 			;12-30-20
 			begin	
 			isidx = 1	;black
 			display (14, idx_sel)
