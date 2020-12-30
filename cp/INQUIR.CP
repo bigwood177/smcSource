@@ -2231,6 +2231,7 @@ LOOP,
 	call check_sb_tees		;10-15-17
 	if (.not. sbt) goto no_sbt
 	savlin = ordlin
+	sbt_price = 0			;ssq 12-28-2020
 	f2_idx = 0
 	for sbt_idx from 1 thru 6
 		begin
