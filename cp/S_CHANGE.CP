@@ -17,6 +17,9 @@ RECORD	D_STUFF
 	D_FMT	,A10		;RETURN VALUE MM/DD/CCYY
 	D_SW	,A2		;"99" = DATE CONVERSION ERROR
 
+EXTERNAL FUNCTION		;12-28-20
+	IS_PRF	,A
+
 EXTERNAL FUNCTION		;3-28-19
 	IS_EXP	,A
 
@@ -123,6 +126,7 @@ RECORD	PBUF
 	PLINE	,A50
 
 RECORD	VARS
+	PRFAB_ORD	,A1	;12-28-20 Pre fab order (Y/N)
 	XPRS_ORD,A1	;3-28-10 Express order (Y/N)
 	STK_ORD	,A1	;7-20-20 Stock order (Y/N)
 	a_lf1	,a3
@@ -307,6 +311,7 @@ DISPL3,
 	
 	XPRS_ORD = %IS_EXP (OORDNO, CHN182)	;is this an "Express" order? 3-28-19
 	STK_ORD = %IS_STOCK (OORDNO, CHN182)	;is this a "Stock" order? 7-20-20
+	PRFAB_ORD = %IS_PRF (OORDNO, CHN182)	;is this a "Pre fab" order? 12-28-20
 
 	EN_FRT = -9			;3-4-20
 	CALL RE_WRITE
@@ -535,6 +540,8 @@ RE_WRITE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 	OXPRS = XPRS_ORD		;SSQ 3-28-19 
 	OXSTK = STK_ORD			;SSQ 7-20-20
+	OXPRF = PRFAB_ORD		;SSQ 12-28-20
+
 ;-
 	using oscac select	;added to s_change 2-24-20
 	('1','10','WC'),	nop	

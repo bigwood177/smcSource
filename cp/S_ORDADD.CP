@@ -17,8 +17,11 @@ SUBROUTINE	S_ORDADD	; isam
 EXTERNAL FUNCTION		;3-28-19
 	IS_EXP	,A
 
+EXTERNAL FUNCTION		;12-28-20
+	IS_PRF	,A
+
 EXTERNAL FUNCTION		;7-20-20
-	IS_STOCK	,A
+	IS_STOCK,A
 
 EXTERNAL FUNCTION
 	GU_NAME	,A
@@ -139,6 +142,7 @@ RECORD,X
 	DD	,D2
 
 RECORD	VARS
+	PRFAB_ORD	,A1	;12-28-20 Pre fab order (Y/N)
 	XPRS_ORD,A1	;3-28-10 Express order (Y/N)
 	STK_ORD	,A1	;7-20-20 Stock order (Y/N)	
 	local	,d1	;7-27-09 1 = print on local printer
@@ -295,6 +299,7 @@ SCRN4,
 
 	XPRS_ORD = %IS_EXP (OORDNO, CHN182)	;is this an "Express" order? 3-28-19
 	STK_ORD = %IS_STOCK (OORDNO, CHN182)	;is this a "Stock" order? 7-20-20
+	PRFAB_ORD = %IS_PRF (OORDNO, CHN182)	;is this a "Pre fab" order? 12-28-20
 
 	EN_FRT = -9		;3-4-20	
 	call re_write		;7-18-13: otherwise ordseq might not get updated
@@ -490,6 +495,7 @@ RE_WRITE,
 
 	OXPRS = XPRS_ORD		;SSQ 3-28-19 
 	OXSTK = STK_ORD			;SSQ 7-20-20
+	OXPRF = PRFAB_ORD		;SSQ 12-28-20
 
 	SCH_DAT = OPROMD		;SSQ 10-29-14
 	IF (OLOC .EQ. 'O') CALL MAKE_PROM_DATE	;SSQ 9-22-14
