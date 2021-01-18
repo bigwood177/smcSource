@@ -2,6 +2,7 @@
 ;ORDHLD.CP
 ;6-20-17 itmmas needs to be open on ch 1
 ;7-30-18 ssq: added ch_ans to indicate user selected "blues only" when printing original order.
+;1-04-21 ssq: if blues only then neword & ordsch not updated 
 
 
 ;	MAINTAIN CREDIT HOLD LIST
@@ -123,7 +124,7 @@ REMOVE,
 
 			XCALL PDORD (ch_ord)
 			if (ch_ans.ne.'B')		;B = blues only (7-30-18)
-				begin
+			then	begin
 				XCALL FIND_I (ch_ord, HAS_I)
 				if (has_i)
 		  	  	  begin
@@ -144,6 +145,8 @@ REMOVE,
 				XCALL PRWO3 (ch_ord)		;ROCKFORD .XX LINES
 				XCALL PRWO2 (ch_ord ,local)
 				end
+			else	xcall mknew (oordno)		;1-4-21 still new to update neword.ism
+
 			xcall mesag ('Order Released',1)
 			end
 	endusing
