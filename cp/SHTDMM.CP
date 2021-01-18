@@ -107,6 +107,8 @@ record	dis
 
 record	ss_vars
 	i	,d6
+	j	,d6
+	cmpcods	,3a3, 'SMC','ROC','CAT'
 	filen	,5a14,	
 &	'smc:ordhdr.smm','smc:slhhdr.smm','smc:slhh15.smm','smc:slhh14.smm',
 &	'smc:slhh13.smm'
@@ -161,7 +163,7 @@ RECORD	VARS
 
 PROC
 	XCALL TERID(V)
-	XCALL WHO(CMPCOD)	
+;;;	XCALL WHO(CMPCOD)	
 	XCALL RDAT8(TODAY)
 	YEAR = TODAY(3,4)
 MENU,
@@ -197,7 +199,11 @@ SSDAT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		return
 		end
 
-	for i from 1 thru 5
+	for j from 1 thru 3
+	   begin
+	   cmpcod = cmpcods(j)
+
+	   for i from 1 thru 5
 		begin
 		d_file = filen(i)
 		wrkfil = d_file
@@ -210,10 +216,11 @@ SSDAT,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		endusing
 
 		open (1,si,wrkfil)
-	;;;	open (1,si,d_file)
 		d_file = wrkfil
 		call set_date
 		end
+	   end
+
 	close 1
 	close 5
 	return
