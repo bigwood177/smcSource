@@ -973,7 +973,7 @@ ITEM,
 	('S9','S4','SV','SW','SC','ST'),	CFG_ITEM = 1
 	('SG','SX'),			CFG_ITEM = 1
 	('RT','RTV'),			CFG_ITEM = 1
-	('SR38'),			CFG_ITEM = 2		;9-9-20 - square rods, not square-to-round
+	('SR38 '),			CFG_ITEM = 2		;9-9-20 - square rods, not square-to-round
 	('SR ', 'SR. '),		GOTO ITEM	;9-9-11: now invalid.
 	('SR0' thru 'SR9'),		CFG_ITEM = 1
 	('SRK0' thru 'SRK9'),		CFG_ITEM = 1
