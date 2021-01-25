@@ -10,10 +10,11 @@
 ;					  52 = 2. current years history
 ;					  00 = year 2000
 ;				 	  01 = year 2001
-; 06-07-05 SSQ: if tmpcus (cust# 10) look up cust info in tmpcus.ism (139)
-; 11-01-05 ssq: use okeydt to compute disc. date
-;DDEPT 5-29-14
-; 5-30-18 ssq: make cusmas isam
+;	06-07-05 SSQ: if tmpcus (cust# 10) look up cust info in tmpcus.ism (139)
+;	 11-01-05 ssq: use okeydt to compute disc. date
+;	DDEPT 5-29-14
+;	5-30-18 ssq: make cusmas isam
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 
 	.include 'wnd:tools.def'
@@ -2181,11 +2182,11 @@ EOF_BNT,
 
 	PLINE =
 	CALL PRINT
-	IF (ODISC.EQ.0) GO TO NOODSC
-	PLINE(23,45) = 'ORDER DISCOUNT PERCENT:'
-	PLINE(47,48) = ODISC
-	CALL PRINT
-	CALL PRINT
+;;;	IF (ODISC.EQ.0) GO TO NOODSC
+;;;	PLINE(23,45) = 'ORDER DISCOUNT PERCENT:'
+;;;	PLINE(47,48) = ODISC
+;;;	CALL PRINT
+;;;	CALL PRINT
 NOODSC,
 	IF (TOTSAL.LT.0) CREDIT = 1
 	PLINE (1,50) = D_LIN1
