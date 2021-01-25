@@ -10,7 +10,7 @@
 ;
 ;	01-16-14: make aracct isam
 ;	6-27-18: make cusmas isam
-
+;	1-18-21: remove ordhdr.odisc
 
 	.include 'wnd:tools.def'
 
@@ -122,6 +122,7 @@ RECORD
 
 
 RECORD	VARS
+	odisc	,d2	;1-18-21, removed from ordhdr so need it here
 	has_lpcd	,d1
 	sav_com	,a30	;6-30-11 for combl
 	CHN065	,D2
@@ -211,6 +212,7 @@ PROC
 	CALL OPENS
 	IF(.NOT. OPNOK) GOTO ENDOFF
 
+	odisc = 0		;ssq 1-18-21
 DISPLA,
 	XCALL BLMNU (V)
 	CTL = '08,47,01,01,#E'
