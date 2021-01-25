@@ -233,9 +233,9 @@ DSPDAT,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	XCALL OUTPT (4,69,0,OPONO,V)
-	CTL = '05,16,02'
-	DECMAL = ODISC
-	CALL DSPNUM
+;;;	CTL = '05,16,02'
+;;;	DECMAL = ODISC
+;;;	CALL DSPNUM
 	XCALL OUTPT (10,33,0,OTERMS,1)
 	SRCCTL = 2
 	BSEND = ORG170

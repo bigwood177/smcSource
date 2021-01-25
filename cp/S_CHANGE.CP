@@ -6,6 +6,8 @@ SUBROUTINE S_CHANGE		;isam
 ; 6-04-18 ssq: make cusmas isam
 ; 3-28-19 ssq: express order mod
 ; 12-4-19 ssq: miscus mod
+; 1-18-21 ssq: ordhdr.odisc has been removed.
+; 1-20-21 ssq: don't compute cash cust freight if user enters freight
 
 	.include 'wnd:windows.def'
 	.include 'wnd:tools.def'
@@ -126,6 +128,8 @@ RECORD	PBUF
 	PLINE	,A50
 
 RECORD	VARS
+	x_fcng	,d1	;1-20-21 freight was changed
+	odisc	,d2	;1-18-21
 	PRFAB_ORD	,A1	;12-28-20 Pre fab order (Y/N)
 	XPRS_ORD,A1	;3-28-10 Express order (Y/N)
 	STK_ORD	,A1	;7-20-20 Stock order (Y/N)
@@ -219,6 +223,8 @@ PROC
 	U_NAME = %GU_NAME		;GET USER LOGON
 	V = 2
 
+	odisc =				;1-18-21
+
 ;;;	xcall u_start("lib:smc_wnd",,,,,,,100)
 	xcall u_start("lib:smc_wnd",,,,,,,200)
 	xcall e_sect("Change",D_CAPTION,D_CLREOL, D_POSITION,1,5)
@@ -245,6 +251,8 @@ NOT_INET,
 	IF (CCORD .EQ. 'C') OCCRD = 'C'
 	CCORD = OCCRD		;SAVE VALUE SSQ 12-8-05
 	OORDNO = S_OORDNO
+	X_FCNG = O_FCNG		;1-20-21
+
 	XCALL ORDCN (ORDHDR,SCUSTP,INXCTL,CNGCTL,INET,V,TAXFLG,
 & OEFLAG,CUSTCD,distr,wnd_1)
 
@@ -370,7 +378,12 @@ ASK_PRINT,
 		SAVFRT = OFRGHT
 		E_FRGHT = OFRGHT
 		CALL FREIGHT
-		IF (E_FRGHT .NE. SAVFRT) CALL RE_WRITE
+		IF (E_FRGHT .NE. SAVFRT) 
+			BEGIN
+			X_FCNG = 1			;1-20-21
+			CALL RE_WRITE
+			END
+	;;;	IF (E_FRGHT .NE. SAVFRT) CALL RE_WRITE
 		GOTO ASK_PRINT
 		END
 	('N'),	NOP
@@ -379,7 +392,12 @@ ASK_PRINT,
 		CCORD = 'R'		;12-6-05 SSQ CASH RECEIPT
 		XCALL OECC2(ORDHDR, RUNTOT, TAXTOT, E_FRGHT, OCCRD, TAXCC)
 		TAXFLG = OTAXFL		;SAVE FOR RE-WRITE SSQ 5/6/02
-		IF (E_FRGHT .NE. SAVFRT) EN_FRT = E_FRGHT	;MUST HAVE CHANGED
+		IF (E_FRGHT .NE. SAVFRT) 
+			BEGIN
+			X_FCNG = 1	;1-20-21
+			EN_FRT = E_FRGHT	;MUST HAVE CHANGED
+			END
+	;;;	IF (E_FRGHT .NE. SAVFRT) EN_FRT = E_FRGHT	;MUST HAVE CHANGED
 		CALL RE_WRITE
 		GOTO ASK_PRINT
 		END
@@ -541,19 +559,26 @@ RE_WRITE,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	OXPRS = XPRS_ORD		;SSQ 3-28-19 
 	OXSTK = STK_ORD			;SSQ 7-20-20
 	OXPRF = PRFAB_ORD		;SSQ 12-28-20
-
+	O_FCNG = X_FCNG			;SSQ 1-20-21
 ;-
 	using oscac select	;added to s_change 2-24-20
-	('1','10','WC'),	nop	
+	('1','10','WC'),	IF (OCUSNO.EQ.10) E_FRGHT = 0	;1-20-21	
 	(),			IF (OCUSNO.EQ.10)		;11-27-19 CASH CUST BUT NOT WILL-CALL
 				BEGIN
-				IF (EN_FRT .GE. 0)
-				THEN	E_FRGHT = EN_FRT	;3-4-20 USER FREIGHT WINS
-				ELSE	BEGIN
+				IF (.NOT. O_FCNG)
+					BEGIN
 					C_FRGHT = (RUNTOT*20)#2	;FRT IS 20%
 					IF (C_FRGHT .LT. 1000) C_FRGHT = 1000	;MIN $10.00
 					IF (E_FRGHT .LT. C_FRGHT) E_FRGHT = C_FRGHT	;3-2-20
 					END
+
+			;;;	IF (EN_FRT .GE. 0)
+			;;;	THEN	E_FRGHT = EN_FRT	;3-4-20 USER FREIGHT WINS
+			;;;	ELSE	BEGIN
+			;;;		C_FRGHT = (RUNTOT*20)#2	;FRT IS 20%
+			;;;		IF (C_FRGHT .LT. 1000) C_FRGHT = 1000	;MIN $10.00
+			;;;		IF (E_FRGHT .LT. C_FRGHT) E_FRGHT = C_FRGHT	;3-2-20
+			;;;		END
 				END
 	endusing
 

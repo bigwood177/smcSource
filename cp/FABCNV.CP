@@ -4,9 +4,10 @@
 ;	CONVERT FABSHOP DATA TO SMC ORDER
 ;	pressure file indicates material
 ;
-; 5-6-15: read server name from table 'SR'
+;	 5-6-15: read server name from table 'SR'
 ;	5-29-18 ssq: make cusmas isam
-;6-17-20: ordlin.lpwnw = 1 => ordlin.lpwgt is XXX,XXX instead of X,XXX.XX
+;	6-17-20: ordlin.lpwnw = 1 => ordlin.lpwgt is XXX,XXX instead of X,XXX.XX
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 	.INCLUDE 'WND:TOOLS.DEF'
 	.INCLUDE 'WND:WINDOWS.DEF'
@@ -518,6 +519,7 @@ RECORD,X
 	SARA	,5D2
 
 RECORD	VARS
+	odisc	,d2
 	wnw	,d1		;6-17-20
 	x_lpwgt	,d6		;9-12-17
 	witmno	,a15
@@ -726,6 +728,8 @@ RECORD	VARS
 
 	CALL OPENS
 	IF (.NOT. OPNOK) GOTO ENDOFF
+
+	odisc = 			;1-18-21
 
 ;;;	CLEAR COPTBL
 ;;;	TBLCOD = 'SR'

@@ -9,6 +9,7 @@ SUBROUTINE	S_ORDADD	; isam
 	; 6-04-18 ssq: make cusmas isam
 	; 3-28-19 ssq: express order mod
 	;11-18-19 ssq: miscus mod
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 	.include 'wnd:tools.def'
 	.include 'def:hpsub.def'
@@ -142,6 +143,8 @@ RECORD,X
 	DD	,D2
 
 RECORD	VARS
+	X_FCNG	,D1	;1-20-21	;freight was changed
+	odisc	,d2	;1-18-21
 	PRFAB_ORD	,A1	;12-28-20 Pre fab order (Y/N)
 	XPRS_ORD,A1	;3-28-10 Express order (Y/N)
 	STK_ORD	,A1	;7-20-20 Stock order (Y/N)	
@@ -213,6 +216,7 @@ PROC
 	U_NAME = %GU_NAME
 	clear ordhdr		;ssq 6-07-10
 	CLEAR TAXCC		;SSQ 4-29-13
+	clear odisc		;ssq 1-18-21
 
 	XCALL RDATE (TDATE)
 	XCALL DATE8(TDATE, D_OUT, LSTDTE, D_FMT, D_SW)
@@ -336,7 +340,12 @@ ASK_PRINT,
 		SAVFRT = OFRGHT
 		E_FRGHT = OFRGHT
 		CALL FREIGHT
-		IF (E_FRGHT .NE. SAVFRT) CALL RE_WRITE
+		IF (E_FRGHT .NE. SAVFRT) 
+			BEGIN
+			X_FCNG = 1		;1-20-21
+			CALL RE_WRITE
+			END
+	;;;	IF (E_FRGHT .NE. SAVFRT) CALL RE_WRITE
 		GOTO ASK_PRINT
 		END
 	('N'),	NOP
@@ -344,7 +353,12 @@ ASK_PRINT,
 		SAVFRT = E_FRGHT
 		CCORD = 'R'		;SSQ 12-6-05 "CASH"
 		XCALL OECC2(ORDHDR, RUNTOT, TAXTOT, E_FRGHT, CCORD, TAXCC)
-		IF (E_FRGHT .NE. SAVFRT) EN_FRT = E_FRGHT	;3-4-20 MUST HAVE CHANGED
+		IF (E_FRGHT .NE. SAVFRT) 
+			BEGIN
+			X_FCNG = 1		;1-20-21
+			EN_FRT = E_FRGHT	;3-4-20 MUST HAVE CHANGED
+			END
+	;;;	IF (E_FRGHT .NE. SAVFRT) EN_FRT = E_FRGHT	;3-4-20 MUST HAVE CHANGED
 		CALL RE_WRITE
 		GOTO ASK_PRINT
 		END
@@ -492,7 +506,7 @@ RE_WRITE,
 				END
 	endusing
 
-
+	O_FCNG = X_FCNG			;SSQ 1-20-21
 	OXPRS = XPRS_ORD		;SSQ 3-28-19 
 	OXSTK = STK_ORD			;SSQ 7-20-20
 	OXPRF = PRFAB_ORD		;SSQ 12-28-20
