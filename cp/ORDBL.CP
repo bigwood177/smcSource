@@ -8,6 +8,7 @@
 ;	2-24-10: don't use cusmas taxcode for cust # 10 (tmpcus)
 ; 	5-30-18 ssq: make cusmas isam
 ;	6-17-20: ordlin.lpwnw = 1 => ordlin.lpwgt is XXX,XXX instead of X,XXX.XX
+;	1-18-21: ordhdr.odisc is gone, put in vars
 
 
 	SAVCOM	,A
@@ -150,6 +151,7 @@ RECORD	WN_NAME
 	WN_TNMBR,D4
 
 RECORD	VARS
+	odisc	,d2		;1-18-21
 	flag		,d1	;for alpdc
 	cash_cust	,d1	;2,3,5,10
 	NON_TAX	,D1		;NON TAX TAX CODES
@@ -206,6 +208,7 @@ RECORD	VARS
 .PROC
 	V = 2
 	XCALL WHO(CMPCOD)	;9-28-04
+	odisc = 0		;1-18-21
 
 	LOKCTL = 1
 	XCALL IO (CHN001,CUSCTL,1,READ,LOKCTL)

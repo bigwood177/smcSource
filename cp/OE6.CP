@@ -1,4 +1,4 @@
-SUBROUTINE OE6
+not used?? SUBROUTINE OE6
 ;
 ;
 	ORDNOA	,D

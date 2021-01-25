@@ -4,6 +4,7 @@
 ;
 
 ;5-8-19 ssq: time stamp but no longer need to print...
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 
 EXTERNAL FUNCTION
@@ -373,9 +374,9 @@ DISPL1,
 	XCALL OUTPT (9,53,0,SC_NAME,1)
 
 	XCALL OUTPT (4,69,0,OPONO,V)
-	CTL = '05,16,02'
-	DECMAL = ODISC
-	CALL DSPNUM
+;;;	CTL = '05,16,02'
+;;;	DECMAL = ODISC
+;;;	CALL DSPNUM
 
 	XCALL OUTPT (10,33,0,OTERMS,1)
 
