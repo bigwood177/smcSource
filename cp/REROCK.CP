@@ -5,6 +5,7 @@
 ;	CREATE NEW ORDER FROM EXISTING ORDER
 ;
 ;	4-14-05: if order has already been copied to SMC, delete lines.
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 RECORD	D_STUFF
 	D_IN	,D8		;DATE-IN, ANY FORMAT
@@ -630,9 +631,9 @@ NO_NUM,
 	XCALL OUTPT (9,53,0,SC_NAME,1)
 
 	XCALL OUTPT (4,69,0,OPONO,V)
-	CTL = '05,16,02'
-	DECMAL = ODISC
-	CALL DSPNUM
+;;;	CTL = '05,16,02'
+;;;	DECMAL = ODISC
+;;;	CALL DSPNUM
 
 	XCALL OUTPT (10,33,0,OTERMS,1)
 

@@ -3,6 +3,8 @@
 ;
 ;		PGM TO PRINT ORDER EDIT LIST
 ; 5-30-18 ssq: make cusmas isam
+;	1-18-21 ssq: ordhdr.odisc has been removed.
+;
 ;
 ;
 RECORD	D_STUFF
@@ -139,8 +141,6 @@ RECORD	VARS
 	ORDEST	,A1	;;;
 PROC
 	XCALL TERID (V)
-
-
 	SWITCH = 1
 ;;;	XCALL FILES (2,'I',02,SWITCH)		;FILE # 02 -- CUSIDX FILE
 ;;;	IF (SWITCH.EQ.9) GO TO EXIT
@@ -375,9 +375,11 @@ PRTHDR,
 ;;;	PLINE (73,87) = 'CODE NOT FOUND '
 ;;;SHVOK,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	PLINE (89,103) = 'ORDER DISCOUNT:'
-	PLINE (105,106) = ODISC
-	PLINE (107,107) = '%'
+
+;;;	PLINE (89,103) = 'ORDER DISCOUNT:'
+;;;	PLINE (105,106) = ODISC
+;;;	PLINE (107,107) = '%'
+
 	IF (DSTFLG.NE.'Y') GO TO PRTHD1
 	PLINE (111,121) = 'A/R-ACCT #:'
 	PLINE (123,130) = OARACT, 'XXXX-XXX'

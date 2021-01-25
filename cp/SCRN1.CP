@@ -1,7 +1,8 @@
 SUBROUTINE SCRN1	
 ;
 ;	14-dec-01 ssq: 	don't fax mod.
-; 5-30-18 ssq: make cusmas isam
+;	5-30-18 ssq: make cusmas isam
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 ;
 ;
 ;		HANDLES FIRST SCREEN OF ADD MODE OF ORDER ENTRY
@@ -183,6 +184,7 @@ RECORD MESAGE
 
 
 RECORD	VARS
+	odisc	,d2	;1-18-21
 	savmis	,d6	;need new email and ship-to if miscus changes
 	bad_tmp_cus	,d1
 	A30	,A30
@@ -900,6 +902,8 @@ PROCES,
 	XCALL W_PROC(WP_DELETE,WND_1)
 	IF (C_WND) XCALL W_PROC(WP_DELETE,C_WND)
 	CLEAR C_WND
+
+	TXFLG = OTAXFL		;1-20-21 this is what gets used in s_ordadd...
 	RETURN
 ;=====================================================
 
