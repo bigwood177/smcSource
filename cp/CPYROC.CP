@@ -8,6 +8,7 @@
 ;	10-12-09 ssq: set qty on order in roc itmmas,
 ;			new version of gtitm allows this...
 ;	5-29-18 ssq: make cusmas isam
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 RECORD	D_STUFF
 	D_IN	,D8		;DATE-IN, ANY FORMAT
@@ -306,6 +307,10 @@ COPY_HEADER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	IF (OARACT .NE. 0) OARACT(5,7) = 100	;SSQ 6/29/04
 	IF (OFRACT .NE. 0) OFRACT(5,7) = 100	;SSQ 6/29/04
 	IF (OMSACT .NE. 0) OMSACT(5,7) = 100	;SSQ 6/29/04
+
+	USING OSCAC SELECT
+	('1 ','10', 'WC'),	OFRGHT = 	;1-18-21 PER BRANDON
+	ENDUSING
 
 	XCALL ISIO (CHN044, ORDHDR, OORDNO, STORE, LOKCTL)
 	IF (LOKCTL .NE. 0)
@@ -719,9 +724,9 @@ DISPL1,
 	XCALL OUTPT (9,53,0,SC_NAME,1)
 
 	XCALL OUTPT (4,69,0,OPONO,V)
-	CTL = '05,16,02'
-	DECMAL = ODISC
-	CALL DSPNUM
+;;;	CTL = '05,16,02'
+;;;	DECMAL = ODISC
+;;;	CALL DSPNUM
 
 	XCALL OUTPT (10,33,0,OTERMS,1)
 

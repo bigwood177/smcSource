@@ -4,7 +4,7 @@
 ;
 
 ;	10-11-05 ssq: credit card info.
-
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 RECORD	D_STUFF
 	D_IN	,D8		;DATE-IN, ANY FORMAT
@@ -234,6 +234,10 @@ COPY_HEADER,	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	OORDDT = LSTDTE		;TODAY
 	OKEYDT = LSTDTE		;TODAY
+
+	USING OSCAC SELECT
+	('1 ','10', 'WC'),	if (ocusno.eq.10) OFRGHT = 	;1-18-21 PER BRANDON
+	ENDUSING
 
 	XCALL ISIO (CHN044, ORDHDR, OORDNO, STORE, LOKCTL)
 	IF (LOKCTL .NE. 0)
@@ -486,9 +490,9 @@ DISPL1,
 	XCALL OUTPT (9,53,0,SC_NAME,1)
 
 	XCALL OUTPT (4,69,0,OPONO,V)
-	CTL = '05,16,02'
-	DECMAL = ODISC
-	CALL DSPNUM
+;;;	CTL = '05,16,02'
+;;;	DECMAL = ODISC
+;;;	CALL DSPNUM
 
 	XCALL OUTPT (10,33,0,OTERMS,1)
 
