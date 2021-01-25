@@ -12,9 +12,10 @@
 ;					  52 = 2. current years history
 ;					  00 = year 2000
 ;				 	  01 = year 2001
-; 06-07-05 SSQ: if tmpcus (cust# 10) look up cust info in tmpcus.ism (139)
-; 11-01-05 ssq: use okeydt to compute disc. date
-;DDEPT 5-29-14
+; 	06-07-05 SSQ: if tmpcus (cust# 10) look up cust info in tmpcus.ism (139)
+; 	11-01-05 ssq: use okeydt to compute disc. date
+;	DDEPT 5-29-14
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 
 	.include 'wnd:tools.def'
@@ -360,6 +361,7 @@ RECORD	HFF
 	HFFY	,D2
 
 RECORD	VARS
+	odisc	,d2		;1-18-21
 	xpol1	,a12
 	xpol2	,a12
 	PATH	,A100
@@ -505,6 +507,9 @@ PROC
 	XCALL RDATE (DATE)
 	CALL INIT_WINDOW
 	XCALL ASCII (27,ESC)
+
+	odisc =				;1-18-21
+
 	goto fselec
 
 FSELEC,

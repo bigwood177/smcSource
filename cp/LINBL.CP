@@ -5,6 +5,7 @@ SUBROUTINE LINBL		;still configuring items
 	TOTCST	,D
 
 ; 12-02-03 ssq:	use "call cfg"
+; 1-18-21 ssq: ordhdr.odisc is gone, odisc now in vars
 
 RECORD ORDLIN		
 	.INCLUDE 'DEF:RD045A.def'
@@ -131,6 +132,7 @@ RECORD	,X
 ;;;	CHN060	,D2,	03	;COPCTL
 	
 RECORD	VARS
+	odisc	,d2
 	CONFIG_ERROR	,D1
 	ST_GUAGE	,A2
 	FIRST_LINE	,D1
@@ -188,6 +190,7 @@ RECORD	VARS
 PROC
 	CLEAR TBL_PRICE_FOUND
 
+	odisc = 0	;1-18-21
 	LOKCTL = 1
 	NUMITM = 4
 

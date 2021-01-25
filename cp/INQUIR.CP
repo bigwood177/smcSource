@@ -15,8 +15,9 @@
 ;DDEPT 5-29-14
 ;	5-29-18 ssq: make cusmas isam
 ;	7-16-18 ssq: if cusno=ocusno not looking up salesman...
-; 8-7-19 ssq: dptlbs; employee packing
-;12-23-19 ssq: cash-cust mods
+; 	8-7-19 ssq: dptlbs; employee packing
+;	12-23-19 ssq: cash-cust mods
+;	1-18-21 ssq: ordhdr.odisc has been removed.
 
 
 	.include 'wnd:tools.def'
@@ -423,6 +424,7 @@ RECORD	HFF
 	HFFY	,D2
 
 RECORD	VARS
+	odisc		,d2		;1-18-21
 	chnemc		,d3
 	xcust		,d6
 	cash_string	,a30
@@ -608,7 +610,7 @@ PROC
 	U_NAME = %GU_NAME			;moved here 6-6-16
 	UPCASE U_NAME
 
-
+	odisc =				;1-18-21
 	goto fselec
 
 FSELEC,

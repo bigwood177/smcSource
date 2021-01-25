@@ -10,8 +10,10 @@
 ;					  52 = 2. current years history
 ;					  00 = year 2000
 ;				 	  01 = year 2001
-;DDEPT 5-29-14
-; 5-29-18 ssq: make cusmas isam
+;	DDEPT 5-29-14
+; 	5-29-18 ssq: make cusmas isam
+;	1-18-21 ssq: ordhdr.odisc has been removed.
+
 	.include 'wnd:tools.def'
 
 	.DEFINE POOLSIZE	,25000
@@ -350,6 +352,7 @@ RECORD	HFF
 
 	
 RECORD	VARS
+	odisc	,d2		;1-18-21
 	q_pct	,d1
 	ORD_EOF	,D1
 	XPONO	,A10
@@ -496,6 +499,8 @@ PROC
 	XCALL RDATE (DATE)
 	CALL INIT_WINDOW
 	XCALL ASCII (27,ESC)
+	
+	odisc =			;1-18-21
 	goto fselec
 
 FSELEC,
