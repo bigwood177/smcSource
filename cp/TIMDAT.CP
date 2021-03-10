@@ -4,6 +4,8 @@
 ;	author: Brandon Korus
 ;	date: 1/29/14
 ;
+;	3/10/21 ssq: post rock time, save jobno as tc_job
+
 record	in
 		,a1024
 record	coptbl
@@ -69,8 +71,9 @@ loop,
 		using i select
 		(1),	tc_nbr = field
 		(2),	tc_exc = field
-		(3),	tc_ess = field
-		(4),	jobno = field
+	;;;3/10/21 >>>	(3),	tc_ess = field	;capturing job# instead
+		(4),	tc_job = field
+	;;;	(4),	jobno = field
 		(5),	tc_rate = field
 		(6),	tc_ehrs = field
 		(7),	tc_eovt = field
@@ -78,11 +81,17 @@ loop,
 		endusing
 		end
 
-	if (jobno(1,2) .ne. 18) goto loop	;smc only
+	using tc_job(1,2) select
+	(18),	nop			;smc
+	(28),	nop			;rock
+	(),	goto loop		;anything else
+	endusing
+
+;;;	if (jobno(1,2) .ne. 18) goto loop	;smc only
 
 	clear coptbl
 	tblcod = 'D1'
-	d1_job = jobno
+	d1_job = tc_job
 	read (chn182, coptbl, tbl_key) [err=no_dept]
 	tc_dpt = d1_dept
 	goto dept_ok
